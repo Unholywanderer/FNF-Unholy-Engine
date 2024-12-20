@@ -20,10 +20,6 @@ var bad_window:float = 135.0
 ## VISUALS ##
 var fps:int = 60:
 	set(new): fps = new; Engine.max_fps = fps
-var vsync:String = 'disabled':
-	set(v):
-		vsync = v.to_lower()
-		DisplayServer.window_set_vsync_mode(get_vsync_from_string(vsync))
 
 var auto_pause:bool = true
 var skip_transitions:bool = false
@@ -85,13 +81,6 @@ func get_list() -> Array:
 	#for i in list: print(i.name)
 	return list
 	
-func get_vsync_from_string(sync:String = 'disabled') -> DisplayServer.VSyncMode:
-	match sync: # hell if i know what all the v syncs do and look like
-		'enabled': return DisplayServer.VSYNC_ENABLED
-		'adapt': return DisplayServer.VSYNC_ADAPTIVE
-		'mailbox': return DisplayServer.VSYNC_MAILBOX
-		_: return DisplayServer.VSYNC_DISABLED
-
 func save_prefs() -> void:
 	if saved_prefs == null: 
 		printerr('CONFIG FILE is NOT loaded, couldn\'t save')

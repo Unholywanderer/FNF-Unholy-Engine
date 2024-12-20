@@ -21,7 +21,6 @@ var gameplay = [
 ]
 var visuals = [
 	['fps',             'int', [0, 240]],
-	['vsync',         'array', ['disabled', 'enabled', 'adaptive', 'mailbox']],
 	['skip_transitions', 'bool'],
 	['allow_rpc',      'bool'],
 	['basic_play',     'bool'],

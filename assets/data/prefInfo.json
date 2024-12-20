@@ -12,7 +12,6 @@
     "good_window"     : "How tight the \n\"Good\"\nwindow is to hit",
     "bad_window"      : "How tight the \n\"Bad\"\nwindow is to hit",
     "fps"             : "im sure you can guess\n0 = No Limit (Can be intensive!)",
-    "vsync"           : "Enable or disable Vsync\nIf enabled, depending on which one, the FPS will mostly be locked to refresh rate",
     "allow_rpc"       : "Show the \"Now Playing\" activity on your discord",
     "basic_play"      : "If checked, only the strums and notes will load, with no stage elements",
     "auto_pause"      : "Should the game freeze once the window loses focus?",
