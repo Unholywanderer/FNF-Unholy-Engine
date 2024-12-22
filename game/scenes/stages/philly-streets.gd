@@ -3,7 +3,8 @@ extends StageBase
 var cur_can:AnimatedSprite2D = AnimatedSprite2D.new()
 var CAN = preload('res://assets/images/stages/philly-streets/effects/spraycanFULL.res')
 func _ready() -> void:
-	THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
+	if SONG.player1.contains('pico'):
+		THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
 	if !Game.persist.loaded_already:
 		Game.persist.loaded_already = true
 		ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
@@ -22,6 +23,12 @@ func _ready() -> void:
 func countdown_start():
 	if cur_can.get_parent() == null:
 		$CharGroup.add_child(cur_can)
+		cur_can.animation_changed.connect(func():
+			if cur_can.animation == 'hit':
+				cur_can.offset = Vector2(-450, -50)
+			else:
+				cur_can.offset = Vector2(0, 0)
+		)
 		cur_can.sprite_frames = CAN
 		cur_can.position = $SprayCanPile.position + Vector2(920, -150)
 		cur_can.animation_finished.connect(func(): cur_can.visible = cur_can.animation != 'fly')
@@ -49,9 +56,9 @@ func good_note_hit(note:Note):
 				return
 			cocked = false
 			boyfriend.play_anim('shoot' if boyfriend.cur_char == 'pico' else 'attack', true)
-			cur_can.play('shoot')
 			boyfriend.special_anim = true
 			Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
+			cur_can.play('shoot')
 
 var died_by_can:bool = false
 func note_miss(note:Note):
