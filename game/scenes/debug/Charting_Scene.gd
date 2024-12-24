@@ -144,8 +144,8 @@ func _ready():
 	tab('Song', 'GF').get_popup().connect("id_pressed", on_gf_change)
 
 	var chars = [JsonHandler.get_character(SONG.player2), JsonHandler.get_character(SONG.player1)]
-	$ChartLine/IconL.change_icon(chars[0].healthicon if chars[0] != null else 'face')
-	$ChartLine/IconR.change_icon(chars[1].healthicon if chars[1] != null else 'face', true)
+	$ChartLine/IconL.change_icon(chars[0].icon if chars[0] != null else 'face')
+	$ChartLine/IconR.change_icon(chars[1].icon if chars[1] != null else 'face', true)
 	
 	$ChartUI/SongProgress/Length.text = Game.to_time(Conductor.song_length)
 	
@@ -156,40 +156,40 @@ func _ready():
 	add_child(grid)
 	move_child(grid, get_node('Notes').get_index())
 	
-	#prev_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
-	#prev_grid.position.x = OFF
-	#prev_grid.position.y = grid.position.y - grid.height
-	#prev_grid.modulate = Color.DIM_GRAY
-	#prev_grid.name = 'PrevGrid'
-	#add_child(prev_grid)
-	#move_child(prev_grid, get_node('Notes').get_index())
+	prev_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
+	prev_grid.position.x = OFF
+	prev_grid.position.y = grid.position.y - grid.height
+	prev_grid.modulate = Color.DIM_GRAY
+	prev_grid.name = 'PrevGrid'
+	add_child(prev_grid)
+	move_child(prev_grid, get_node('Notes').get_index())
 	
-	#next_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
-	#next_grid.position.x = OFF
-	#next_grid.position.y = grid.position.y + grid.height
-	#next_grid.modulate = Color.DIM_GRAY
-	#next_grid.name = 'NextGrid'
-	#add_child(next_grid)
-	#move_child(next_grid, get_node('Notes').get_index())
+	next_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
+	next_grid.position.x = OFF
+	next_grid.position.y = grid.position.y + grid.height
+	next_grid.modulate = Color.DIM_GRAY
+	next_grid.name = 'NextGrid'
+	add_child(next_grid)
+	move_child(next_grid, get_node('Notes').get_index())
 	#region | event grids
-	#prev_e_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
-	#prev_e_grid.position.x += OFF / 2.0
-	#prev_e_grid.position.y = grid.position.y - grid.height
-	#prev_e_grid.modulate = Color.DIM_GRAY
-	#add_child(prev_e_grid)
-	#move_child(prev_e_grid, get_node('Notes').get_index())
+	prev_e_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	prev_e_grid.position.x += OFF / 2.0
+	prev_e_grid.position.y = grid.position.y - grid.height
+	prev_e_grid.modulate = Color.DIM_GRAY
+	add_child(prev_e_grid)
+	move_child(prev_e_grid, get_node('Notes').get_index())
 	
 	event_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
 	event_grid.position.x += OFF / 2.0
 	add_child(event_grid)
 	move_child(event_grid, get_node('Notes').get_index())
 	
-	#next_e_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
-	#next_e_grid.position.x += OFF / 2.0
-	#next_e_grid.position.y = grid.position.y + grid.height
-	#next_e_grid.modulate = Color.DIM_GRAY
-	#add_child(next_e_grid)
-	#move_child(next_e_grid, get_node('Notes').get_index())
+	next_e_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	next_e_grid.position.x += OFF / 2.0
+	next_e_grid.position.y = grid.position.y + grid.height
+	next_e_grid.modulate = Color.DIM_GRAY
+	add_child(next_e_grid)
+	move_child(next_e_grid, get_node('Notes').get_index())
 	#endregion
 	selected = ColorRect.new()
 	selected.custom_minimum_size = vec_size
@@ -199,6 +199,7 @@ func _ready():
 	$ChartLine/Line/Square.modulate = quant_colors[cur_quant]
 	update_text()
 	tab('Chart', 'ToggleGrid').button_pressed = Prefs.chart_grid
+	tab('Chart', 'ToggleGrid').toggled.connect(_toggle_grid)
 	_toggle_grid(tab('Chart', 'ToggleGrid').button_pressed) # update the visibility before we get goin
 	#update_grids()
 
@@ -331,7 +332,7 @@ func on_char_change(c:String):
 	tab('Song', c).text = new_char
 	var new_json = JsonHandler.get_character(new_char)
 	if _icon != null:
-		_icon.change_icon(new_json.healthicon if new_json != null else 'face', c.to_lower() == 'Player1')
+		_icon.change_icon(new_json.icon if new_json != null else 'face', c.to_lower() == 'Player1')
 	
 var bg_tween:Tween
 func beat_hit(beat:int) -> void:
@@ -576,7 +577,7 @@ func save_song():
 
 var last_updated_sec:int = -1
 func update_grids(skip_remake:bool = false, only_current:bool = false) -> void:
-	Game.remove_all([cur_notes, cur_events], $Notes) #[prev_notes, cur_notes, next_notes, cur_events], $Notes)
+	Game.remove_all([prev_notes, cur_notes, next_notes, cur_events], $Notes)
 	
 	$ChartLine/Highlight.position = ($ChartLine/IconR.position if SONG.notes[cur_section].mustHitSection else $ChartLine/IconL.position) - Vector2(37.5, 37.5)
 	if SONG.notes[cur_section].has('changeBPM') and SONG.notes[cur_section].changeBPM:
@@ -591,14 +592,14 @@ func update_grids(skip_remake:bool = false, only_current:bool = false) -> void:
 
 	$ChartLine/BPMTxt.text = str(Conductor.bpm) +' BPM'
 	
-	#prev_grid.visible = cur_section > 0
-	#prev_e_grid.visible = prev_grid.visible
-	#next_grid.visible = cur_section < SONG.notes.size() - 1
-	#next_e_grid.visible = next_grid.visible
+	prev_grid.visible = cur_section > 0
+	prev_e_grid.visible = prev_grid.visible
+	next_grid.visible = cur_section < SONG.notes.size() - 1
+	next_e_grid.visible = next_grid.visible
 	
-	#if cur_section > 0 and prev_grid.visible:
-	#	var last_sec = SONG.notes[cur_section - 1]
-	#	make_notes.call(last_sec, prev_grid, -1, prev_notes)
+	if cur_section > 0 and prev_grid.visible:
+		var last_sec = SONG.notes[cur_section - 1]
+		make_notes.call(last_sec, prev_grid, -1, prev_notes)
 			
 	var ev_times = {'start': get_section_time(cur_section), 'end': get_section_time(cur_section + 1)}
 	var tot:int = 0
@@ -616,9 +617,9 @@ func update_grids(skip_remake:bool = false, only_current:bool = false) -> void:
 	var new_sec = SONG.notes[cur_section]
 	make_notes.call(new_sec, grid, 0, cur_notes)
 	
-	#if cur_section <= SONG.notes.size() - 1 and next_grid.visible:
-	#	var next_sec = SONG.notes[cur_section + 1]
-	#	make_notes.call(next_sec, next_grid, 1, next_notes)
+	if cur_section <= SONG.notes.size() - 1 and next_grid.visible:
+		var next_sec = SONG.notes[cur_section + 1]
+		make_notes.call(next_sec, next_grid, 1, next_notes)
 	
 func make_notes(sec_info:Dictionary, for_grid:NoteGrid, id:int, note_array:Array):
 	for info:Array in sec_info.sectionNotes:
@@ -722,7 +723,7 @@ func update_text() -> void:
 
 func _toggle_grid(toggled:bool) -> void:
 	#Conductor.paused = true
-	for i in [grid]: #[prev_grid, grid, next_grid]:
+	for i in [prev_grid, grid, next_grid]:
 		if i != null:
 			for sqr in i.grid: sqr.visible = toggled
 			for mrk in i.markers: mrk.visible = !toggled
