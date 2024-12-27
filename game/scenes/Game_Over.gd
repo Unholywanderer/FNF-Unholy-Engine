@@ -14,7 +14,7 @@ var on_death_start:Callable = func(): # once the death sound and deathStart fini
 	if !retried:
 		Audio.play_music('skins/'+ this.cur_skin +'/gameOver')
 		dead.play_anim('deathLoop')
-	on_game_over_idle.emit()
+	on_game_over_idle.emit(self)
 
 var on_death_confirm:Callable = func(): # once the player chooses to retry
 	var cam_twen = create_tween().tween_property(this.cam, 'position', last_cam_pos, 1).set_trans(Tween.TRANS_SINE)
@@ -59,7 +59,7 @@ func _ready():
 	on_game_over_idle.connect(this.stage.game_over_idle)
 	on_game_over_confirm.connect(this.stage.game_over_confirm)
 	
-	on_game_over.emit()
+	on_game_over.emit(self)
 
 	this.ui.visible = false
 	this.boyfriend.visible = false # hide his ass!!!
@@ -110,7 +110,7 @@ func _process(delta):
 		this.cam.zoom.y = this.cam.zoom.x
 		
 		if Input.is_action_just_pressed('accept'):
-			on_game_over_confirm.emit(true)
+			on_game_over_confirm.emit(true, self)
 			
 			if death_sound != null and death_sound.get_playback_position() < 1.0: # skip to mic drop
 				death_sound.play(1)
@@ -124,7 +124,7 @@ func _process(delta):
 			dead.play_anim('deathConfirm', true)
 		
 		if Input.is_action_just_pressed('back'):
-			on_game_over_confirm.emit(false)
+			on_game_over_confirm.emit(false, self)
 
 			timer.stop()
 			Audio.stop_music()

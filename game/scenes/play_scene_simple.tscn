@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://game/scenes/Play_Scene_Simple.gd" id="1_qnbpj"]
 [ext_resource type="PackedScene" uid="uid://c0w7bffyud3s7" path="res://game/objects/ui.tscn" id="2_467fi"]
 
-[node name="Play_Scene" type="Node2D"]
+[node name="Play_Scene_Simple" type="Node2D"]
 script = ExtResource("1_qnbpj")
 
 [node name="Black" type="ColorRect" parent="."]

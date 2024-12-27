@@ -75,6 +75,7 @@ func beat_hit(beat) -> void:
 var accepted:bool = false
 var funk_sin:float = 0.0
 var time_lerped:float = 0.0
+var fls_twen
 func _process(delta):
 	funk_sin += delta
 	$Funkin.rotation = sin(funk_sin * 2) / 8.0
@@ -100,7 +101,8 @@ func _process(delta):
 				Audio.play_sound('confirmMenu')
 				$PressEnter.modulate = Color.WHITE
 				$PressEnter.play('ENTER PRESSED')
-			
+				
+				if fls_twen: fls_twen.kill()
 				if flash.modulate.a >= 0:
 					flash.modulate.a = 1
 					create_tween().tween_property(flash, 'modulate:a', 0, 1)
@@ -123,7 +125,8 @@ func finish_intro() -> void:
 	#Audio.Player.seek(10) # skip it to the good part,,,
 		
 	flash.color = Color.WHITE
-	create_tween().tween_property(flash, 'modulate:a', 0, 4)
+	fls_twen = create_tween()
+	fls_twen.tween_property(flash, 'modulate:a', 0, 4)
 	
 func make_funny(text:Array, offset:int = 0) -> void:
 	for i in text.size():
@@ -144,11 +147,11 @@ func remove_funny() -> void:
 	Game.remove_all([added_text], self)
 		
 func get_funny() -> Array[Array]:
-	var intro_txt = FileAccess.open('res://assets/data/introText.csv', FileAccess.READ)
+	var intro_txt = FileAccess.get_file_as_string('res://assets/data/introText.txt')
 	if intro_txt == null: return [['this is a', 'fallback text lol']]
 	
 	var split_intro:Array[Array] = []
-	for txt in intro_txt.get_as_text().split('\n'):
+	for txt in intro_txt.split('\n'):
 		split_intro.append(Array(txt.strip_edges().replace(',', '').split('--')))
 	
 	return split_intro
