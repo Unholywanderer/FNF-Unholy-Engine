@@ -81,7 +81,7 @@ func play_sound(sound:String, vol:float = 1.0, use_skin:bool = false, ext:String
 
 func stop_all_sounds() -> void:
 	for sound in sound_list:
-		if sound != null and sound.stream != null:
+		if sound.stream:
 			sound.stop()
 			sound.stream = null
 			sound.finish()

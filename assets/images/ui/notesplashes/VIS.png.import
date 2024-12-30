@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmljbs2dcvsga"
-path="res://.godot/imported/haxeSplash.png-b286b9849f1138531fc5eb987bfef984.ctex"
+uid="uid://jdkv3ih340l3"
+path="res://.godot/imported/VIS.png-afa724a59b111e2592b564259d5265de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/ui/notesplashes/haxeSplash.png"
-dest_files=["res://.godot/imported/haxeSplash.png-b286b9849f1138531fc5eb987bfef984.ctex"]
+source_file="res://assets/images/ui/notesplashes/VIS.png"
+dest_files=["res://.godot/imported/VIS.png-afa724a59b111e2592b564259d5265de.ctex"]
 
 [params]
 

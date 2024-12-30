@@ -25,6 +25,9 @@ func countdown_start():
 		THIS.Judge.combo_pos = boyfriend.position + Vector2(550, 350)
 
 func _process(delta):
+	UI.icon_p1.position.y = 0
+	UI.icon_p2.position.y = 0
+
 	pass
 	#var lol = ['punchHigh1', 'punchLow1', 'punchHigh2', 'punchLow2']
 	#var an = lol.pick_random()

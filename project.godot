@@ -15,7 +15,9 @@ config/description="A stupid FNF Engine made in Godot (for the 1,000,000th time)
 config/tags=PackedStringArray("audio")
 run/main_scene="res://game/scenes/menus/title_scene.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
+run/max_fps=60
 config/icon="res://icon.png"
+config/windows_native_icon="res://icon.ico"
 
 [autoload]
 
@@ -43,7 +45,6 @@ project/assembly_name="Unholy Engine"
 
 [editor]
 
-movie_writer/movie_file="C:/Users/Jaeden/Downloads/Ay yo codin/Godot v4.2.2/Unholy Engine/wargh.avi"
 export/convert_text_resources_to_binary=false
 
 [editor_plugins]

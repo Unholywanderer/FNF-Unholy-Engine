@@ -106,7 +106,6 @@ func _process(delta):
 
 	if song_loaded:
 		song_pos += (1000 * delta) * playback_rate
-		#song_pos -= AudioServer.get_output_latency() #hmm
 	
 	if song_pos > 0:
 		if !song_started: 

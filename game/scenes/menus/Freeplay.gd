@@ -1,6 +1,7 @@
 extends Node2D
 
 const EFFECTS:String = '[center][wave]' # effects for the "variant" text
+var songs_in_folder = DirAccess.get_directories_at('res://assets/songs')
 
 var added_songs:Array[String] = [] # a list of all the song names, so no dupes are added
 var added_weeks:Array[String] = [] # same but for week jsons
@@ -23,7 +24,7 @@ func _ready():
 	if Audio.Player.stream == null:
 		Audio.play_music('freakyMenu', true, 0.7)
 	Discord.change_presence('Maining some Menus', 'In Freeplay')
-	
+		
 	added_weeks.append_array(Game.persist.week_list) # base stuff first~
 	var other_weeks = []
 	for i in DirAccess.get_files_at('res://assets/data/weeks'): # then go through the weeks folder for any others
@@ -42,7 +43,7 @@ func _ready():
 		for song in week_file.songs:
 			add_song(FreeplaySong.new(song, d_list, v_list))
 	
-	for song in DirAccess.get_directories_at('res://assets/songs'): # then add any other fuckass songs without a json
+	for song in songs_in_folder: # then add any other fuckass songs without a json
 		add_song(FreeplaySong.new([song, 'bf', [100, 100, 100]]))
 	
 	if JsonHandler._SONG.has('song'):
@@ -65,7 +66,7 @@ func add_song(song:FreeplaySong) -> void:
 		#print_rich("[color=yellow]"+ song.song +"[/color] already added, skipping")
 		song.queue_free()
 		return
-		
+	
 	added_songs.append(song_name)
 	add_child(song)
 	songs.append(song)
@@ -76,6 +77,12 @@ func add_song(song:FreeplaySong) -> void:
 	icon.is_menu = true
 	icon.follow_spr = song
 	icons.append(icon)
+	
+	if !songs_in_folder.has(song_name):
+		song.modulate = Color.RED
+		icon.hframes = 1
+		icon.texture = load('res://assets/images/ui/noti_cross.png')
+		icon.scale = Vector2(1.1, 1.1)
 
 var lerp_score:int = 0
 var actual_score:int = 2384397

@@ -1,7 +1,7 @@
 extends StageBase
 
 var cur_can:AnimatedSprite2D = AnimatedSprite2D.new()
-var CAN = preload('res://assets/images/stages/philly-streets/effects/spraycanFULL.res')
+var CAN = load('res://assets/images/stages/philly-streets/effects/spraycanFULL.res')
 func _ready() -> void:
 	if SONG.player1.contains('pico'):
 		THIS.DIE = load('res://game/scenes/game_over-pico.tscn')

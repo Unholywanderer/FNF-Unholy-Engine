@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvpve58l1hejg"
-path="res://.godot/imported/visSplash.png-846137b416b632cff6a324e0a2d2c966.ctex"
+uid="uid://dxw6seyd6ybtq"
+path="res://.godot/imported/noti_warn.png-2aef3ab55ab18658d74541f0f4926f2a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/ui/notesplashes/visSplash.png"
-dest_files=["res://.godot/imported/visSplash.png-846137b416b632cff6a324e0a2d2c966.ctex"]
+source_file="res://assets/images/ui/noti_warn.png"
+dest_files=["res://.godot/imported/noti_warn.png-2aef3ab55ab18658d74541f0f4926f2a.ctex"]
 
 [params]
 

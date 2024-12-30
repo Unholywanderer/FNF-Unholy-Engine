@@ -59,6 +59,10 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			_SONG.stage = stage_to(meta.playData.stage)
 			_SONG.song = meta.songName
 			_SONG.bpm = meta.timeChanges[0].bpm
+		'maru':
+			_SONG.player1 = _SONG.players[0]
+			_SONG.player2 = _SONG.players[1]
+			_SONG.gfVersion = _SONG.players[2]
 		'codename':
 			meta = JSON.parse_string(FileAccess.open(meta_path % ['meta'], FileAccess.READ).get_as_text())
 			_SONG.speed = _SONG.scrollSpeed
@@ -71,7 +75,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			if !_SONG.has('player2') and _SONG.has('gfVersion'):
 				_SONG.player2 = _SONG.gfVersion
 	
-	print('Got a "'+ parse_type +'" Chart')
+	print('Got "'+ parse_type +'" Chart')
 	if auto_create:
 		generate_chart(_SONG)
 

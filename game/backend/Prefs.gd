@@ -29,7 +29,8 @@ var allow_rpc:bool = true:
 		allow_rpc = allow
 		Discord.update(false, !allow)
 var note_splashes:String = 'both'
-var splash_sprite:String = 'haxe'
+var splash_sprite:String = 'vis'
+
 var behind_strums:bool = false
 var rating_cam:String = 'game'
 var chart_grid:bool = true
@@ -86,6 +87,7 @@ func save_prefs() -> void:
 		printerr('CONFIG FILE is NOT loaded, couldn\'t save')
 		return
 		
+	#fps = DisplayServer.screen_get_refresh_rate()
 	for i in get_list():
 		saved_prefs.set_value('Preferences', i.name, get(i.name))
 		

@@ -5,8 +5,9 @@ signal focus_change(is_focused) # when you click on/off the game window
 var TRANS = preload('res://game/objects/ui/transition.tscn') # always have it loaded for instantiating
 var cur_trans
 
-var persist = { # var values to remember
+var persist = { # change this to a global script or something
 	'prev_scene': null,
+	'note_splash': null,
 	'loaded_already': false,
 	'week_list': ['test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'],
 	'week_int': -1, 'week_diff': -1,
@@ -65,9 +66,11 @@ func center_obj(obj = null, axis:String = 'xy') -> void:
 		_: obj.position = Vector2(screen[0] / 2, screen[1] / 2)
 
 func reset_scene() -> void:
+	LuaHandler.remove_all()
 	get_tree().reload_current_scene()
 
 func switch_scene(to_scene, skip_trans:bool = false) -> void:
+	LuaHandler.remove_all()
 	Audio.sync_conductor = false
 	persist.loaded_already = false
 	persist.prev_scene = scene.name
@@ -106,11 +109,12 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 
 		get_tree().change_scene_to_packed(new_scene)
 		get_tree().paused = false
-		cur_trans.trans_in(1, true)
+		
 		cur_trans.on_finish = func():
 			remove_child(cur_trans)
 			cur_trans.queue_free()
-
+		cur_trans.trans_in(1, true)
+		
 # call function on nodes or somethin
 func call_func(to_call:String, args:Array[Variant] = []) -> void:
 	if to_call.is_empty() or scene == null: return

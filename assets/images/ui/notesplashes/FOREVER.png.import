@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2rn15fdp4aiw"
-path="res://.godot/imported/splashes.png-cdca256276d6b29f02cc528b8f77437d.ctex"
+uid="uid://c51pcleq61m30"
+path="res://.godot/imported/FOREVER.png-471de573279aa72a6b115c585dcc8f41.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/ui/notesplashes/splashes.png"
-dest_files=["res://.godot/imported/splashes.png-cdca256276d6b29f02cc528b8f77437d.ctex"]
+source_file="res://assets/images/ui/notesplashes/FOREVER.png"
+dest_files=["res://.godot/imported/FOREVER.png-471de573279aa72a6b115c585dcc8f41.ctex"]
 
 [params]
 

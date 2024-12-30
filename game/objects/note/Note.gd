@@ -238,7 +238,7 @@ func convert_type(t:String) -> String:
 	match t.to_lower().strip_edges():
 		'alt animation', 'true', 'mom': return 'Alt'
 		'no animation': return 'No Anim'
-		'gf sing', '2': return 'GF'
+		'gf sing': return 'GF'
 		'hurt note', 'markov note', 'ebola', 'burger note': return 'Hurt'
 		'hey!': return 'Hey'
 		_: return t

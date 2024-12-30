@@ -111,7 +111,7 @@ func _ready():
 	#$ChartLine/IconL.position.x = 166 #idk if this is centered but fuck you
 	#$ChartLine/IconR.position.x = 325
 	
-	var list = FileAccess.open('res://assets/data/order.txt', FileAccess.READ).get_as_text().split(',')
+	var list = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
 	list.append_array(DirAccess.get_files_at('res://assets/data/characters'))
 	for i in list:
 		var char = i.replace('.json', '').strip_edges()

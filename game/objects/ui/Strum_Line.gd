@@ -1,8 +1,8 @@
 class_name Strum_Line; extends Node2D;
 # DO NOT ADD AS AN OBJECT TO SCENE, NEEDS TO BE INSTANTIATED
 
-var SPLASH = preload('res://game/objects/note/note_splash.tscn')
-var SPARK = preload('res://game/objects/note/holdnote_splash.tscn')
+#var SPLASH = preload('res://game/objects/note/note_splash.tscn')
+#var SPARK = preload('res://game/objects/note/holdnote_splash.tscn')
 
 var INIT_POS:PackedVector2Array = [Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO]
 @export var is_cpu:bool = true:
@@ -67,13 +67,13 @@ func spawn_splash(strum:Strum) -> void:
 			total_splash[0].visible = false
 			total_splash[0].animation_finished.emit()
 		
-	var new_splash:AnimatedSprite2D = SPLASH.instantiate()
-	new_splash.strum = strum
-	new_splash.on_anim_finish = func():
+	var new_splash:AnimatedSprite2D = NoteSplash.new(strum)
+	new_splash.animation_finished.connect(func():
 		total_splash.remove_at(total_splash.find(new_splash))
 		remove_child(new_splash)
 		new_splash.queue_free()
-		
+	)
+	
 	add_child(new_splash)
 	move_child(new_splash, 4)
 	total_splash.append(new_splash)

@@ -133,7 +133,7 @@
 			"loop": false
 		},
 		{
-			"name": "intro1",
+			"name": "intro",
 			"prefix": "Pico Gets Pissed0",
 			"offsets": [
 				-60,
@@ -144,7 +144,7 @@
 			"loop": false
 		},
 		{
-			"name": "cockCutscene",
+			"name": "intro-cock",
 			"prefix": "cutscene cock0",
 			"offsets": [
 				0,
@@ -155,7 +155,7 @@
 			"loop": false
 		},
 		{
-			"name": "intro2",
+			"name": "intro-return",
 			"prefix": "shoot and return0",
 			"offsets": [
 				-255,

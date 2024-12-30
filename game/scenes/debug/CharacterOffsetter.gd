@@ -51,7 +51,7 @@ func _ready():
 
 	$Cam.position = get_viewport_rect().size / 2.0
 	
-	var grab = FileAccess.open('res://assets/data/order.txt', FileAccess.READ).get_as_text().split(',')
+	var grab = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
 	grab.append_array(DirAccess.get_files_at('res://assets/data/characters'))
 	for i in grab:
 		i = i.replace('.json', '')

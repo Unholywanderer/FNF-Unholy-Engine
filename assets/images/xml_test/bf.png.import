@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dylyqakqm14uk"
-path="res://.godot/imported/playControls.png-117e0091794e4dd054841c227d8f60dc.ctex"
+uid="uid://bfgted7do5j3u"
+path="res://.godot/imported/bf.png-0741b89a6badfe39df047c0ba2a99027.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/ui/playControls.png"
-dest_files=["res://.godot/imported/playControls.png-117e0091794e4dd054841c227d8f60dc.ctex"]
+source_file="res://assets/images/xml_test/bf.png"
+dest_files=["res://.godot/imported/bf.png-0741b89a6badfe39df047c0ba2a99027.ctex"]
 
 [params]
 

@@ -1,8 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://548wadsc4u4o"]
+[gd_scene load_steps=5 format=3 uid="uid://548wadsc4u4o"]
 
 [ext_resource type="Script" path="res://game/objects/ui/Transition.gd" id="1_d20kq"]
-[ext_resource type="Texture2D" uid="uid://dfncx5ekj6wit" path="res://assets/images/ui/transitions/unused/gradient.png" id="2_50755"]
-[ext_resource type="Texture2D" uid="uid://cv6o3hdr4ereh" path="res://assets/images/ui/transitions/circle.png" id="3_3bo4c"]
 
 [sub_resource type="Gradient" id="Gradient_maa3h"]
 offsets = PackedFloat32Array(0.985401)
@@ -19,26 +17,6 @@ process_mode = 3
 layer = 120
 script = ExtResource("1_d20kq")
 
-[node name="NormalTrans" type="Sprite2D" parent="."]
-visible = false
-self_modulate = Color(0, 0, 0, 1)
-position = Vector2(-479, 363)
-scale = Vector2(3, 6)
-texture = ExtResource("2_50755")
-
-[node name="ColorRect" type="ColorRect" parent="NormalTrans"]
-offset_left = -548.667
-offset_top = -64.0
-offset_right = -122.667
-offset_bottom = 64.0
-color = Color(0, 0, 0, 1)
-
-[node name="NormalTrans" type="Sprite2D" parent="NormalTrans"]
-self_modulate = Color(0, 0, 0, 1)
-position = Vector2(-570.333, -1.90735e-05)
-texture = ExtResource("2_50755")
-flip_h = true
-
 [node name="Group" type="CanvasGroup" parent="."]
 
 [node name="Black" type="Sprite2D" parent="Group"]
@@ -50,4 +28,3 @@ texture_filter = 4
 material = SubResource("CanvasItemMaterial_nb5ov")
 position = Vector2(342, 222)
 scale = Vector2(1e-05, 1e-05)
-texture = ExtResource("3_3bo4c")

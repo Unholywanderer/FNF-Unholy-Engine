@@ -1,84 +1,75 @@
 extends Node2D
 
-enum RET_TYPES {}
+enum RET_TYPES {STOP, CONTINUE}
 var cached_items:Dictionary = {}
 var active_lua:Array = []
 var active:bool = true
 
 func add_script(script:String) -> void:
-	var lua = TEst.new()
-	#LuaHandler.add_script('')
-	#var lua = LuaAPI.new()
-	#lua.bind_libraries(["base", "table", "string", "math"])
-	#lua.push_variant('boyfriend', boyfriend)
-	#lua.push_variant('Game', self)
-	#lua.push_variant('print', print)
-	
-	#lua.do_string("
-	#	--boyfriend.position = Vector2(100, 100)
-		
-	#	--Game.ui.zoom = 100
-	#	--os.exit()
-	#")
-	#ui.icon_p1.change_icon(boyfriend.icon, true)
-	
-	#if lua is not LuaError:
-	#	var le = lua.pull_variant('hi')
-	#	if le is not LuaError:
-	#		print(le.position.x)
-	#lua.do_file('res://assets/songs/test/test.lua')
-	#active_luas.append(lua)
-	#if lua is LuaError:
-	#	printerr(lua.message)
-	#	active_luas.remove_at(active_luas.find(lua))
-	#print(lua.call_function('hi', []))
-	
+	if !script.ends_with('.lua'): script += '.lua'
+	# okay, it seems that i have fixed the random crashing that could happen from luas
+	# but im not 100% sure, so ill just note this down
+	#TODO maybe figure out way to do something like 'import'
+	var lua = LuaEx.new()
 	lua.bind_libraries(["base", "table", "string", "math"])
+	
+	var SCENE = Game.scene
+	## Variables ##
+	lua.push_variant('Game', SCENE) # current scene
+	lua.push_variant("STOP", RET_TYPES.STOP)
+	lua.push_variant("CONTINUE", RET_TYPES.CONTINUE)
 	
 	## Objects ##
 	lua.push_variant("Conductor", Conductor)
 	lua.push_variant('Character', Character)
-	lua.push_variant('Game', Game.scene) # current scene
-	if Game.scene.name == 'Play_Scene':
-		
+	lua.push_variant("Sprite", LuaSprite)
+	lua.push_variant("AnimSprite", SparrowSprite) # WIP
+	
+	if SCENE.name == 'Play_Scene':
 		lua.push_variant('Chart', Chart)
-		lua.push_variant('UI', Game.scene.ui)
-		lua.push_variant('boyfriend', Game.scene.boyfriend)
-		lua.push_variant('gf', Game.scene.gf)
-		lua.push_variant('dad', Game.scene.dad)
+		lua.push_variant('UI', SCENE.ui)
+		lua.push_variant('boyfriend', SCENE.boyfriend)
+		lua.push_variant('gf', SCENE.gf)
+		lua.push_variant('dad', SCENE.dad)
 		
 		lua.push_variant("add_char", add_character)
-
-	
-	lua.push_variant("Sprite", LuaSprite)
-	lua.push_variant("AnimatedSprite", LuaAnimatedSprite)
 	
 	## Lua Functions ##
+	# Layering #
+	lua.push_variant('add', SCENE.add_child)
+	lua.push_variant('move', move_obj)
+	lua.push_variant('get_layer', get_layer)
+	
+	# Helpers n random shit #
 	lua.push_variant('parse_json', parse_json)
 	lua.push_variant("play_sound", Audio.play_sound)
 	lua.push_variant("play_music", Audio.play_music)
 	lua.push_variant("cache", cache_file)
 	lua.push_variant("get_cache", get_cached_file)
 
-	lua.do_file('res://assets/data/scripts/test.lua')
-	if lua is LuaError:
-		printerr(lua.message)
+	var err = lua.do_file('res://assets/'+ script)
+	if err is LuaError:
+		printerr(err.message)
+		var er_type = err.message.split(']')[0].replace('[', '').strip_edges()
+		var er_path = err.message.split('assets/')[1].strip_edges()
+		OS.alert('../'+ er_path, er_type +'!')
 		return
-	active_lua.append(lua)
+		
+	if !active_lua.has(lua):
+		active_lua.append(lua)
 	
 func remove_all():
-	while active_lua.size() > 0:
-		active_lua[0] = null
-		#active_lua[0].unreference()
-		active_lua.remove_at(0)
+	for lua in active_lua:
+		lua.unreference()
 	active_lua.clear()
 
-func call_func(_func:String, args:Array = []) -> void:
+func call_func(_func:String, args:Array = []):
 	if _func.length() == 0: return
+	var ret_val = null
 	for i in active_lua:
 		if !i.function_exists(_func): continue
-		i.call_function(_func, args)
-	#print('Called: ('+ _func +') on luas')
+		ret_val = i.call_function(_func, args)
+	return ret_val
 	
 ## FUNCTIONS FO LUA CRIPTS 😎😎
 func pain(x):
@@ -88,6 +79,14 @@ func add_obj(obj:Variant = null, to_group:Variant = null):
 	if obj != null:
 		if to_group != null:  pass
 	add_child(obj)
+
+func get_layer(obj):
+	if obj is int: return obj
+	return obj.get_index()
+
+func move_obj(obj:Variant, indx):
+	if indx is Node2D: indx = indx.get_index() # assume its an object and get it's layer
+	Game.scene.move_child(obj, indx)
 
 func cache_file(tag:String, file_path:String):
 	if cached_items.has(tag):
@@ -132,6 +131,9 @@ func parse_json(path:String):
 func makeLuaSprite(_t, _sp, _x, _y):
 	get_tree().exit()
 
+func setProperty(_g, _p):
+	return IP.get_local_addresses()
+
 ## LUA OBJECTS
 class LuaSprite extends Sprite2D:
 	func load_texture(spr:String):
@@ -156,7 +158,9 @@ class LuaAnimatedSprite extends AnimatedSprite2D:
 				
 			offset = da_off
 			
-class TEst extends LuaAPI:
+class LuaEx extends LuaAPI:
+	var global:bool = false # later
+	var active:bool = false # later
 	func _notification(what:int) -> void:
 		match what:
 			NOTIFICATION_PREDELETE:

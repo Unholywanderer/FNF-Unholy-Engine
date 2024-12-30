@@ -1,10 +1,10 @@
 local char = Character.new(boyfriend.position + Vector2(240, -325), 'pico', true)
-add_char(char) -- you could use 'Game.add_child()' but that doesnt account for char groups or auto idle
+add_char(char) -- helper function only for Gameplay, adds a char and lets it dance to the beat/hold timer shit automatically
 
-function goodNoteHit(n)
-    char.sing(n)
+function goodNoteHit(id, dir, type)
+    char.sing(dir) -- sing when bf hits a note
 end
 
-function goodSustainPress(n)
-    char.sing(n, '', false)
+function goodSustainPress(id, dir, type)
+    char.sing(dir, '', false) -- sing when bf hits a sustain
 end
