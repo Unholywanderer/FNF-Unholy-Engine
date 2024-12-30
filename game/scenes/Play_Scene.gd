@@ -58,6 +58,7 @@ var combo:int = 0
 var misses:int = 0
 
 func _ready():
+	if LuaHandler.call_func('onReady') == LuaHandler.RET_TYPES.STOP: return # can't reach this wit lua lol
 	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
 	Game.persist.note_splash = load(spl_path)
 	
@@ -215,9 +216,9 @@ func _ready():
 		if !i.ends_with('.lua'): continue
 		LuaHandler.add_script('data/scripts/'+ i)
 		
-	for i in DirAccess.get_files_at('res://assets/songs/'+ Game.format_str(SONG.song)):
+	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
 		if !i.ends_with('.lua'): continue
-		LuaHandler.add_script('songs/'+ Game.format_str(SONG.song) +'/'+ i)
+		LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
 		
 	var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
 	if DIE == null:
