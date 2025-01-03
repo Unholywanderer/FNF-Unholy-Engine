@@ -16,7 +16,7 @@ var offset:Vector2 = Vector2.ZERO:
 		offset = off
 		position = unedited_pos + offset
 
-func _update(): # what no i didnt steal any code from @what-is-a-git 😊😊😊
+func _update(): # yes i did steal code from @what-is-a-git 😊😊😊
 	var prev_hz:float = 0.0
 	for i in 7:
 		var hz:float = float(i) * MAX_HZ / float(7)
