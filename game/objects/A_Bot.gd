@@ -1,16 +1,12 @@
 extends Node2D
 
-const VU_COUNT = 7
-const FREQ_MAX = 22000.0
-
-const HEIGHT = 100
-const HEIGHT_SCALE = 1.0
-const MIN_DB = 60
+const MAX_HZ = 11025.0
+const MIN_DB = 60.0
 const ANIMATION_SPEED = 0.1
 
+var timer:float = 0.0
 @onready var spectrum = AudioServer.get_bus_effect_instance(1, 0)
-var min_values = []
-var max_values = []
+@export var updates_per_second: float = 24.0
 
 var parent = null
 var unedited_pos:Vector2 = Vector2.ZERO
@@ -19,16 +15,22 @@ var offset:Vector2 = Vector2.ZERO:
 		unedited_pos = position - offset
 		offset = off
 		position = unedited_pos + offset
-		
-func _process(_delta):
-	#if parent != null: position = parent.position + offsets
-	
+
+func _update(): # what no i didnt steal any code from @what-is-a-git 😊😊😊
 	var prev_hz:float = 0.0
-	for i in range(0, 7):
-		var hz = (i * 11050.0) / 7.0; # thank you y i will mess with it later
-		var energy = clamp((60.0 + linear_to_db(spectrum.get_magnitude_for_frequency_range(prev_hz, hz).length())) / 60.0, 0, 1)
-		get_node('VIZ/Bar'+ str(i)).frame = clamp(round(5 - (energy * 5)), 0, 5)
-		prev_hz = hz / 1.5
+	for i in 7:
+		var hz:float = float(i) * MAX_HZ / float(7)
+		var magnitude = spectrum.get_magnitude_for_frequency_range(prev_hz, hz).length()
+		var energy := clampf((MIN_DB + linear_to_db(magnitude)) / MIN_DB, 0.0, 1.0)
+		var silly := remap(energy, 0.0, 1.0, 0.0, 5.0)
+		get_node('VIZ/Bar'+ str(i)).frame = int(5.0 - silly)
+		prev_hz = hz
+
+func _process(delta):
+	timer += delta
+	if timer >= 1.0 / updates_per_second:
+		_update()
+		timer = 0.0
 	
 func bump(forced:bool = true):
 	$Frame.play('bump')

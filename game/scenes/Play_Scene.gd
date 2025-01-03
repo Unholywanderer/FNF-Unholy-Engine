@@ -237,9 +237,6 @@ func _process(delta):
 	if ui.hp <= 0: try_death()
 		
 	if Input.is_action_just_pressed("debug_1"):
-		if JsonHandler.parse_type == 'v_slice':
-			Audio.play_sound('cancelMenu')
-			return
 		await RenderingServer.frame_post_draw
 		Game.switch_scene('debug/Charting_Scene')
 		
@@ -635,7 +632,7 @@ func good_sustain_press(sustain:Note) -> void:
 		sustain.holding = false
 		print('let go too soon ', sustain.length)
 		sustain.drop_time += get_process_delta_time() #testing something
-		if sustain.drop_time >= 0.3:
+		if sustain.drop_time >= 0.15:
 			note_miss(sustain)
 		return
 	
@@ -657,7 +654,7 @@ func good_sustain_press(sustain:Note) -> void:
 			group.note_hit(sustain)
 			
 			grace = true
-			if !Prefs.legacy_score:
+			if !Prefs.legacy_score: # change this | if fps too high it dont worky
 				score += floor((550 * get_process_delta_time()) * Conductor.playback_rate)
 			ui.hp += (4 * get_process_delta_time())
 			ui.update_score_txt()

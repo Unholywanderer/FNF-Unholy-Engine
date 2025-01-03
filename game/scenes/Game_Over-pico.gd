@@ -76,6 +76,9 @@ func _ready():
 	Conductor.paused = true
 	
 	$BG.modulate.a = 0
+	$BG.scale = (Vector2.ONE / this.cam.zoom) + Vector2(0.05, 0.05)
+	$BG.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / this.cam.zoom)
+	$BG.position -= Vector2(5, 5) # you could see the stage bg leak out
 	$Fade.modulate.a = 0
 	
 	var da_boy = this.boyfriend.death_char
@@ -242,5 +245,10 @@ func _process(delta):
 
 func focus_change(is_focused):
 	timer.paused = !is_focused
-	if death_sound != null:
-		death_sound.stream_paused = !is_focused
+	if death_sound.stream: death_sound.stream_paused = !is_focused
+	if !is_focused:
+		if retry != null: retry.pause()
+		dead.pause()
+	else:
+		if retry != null: retry.play()
+		dead.play()

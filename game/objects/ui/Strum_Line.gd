@@ -75,7 +75,7 @@ func spawn_splash(strum:Strum) -> void:
 	)
 	
 	add_child(new_splash)
-	move_child(new_splash, 4)
+	#move_child(new_splash, 4)
 	total_splash.append(new_splash)
 	
 func spawn_hold_splash(strum:Strum) -> void:

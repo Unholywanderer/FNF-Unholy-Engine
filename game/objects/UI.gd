@@ -143,9 +143,9 @@ func _process(delta):
 	#$Elasped.position = time_bar.position - Vector2($Elasped.size.x / 2, 30)
 	$Left.position = time_bar.position - Vector2($Left.size.x / 2, -10)
 		
-	health_bar.value = lerpf(health_bar.value, hp, delta * 8)
+	health_bar.value = lerpf(hp, health_bar.value, exp(-delta * 8))
 
-	mark.scale = lerp(mark.scale, def_mark_scale, delta * 10)
+	mark.scale = lerp(def_mark_scale, mark.scale, exp(-delta * 10))
 	
 	offset.x = (scale.x - 1.0) * -(Game.screen[0] * 0.5)
 	offset.y = (scale.y - 1.0) * -(Game.screen[1] * 0.5)

@@ -4,13 +4,21 @@ var cur_section:int = 0
 
 var strums = []
 
+# Grid stuff
 const GRID_SIZE:int = 40
-const OFF:int = 100
-var prev_grid:NoteGrid
-var grid:NoteGrid
-var next_grid:NoteGrid
+const OFF:int = 100 # offset from screen
+
+var grid_0:NoteGrid
+var grid_1:NoteGrid
+var grid_2:NoteGrid
+
+var event_grid_0:NoteGrid
+var event_grid_1:NoteGrid
+var event_grid_2:NoteGrid
+
 var total_grids = []
 
+# Quant/Snap stuff
 var note_snap:int = 16
 var cur_quant:int = 3:
 	set(new_quant):
@@ -19,11 +27,7 @@ var cur_quant:int = 3:
 		$ChartLine/Line/Square.modulate = quant_colors[cur_quant]
 		update_text()
 
-var quant_list:Array[int] = [
-	4, 8, 12, 16, 
-	20, 24, 32, 48,
-	64, 96, 128
-]
+var quant_list:Array[int] = [4, 8, 12, 16, 20, 24, 32, 48, 64, 96, 128]
 
 var quant_colors = [
 	Color(1.00, 0.00, 0.00),# 4
@@ -46,16 +50,14 @@ var prev_notes:Array = []
 var cur_notes:Array = []
 var next_notes:Array = []
 
-var prev_note_data:Array = []
-var cur_note_data:Array = []
-var next_note_data:Array = []
+var note_chunks:Dictionary = {
+	'-1': [], '0': [], '1': []
+}
+var notes_loaded:Array = []
 
 var prev_events:Array = []
 var cur_events:Array = []
 var next_events:Array = []
-var prev_e_grid:NoteGrid
-var event_grid:NoteGrid
-var next_e_grid:NoteGrid
 
 var funky_boys:Array[Character] = []
 
@@ -76,7 +78,6 @@ func _ready():
 	
 	Discord.change_presence('Charting '+ SONG.song.capitalize(), 'One must imagine a charter happy')
 	#get_signal_list()
-	#JsonHandler.old_notes = JsonHandler.chart_notes.duplicate()
 	Conductor.load_song(SONG.song)
 	Conductor.connect_signals()
 	Conductor.bpm = SONG.bpm
@@ -94,7 +95,7 @@ func _ready():
 	
 	var voices = [Conductor.vocals, Conductor.vocals_opp, 'Voices', 'VoicesOpp']
 	for i in 2:
-		if voices[i].stream == null:
+		if !voices[i].stream:
 			tab('Chart', voices[i + 2]).button_pressed = false
 			tab('Chart', voices[i + 2]).disabled = true
 			tab('Chart', voices[i + 2]).modulate = Color.DIM_GRAY
@@ -107,9 +108,6 @@ func _ready():
 	
 	strums = $ChartLine/Left.get_strums()
 	strums.append_array($ChartLine/Right.get_strums())
-	
-	#$ChartLine/IconL.position.x = 166 #idk if this is centered but fuck you
-	#$ChartLine/IconR.position.x = 325
 	
 	var list = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
 	list.append_array(DirAccess.get_files_at('res://assets/data/characters'))
@@ -150,46 +148,47 @@ func _ready():
 	$ChartUI/SongProgress/Length.text = Game.to_time(Conductor.song_length)
 	
 	var vec_size = Vector2(GRID_SIZE, GRID_SIZE)
-	grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
-	grid.position.x = OFF
-	grid.name = 'Grid'
-	add_child(grid)
-	move_child(grid, get_node('Notes').get_index())
 	
-	prev_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
-	prev_grid.position.x = OFF
-	prev_grid.position.y = grid.position.y - grid.height
-	prev_grid.modulate = Color.DIM_GRAY
-	prev_grid.name = 'PrevGrid'
-	add_child(prev_grid)
-	move_child(prev_grid, get_node('Notes').get_index())
+	grid_0 = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
+	grid_0.position.x = OFF
+	grid_0.position.y -= grid_0.height
+	#grid_0.modulate = Color.DIM_GRAY
+	grid_0.name = 'PrevGrid'
+	add_child(grid_0)
+	move_child(grid_0, get_node('Notes').get_index())
 	
-	next_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
-	next_grid.position.x = OFF
-	next_grid.position.y = grid.position.y + grid.height
-	next_grid.modulate = Color.DIM_GRAY
-	next_grid.name = 'NextGrid'
-	add_child(next_grid)
-	move_child(next_grid, get_node('Notes').get_index())
+	grid_1 = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
+	grid_1.position.x = OFF
+	grid_1.name = 'Grid'
+	add_child(grid_1)
+	move_child(grid_1, get_node('Notes').get_index())
+	
+	grid_2 = NoteGrid.new(vec_size, Vector2(GRID_SIZE * 8, GRID_SIZE * 16))
+	grid_2.position.x = OFF
+	grid_2.position.y += grid_2.height
+	#grid_2.modulate = Color.DIM_GRAY
+	grid_2.name = 'NextGrid'
+	add_child(grid_2)
+	move_child(grid_2, get_node('Notes').get_index())
 	#region | event grids
-	prev_e_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
-	prev_e_grid.position.x += OFF / 2.0
-	prev_e_grid.position.y = grid.position.y - grid.height
-	prev_e_grid.modulate = Color.DIM_GRAY
-	add_child(prev_e_grid)
-	move_child(prev_e_grid, get_node('Notes').get_index())
+	event_grid_0 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	event_grid_0.position.x += OFF / 2.0
+	event_grid_0.position.y = grid_0.position.y
+	#event_grid_0.modulate = Color.DIM_GRAY
+	add_child(event_grid_0)
+	move_child(event_grid_0, get_node('Notes').get_index())
 	
-	event_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
-	event_grid.position.x += OFF / 2.0
-	add_child(event_grid)
-	move_child(event_grid, get_node('Notes').get_index())
+	event_grid_1 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	event_grid_1.position.x += OFF / 2.0
+	add_child(event_grid_1)
+	move_child(event_grid_1, get_node('Notes').get_index())
 	
-	next_e_grid = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
-	next_e_grid.position.x += OFF / 2.0
-	next_e_grid.position.y = grid.position.y + grid.height
-	next_e_grid.modulate = Color.DIM_GRAY
-	add_child(next_e_grid)
-	move_child(next_e_grid, get_node('Notes').get_index())
+	event_grid_2 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	event_grid_2.position.x += OFF / 2.0
+	event_grid_2.position.y = grid_2.position.y
+	#event_grid_2.modulate = Color.DIM_GRAY
+	add_child(event_grid_2)
+	move_child(event_grid_2, get_node('Notes').get_index())
 	#endregion
 	selected = ColorRect.new()
 	selected.custom_minimum_size = vec_size
@@ -229,7 +228,7 @@ func _process(delta):
 	
 	var z = 1 #DEBUG, remove later
 	$Cam.zoom = Vector2(z, z)
-	$Cam.position = $ChartLine.position + Vector2(380, 50) # grid.position + Vector2(grid.width, grid.height / 2)
+	$Cam.position = $ChartLine.position + Vector2(380, 50) # grid_1.position + Vector2(grid_1.width, grid.height / 2)
 	$BG.position = $Cam.position
 	
 	var audios = {'Inst' = Conductor.inst, 'Voices' = Conductor.vocals, 'VoicesOpp' = Conductor.vocals_opp}
@@ -244,15 +243,15 @@ func _process(delta):
 	var cam_off = $Cam.get_screen_center_position() - (get_viewport_rect().size / 2.0) + Vector2(OFF, 0)
 	mouse_pos += cam_off
 	
-	var over_events = mouse_pos.x > event_grid.position.x + OFF and mouse_pos.x < event_grid.position.x + event_grid.width + OFF \
-		and mouse_pos.y > event_grid.position.y and mouse_pos.y < event_grid.position.y + (GRID_SIZE * 16)
+	var over_events = mouse_pos.x > event_grid_0.position.x + OFF and mouse_pos.x < event_grid_0.position.x + event_grid_0.width + OFF \
+		and mouse_pos.y > event_grid_0.position.y and mouse_pos.y < event_grid_2.position.y + (GRID_SIZE * 16)
 		
-	over_grid = mouse_pos.x > grid.position.x + OFF and mouse_pos.x < grid.position.x + grid.width + OFF \
-		and mouse_pos.y > grid.position.y and mouse_pos.y < grid.position.y + (GRID_SIZE * 16)
+	over_grid = mouse_pos.x > grid_0.position.x + OFF and mouse_pos.x < grid_0.position.x + grid_0.width + OFF \
+		and mouse_pos.y > grid_0.position.y and mouse_pos.y < grid_2.position.y + (GRID_SIZE * 16)
 	
-	selected.visible = over_grid
+	selected.visible = over_grid or over_events
 	#if over_grid:
-	selected.position.x = floor(mouse_pos.x / GRID_SIZE) * GRID_SIZE - OFF
+	selected.position.x = event_grid_0.position.x if over_events else floor(mouse_pos.x / GRID_SIZE) * GRID_SIZE - OFF
 	var y_pos = 0
 	if holding_shift:
 		y_pos = mouse_pos.y
@@ -261,18 +260,27 @@ func _process(delta):
 		y_pos = floor(mouse_pos.y / snap) * snap
 		
 	selected.position.y = y_pos
+	
+	for chunk in note_chunks.keys():
+		if note_chunks[chunk].size() == 0: continue
+		for arr in note_chunks[chunk]:
+			for note in arr:
+				make_note(note, SONG.notes[cur_section + int(chunk)].mustHitSection)
+				print('note!')
+				arr.remove_at(arr.find(note))
+			
 	if !Conductor.paused:
-		
 		#for event in cur_events:
 		#	if event.strum_time <= Conductor.song_pos and event.modulate != Color.GRAY:
 		#		event.modulate = Color.GRAY
 		#		play_strum(event)
 				
-		for note in prev_notes:
-			if note.hitting: play_strum(note) # sustains that go over
-				
-		for note:BasicNote in cur_notes:
+		for note:BasicNote in notes_loaded:
 			if note.was_hit:
+				if note.strum_time - Conductor.song_pos <= (-800 - ((note.length ) + 1)): 
+					kill_note(note)
+					continue
+					
 				if note.hitting: play_strum(note)
 				if !note.is_sustain and note.modulate != Color.GRAY:
 					note.modulate = Color.GRAY
@@ -283,6 +291,7 @@ func _process(delta):
 						Audio.play_sound('hitsound', tab('Chart', 'HitsoundsR/Vol').value)
 		
 					play_strum(note)
+					kill_note(note)
 				
 	if this_note != null:
 		pass
@@ -292,6 +301,47 @@ func _process(delta):
 		Conductor.reset_beats()
 		Game.reset_scene()
 	
+func make_note(info, must_hit:bool):
+	if info.is_empty() or info[1] == -1: return
+	if info[2] is not float: info[2] = 0
+		
+	var must_press:bool = (must_hit and info[1] <= 3) or (!must_hit and info[1] > 3)
+	var type:String = (str(info[3]) if info.size() > 3 else '')
+	var new_note:BasicNote = BasicNote.new([info[0], info[1], null, info[2], must_press, type], false) #reuse_note([info[0], info[1], null, info[2], must_press, type])
+	$Notes.add_child(new_note)
+			
+	var fake_dir:int = info[1]
+	if must_hit:
+		fake_dir += 4 if must_press else -4
+		
+	do_note_shit(new_note, fake_dir)
+	
+	new_note.position.y = floori(get_y_from_time(fmod(floor(info[0]) - get_section_time(cur_section), Conductor.step_crochet * 48)))
+	
+	if floor(new_note.strum_time) < floor(Conductor.song_pos) - 10: # slight offset so the first note of a section can always get hit
+		new_note.modulate = Color.GRAY
+	notes_loaded.append(new_note)
+	
+	if info[2] > 0:
+		var sustain:BasicNote = BasicNote.new(new_note, true)
+		$Notes.add_child(sustain)
+		$Notes.move_child(sustain, 1)
+		do_note_shit(sustain, new_note.visual_dir)
+		
+		sustain.hold_group.size.x = 50 # close enough for now
+		sustain.hold_group.size.y = floori(remap(info[2], 0, Conductor.step_crochet * 16.0, 0, grid_1.height * 3.87))
+		
+		sustain.position = new_note.position + Vector2(-7, 40)
+		sustain.alpha = 0.6
+		
+		notes_loaded.append(sustain)
+
+func kill_note(note:BasicNote) -> void:
+	if notes_loaded.find(note) != -1:
+		note.spawned = false
+		notes_loaded.remove_at(notes_loaded.find(note))	
+	note.queue_free()
+
 func play_strum(note):
 	if note is BasicNote:
 		#print('NOTE: '+ str(note.position.y) +' | CAM: '+  str($Cam.position.y) +' '+ str(note.position.y + $Cam.position.y))
@@ -363,7 +413,7 @@ func song_end():
 	Conductor.reset_beats()
 	Conductor.start(0)
 	Conductor.paused = true
-	load_section(0, true)
+	#load_section(0, true)
 
 func toggle_play() -> void:
 	Conductor.paused = !Conductor.paused
@@ -411,6 +461,7 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 		tab('Section', 'NewBPM').value = 0
 			
 	if force_time:
+		Conductor.paused = true
 		var temp_time:float = 0
 		var temp = {'beat': 0, 'beat_t': 0, 'step': 0, 'step_t': 0}
 		var temp_croch = (60.0 / SONG.bpm) * 1000.0
@@ -424,7 +475,6 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 				temp_croch = (60.0 / bpm) * 1000.0
 			
 			# set beats and steps back to what they would be
-			#NOTE sometimes the beats dont reset to the value, seems to mainly affect songs with bpm changes
 			for j in 16:
 				temp.step_t += (temp_croch / 4.0)
 				temp.step += 1
@@ -450,6 +500,7 @@ func _input(event): # this is better
 	if event is InputEventMouseButton:
 		#if event.is_pressed(): return
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and !event.is_released():
+			get_viewport().gui_release_focus()
 			print('clicked at '+ str(mouse_pos - Vector2(100, 0)))
 			check_note()
 			
@@ -463,8 +514,7 @@ func _input(event): # this is better
 			remove_child(click_point)
 			click_point.queue_free()
 		
-		
-	if event is InputEventKey:
+	if event is InputEventKey and get_viewport().gui_get_focus_owner() == null:
 		if Input.is_key_pressed(KEY_ENTER):
 			Conductor.reset_beats()
 			Conductor.paused = true
@@ -491,8 +541,6 @@ func _input(event): # this is better
 		
 		if Input.is_key_pressed(KEY_SPACE):
 			toggle_play()
-		if Input.is_key_pressed(KEY_Q):
-			save_song()
 		
 		if !this_note.is_empty():
 			if Input.is_key_pressed(KEY_Q):
@@ -508,78 +556,21 @@ func _input(event): # this is better
 				cur_section = 0
 				Conductor.reset_beats()
 			load_section(cur_section, true)
-			Conductor.paused = true
 		
-		if Input.is_key_pressed(KEY_A):
-			load_section(cur_section - 1, true)
-			Conductor.paused = true
-		if Input.is_key_pressed(KEY_D):
-			load_section(cur_section + 1, true)
-			Conductor.paused = true
-		if Input.is_key_pressed(KEY_W):
-			pass
-		if Input.is_key_pressed(KEY_S):
-			pass
-		if Input.is_key_pressed(KEY_LEFT):
-			cur_quant -= 1
-		if Input.is_key_pressed(KEY_RIGHT):
-			cur_quant += 1
-	
-func save_song():
-	#var format 
-	var all_note = []
-	var all_even = []
-	var sec_data = []
-	
-	if char_list.size() - 1 >= tab('Song', 'Player1').selected:
-		SONG.player1 = char_list[tab('Song', 'Player1').selected]
-	if char_list.size() - 1 >= tab('Song', 'Player2').selected:
-		SONG.player2 = char_list[tab('Song', 'Player2').selected]
-	if char_list.size() - 1 >= tab('Song', 'GF').selected:
-		SONG.gfVersion = char_list[tab('Song', 'GF').selected]
-	
-	var chars = [SONG.player1, SONG.player2, SONG.gfVersion]
-	for i in SONG.notes:
-		if i.has('events'):
-			all_even.append(i.events)
-
-		for n in i.sectionNotes:
-			n[0] = round(max(n[0], 0))
-			if n[1] > -1: all_note.append(n)
-		var s:Dictionary = i.duplicate()
-		s.erase('sectionNotes')
-		if s.has('events'):
-			s.erase('events')
+		if Input.is_key_pressed(KEY_A): load_section(cur_section - 1, true)
+		if Input.is_key_pressed(KEY_D): load_section(cur_section + 1, true)
 		
-		sec_data.append(s)
-	all_note.sort_custom(func(a, b): return a[0] < b[0])
+		if Input.is_key_pressed(KEY_W): pass
+		if Input.is_key_pressed(KEY_S): pass
+		if Input.is_key_pressed(KEY_LEFT): cur_quant -= 1
+		if Input.is_key_pressed(KEY_RIGHT): cur_quant += 1
 	
-	var format = {
-		'song': SONG.song,
-		'chars': chars,
-		'bpm': SONG.bpm,
-		'speed': SONG.speed,
-		'events': all_even,
-		'notes': all_note,
-		'sections': sec_data, 
-	}
-	var to_save = UnholyFormat.new()
-	for i:String in format.keys():
-		if to_save.get(i) == null: continue
-		to_save.set(i, format[i])
-		print('saved '+ i)
-	#var new_file:FileAccess = FileAccess.open('res://assets/test.json', FileAccess.WRITE)
-	#new_file.store_string(JSON.stringify(to_save, '\t', false))
-	
-	ResourceSaver.save(to_save, 'res://assets/test.tres', ResourceSaver.FLAG_OMIT_EDITOR_PROPERTIES)
-	var tes = ResourceLoader.load('res://assets/test.tres')
-	print(tes.notes)
-
 var last_updated_sec:int = -1
 func update_grids(skip_remake:bool = false, only_current:bool = false) -> void:
-	Game.remove_all([prev_notes, cur_notes, next_notes, cur_events], $Notes)
-	
+	#Game.remove_all([prev_notes, cur_notes, next_notes, cur_events], $Notes)
+	if JsonHandler.get_diff in SONG.notes: return
 	$ChartLine/Highlight.position = ($ChartLine/IconR.position if SONG.notes[cur_section].mustHitSection else $ChartLine/IconL.position) - Vector2(37.5, 37.5)
+	
 	if SONG.notes[cur_section].has('changeBPM') and SONG.notes[cur_section].changeBPM:
 		Conductor.bpm = max(SONG.notes[cur_section].bpm, 1)
 	else:
@@ -592,34 +583,42 @@ func update_grids(skip_remake:bool = false, only_current:bool = false) -> void:
 
 	$ChartLine/BPMTxt.text = str(Conductor.bpm) +' BPM'
 	
-	prev_grid.visible = cur_section > 0
-	prev_e_grid.visible = prev_grid.visible
-	next_grid.visible = cur_section < SONG.notes.size() - 1
-	next_e_grid.visible = next_grid.visible
+	grid_0.visible = cur_section > 0
+	event_grid_0.visible = grid_0.visible
+	grid_2.visible = cur_section < SONG.notes.size() - 1
+	event_grid_2.visible = grid_2.visible
 	
-	if cur_section > 0 and prev_grid.visible:
-		var last_sec = SONG.notes[cur_section - 1]
-		make_notes.call(last_sec, prev_grid, -1, prev_notes)
-			
-	var ev_times = {'start': get_section_time(cur_section), 'end': get_section_time(cur_section + 1)}
-	var tot:int = 0
-	for evn in events:
-		if evn.strum_time >= ev_times.start and evn.strum_time < ev_times.end:
-			tot += 1
-			var new_event = EventNote.new(evn)
-			$Notes.add_child(new_event)
-			new_event.strum_time = evn.strum_time
-			cur_events.append(new_event)
-			do_note_shit(new_event)
-			new_event.position.y = floori(get_y_from_time(fmod(floor(evn.strum_time) - get_section_time(), Conductor.step_crochet * 16)))
-	print('loaded '+ str(tot) +' events')
+	for i in note_chunks.keys():
+		note_chunks[i].clear()
 		
-	var new_sec = SONG.notes[cur_section]
-	make_notes.call(new_sec, grid, 0, cur_notes)
+	if cur_section > 0: note_chunks['-1'].append(SONG.notes[cur_section - 1].sectionNotes.duplicate())
+	note_chunks['0'].append(SONG.notes[cur_section].sectionNotes.duplicate())
+	if cur_section <= SONG.notes.size() - 1: note_chunks['1'].append(SONG.notes[cur_section + 1].sectionNotes.duplicate())
 	
-	if cur_section <= SONG.notes.size() - 1 and next_grid.visible:
-		var next_sec = SONG.notes[cur_section + 1]
-		make_notes.call(next_sec, next_grid, 1, next_notes)
+	#if cur_section > 0 and grid_0.visible:
+		#var last_sec = SONG.notes[cur_section - 1]
+		#make_notes.call(last_sec, grid_0, -1, prev_notes)
+		#for i in prev_notes: i.modulate = Color.GRAY
+			
+	#var ev_times = {'start': get_section_time(cur_section), 'end': get_section_time(cur_section + 1)}
+	#var tot:int = 0
+	#for evn in events:
+	#	if evn.strum_time >= ev_times.start and evn.strum_time < ev_times.end:
+	#		tot += 1
+	#		var new_event = EventNote.new(evn)
+	#		$Notes.add_child(new_event)
+	#		new_event.strum_time = evn.strum_time
+	#		cur_events.append(new_event)
+	#		do_note_shit(new_event)
+	#		new_event.position.y = floori(get_y_from_time(fmod(floor(evn.strum_time) - get_section_time(), Conductor.step_crochet * 16)))
+	#print('loaded '+ str(tot) +' events')
+		
+	#var new_sec = SONG.notes[cur_section]
+	#make_notes.call(new_sec, grid_1, 0, cur_notes)
+	
+	#if cur_section <= SONG.notes.size() - 1 and grid_2.visible:
+	#	var next_sec = SONG.notes[cur_section + 1]
+	#	make_notes.call(next_sec, grid_2, 1, next_notes)
 	
 func make_notes(sec_info:Dictionary, for_grid:NoteGrid, id:int, note_array:Array):
 	for info:Array in sec_info.sectionNotes:
@@ -637,9 +636,9 @@ func make_notes(sec_info:Dictionary, for_grid:NoteGrid, id:int, note_array:Array
 		
 		do_note_shit(new_note, fake_dir)
 		
-		new_note.position.y = floori(get_y_from_time(fmod(floor(info[0]) - get_section_time(cur_section + id), Conductor.step_crochet * 16))) + (grid.height * id)
+		new_note.position.y = floori(get_y_from_time(fmod(floor(info[0]) - get_section_time(cur_section + id), Conductor.step_crochet * 16))) + (grid_1.height * id)
 		new_note.modulate = for_grid.modulate
-		if for_grid == grid:
+		if for_grid == grid_1:
 			if floor(new_note.strum_time) < floor(Conductor.song_pos) - 10: # slight offset so the first note of a section can always get hit
 				new_note.modulate = Color.GRAY
 		note_array.append(new_note)
@@ -651,7 +650,7 @@ func make_notes(sec_info:Dictionary, for_grid:NoteGrid, id:int, note_array:Array
 			do_note_shit(sustain, new_note.visual_dir)
 			
 			sustain.hold_group.size.x = 50 # close enough for now
-			sustain.hold_group.size.y = floori(remap(info[2], 0, Conductor.step_crochet * 16.0, 0, grid.height * 3.87))
+			sustain.hold_group.size.y = floori(remap(info[2], 0, Conductor.step_crochet * 16.0, 0, grid_1.height * 3.87))
 			
 			sustain.position = new_note.position + Vector2(-7, 40)
 			sustain.modulate = for_grid.modulate
@@ -711,6 +710,7 @@ func remove_note(note:BasicNote) -> void:
 			this_note.clear()
 			SONG.notes[cur_section].sectionNotes.erase(i)
 			print('cleared note')
+			break
 	
 	update_grids()
 
@@ -723,18 +723,18 @@ func update_text() -> void:
 
 func _toggle_grid(toggled:bool) -> void:
 	#Conductor.paused = true
-	for i in [prev_grid, grid, next_grid]:
+	for i in [grid_0, grid_1, grid_2]:
 		if i != null:
 			for sqr in i.grid: sqr.visible = toggled
 			for mrk in i.markers: mrk.visible = !toggled
 	update_grids()
 
 func get_y_from_time(strum_time:float) -> float:
-	return remap(strum_time, 0, 16 * Conductor.step_crochet, grid.position.y, grid.position.y + grid.height)
+	return remap(strum_time, 0, 16 * Conductor.step_crochet, grid_1.position.y, grid_1.position.y + grid_1.height)
 
 func get_strum_from_y(y_pos:float) -> float:
-	return remap(y_pos, grid.position.y, grid.position.y + grid.height, 0, 16 * Conductor.step_crochet)
-
+	return remap(y_pos, grid_1.position.y, grid_1.position.y + grid_1.height, 0, 16 * Conductor.step_crochet)
+	
 func get_section_time(this_sec:int = -1):
 	if this_sec < 0: this_sec = cur_section
 	var pos:float = 0
@@ -745,10 +745,6 @@ func get_section_time(this_sec:int = -1):
 			bpm = max(da_sec.bpm, 1)
 		pos += 4.0 * (1000.0 * 60.0 / bpm)
 	return pos
-
-#func _ui_item_changed(ui_item, index:int = -2):
-#	if ['Player1', 'Player2', 'GF'].has(ui_item.name):
-#		pass
 
 class EventNote extends Note:
 	var ev_name:String = 'Nothing!'
@@ -826,7 +822,7 @@ class NoteGrid extends Control:
 		for i in 4:
 			var beat_mark = ColorRect.new()
 			beat_mark.custom_minimum_size = Vector2(width, 2)
-			beat_mark.modulate = Color.RED
+			beat_mark.modulate = Color.RED if i > 0 else Color.AQUAMARINE
 			beat_mark.position = position
 			beat_mark.position.y += int(height / 4.0) * i
 			add_child(beat_mark)

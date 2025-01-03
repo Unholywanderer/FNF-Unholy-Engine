@@ -55,10 +55,19 @@ func good_note_hit(note:Note):
 				note_miss(note)
 				return
 			cocked = false
-			boyfriend.play_anim('shoot' if boyfriend.cur_char == 'pico' else 'attack', true)
-			boyfriend.special_anim = true
-			Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
-			cur_can.play('shoot')
+			if Game.rand_bool(3) and boyfriend.cur_char == 'pico':
+				boyfriend.play_anim('intro')
+				boyfriend.frame = 34
+				boyfriend.pause()
+		
+				cur_can.play('hit')
+				Audio.play_sound('weekend/bonk')
+			else:
+				boyfriend.play_anim('shoot' if boyfriend.cur_char == 'pico' else 'attack', true)
+				boyfriend.special_anim = true
+				
+				Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
+				cur_can.play('shoot')
 
 var died_by_can:bool = false
 func note_miss(note:Note):

@@ -167,7 +167,7 @@ func pause() -> void: # NOTE: you shouldn't call this function, you should set C
 func start(at_point:float = -1) -> void:
 	song_started = true # lol
 	if at_point > -1:
-		song_pos = absf(at_point) / 1000.0
+		song_pos = absf(at_point)
 	for_all_audio('play', song_pos)
 
 # so you dont have to personally check if a vocal/vocal.stream is null

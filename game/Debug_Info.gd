@@ -62,10 +62,10 @@ func _process(delta):
 		var txt_add:String = 'Press (Debug 2) for more info'
 		$Other.text = 'Mem: %s / %s\n' % [mem, mem_peak]
 		if debug_data:
-			var other_data:Array = [get_tree().get_node_count(), '???', Performance.get_monitor(Performance.OBJECT_COUNT), Performance.get_monitor(Performance.TIME_PROCESS), Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)]
+			var other_data:Array = [get_tree().get_node_count(), '???', Performance.get_monitor(Performance.OBJECT_COUNT), Performance.get_monitor(Performance.TIME_PROCESS), Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)]
 			if get_tree().current_scene != null:
 				other_data[1] = get_tree().current_scene.name
-			txt_add = 'Nodes: %s\nScene: %s\nAll Objs: %s\nFrm Delay: %s\nTotal Draw Obj/Calls: %s / %s' % other_data
+			txt_add = 'Nodes: %s\nScene: %s\nAll Objs: %s\nFrm Delay: %s\nDraw Calls: %s' % other_data
 		$Other.text += txt_add
 
 

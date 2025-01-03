@@ -15,37 +15,38 @@ func add_script(script:String) -> void:
 	
 	var SCENE = Game.scene
 	## Variables ##
-	lua.push_variant('Game', SCENE) # current scene
+	lua.push_variant("Game", SCENE) # current scene
 	lua.push_variant("STOP", RET_TYPES.STOP)
 	lua.push_variant("CONTINUE", RET_TYPES.CONTINUE)
 	
 	## Objects ##
 	lua.push_variant("Conductor", Conductor)
-	lua.push_variant('Character', Character)
+	lua.push_variant("Character", Character)
 	lua.push_variant("Sprite", LuaSprite)
 	lua.push_variant("AnimSprite", SparrowSprite) # WIP
 	
-	if SCENE.name == 'Play_Scene':
-		lua.push_variant('Chart', Chart)
-		lua.push_variant('UI', SCENE.ui)
-		lua.push_variant('boyfriend', SCENE.boyfriend)
-		lua.push_variant('gf', SCENE.gf)
-		lua.push_variant('dad', SCENE.dad)
+	if SCENE.name == "Play_Scene":
+		lua.push_variant("Chart", Chart)
+		lua.push_variant("UI", SCENE.ui)
+		lua.push_variant("boyfriend", SCENE.boyfriend)
+		lua.push_variant("gf", SCENE.gf)
+		lua.push_variant("dad", SCENE.dad)
 		
 		lua.push_variant("add_char", add_character)
 	
 	## Lua Functions ##
 	# Layering #
-	lua.push_variant('add', SCENE.add_child)
-	lua.push_variant('move', move_obj)
-	lua.push_variant('get_layer', get_layer)
+	lua.push_variant("add", SCENE.add_child)
+	lua.push_variant("move", move_obj)
+	lua.push_variant("get_layer", get_layer)
 	
 	# Helpers n random shit #
-	lua.push_variant('parse_json', parse_json)
+	lua.push_variant("parse_json", parse_json)
 	lua.push_variant("play_sound", Audio.play_sound)
 	lua.push_variant("play_music", Audio.play_music)
 	lua.push_variant("cache", cache_file)
 	lua.push_variant("get_cache", get_cached_file)
+	#lua.push_variant("import", add_variant)
 
 	var err = lua.do_file('res://assets/'+ script)
 	if err is LuaError:
@@ -101,11 +102,11 @@ func cache_file(tag:String, file_path:String):
 func get_cached_file(tag:String):
 	return cached_items[tag] if cached_items.has(tag) else load('res://assets/images/logoBumpin.png')
 	
-func add_variant(variant:String):
-	if !variant.is_empty():
-		pass
-			#for lua in active_lua:
-			#	lua.push_variant(variant, ClassDB.get_class())
+#func add_variant(variant:String):
+#	if !variant.is_empty():
+#		for lua in active_lua:
+#			lua.push_variant(variant, load('res://game/'+ variant.replace('.', '/') +'.gd'))
+			
 func add_character(char:Character, _layer:String = ''):
 	var layer_indx:int = -1
 	var add_to = Game.scene.stage.get_node('CharGroup') if Game.scene.stage.has_node('CharGroup') else Game.scene

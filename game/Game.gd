@@ -133,10 +133,9 @@ func rand_bool(chance:float = 50.0) -> bool:
 func remove_all(array:Array[Array], node) -> void:
 	if node == null: node = scene
 	for sub in array:
-		while sub.size() > 0:
-			node.remove_child(sub[0])
-			sub[0].queue_free()
-			sub.pop_front()
+		for i in sub:
+			node.remove_child(i)
+			i.queue_free()
 		sub.clear()
 			
 func get_key_from_byte(btye:int) -> String:

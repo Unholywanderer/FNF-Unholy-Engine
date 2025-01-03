@@ -65,7 +65,7 @@ func make_text(tx:String) -> void:
 	
 	var cur_loop:int = 0
 	for i in tx.split():
-		if (i == ' '): spaces += 1
+		if i == ' ': spaces += 1
 		if i == '\n': rows += 1
 		
 		if spaces != 0: offsets.x += (x_diff * spaces)
@@ -79,7 +79,7 @@ func make_text(tx:String) -> void:
 		var anim = get_anim(i)
 		var letter = Letter.new(offsets, i, cur_loop, rows)
 		if anim != '' and is_instance_valid(sheet):
-			var e:= sheet.get_frame_texture(anim, 0)
+			var e := sheet.get_frame_texture(anim, 0)
 			var let:String = anim if e != null else "question"
 			
 			letter.char = anim # just in case
@@ -106,16 +106,16 @@ func _process(delta):
 		var remap_y:float = remap(target_y, 0, 1, 0, 1.1)
 		#var x_pos:float = Game.screen[0] / 2.0 - width / 2.0
 		#Vector2(((target_y * 35 * (remap_y * 5)) * scroll_dir) + 100,\
-		var would_be = Vector2((target_y * spacing.x * scroll_dir) + screen_offset, (remap_y * spacing.y) + (Game.screen[0] * 0.28))
-				
+		var would_be = Vector2(
+			(target_y * spacing.x * scroll_dir) + screen_offset, 
+			(remap_y * spacing.y) + (Game.screen[0] * 0.28)
+		)
+		
 		var scroll:Vector2 = Vector2(
 			lock.x if lock.x != INF else lerpf(position.x, would_be.x, (delta / 0.16)),
 			lock.y if lock.y != INF else lerpf(position.y, would_be.y, (delta / 0.16))
 		)
-		#if first_snap:
 		position = scroll
-		#else:
-		#	first_snap = true
 
 func get_anim(item) -> String:
 	item = item.dedent()
