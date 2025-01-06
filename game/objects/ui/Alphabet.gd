@@ -7,7 +7,7 @@ enum Scroll {
 	RIGHT_TO_LEFT = -1
 }
 ## The way the text lines up
-enum Align {LEFT, CENTER, RIGHT}
+enum {LEFT, CENTER, RIGHT}
 
 var all_letters:Array[Letter] = []
 var color:Color = Color(0, 0, 0, 0):
@@ -37,7 +37,7 @@ var y_diff:int = 65
 
 @export var is_menu:bool = false
 @export var scroll_dir:Scroll = Scroll.LEFT_TO_RIGHT
-#@export var alignment:Align = Align.LEFT
+@export var alignment = LEFT
 
 var lock:Vector2 = Vector2.INF
 var target_y:int = 0
@@ -107,9 +107,11 @@ func _process(delta):
 		#var x_pos:float = Game.screen[0] / 2.0 - width / 2.0
 		#Vector2(((target_y * 35 * (remap_y * 5)) * scroll_dir) + 100,\
 		var would_be = Vector2(
-			(target_y * spacing.x * scroll_dir) + screen_offset, 
+			((target_y * spacing.x * scroll_dir) + screen_offset), 
 			(remap_y * spacing.y) + (Game.screen[0] * 0.28)
 		)
+		if alignment == CENTER:
+			would_be.x -= (width / 2.0)
 		
 		var scroll:Vector2 = Vector2(
 			lock.x if lock.x != INF else lerpf(position.x, would_be.x, (delta / 0.16)),

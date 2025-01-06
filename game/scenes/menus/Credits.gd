@@ -78,10 +78,11 @@ func _ready():
 	for i in credits:
 		var tes = Credit.new(i, i.size() == 2)
 		tes.is_menu = true
-		tes.screen_offset = 90
+		tes.screen_offset = 450
 		tes.spacing = Vector2(100, 200)
 		
 		tes.scroll_dir = Alphabet.Scroll.RIGHT_TO_LEFT
+		tes.alignment = Alphabet.CENTER
 		add_child(tes)
 		move_child(tes, 4)
 		tes.target_y = credits.find(i)
@@ -97,7 +98,8 @@ func _ready():
 	cred_desc = Alphabet.new('Empty Empty', false)
 	cred_desc.scale = Vector2(0.5, 0.5)
 	cred_desc.color = Color.WHITE
-	cred_desc.position = Vector2(600, 650)
+	cred_desc.alignment = Alphabet.CENTER
+	cred_desc.position = $DetailsBox.position + Vector2(5, $DetailsBox.size.y / 2.0)
 	add_child(cred_desc)
 	update_selection()
 

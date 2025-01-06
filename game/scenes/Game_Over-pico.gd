@@ -245,7 +245,7 @@ func _process(delta):
 
 func focus_change(is_focused):
 	timer.paused = !is_focused
-	if death_sound.stream: death_sound.stream_paused = !is_focused
+	if death_sound != null: death_sound.stream_paused = !is_focused
 	if !is_focused:
 		if retry != null: retry.pause()
 		dead.pause()

@@ -86,8 +86,13 @@ func get_layer(obj):
 	return obj.get_index()
 
 func move_obj(obj:Variant, indx):
-	if indx is Node2D: indx = indx.get_index() # assume its an object and get it's layer
-	Game.scene.move_child(obj, indx)
+	var add_to = Game.scene
+	if indx is Character and Game.scene.name == 'Play_Scene':
+		if Game.scene.stage.has_node('CharGroup'):
+			add_to = Game.scene.stage.get_node('CharGroup')
+	if indx is Node2D:
+		indx = indx.get_index() # assume its an object and get it's layer
+	add_to.move_child(obj, indx)
 
 func cache_file(tag:String, file_path:String):
 	if cached_items.has(tag):

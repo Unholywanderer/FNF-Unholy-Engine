@@ -4,14 +4,14 @@
 [ext_resource type="Texture2D" uid="uid://dylyqakqm14uk" path="res://assets/images/ui/playControls.png" id="2_8rd16"]
 
 [sub_resource type="GDScript" id="GDScript_s273s"]
-script/source = "extends Control
+script/source = "extends CanvasLayer
 
-
+var func_order = []
 var loop_song:bool = false
 
-func _ready() -> void:
-	Conductor.load_song('bopeebo')
-	Conductor.song_end.connect(song_finished)
+#func _ready() -> void:
+	#Conductor.load_song('bopeebo')
+	#Conductor.song_end.connect(song_finished)
 
 var progress:float = 0.0
 func _process(delta: float) -> void:
@@ -93,71 +93,69 @@ value = 50.0
 [node name="Buttons" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 21.0
-offset_top = 21.0
-offset_right = 327.0
-offset_bottom = 22.0
+offset_right = 419.0
+offset_bottom = 52.0
 
 [node name="Play" type="Sprite2D" parent="Buttons"]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_8rd16")
 centered = false
 hframes = 6
+frame = 5
 
 [node name="Pause" type="Sprite2D" parent="Buttons"]
-position = Vector2(32, 0)
+position = Vector2(50, 0)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_8rd16")
 centered = false
 hframes = 6
-frame = 1
+frame = 4
 
 [node name="Stop" type="Sprite2D" parent="Buttons"]
-position = Vector2(72, 0)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_8rd16")
-centered = false
-hframes = 6
-frame = 2
-
-[node name="Loop" type="Sprite2D" parent="Buttons"]
-position = Vector2(120, 0)
+position = Vector2(350, 0)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_8rd16")
 centered = false
 hframes = 6
 frame = 3
 
-[node name="Rewind" type="Sprite2D" parent="Buttons"]
-position = Vector2(168, 0)
+[node name="Loop" type="Sprite2D" parent="Buttons"]
+position = Vector2(100, 0)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_8rd16")
 centered = false
 hframes = 6
-frame = 4
+
+[node name="Rewind" type="Sprite2D" parent="Buttons"]
+position = Vector2(150, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_8rd16")
+centered = false
+hframes = 6
+frame = 1
 
 [node name="SkipBack" type="Sprite2D" parent="Buttons"]
-position = Vector2(216, 0)
+position = Vector2(200, 0)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_8rd16")
 centered = false
 hframes = 6
-frame = 5
+frame = 2
 
 [node name="SkipForward" type="Sprite2D" parent="Buttons"]
-position = Vector2(260, 0)
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_8rd16")
-centered = false
-flip_h = true
-hframes = 6
-frame = 5
-
-[node name="FastForward" type="Sprite2D" parent="Buttons"]
-position = Vector2(308, 0)
+position = Vector2(250, 0)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_8rd16")
 centered = false
 flip_h = true
 hframes = 6
 frame = 4
+
+[node name="FastForward" type="Sprite2D" parent="Buttons"]
+position = Vector2(300, 0)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_8rd16")
+centered = false
+flip_h = true
+hframes = 6
+frame = 5

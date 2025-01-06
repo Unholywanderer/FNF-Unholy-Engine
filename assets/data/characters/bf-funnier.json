@@ -2,7 +2,7 @@
 	"animations": [
 		{
 			"name": "idle",
-			"prefix": "Idle",
+			"prefix": "",
 			"offsets": [
 				0,
 				0
@@ -13,9 +13,9 @@
 		},
 		{
 			"name": "hey",
-			"prefix": "pico",
+			"prefix": "",
 			"offsets": [
-				0,
+				4,
 				3
 			],
 			"framerate": 24,
@@ -24,18 +24,18 @@
 		},
 		{
 			"name": "oops",
-			"prefix": "Pico Down Note0",
+			"prefix": "",
 			"offsets": [
-				1,
-				12
+				3,
+				6
 			],
 			"framerate": 24,
 			"frames": [],
 			"loop": false
 		}
 	],
-	"path": "characters/pico/funny/char",
-	"icon": "pico",
+	"path": "characters/bf/funny/no_speaker",
+	"icon": "bf",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
@@ -47,5 +47,5 @@
 		300
 	],
 	"sing_dur": 4,
-	"scale": 1.3
+	"scale": 1.25
 }
