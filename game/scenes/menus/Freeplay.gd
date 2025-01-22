@@ -178,7 +178,7 @@ func _unhandled_key_input(_event):
 		Audio.play_sound('cancelMenu')
 		Game.switch_scene('menus/main_menu')
 		
-	if just_pressed.call('accept'):
+	if Input.is_key_pressed(KEY_ENTER):
 		Audio.stop_music()
 		Conductor.reset()
 		if last_loaded.song != songs[cur_song].text or last_loaded.diff != diff_str\

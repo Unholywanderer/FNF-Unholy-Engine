@@ -10,7 +10,6 @@ signal on_leave
 ## Whether or not the  [code]life_time[/code]  can deplete (Useful for times with multiple alerts)
 @export var can_die:bool = true
 
-var y_offset:int = 2
 ## The current text the alert displays
 var text:String = 'This is an Alert Window':
 	set(new):
@@ -19,14 +18,14 @@ var text:String = 'This is an Alert Window':
 		text = new
 		$Text.text += new
 		size.y = 100 * max($Text.get_line_count() / 4.0, 1) # this gets more and more off, but its fine
-		#position = Vector2(20, ((Game.screen[1] - size.y) - 20) * y_offset) 
+		position = Vector2(20, ((Game.screen[1] - size.y) - 20))
 		$Icon.position = Vector2(50, size.y / 2.0)
-		$Text.position = Vector2(100, $Icon.position.y - ($Text.size.y / 2.0))
+		$Text.position = Vector2(70, $Icon.position.y - ($Text.size.y / 2.0))
 
 const ALERT_DATA = {
-	'Error': ['ERROR!', Color.RED, 'cross'], 
-	'Warn': ['OOPS!', Color.YELLOW, 'warn'], 
-	'Check': ['SUCCESS', Color.LIME_GREEN, 'check']
+	'ERROR': ['ERROR!', Color.RED, 'cross'], 
+	'WARN': ['OOPS!', Color.YELLOW, 'warn'], 
+	'CHECK': ['SUCCESS', Color.LIME_GREEN, 'check']
 }
 func _ready() -> void:
 	on_leave.connect(remove)
@@ -36,7 +35,7 @@ func _ready() -> void:
 	)
 	mouse_exited.connect(func(): Game.set_mouse_visibility(false))
 	
-	text = 'Saved file at:\nassets/images/GAY'
+	#text = 'Saved file at:\nassets/images/GAY'
 	
 	var al = ALERT_DATA[ALERT_TYPE]
 	title = al[0]
@@ -53,6 +52,8 @@ func _process(delta:float) -> void:
 		life_time = max(life_time - delta, 0)
 	$LifeBar.value = (life_time / 4.0) * 100
 	$LifeBar.position.y = size.y - 5
+	$LifeBar.size.x = size.x
+	
 	if life_time <= 0:
 		if !leaving and can_die:
 			leaving = true
@@ -64,7 +65,8 @@ func _process(delta:float) -> void:
 			)
 
 func remove() -> void:
-	#AlertHandler.alert_count -= 1
+	Alert.alert_count -= 1
+	Alert.all_alerts.remove_at(Alert.all_alerts.find(self))
 	queue_free()
 
 func _on_close_requested() -> void: # no you may not close!!

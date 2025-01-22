@@ -114,7 +114,7 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 			remove_child(cur_trans)
 			cur_trans.queue_free()
 		cur_trans.trans_in(1, true)
-		
+
 # call function on nodes or somethin
 func call_func(to_call:String, args:Array[Variant] = []) -> void:
 	if to_call.is_empty() or scene == null: return
@@ -128,7 +128,7 @@ func round_d(num:float, digit:int) -> float: # bowomp
 	return round(num * pow(10.0, digit)) / pow(10.0, digit)
 	
 func rand_bool(chance:float = 50.0) -> bool:
-	return true if (randi() % 100) < chance else false
+	return (randi() % 100) < chance
 
 func remove_all(array:Array[Array], node) -> void:
 	if node == null: node = scene

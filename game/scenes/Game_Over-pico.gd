@@ -97,7 +97,7 @@ func _ready():
 	
 	match we_dyin:
 		DEATH_TYPE.EXPLODE:
-			death_delay = 2.5
+			death_delay = 2
 			sound_suff += '-explode'
 			
 			var other = AnimatedSprite2D.new()
@@ -246,9 +246,11 @@ func _process(delta):
 func focus_change(is_focused):
 	timer.paused = !is_focused
 	if death_sound != null: death_sound.stream_paused = !is_focused
+	var is_retry_fin:bool = true
+	if retry != null: is_retry_fin = (retry.frame == retry.sprite_frames.get_frame_count(retry.animation) - 1)
 	if !is_focused:
-		if retry != null: retry.pause()
+		if !is_retry_fin: retry.pause()
 		dead.pause()
 	else:
-		if retry != null: retry.play()
+		if !is_retry_fin: retry.play()
 		dead.play()

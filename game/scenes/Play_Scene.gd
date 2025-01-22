@@ -220,11 +220,12 @@ func _ready():
 		if !i.ends_with('.lua'): continue
 		LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
 		
-	var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
 	if DIE == null:
+		var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
 		DIE = load('res://game/scenes/game_over'+ char_suff +'.tscn')
+		
 	ui.start_countdown(true)
-	
+		
 	if JsonHandler.parse_type == 'v_slice': move_cam('dad')
 	section_hit(0) #just for 1st section stuff
 	
@@ -249,7 +250,7 @@ func _process(delta):
 	
 	if ui.finished_countdown:
 		Discord.change_presence('Playing '+ SONG.song +' - '+ JsonHandler.get_diff.to_upper(),\
-		  Game.to_time(Conductor.song_pos) +' / '+ Game.to_time(Conductor.song_length) +' | '+ \
+		 Game.to_time(Conductor.song_pos) +' / '+ Game.to_time(Conductor.song_length) +' | '+ \
 		  str(round(abs(Conductor.song_pos / Conductor.song_length) * 100.0)) +'% Complete')
 	
 	var scale_ratio = 5.0 / Conductor.step_crochet * 100.0
@@ -330,6 +331,7 @@ func beat_hit(beat) -> void:
 	for i in characters:
 		if !i.animation.begins_with('sing') and beat % i.dance_beat == 0:
 			i.dance()
+			
 	if speaker != null: speaker.bump()
 	ui.icon_p1.bump()
 	ui.icon_p2.bump()
@@ -410,6 +412,7 @@ func key_press(key:int = 0) -> void:
 func key_release(key:int = 0) -> void:
 	ui.player_strums[key].play_anim('static')
 
+var imdyin:bool = false
 func try_death() -> void:
 	if LuaHandler.call_func('onDeathBegin') == LuaHandler.RET_TYPES.STOP: return
 	Game.persist['deaths'] += 1
@@ -486,10 +489,12 @@ func event_hit(event:EventData) -> void:
 	match event.event:
 		#region PSYCH EVENTS
 		'Hey!':
-			boyfriend.play_anim('hey', true)
-			boyfriend.anim_timer = 0.6
-			gf.play_anim('cheer', true)
-			gf.anim_timer = 0.6
+			var time:float = float(event.values[1])
+			if is_nan(time): time = 0.6
+			char_from_string(event.values[0]).play_anim('hey', true)
+			char_from_string(event.values[0]).anim_timer = time
+			#gf.play_anim('cheer', true)
+			#gf.anim_timer = time
 		'Play Animation':
 			if event.values[1] == '1': event.values[1] = '0'
 
@@ -586,8 +591,10 @@ func good_note_hit(note:Note) -> void:
 		note_miss(note)
 		return
 	
-	if Conductor.vocals.stream: 
-		Conductor.vocals.volume_db = linear_to_db(1.0)
+	if Conductor.vocals: 
+		Conductor.audio_volume(1, 1.0)
+	
+	#boyfriend.material.set_shader_parameter('color_to_be', Color(randf(), randf(), randf()))
 		
 	var time:float = Conductor.song_pos - note.strum_time if !auto_play else 0.0
 	note.rating = Judge.get_rating(time)
@@ -640,8 +647,8 @@ func good_sustain_press(sustain:Note) -> void:
 		if !sustain.should_hit:
 			note_miss(null)
 		else:
-			if Conductor.vocals.stream: 
-				Conductor.vocals.volume_db = linear_to_db(1.0) 
+			if Conductor.vocals: 
+				Conductor.audio_volume(1, 1.0)
 			
 			LuaHandler.call_func('goodSustainPress', [sustain.dir])
 
@@ -672,10 +679,8 @@ func opponent_note_hit(note:Note) -> void:
 		if section_data.has('gfSection') and section_data.gfSection and !section_data.mustHitSection: 
 			note.gf = true
 
-		
-	if Conductor.vocals.stream:
-		var v = Conductor.vocals_opp if Conductor.mult_vocals else Conductor.vocals
-		v.volume_db = linear_to_db(1)
+	if Conductor.vocals:
+		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 	
 	stage.opponent_note_hit(note)
 	var group = ui.get_group('opponent')
@@ -687,9 +692,8 @@ func opponent_note_hit(note:Note) -> void:
 func opponent_sustain_press(sustain:Note) -> void:
 	var luad = LuaHandler.call_func('opponentSustainPress', [notes.find(sustain), sustain.dir, sustain.type])
 	if luad == LuaHandler.RET_TYPES.STOP: return
-	if Conductor.vocals.stream:
-		var v = Conductor.vocals_opp if Conductor.mult_vocals else Conductor.vocals
-		v.volume_db = linear_to_db(1)
+	if Conductor.vocals:
+		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 	
 	LuaHandler.call_func('opponentSustainPress', [sustain.dir])
 
@@ -735,14 +739,12 @@ func note_miss(note:Note) -> void:
 	if be_sad: 
 		gf.play_anim('sad')
 		gf.anim_timer = 0.5
-	#if combo >= 5: pop_up_combo('', '000', true)
 		
 	combo = 0
 	
-	if Conductor.vocals.stream:
-		Conductor.vocals.volume_db = linear_to_db(0)
-	ui.update_score_txt()
-	#if !note.sustain: 
+	if Conductor.vocals:
+		Conductor.audio_volume(1, 0)
+	ui.update_score_txt() 
 	
 func ghost_tap(dir:int) -> void:
 	var luad = LuaHandler.call_func('onGhostTap', [dir])
@@ -763,14 +765,10 @@ func ghost_tap(dir:int) -> void:
 	
 	ui.hp -= 2.5 
 	
-	var be_sad:bool = combo >= 10
 	pop_up_combo(['miss', ''], true)
-	if be_sad: 
-		gf.play_anim('sad')
-		gf.anim_timer = 0.5
 	
-	if Conductor.vocals.stream:
-		Conductor.vocals.volume_db = linear_to_db(0)
+	if Conductor.vocals:
+		Conductor.audio_volume(1, 0)
 	ui.update_score_txt()
 	
 func pop_up_combo(_info:Array = ['sick', -1], is_miss:bool = false) -> void:

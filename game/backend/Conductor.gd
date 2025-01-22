@@ -5,11 +5,7 @@ signal step_hit(step:int)
 signal section_hit(section:int)
 signal song_end
 
-var bpm:float = 100.0:
-	set(new_bpm):
-		bpm = new_bpm
-		#crochet = ((60.0 / bpm) * 1000.0)
-		#step_crochet = crochet / 4.0
+var bpm:float = 100.0
 
 var crochet:float:
 	get: return ((60.0 / bpm) * 1000.0)
@@ -21,7 +17,8 @@ var song_pos:float = 0.0:
 		song_pos = new_pos
 		if song_pos < 0: 
 			song_started = false
-			for_all_audio('stop')
+			audio.stop()
+			#for_all_audio('stop')
 
 var playback_rate:float = 1.0:
 	get: return AudioServer.playback_speed_scale
@@ -43,10 +40,6 @@ var cur_beat:int = 0
 var cur_step:int = 0
 var cur_section:int = 0
 
-var last_beat:int = -1
-var last_step:int = -1
-var last_section:int = -1
-
 var song_loaded:bool = false # song audio files have been added
 var song_started:bool = false # song has begun to/is playing
 var paused:bool = false:
@@ -55,55 +48,72 @@ var paused:bool = false:
 		pause()
 
 var mult_vocals:bool = false
-var inst = AudioStreamPlayer.new()
-var vocals = AudioStreamPlayer.new()
-var vocals_opp = AudioStreamPlayer.new()
+var audio:AudioStreamPlayer
+var inst
+var vocals
+var vocals_opp
 
 var bpm_changes
 func _ready():
-	add_child(inst)
-	add_child(vocals)
-	add_child(vocals_opp)
-	inst.bus = 'Instrumental'
-	vocals.bus = 'Vocals'
-	vocals_opp.bus = 'Vocals'
+	audio = AudioStreamPlayer.new()
+	add_child(audio)
+	audio.bus = 'Instrumental'
+	#add_child(inst)
+	#add_child(vocals)
+	#add_child(vocals_opp)
+	#inst.bus = 'Instrumental'
+	#vocals.bus = 'Vocals'
+	#vocals_opp.bus = 'Vocals'
 	
 func load_song(song:String = '') -> void:
-	if song.is_empty():
-		printerr('Conductor.load_song: NO SONG ENTERED')
-		song = 'tutorial'
-	
+	if song.is_empty(): song = 'tutorial'
+		
 	song = Game.format_str(song)
+	var grabbed_audios:Array = []
 	var path:String = 'res://assets/songs/'+ song +'/audio/%s.ogg' # myehh
 	if JsonHandler.song_variant != '':
 		var inf = [JsonHandler.song_root, JsonHandler.song_variant.substr(1)]
 		path = 'res://assets/songs/'+ inf[0] +'/audio/'+ inf[1] +'/%s.ogg'
-
+	
 	if JsonHandler.parse_type == 'osu':
 		if ResourceLoader.exists('res://assets/songs/'+ song +'/audio.mp3'):
-			inst.stream = load('res://assets/songs/'+ song +'/audio.mp3')
+			grabbed_audios.append(load('res://assets/songs/'+ song +'/audio.mp3'))
 	else:
 		var suffix:String = ''
 		if JsonHandler._SONG.has('variant'): suffix += ('-'+ JsonHandler._SONG.variant)
 		
 		if ResourceLoader.exists(path % ['Inst'+ suffix]):
-			inst.stream = load(path % ['Inst'+ suffix])
+			grabbed_audios.append(load(path % ['Inst'+ suffix]))
 		if ResourceLoader.exists(path % ['Voices-player'+ suffix]):
 			mult_vocals = true
-			vocals.stream = load(path % ['Voices-player'+ suffix])
-			vocals_opp.stream = load(path % ['Voices-opponent'+ suffix])
+			grabbed_audios.append(load(path % ['Voices-player'+ suffix]))
+			grabbed_audios.append(load(path % ['Voices-opponent'+ suffix]))
 		elif ResourceLoader.exists(path % ['Voices'+ suffix]):
 			mult_vocals = false
-			vocals.stream = load(path % ['Voices'+ suffix])
+			grabbed_audios.append(load(path % ['Voices'+ suffix]))
 	
-	if inst.stream:
-		song_length = inst.stream.get_length() * 1000.0
+	audio.stream = AudioStreamSynchronized.new()
+	audio.stream.stream_count = grabbed_audios.size()
+	for i in grabbed_audios.size():
+		audio.stream.set_sync_stream(i, grabbed_audios[i])
+		var new_stream = audio.stream.get_sync_stream(i)
+		set(['inst', 'vocals', 'vocals_opp'][i], new_stream)
+		#new_stream.bus = 'Vocals'
+		#'Instrumental'
 		
+	inst = audio.stream.get_sync_stream(0)
+	vocals = audio.stream.get_sync_stream(1)
+	if mult_vocals: vocals_opp = audio.stream.get_sync_stream(2)
+	
+	if inst:
+		song_length = inst.get_length() * 1000.0
+	
+	audio.stream_paused = true
 	song_loaded = true
 
 func _process(delta):
 	if paused: return
-
+	
 	if song_loaded:
 		song_pos += (1000 * delta) * playback_rate
 	
@@ -132,62 +142,57 @@ func _process(delta):
 			cur_step += 1
 			step_hit.emit(cur_step)
 			
-		if song_pos >= song_length and song_loaded:
+		if song_pos >= song_length:
 			print('Song Finished')
 			song_end.emit()
 		
-		for audio in [inst, vocals, vocals_opp]:
-			if audio.stream and audio.playing:
-				if absf((audio.get_playback_position() * 1000) - (song_pos + Prefs.offset)) > 20: 
-					resync_audio()
+		if audio.playing:
+			if absf((audio.get_playback_position() * 1000) - (song_pos + Prefs.offset)) > 20: 
+				resync_audio()
 				
 func connect_signals(scene = null) -> void: # connect all signals
-	var sce = scene if scene != null else Game.scene
+	var this_scene = scene if scene != null else Game.scene
 	for i in ['beat_hit', 'step_hit', 'section_hit', 'song_end']:
 		if Game.scene.has_method(i):
-			get(i).connect(Callable(sce, i))
+			get(i).connect(Callable(this_scene, i))
+
+func add_voice(new_id:int, file_name:String, song_name:String):
+	if song_name.is_empty(): song_name = JsonHandler.song_root
+	var path_to_check:String = 'assets/songs/%s/audio/%s.ogg' % [song_name, file_name]
+	if !ResourceLoader.exists('res://'+ path_to_check):
+		printerr('No voice file at '+ path_to_check)
+		return
 	
-func check_resync(sound:AudioStreamPlayer) -> void: # resyncs a sound to the song position
-	if absf(sound.get_playback_position() * 1000.0 - song_pos) > 20:
-		sound.seek(song_pos / 1000.0)
-		print('resynced')
+	var voc = load('res://'+ path_to_check)
+	audio.stream.stream_count += 1
+	audio.stream.set_sync_stream(new_id, voc)
+
+func audio_volume(id:int, vol:float = 1.0):
+	if audio.stream.stream_count - 1 < id: 
+		printerr(str(id) +' id doesnt exist!')
+		if id > 0: return audio_volume(id - 1, vol) # would be funny
+		else: return
+	audio.stream.set_sync_stream_volume(id, linear_to_db(vol))
 
 func resync_audio() -> void:
-	for_all_audio('seek', ((song_pos + Prefs.offset) / 1000.0))
+	audio.seek((song_pos + Prefs.offset) / 1000.0)
 	print('resynced audios')
 
 func stop() -> void:
 	song_pos = 0
-	for_all_audio('stop', true)
+	audio.stop()
+	audio.stream = null
 	reset_beats()
 
 func pause() -> void: # NOTE: you shouldn't call this function, you should set Conductor.paused instead
-	for_all_audio('stream_paused', paused, true)
+	audio.stream_paused = paused
 
 func start(at_point:float = -1) -> void:
 	song_started = true # lol
 	if at_point > -1:
-		song_pos = absf(at_point)
-	for_all_audio('play', song_pos)
+		song_pos = at_point
+	audio.play(song_pos)
 
-# so you dont have to personally check if a vocal/vocal.stream is null
-func vocal_volume(da_vocal:String = 'vocals', to_vol:float = 1.0):
-	var le_voices = get(da_vocal.to_lower())
-	if le_voices != null and le_voices.stream:
-		le_voices.volume_db = linear_to_db(0)
-		
-func for_all_audio(do:String, arg = null, is_var:bool = false) -> void:
-	for audio in [inst, vocals, vocals_opp]:
-		if !audio.stream: continue
-		if is_var: 
-			audio.set(do, arg)
-		else:
-			if do == 'stop':
-				audio.stop()
-				if arg == true: audio.stream = null
-				continue
-			audio.call(do, arg)
-			
 func reset() -> void:
 	song_started = false
 	song_loaded = false
@@ -197,5 +202,4 @@ func reset() -> void:
 func reset_beats() -> void:
 	beat_time = 0; step_time = 0;
 	cur_beat = 0; cur_step = 0; cur_section = 0;
-	last_beat = -1; last_step = -1; last_section = -1;
 	paused = false

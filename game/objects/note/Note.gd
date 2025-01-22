@@ -31,6 +31,7 @@ var speed:float = 1.0:
 	set(new_speed): 
 		speed = new_speed
 		if is_sustain: resize_hold()
+var velocity:float = 1.0
 		
 var alt:String = ""
 var gf:bool = false
@@ -190,7 +191,7 @@ func _process(delta):
 			was_good_hit = strum_time <= Conductor.song_pos
 
 func follow_song_pos(strum:Strum) -> void:
-	var pos:float = -(0.45 * (Conductor.song_pos - strum_time) * speed) #/ Conductor.playback_rate# + offset_y
+	var pos:float = -(0.45 * ((Conductor.song_pos - strum_time) * velocity) * speed) #/ Conductor.playback_rate# + offset_y
 	
 	position.x = strum.position.x + (pos * cos(strum.scroll * PI / 180))
 	position.y = strum.position.y + (pos * sin(strum.scroll * PI / 180))

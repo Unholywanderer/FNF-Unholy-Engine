@@ -1,5 +1,6 @@
 class_name UnholyFormat; extends Resource;
 
+#region Character Json Format
 const CHAR_ANIM = {
 	'name': '',
 	'prefix': '',
@@ -19,3 +20,28 @@ const CHAR_JSON = {
 	'sing_dur': 4,
 	'scale': 1
 }
+#endregion
+
+#region Chart Format
+const SECTION_FORMAT = {
+	'mustHitSection': true,
+	'gfSection': false,
+	'altAnim': false,
+	'bpm': 100,
+	'changeBPM': false,
+	'beats': 4
+}
+
+const CHART_JSON = {
+	'variant': '',
+	'events': [],
+	'notes': [],
+	'sections': [],
+	'player': 'bf', 
+	'opponent': 'dad', 
+	'gf': 'gf',
+	'audio_offset': [0, 0],
+	'speed': 1.0,
+	'song': 'Test'
+}
+#endregion

@@ -29,7 +29,7 @@ HighScore="*res://game/backend/HighScore.gd"
 DebugInfo="*res://game/debug_info.tscn"
 JsonHandler="*res://game/backend/JsonHandler.gd"
 Discord="*res://game/backend/Discord.gd"
-AlertHandler="res://game/backend/AlertHandler.gd"
+Alert="*res://game/backend/AlertHandler.gd"
 LuaHandler="*res://game/backend/LuaHandler.gd"
 
 [display]

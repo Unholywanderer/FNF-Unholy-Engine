@@ -31,7 +31,7 @@ texture = ExtResource("2_g7jes")
 [node name="Notes" type="Node2D" parent="."]
 
 [node name="ChartLine" parent="." instance=ExtResource("3_nef5n")]
-position = Vector2(14, 320)
+position = Vector2(390, 320)
 
 [node name="Cam" type="Camera2D" parent="."]
 position = Vector2(639, 360)
@@ -116,3 +116,6 @@ metadata/_tab_index = 3
 [node name="Song" parent="ChartUI/Tabs" instance=ExtResource("9_hxyvv")]
 visible = false
 layout_mode = 2
+
+[node name="Window" type="Window" parent="ChartUI"]
+visible = false

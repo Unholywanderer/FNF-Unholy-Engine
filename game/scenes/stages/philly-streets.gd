@@ -25,7 +25,7 @@ func countdown_start():
 		$CharGroup.add_child(cur_can)
 		cur_can.animation_changed.connect(func():
 			if cur_can.animation == 'hit':
-				cur_can.offset = Vector2(-450, -50)
+				cur_can.offset = Vector2(-450, -70)
 			else:
 				cur_can.offset = Vector2(0, 0)
 		)
@@ -55,7 +55,7 @@ func good_note_hit(note:Note):
 				note_miss(note)
 				return
 			cocked = false
-			if Game.rand_bool(3) and boyfriend.cur_char == 'pico':
+			if Game.rand_bool(90) and boyfriend.cur_char == 'pico':
 				boyfriend.play_anim('intro')
 				boyfriend.frame = 34
 				boyfriend.pause()

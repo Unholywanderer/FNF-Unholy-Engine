@@ -116,7 +116,6 @@ func load_char(new_char:String = 'bf') -> void:
 	dance()
 	set_stuff()
 	
-	if cur_char.contains('monster'): swap_sing('singLEFT', 'singRIGHT')
 	if !is_player == json.facing_left:
 		flip_char()
 		

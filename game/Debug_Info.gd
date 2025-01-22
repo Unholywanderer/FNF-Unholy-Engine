@@ -73,9 +73,10 @@ func _unhandled_key_input(_event):
 	pressed_key = true
 	if Input.is_action_just_pressed('vol_up'): volume = min(volume + 0.1, 1)
 	if Input.is_action_just_pressed('vol_down'): volume = max(volume - 0.1, 0)
-	
+
+	if Input.is_key_pressed(KEY_F4): LuaHandler.reload_scripts()
 	if Input.is_key_pressed(KEY_F5): Game.reset_scene()
 	if Input.is_key_pressed(KEY_CTRL): # debuggin baby wahoo
-		if Input.is_key_pressed(KEY_L): Conductor.playback_rate += 0.5
-		if Input.is_key_pressed(KEY_J): Conductor.playback_rate -= 0.5
+		if Input.is_key_pressed(KEY_L): Conductor.playback_rate += 0.05
+		if Input.is_key_pressed(KEY_J): Conductor.playback_rate -= 0.05
 		if Input.is_key_pressed(KEY_I): Conductor.playback_rate = 1

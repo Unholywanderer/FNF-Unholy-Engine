@@ -47,7 +47,7 @@ bg_color = Color(0.306923, 0.306923, 0.306923, 1)
 [node name="Window" type="Window"]
 title = "ERROR!"
 position = Vector2i(8, 36)
-size = Vector2i(300, 100)
+size = Vector2i(350, 100)
 unresizable = true
 unfocusable = true
 popup_window = true
@@ -58,8 +58,6 @@ theme = SubResource("Theme_kdoal")
 theme_override_constants/title_outline_size = 4
 theme_override_constants/close_v_offset = -3
 script = ExtResource("1_o5qc4")
-ALERT_TYPE = "Check"
-can_die = false
 
 [node name="Icon" type="Sprite2D" parent="."]
 position = Vector2(50, 50)
@@ -73,10 +71,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -50.0
-offset_top = -48.0
-offset_right = 150.0
-offset_bottom = -25.0
+offset_left = -95.0
+offset_top = -50.0
+offset_right = 195.0
+offset_bottom = -27.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 4

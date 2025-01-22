@@ -7,10 +7,10 @@ var active:bool = true
 
 func add_script(script:String) -> void:
 	if !script.ends_with('.lua'): script += '.lua'
-	# okay, it seems that i have fixed the random crashing that could happen from luas
-	# but im not 100% sure, so ill just note this down
+	
 	#TODO maybe figure out way to do something like 'import'
 	var lua = LuaEx.new()
+	lua.script_path = script
 	lua.bind_libraries(["base", "table", "string", "math"])
 	
 	var SCENE = Game.scene
@@ -27,6 +27,7 @@ func add_script(script:String) -> void:
 	
 	if SCENE.name == "Play_Scene":
 		lua.push_variant("Chart", Chart)
+		lua.push_variant("move_cam", SCENE.move_cam)
 		lua.push_variant("UI", SCENE.ui)
 		lua.push_variant("boyfriend", SCENE.boyfriend)
 		lua.push_variant("gf", SCENE.gf)
@@ -46,15 +47,20 @@ func add_script(script:String) -> void:
 	lua.push_variant("play_music", Audio.play_music)
 	lua.push_variant("cache", cache_file)
 	lua.push_variant("get_cache", get_cached_file)
+	# Shaders #
+	lua.push_variant("load_shader", load_shader)
+	lua.push_variant("set_shader", set_shader)
+	
 	#lua.push_variant("import", add_variant)
-
-	var err = lua.do_file('res://assets/'+ script)
-	if err is LuaError:
-		printerr(err.message)
-		var er_type = err.message.split(']')[0].replace('[', '').strip_edges()
-		var er_path = err.message.split('assets/')[1].strip_edges()
-		OS.alert('../'+ er_path, er_type +'!')
-		return
+	
+	if !load_lua(lua, script): return
+	#var err = lua.do_file('res://assets/'+ script)
+	#if err is LuaError:
+	#	printerr(err.message)
+	#	var er_type = err.message.split(']')[0].replace('[', '').strip_edges()
+	#	var er_path = err.message.split('assets/')[1].strip_edges()
+	#	OS.alert('../'+ er_path, er_type +'!')
+	#	return
 		
 	if !active_lua.has(lua):
 		active_lua.append(lua)
@@ -64,6 +70,22 @@ func remove_all():
 		lua.unreference()
 	active_lua.clear()
 
+func reload_scripts():
+	for lua in active_lua:
+		load_lua(lua, lua.script_path)
+		
+func load_lua(lua:LuaEx, path:String) -> bool:
+	var err = lua.do_file('res://assets/'+ path)
+	if err is LuaError:
+		printerr(err.message)
+		var er_type = err.message.split(']')[0].replace('[', '').strip_edges()
+		var er_path = err.message.split('assets/')[1].strip_edges()
+		OS.alert('../'+ er_path, er_type +'!')
+		if active_lua.has(lua):
+			active_lua.remove_at(active_lua.find(lua))
+		return false
+	return true
+			
 func call_func(_func:String, args:Array = []):
 	if _func.length() == 0: return
 	var ret_val = null
@@ -104,8 +126,23 @@ func cache_file(tag:String, file_path:String):
 		
 	cached_items[tag] = load('res://assets/'+ file_path)
 
+func is_cached(tag:String): return cached_items.has(tag)
 func get_cached_file(tag:String):
-	return cached_items[tag] if cached_items.has(tag) else load('res://assets/images/logoBumpin.png')
+	return cached_items[tag] if is_cached(tag) else load('res://assets/images/logoBumpin.png')
+	
+func load_shader(shader:String) -> Shader:
+	var new_shader:Shader = null
+	if ResourceLoader.exists('res://game/resources/shaders/'+ shader +'.gdshader'):
+		cached_items[shader +'_shader'] = load('res://game/resources/shaders/'+ shader +'.gdshader')
+		new_shader = cached_items[shader +'_shader']
+	if new_shader == null: 
+		Alert.make_alert('"%s" isn\'t a valid shader!' % [shader], Alert.WARN)
+	return new_shader
+
+func set_shader(obj:Variant, shader_name:String):
+	var new_shader = ShaderMaterial.new() 
+	new_shader.shader = load_shader(shader_name)
+	obj.material = new_shader
 	
 #func add_variant(variant:String):
 #	if !variant.is_empty():
@@ -129,9 +166,9 @@ func add_character(char:Character, _layer:String = ''):
 func parse_json(path:String):
 	if !path.ends_with('.json'): path += '.json'
 	if !ResourceLoader.exists('res://assets/'+ path):
-		printerr('Nope')
+		Alert.make_alert('No .json at path\n"'+ path +'"', Alert.ERROR)
 		return
-	var le_json = FileAccess.open('res://assets/'+ path, FileAccess.READ).get_as_text()
+	var le_json = FileAccess.get_file_as_string('res://assets/'+ path)
 	return JSON.parse_string(le_json)
 
 func makeLuaSprite(_t, _sp, _x, _y):
@@ -142,6 +179,10 @@ func setProperty(_g, _p):
 
 ## LUA OBJECTS
 class LuaSprite extends Sprite2D:
+	func _init(spr:String, pos:Vector2 = Vector2.ZERO):
+		load_texture(spr)
+		position = pos
+		
 	func load_texture(spr:String):
 		texture = load('res://assets/images/'+ spr +'.png')
 		
@@ -167,6 +208,7 @@ class LuaAnimatedSprite extends AnimatedSprite2D:
 class LuaEx extends LuaAPI:
 	var global:bool = false # later
 	var active:bool = false # later
+	var script_path:String = ''
 	func _notification(what:int) -> void:
 		match what:
 			NOTIFICATION_PREDELETE:

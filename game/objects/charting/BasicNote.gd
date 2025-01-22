@@ -34,9 +34,8 @@ var dir:int:
 			else:
 				note.texture = load(tex_path + COLORS[dir] +'.png')
 			
-			
-var visual_dir:int # for keeping player notes on right and opp on left
-var true_dir:int   # the actual direction the note is
+var true_dir:int # the actual direction the note is, from 0-7
+var lane:int # player notes 4-7, opponent notes 0-3
 
 var was_hit:bool = false # for normal notes
 var hitting:bool = false # for sustains
@@ -51,24 +50,16 @@ var type:String = "":
 	set(new_type):
 		if new_type.is_empty(): return
 		match new_type.to_lower():
-			'alt animation', 'alt', 'true': 
-				type = 'Alt'
-			'no animation':
-				type = 'No Anim'
-			'gf sing':
-				type = 'GF'
-			'hurt note', 'markov note':
-				type = 'Hurt'
-				modulate = Color.BLACK
-			_:
-				type = new_type
+			'alt animation', 'alt', 'true': type = 'Alt'
+			'no animation': type = 'No Anim'
+			'gf sing': type = 'GF'
+			'hurt note', 'markov note': type = 'Hurt'
+			_: type = new_type
 
 var note
 var sustain:TextureRect
 var end:TextureRect
 var hold_group:Control
-
-var parent:BasicNote
 
 var alpha:float = 1:
 	get: return modulate.a
@@ -79,13 +70,11 @@ var text:String:
 	get: return label.text
 	set(txt): label.text = txt
 	
-func _init(data = null, sustain_:bool = false):
+func _init(data = null, _sustain:bool = false):
 	if data != null:
 		if data is Array: data = NoteData.new(data)
 		copy_from(data)
-		if sustain_:
-			is_sustain = true
-			parent = data
+		is_sustain = _sustain
 
 func _ready():
 	spawned = true

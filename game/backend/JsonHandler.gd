@@ -125,7 +125,8 @@ func you_WILL_get_a_json(song:String) -> FileAccess:
 	returned += '.json'
 	
 	if !ResourceLoader.exists(returned):
-		printerr(song +' has no '+ get_diff +' | '+ returned)
+		var err_path = returned.replace('res://assets/songs/', '../')
+		Alert.make_alert('"%s" has no %s\n%s' % [song, get_diff.to_upper(), err_path], Alert.ERROR) #printerr(song +' has no '+ get_diff +' | '+ returned)
 		get_diff = 'hard'
 		return you_WILL_get_a_json('tutorial')
 
