@@ -104,12 +104,22 @@ text = "none"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Player" type="CheckBox" parent="UILayer/Main"]
+[node name="Anti" type="CheckBox" parent="UILayer/Main"]
+offset_left = 5.0
+offset_top = 285.0
+offset_right = 146.0
+offset_bottom = 316.0
+focus_mode = 0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+text = "Antialiasing"
+
+[node name="FacesLeft" type="CheckBox" parent="UILayer/Main"]
 layout_mode = 0
-offset_left = 150.0
-offset_top = 280.0
-offset_right = 293.0
-offset_bottom = 311.0
+offset_left = 160.0
+offset_top = 285.0
+offset_right = 292.0
+offset_bottom = 316.0
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -118,9 +128,9 @@ text = "Facing Left"
 [node name="ScaleBox" type="SpinBox" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 280.0
+offset_top = 235.0
 offset_right = 138.0
-offset_bottom = 311.0
+offset_bottom = 266.0
 min_value = 0.1
 max_value = 10.0
 step = 0.01
@@ -177,9 +187,9 @@ vertical_alignment = 1
 [node name="Pos" type="Label" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 195.0
+offset_top = 165.0
 offset_right = 151.0
-offset_bottom = 218.0
+offset_bottom = 188.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 16
@@ -187,31 +197,29 @@ text = "Position Offset"
 
 [node name="X" type="SpinBox" parent="UILayer/Main/Pos"]
 layout_mode = 0
-offset_top = 28.0
+offset_top = 20.0
 offset_right = 83.0625
-offset_bottom = 59.0
-min_value = -999.0
-max_value = 999.0
-alignment = 1
+offset_bottom = 51.0
+min_value = -9999.0
+max_value = 9999.0
 update_on_text_changed = true
 
 [node name="Y" type="SpinBox" parent="UILayer/Main/Pos"]
 layout_mode = 0
 offset_left = 90.0
-offset_top = 28.0
+offset_top = 20.0
 offset_right = 173.063
-offset_bottom = 59.0
-min_value = -999.0
-max_value = 999.0
-alignment = 1
+offset_bottom = 51.0
+min_value = -9999.0
+max_value = 9999.0
 update_on_text_changed = true
 
 [node name="Cam" type="Label" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 115.0
+offset_top = 100.0
 offset_right = 151.0
-offset_bottom = 138.0
+offset_bottom = 123.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 16
@@ -219,36 +227,40 @@ text = "Camera Offset"
 
 [node name="X" type="SpinBox" parent="UILayer/Main/Cam"]
 layout_mode = 0
-offset_top = 28.0
+offset_top = 20.0
 offset_right = 83.0625
-offset_bottom = 59.0
-min_value = -999.0
-max_value = 999.0
-alignment = 1
+offset_bottom = 51.0
+min_value = -9999.0
+max_value = 9999.0
 update_on_text_changed = true
 
 [node name="Y" type="SpinBox" parent="UILayer/Main/Cam"]
 layout_mode = 0
 offset_left = 90.0
-offset_top = 28.0
+offset_top = 20.0
 offset_right = 173.063
-offset_bottom = 59.0
-min_value = -999.0
-max_value = 999.0
-alignment = 1
+offset_bottom = 51.0
+min_value = -9999.0
+max_value = 9999.0
 update_on_text_changed = true
 
 [node name="Lock" type="CheckBox" parent="UILayer/Main/Cam"]
 layout_mode = 0
-offset_left = 176.0
-offset_top = 27.0
-offset_right = 279.0
-offset_bottom = 58.0
+offset_left = 179.0
+offset_top = 20.0
+offset_right = 282.0
+offset_bottom = 51.0
 tooltip_text = "Lock Camera's position to the cross"
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 text = "Lock Cam"
+
+[node name="FileDialog" type="FileDialog" parent="UILayer/Main"]
+title = "Open a File"
+ok_button_text = "Open"
+file_mode = 0
+filters = PackedStringArray("*.res")
 
 [node name="Animations" type="Node2D" parent="UILayer"]
 

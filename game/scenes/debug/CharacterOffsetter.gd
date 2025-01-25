@@ -67,6 +67,11 @@ func _ready():
 	for i in ['Pos', 'Cam']:
 		MAIN(i +'/X').connect('value_changed', thing_change.bind(i))
 		MAIN(i +'/Y').connect('value_changed', thing_change.bind(i))
+		
+	MAIN('Anti').connect('toggled', func(tog:bool): 
+		character.antialiasing = tog
+		shadow.antialiasing = tog
+	)
 
 	$Cam.position = get_viewport_rect().size / 2.0
 	
@@ -169,7 +174,7 @@ func change_char(new_char:String = 'bf'):
 	# update character
 	character.position = get_viewport_rect().size / 2.0 - Vector2(300, 450)
 	character.is_player = char_json.facing_left
-	MAIN('Player').button_pressed = char_json.facing_left
+	MAIN('FacesLeft').button_pressed = char_json.facing_left
 	MAIN('ScaleBox').value = char_json.scale
 	character.load_char(new_char)
 	
@@ -182,6 +187,8 @@ func change_char(new_char:String = 'bf'):
 	cur_cam_offset = char_json.cam_offset
 	cur_pos_offset = char_json.pos_offset
 	
+	MAIN('Anti').button_pressed = char_json.antialiasing
+
 	MAIN('Pos/X').value = char_json.pos_offset[0]
 	MAIN('Pos/Y').value = char_json.pos_offset[1]
 	
@@ -190,12 +197,10 @@ func change_char(new_char:String = 'bf'):
 	
 	if !MAIN('Cam/Lock').button_pressed:
 		$Cam.position = character.position + Vector2(character.width / 2.0, character.height / 2.5)
+		
 	# then update the shadow
 	shadow.copy(character)
-	shadow.antialiasing = !character.antialiasing # uhm?
-	#shadow.position = get_viewport_rect().size / 2.0 - Vector2(300, 450)
-	#shadow.play(cur_anim)
-	#shadow.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
+	shadow.antialiasing = !character.antialiasing # uhm??
 	var frame_limit = shadow.sprite_frames.get_frame_count(cur_anim) - 1
 	shadow.frame = frame_limit
 	shadow_anim_change(0)
@@ -252,24 +257,29 @@ func MAIN(to_get:String): return $UILayer.get_node('Main/'+ to_get)
 func DATA(to_get:String): return $UILayer.get_node('CurData/'+ to_get)
 
 func save_pressed() -> void:
-	if ResourceLoader.exists('res://assets/data/characters/'+ cur_char +'.json'):
-		var old_json:Dictionary = JsonHandler.get_character(cur_char)
+	var old_json = JsonHandler.get_character(cur_char) # should remove this once you can actually add prefixes
+	if old_json != null and old_json.has('no_antialiasing'):
+		old_json = Legacy.fix_json(old_json)
 		
 	var new_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
 	for i in offsets.keys():
 		var new_anim = UnholyFormat.CHAR_ANIM.duplicate()
-		new_anim.name = i
-		new_anim.prefix = ''
 		new_anim.offsets = offsets[i]
+		new_anim.name = i
+		if old_json != null:
+			for a in old_json.animations:
+				if a.name == i: new_anim.prefix = a.prefix
 		new_json.animations.append(new_anim)
+		
+	new_json.path = old_json.path # and this
 	new_json.icon = char_json.icon
-	#new_json.antialiasing = true
-	#new_json.facing_left = true
-	#new_json.cam_offset = [0, 0]
-	#new_json.pos_offset = [0, 0]
-	#new_json.scale = 1
+	new_json.antialiasing = MAIN('Anti').button_pressed
+	new_json.facing_left = MAIN('FacesLeft').button_pressed
+	new_json.cam_offset = cur_cam_offset
+	new_json.pos_offset = cur_pos_offset
+	new_json.scale = MAIN('ScaleBox').value
 	
-	var file:FileAccess = FileAccess.open("res://assets/data/characters/TESTJSON.json", FileAccess.WRITE)
+	var file:FileAccess = FileAccess.open("res://assets/data/characters/TESTJSON-3.json", FileAccess.WRITE)
 	file.resize(0) # clear the file, if it has stuff in it
 	file.store_string(JSON.stringify(new_json, '\t', false))
 	file.close()
@@ -284,7 +294,6 @@ func shadow_anim_change(id:int) -> void:
 	MAIN('Shadow/Frame').max_value = frame_lim
 	MAIN('Shadow/Frame').value = frame_lim
 	shadow.offset = Vector2(offsets[new_anim][0], offsets[new_anim][1])
-
 	
 func shadow_frame_change(value:float) -> void:
 	shadow.frame = int(value)
