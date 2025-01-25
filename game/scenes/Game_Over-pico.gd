@@ -39,6 +39,7 @@ var on_death_confirm:Callable = func(): # once the player chooses to retry
 	this.cam.position_smoothing_speed = 4
 	this.gf.danced = true
 	this.boyfriend.visible = true
+	this.dad.visible = true
 	this.ui.visible = true
 	get_tree().paused = false
 	this.refresh()

@@ -5,6 +5,8 @@ var shadow:Character
 var char_json = {}
 var anim_list:Array[Label] = []
 var offsets:Dictionary = {}
+var cur_cam_offset:Array = [0, 0]
+var cur_pos_offset:Array = [0, 0]
 
 var icon_list:Array = []
 
@@ -30,15 +32,15 @@ func _ready():
 	#if OS.is_debug_build():
 	#	DebugInfo.get_node('Other').visible = false
 	
-	shadow = Character.new(Vector2.ZERO, 'bf', true)
+	shadow = Character.new(Vector2.ZERO, 'bf-dead', true)
 	add_child(shadow)
 	shadow.modulate = Color(0.3, 0.3, 0.3, 0.6)
 	
-	character = Character.new(Vector2.ZERO, 'bf', true)
+	character = Character.new(Vector2.ZERO, 'bf-dead', true) # load a random fuckass character 
 	character.debug = true
 	add_child(character)
 	move_child(character, 2)
-	change_char('bf')
+	change_char('bf') # then load bf so the position isnt fucked
 	
 	move_child(shadow, character.get_index() - 1)
 	
@@ -48,6 +50,23 @@ func _ready():
 
 	MAIN('IconSelect/Icon').default_scale = 0.7
 	MAIN('IconSelect/Icon').scale = Vector2(0.7, 0.7)
+	
+	var thing_change = func(_val, thing_name:String): # we dont use the '_val' for this
+		var new_vals = [MAIN(thing_name +'/X').value, MAIN(thing_name +'/Y').value]
+		match thing_name:
+			'Cam':
+				character.focus_offsets -= Vector2(cur_cam_offset[0], cur_cam_offset[1])
+				cur_cam_offset = new_vals
+				character.focus_offsets += Vector2(cur_cam_offset[0], cur_cam_offset[1])
+				$Point.position = character.get_cam_pos()
+			'Pos':
+				character.position -= Vector2(cur_pos_offset[0], cur_pos_offset[1])
+				cur_pos_offset = new_vals
+				character.position += Vector2(cur_pos_offset[0], cur_pos_offset[1])
+				
+	for i in ['Pos', 'Cam']:
+		MAIN(i +'/X').connect('value_changed', thing_change.bind(i))
+		MAIN(i +'/Y').connect('value_changed', thing_change.bind(i))
 
 	$Cam.position = get_viewport_rect().size / 2.0
 	
@@ -67,6 +86,8 @@ func _ready():
 			MAIN('IconSelect').get_popup().add_item(i)
 
 func _process(delta):
+	if MAIN('Cam/Lock').button_pressed:
+		$Cam.position = $Point.position
 	$Backdrop.scale = Vector2.ONE / $Cam.zoom
 	$Backdrop.position = $Cam.position
 
@@ -74,13 +95,16 @@ func _process(delta):
 	var sc = MAIN('ScaleBox').value
 	character.scale = Vector2(sc, sc)
 	shadow.scale = character.scale
-
+		
 	DATA('Anim').text = cur_anim
 	DATA('Offset').text = str(offsets[cur_anim])
 	DATA('Frame').text = 'Frame:\n'+ str(character.frame) +' / '+ str(character.sprite_frames.get_frame_count(character.animation) - 1)
 	
 
 func _unhandled_input(event: InputEvent) -> void:
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and !event.is_released():
+		get_viewport().gui_release_focus()
+	
 	if Input.is_action_just_pressed('back'): Game.switch_scene('menus/Main_Menu')
 	
 	var ctrl = Input.is_key_pressed(KEY_CTRL)
@@ -134,7 +158,8 @@ func change_char(new_char:String = 'bf'):
 	char_json = JsonHandler.get_character(new_char)
 	if char_json == null: return
 	cur_char = new_char
-	if char_json.has('type') and char_json.type == 'psych':
+	MAIN('CharacterSelect').text = cur_char
+	if char_json.has('no_antialiasing'):
 		char_json = Legacy.fix_json(char_json)
 	
 	DATA('Warn').visible = !ResourceLoader.exists('res://assets/images/'+ char_json.path +'.res')
@@ -154,8 +179,20 @@ func change_char(new_char:String = 'bf'):
 	character.play(cur_anim) # play first loaded anim to fix offsets
 	character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
 	
+	cur_cam_offset = char_json.cam_offset
+	cur_pos_offset = char_json.pos_offset
+	
+	MAIN('Pos/X').value = char_json.pos_offset[0]
+	MAIN('Pos/Y').value = char_json.pos_offset[1]
+	
+	MAIN('Cam/X').value = char_json.cam_offset[0]
+	MAIN('Cam/Y').value = char_json.cam_offset[1]
+	
+	if !MAIN('Cam/Lock').button_pressed:
+		$Cam.position = character.position + Vector2(character.width / 2.0, character.height / 2.5)
 	# then update the shadow
 	shadow.copy(character)
+	shadow.antialiasing = !character.antialiasing # uhm?
 	#shadow.position = get_viewport_rect().size / 2.0 - Vector2(300, 450)
 	#shadow.play(cur_anim)
 	#shadow.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
@@ -215,6 +252,9 @@ func MAIN(to_get:String): return $UILayer.get_node('Main/'+ to_get)
 func DATA(to_get:String): return $UILayer.get_node('CurData/'+ to_get)
 
 func save_pressed() -> void:
+	if ResourceLoader.exists('res://assets/data/characters/'+ cur_char +'.json'):
+		var old_json:Dictionary = JsonHandler.get_character(cur_char)
+		
 	var new_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
 	for i in offsets.keys():
 		var new_anim = UnholyFormat.CHAR_ANIM.duplicate()
@@ -248,4 +288,4 @@ func shadow_anim_change(id:int) -> void:
 	
 func shadow_frame_change(value:float) -> void:
 	shadow.frame = int(value)
-	MAIN('Shadow/Frame/Txt').text = 'Frame: '+ str(value)
+	MAIN('Shadow/Frame/Txt').text = 'Frame: '+ str(int(value))

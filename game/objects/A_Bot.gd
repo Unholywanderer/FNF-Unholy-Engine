@@ -36,8 +36,3 @@ func bump(forced:bool = true):
 	$Frame.play('bump')
 	if forced:
 		$Frame.frame = 0
-
-var eye_tween:Tween
-func look(left:bool = false):
-	var tween_to:float = 0 if left else 111
-	$Eyes.position.x = 111

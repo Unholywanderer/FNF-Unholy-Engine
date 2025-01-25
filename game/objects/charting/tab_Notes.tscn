@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c1grjonp1kg71"]
 
 [node name="Notes" type="Control"]
-custom_minimum_size = Vector2(380, 439)
+custom_minimum_size = Vector2(380, 300)
 layout_mode = 3
 anchor_right = 0.297
 anchor_bottom = 0.596

@@ -1,7 +1,9 @@
-[gd_scene format=3 uid="uid://dy6ra5sr6shul"]
+[gd_scene load_steps=2 format=3 uid="uid://dy6ra5sr6shul"]
+
+[sub_resource type="Theme" id="Theme_51njo"]
 
 [node name="Song" type="Control"]
-custom_minimum_size = Vector2(380, 439)
+custom_minimum_size = Vector2(380, 300)
 layout_mode = 3
 anchor_right = 0.297
 anchor_bottom = 0.61
@@ -13,10 +15,11 @@ metadata/_tab_index = 4
 layout_mode = 0
 offset_left = 10.0
 offset_top = 10.0
-offset_right = 190.0
+offset_right = 370.0
 offset_bottom = 41.0
 focus_mode = 1
 placeholder_text = "Song Name"
+alignment = 1
 select_all_on_focus = true
 caret_blink = true
 
@@ -26,28 +29,35 @@ offset_left = 10.0
 offset_top = 50.0
 offset_right = 135.0
 offset_bottom = 85.0
+theme = SubResource("Theme_51njo")
 min_value = 1.0
 max_value = 999.0
 step = 0.0
 value = 100.0
+alignment = 1
 suffix = "BPM"
+custom_arrow_step = 0.1
+select_all_on_focus = true
 
 [node name="Speed" type="SpinBox" parent="."]
 layout_mode = 0
-offset_left = 150.0
+offset_left = 155.0
 offset_top = 50.0
-offset_right = 233.063
+offset_right = 238.063
 offset_bottom = 85.0
 min_value = 0.1
 max_value = 10.0
 step = 0.1
 value = 1.0
+alignment = 1
+custom_arrow_step = 0.1
+select_all_on_focus = true
 
 [node name="Player1" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 97.0
+offset_left = 10.0
 offset_top = 140.0
-offset_right = 197.0
+offset_right = 110.0
 offset_bottom = 175.0
 tooltip_text = "The song's Player character"
 text = "Player 1"
@@ -55,93 +65,98 @@ flat = false
 
 [node name="Text" type="Label" parent="Player1"]
 layout_mode = 0
-offset_left = -96.0
-offset_top = 6.0
-offset_right = -1.0
-offset_bottom = 29.0
+offset_left = 2.0
+offset_top = 32.0
+offset_right = 98.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 15
 text = "Player"
 horizontal_alignment = 1
 
 [node name="Player2" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 97.0
-offset_top = 260.0
-offset_right = 197.0
-offset_bottom = 295.0
+offset_left = 270.0
+offset_top = 140.0
+offset_right = 370.0
+offset_bottom = 175.0
 tooltip_text = "The song's Opponent character"
 text = "Player 2"
 flat = false
 
 [node name="Text" type="Label" parent="Player2"]
 layout_mode = 0
-offset_left = -95.0
-offset_top = 4.0
-offset_bottom = 27.0
+offset_left = 2.0
+offset_top = 33.0
+offset_right = 98.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 15
 text = "Opponent"
 horizontal_alignment = 1
 
 [node name="GF" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 97.0
-offset_top = 200.0
-offset_right = 197.0
-offset_bottom = 235.0
+offset_left = 140.0
+offset_top = 140.0
+offset_right = 240.0
+offset_bottom = 175.0
 tooltip_text = "The song's GF/Spectator character"
 text = "GF"
 flat = false
 
 [node name="Text" type="Label" parent="GF"]
 layout_mode = 0
-offset_left = -96.0
-offset_top = 6.0
-offset_right = -1.0
-offset_bottom = 29.0
+offset_left = 2.0
+offset_top = 32.0
+offset_right = 98.0
+offset_bottom = 55.0
+theme_override_font_sizes/font_size = 15
 text = "GF"
 horizontal_alignment = 1
 
 [node name="Stage" type="MenuButton" parent="."]
 layout_mode = 0
-offset_left = 97.0
-offset_top = 349.0
-offset_right = 197.0
-offset_bottom = 384.0
+offset_left = 270.0
+offset_top = 50.0
+offset_right = 370.0
+offset_bottom = 85.0
 tooltip_text = "The song's GF/Spectator character"
 text = "Stage"
 flat = false
 
 [node name="Text" type="Label" parent="Stage"]
 layout_mode = 0
-offset_left = -96.0
-offset_top = 6.0
-offset_right = -1.0
-offset_bottom = 29.0
+offset_left = 2.0
+offset_top = 31.0
+offset_right = 98.0
+offset_bottom = 54.0
+theme_override_font_sizes/font_size = 15
 text = "Stage"
 horizontal_alignment = 1
-
-[node name="ClearNotes" type="Button" parent="."]
-layout_mode = 0
-offset_left = 255.0
-offset_top = 305.0
-offset_right = 375.0
-offset_bottom = 340.0
-focus_mode = 0
-text = "Clear Notes"
-
-[node name="ClearEvent" type="Button" parent="."]
-layout_mode = 0
-offset_left = 255.0
-offset_top = 350.0
-offset_right = 375.0
-offset_bottom = 385.0
-focus_mode = 0
-text = "Clear Events"
 
 [node name="ClearAll" type="Button" parent="."]
 self_modulate = Color(1, 0, 0, 1)
 layout_mode = 0
-offset_left = 255.0
-offset_top = 395.0
-offset_right = 375.0
-offset_bottom = 430.0
+offset_left = 85.0
+offset_top = 230.0
+offset_right = 285.0
+offset_bottom = 265.0
 focus_mode = 0
-text = "Clear All"
+text = "Clear"
+
+[node name="NotesBox" type="CheckBox" parent="ClearAll"]
+layout_mode = 0
+offset_left = -4.0
+offset_top = 35.0
+offset_right = 70.0
+offset_bottom = 66.0
+focus_mode = 0
+text = "Notes"
+
+[node name="EventBox" type="CheckBox" parent="ClearAll"]
+layout_mode = 0
+offset_left = 121.0
+offset_top = 35.0
+offset_right = 200.0
+offset_bottom = 66.0
+focus_mode = 0
+text = "Events"

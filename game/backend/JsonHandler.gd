@@ -173,7 +173,7 @@ func get_character(character:String = 'bf'):
 	return return_json
 
 func parse_week(week:String = 'week1') -> Dictionary: # in week folder
-	week = week.to_lower().strip_edges().replace('.json', '')
+	week = week.strip_edges().replace('.json', '')
 	var week_json = FileAccess.open('res://assets/data/weeks/'+ week +'.json', FileAccess.READ)
 	if week_json == null: return {}
 	var json = JSON.parse_string(week_json.get_as_text())

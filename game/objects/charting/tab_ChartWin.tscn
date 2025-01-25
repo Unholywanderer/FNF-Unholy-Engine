@@ -1,31 +1,31 @@
-[gd_scene format=3 uid="uid://wcwdtmwuvcvy"]
+[gd_scene format=3 uid="uid://bfvp1yk8ek2e6"]
 
 [node name="Chart" type="Control"]
-custom_minimum_size = Vector2(380, 300)
+custom_minimum_size = Vector2(335, 240)
 layout_mode = 3
 anchor_right = 0.304
 anchor_bottom = 0.609
-offset_right = -0.119995
-offset_bottom = -138.48
+offset_right = -54.12
+offset_bottom = -198.48
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ToggleGrid" type="CheckBox" parent="."]
 layout_mode = 0
-offset_left = 215.0
-offset_top = 15.0
-offset_right = 369.0
-offset_bottom = 46.0
+offset_left = 205.0
+offset_top = 4.0
+offset_right = 312.0
+offset_bottom = 35.0
 focus_mode = 0
 button_pressed = true
-text = "Show Chart Grid"
+text = "Show Grid"
 
 [node name="Metronome" type="CheckBox" parent="."]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 15.0
+offset_top = 4.0
 offset_right = 180.0
-offset_bottom = 46.0
+offset_bottom = 35.0
 focus_mode = 0
 text = "Metronome
 "
@@ -33,11 +33,11 @@ text = "Metronome
 [node name="HitsoundsL" type="CheckBox" parent="."]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 50.0
+offset_top = 39.0
 offset_right = 186.0
-offset_bottom = 81.0
+offset_bottom = 70.0
 focus_mode = 0
-text = "Hitsound (L.)"
+text = "Hitsound  (Left)"
 
 [node name="Vol" type="SpinBox" parent="HitsoundsL"]
 layout_mode = 0
@@ -54,11 +54,11 @@ update_on_text_changed = true
 [node name="HitsoundsR" type="CheckBox" parent="."]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 85.0
+offset_top = 74.0
 offset_right = 196.0
-offset_bottom = 116.0
+offset_bottom = 105.0
 focus_mode = 0
-text = "Hitsound (R.)"
+text = "Hitsound (Right)"
 
 [node name="Vol" type="SpinBox" parent="HitsoundsR"]
 layout_mode = 0
@@ -74,9 +74,9 @@ update_on_text_changed = true
 [node name="Inst" type="CheckBox" parent="."]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 171.0
+offset_top = 136.0
 offset_right = 176.0
-offset_bottom = 202.0
+offset_bottom = 167.0
 focus_mode = 0
 button_pressed = true
 text = "Play Inst"
@@ -85,7 +85,7 @@ text = "Play Inst"
 layout_mode = 0
 offset_left = 170.0
 offset_top = 7.0
-offset_right = 351.0
+offset_right = 315.0
 offset_bottom = 23.0
 tooltip_text = "Inst Volume"
 focus_mode = 0
@@ -96,9 +96,9 @@ value = 0.5
 [node name="Voices" type="CheckBox" parent="."]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 211.0
+offset_top = 168.0
 offset_right = 124.0
-offset_bottom = 242.0
+offset_bottom = 199.0
 focus_mode = 0
 button_pressed = true
 text = "Play Voices"
@@ -107,7 +107,7 @@ text = "Play Voices"
 layout_mode = 0
 offset_left = 170.0
 offset_top = 9.0
-offset_right = 351.0
+offset_right = 315.0
 offset_bottom = 25.0
 tooltip_text = "Main/Player Vocal Volume"
 focus_mode = 0
@@ -118,9 +118,9 @@ value = 0.7
 [node name="VoicesOpp" type="CheckBox" parent="."]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 251.0
+offset_top = 200.0
 offset_right = 161.0
-offset_bottom = 282.0
+offset_bottom = 231.0
 focus_mode = 0
 button_pressed = true
 text = "Play Opp Voices"
@@ -129,7 +129,7 @@ text = "Play Opp Voices"
 layout_mode = 0
 offset_left = 170.0
 offset_top = 7.0
-offset_right = 350.0
+offset_right = 315.0
 offset_bottom = 27.0
 tooltip_text = "Other/Opponent Vocal Volume"
 focus_mode = 0
@@ -139,10 +139,10 @@ value = 0.7
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
-offset_left = 221.0
-offset_top = 131.0
-offset_right = 317.0
-offset_bottom = 159.0
+offset_left = 194.0
+offset_top = 113.0
+offset_right = 290.0
+offset_bottom = 141.0
 theme_override_font_sizes/font_size = 20
 text = "Volume"
 horizontal_alignment = 1

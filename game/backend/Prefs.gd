@@ -44,7 +44,7 @@ var daniel:bool = false: # if you switch too much, it'll break lol
 ## KEYBINDS ##
 var note_keys:Array = [
 	['A', 'S', 'W', 'D'], ['Left', 'Down', 'Up', 'Right']
-	#keybinds for note_left, note_down, note_up, note_right
+	# keybinds for note_left, note_down, note_up, note_right
 ]
 var ui_keys:Array = [
 	[['0', '+', '-'], ['', '', '']], # mute, volume up, volume down

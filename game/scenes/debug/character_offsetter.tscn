@@ -155,7 +155,7 @@ script = ExtResource("5_36ais")
 layout_mode = 0
 offset_left = 11.0
 offset_top = 10.0
-offset_right = 169.0
+offset_right = 289.0
 offset_bottom = 41.0
 theme_override_fonts/font = ExtResource("4_e8b0o")
 action_mode = 1
@@ -163,6 +163,7 @@ text = "Change Character"
 flat = false
 
 [node name="CurCharLabel" type="Label" parent="UILayer/Main/CharacterSelect"]
+visible = false
 layout_mode = 0
 offset_left = 165.0
 offset_top = 3.0
@@ -236,6 +237,18 @@ min_value = -999.0
 max_value = 999.0
 alignment = 1
 update_on_text_changed = true
+
+[node name="Lock" type="CheckBox" parent="UILayer/Main/Cam"]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 27.0
+offset_right = 279.0
+offset_bottom = 58.0
+tooltip_text = "Lock Camera's position to the cross"
+focus_mode = 0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+text = "Lock Cam"
 
 [node name="Animations" type="Node2D" parent="UILayer"]
 

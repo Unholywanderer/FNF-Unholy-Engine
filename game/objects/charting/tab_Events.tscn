@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://crkjoido6ywl4"]
 
 [node name="Events" type="Control"]
-custom_minimum_size = Vector2(380, 439)
+custom_minimum_size = Vector2(380, 300)
 layout_mode = 3
 anchor_right = 0.297
 anchor_bottom = 0.61
@@ -12,7 +12,7 @@ metadata/_tab_index = 1
 [node name="Label" type="Label" parent="."]
 layout_mode = 0
 offset_right = 377.0
-offset_bottom = 437.0
+offset_bottom = 96.0
 theme_override_font_sizes/font_size = 70
 text = "Nothing!!"
 horizontal_alignment = 1

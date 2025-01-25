@@ -34,7 +34,7 @@ func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Ar
 		_: 
 			printerr('Couldn\'t get chart type')
 			return []
-			
+	
 	return le_parse.parse_chart(data)
 	
 # for loading a chart that isnt named a difficulty

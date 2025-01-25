@@ -64,15 +64,15 @@ func _init(pos:Vector2 = Vector2.ZERO, char:String = 'bf', player:bool = false):
 	load_char(char)
 	
 func load_char(new_char:String = 'bf') -> void:
-	if new_char == cur_char:
-		print(new_char +' already loaded') 
+	if new_char == cur_char or new_char.is_empty():
+		print(new_char +' already loaded')
 		return
 		
 	cur_char = new_char
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % cur_char):
-		printerr('CHARACTER '+ cur_char +' does NOT have a json')
-		print_rich('[color=red]'+ cur_char +' [color=yellow]-> [color=green]'+ get_closest(cur_char) +'[/color]')
-		cur_char = get_closest(cur_char)
+		var replace_char = get_closest(cur_char)
+		print_rich('No JSON found for: '+ cur_char +'\n', '[color=red]'+ cur_char +' [color=yellow]-> [color=green]'+ replace_char)
+		cur_char = replace_char
 	
 	json = JsonHandler.get_character(cur_char) # get offsets and anim names...
 	if json.has('no_antialiasing'):

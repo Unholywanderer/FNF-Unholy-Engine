@@ -7,7 +7,6 @@ extends Node2D
 @onready var Judge:Rating = Rating.new()
 
 var DIE
-var DIE_TWO_ELECTRIC_BOGALOO
 
 var story_mode:bool = false
 var SONG

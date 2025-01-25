@@ -67,6 +67,7 @@ func center_obj(obj = null, axis:String = 'xy') -> void:
 
 func reset_scene() -> void:
 	LuaHandler.remove_all()
+	get_tree().paused = false
 	get_tree().reload_current_scene()
 
 func switch_scene(to_scene, skip_trans:bool = false) -> void:

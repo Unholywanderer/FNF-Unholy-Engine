@@ -79,10 +79,6 @@ func _ready():
 	SONG = JsonHandler._SONG
 	events = JsonHandler.song_events
 	
-	for i in SONG.notes:
-		for n in i.sectionNotes:
-			note_list.append(n)
-	
 	Discord.change_presence('Charting '+ SONG.song.capitalize(), 'One must imagine a charter happy')
 	#get_signal_list()
 	Conductor.load_song(SONG.song)
@@ -90,15 +86,23 @@ func _ready():
 	Conductor.bpm = SONG.bpm
 	Conductor.paused = true
 	
-	for i in ['bf', 'bf-pixel-opponent']:
+	var lil_box = ColorRect.new()
+	lil_box.color = Color.DARK_SLATE_GRAY
+	lil_box.position = Vector2(180, 591)
+	lil_box.custom_minimum_size = Vector2(100, 55)
+	$ChartUI.add_child(lil_box)
+	
+	for i in ['bf', 'bf-pixel-opponent', 'gf']:
 		var new_boy = Character.new(Vector2.ZERO, i)
 		new_boy.scale *= 0.3
 		$ChartUI.add_child(new_boy)
 		funky_boys.append(new_boy)
-		
+	$ChartUI.move_child(funky_boys[2], lil_box.get_index() + 1)
+	
 	funky_boys[0].flip_char()
-	funky_boys[0].position = Vector2(700, 530)
-	funky_boys[1].position = Vector2(300, 500)
+	funky_boys[0].position = Vector2(250, 550)
+	funky_boys[1].position = Vector2(200, 520)
+	funky_boys[2].position = Vector2(180, 500)
 	
 	var voices = [Conductor.vocals, Conductor.vocals_opp, 'Voices', 'VoicesOpp']
 	for i in 2:
@@ -293,7 +297,13 @@ func _process(delta):
 		#		event.modulate = Color.GRAY
 		#		play_strum(event)
 				
-		for note:BasicNote in notes_loaded:
+		for note in notes_loaded:
+			if note is EventNote:
+				if note.was_hit and note.modulate != Color.GRAY:
+					note.modulate = Color.GRAY
+					play_strum(note)
+					continue
+					
 			if note.was_hit:
 				if note.hitting: play_strum(note)
 				if !note.is_sustain and note.modulate != Color.GRAY:
@@ -327,7 +337,7 @@ func make_note(info, must_hit:bool = true):
 	if new_note.must_press:
 		lane_to_use += 4
 		
-	do_note_shit(new_note, lane_to_use)
+	update_note_pos(new_note, lane_to_use)
 	
 	new_note.position.y = floori(get_y_from_time(fmod(floor(info[0]) - get_section_time(cur_section), Conductor.step_crochet * 48)))
 	
@@ -339,7 +349,7 @@ func make_note(info, must_hit:bool = true):
 		var sustain:BasicNote = BasicNote.new(new_note, true)
 		$Notes.add_child(sustain)
 		$Notes.move_child(sustain, 1)
-		do_note_shit(sustain, new_note.lane)
+		update_note_pos(sustain, new_note.lane)
 		
 		sustain.hold_group.size.x = 50 # close enough for now
 		sustain.hold_group.size.y = floori(remap(info[2], 0, Conductor.step_crochet * 16.0, 0, grid_1.height * 3.87))
@@ -350,16 +360,15 @@ func make_note(info, must_hit:bool = true):
 		notes_loaded.append(sustain)
 
 func play_strum(note):
-	if note is BasicNote:
-		#print('NOTE: '+ str(note.position.y) +' | CAM: '+  str($Cam.position.y) +' '+ str(note.position.y + $Cam.position.y))
+	if note is EventNote:
+		$ChartLine/EventStrum.play_anim('confirm', true)
+		$ChartLine/EventStrum.reset_timer = 0.15
+	else:
 		var dir = wrap(note.lane, 0, 8)
 		strums[dir].play_anim('confirm', true)
 		strums[dir].reset_timer = 0.15
 	
 		funky_boys[0 if dir > 3 else 1].sing(note.dir, '', !note.is_sustain)
-	elif note is EventNote:
-		$ChartLine/EventStrum.play_anim('confirm', true)
-		$ChartLine/EventStrum.reset_timer = 0.15
 
 func on_char_change(c:String):
 	var new_char:String
@@ -387,10 +396,9 @@ func beat_hit(beat:int) -> void:
 	$ChartLine/IconL.bump(0.6)
 	$ChartLine/IconR.bump(0.6)
 	
-	if beat % 2 == 0:
-		for i in funky_boys:
-			if !i.animation.begins_with('sing'):
-				i.dance()
+	for i in funky_boys:
+		if !i.animation.begins_with('sing') and beat % i.dance_beat == 0:
+			i.dance()
 				
 	if tab('Chart', 'Metronome').button_pressed: 
 		Audio.play_sound('tick', 0.8)
@@ -531,8 +539,8 @@ func _input(event): # this is better
 				SONG.bpm = tab('Song', 'BPM').value
 				SONG.speed = tab('Song', 'Speed').value
 				SONG.stage = tab('Song', 'Stage').text
-				#JsonHandler._SONG = SONG
-				#JsonHandler.generate_chart(SONG)
+				JsonHandler._SONG = SONG
+				JsonHandler.generate_chart(SONG)
 				Conductor.audio.volume_db = linear_to_db(1)
 				Game.switch_scene('Play_Scene')
 			
@@ -593,6 +601,7 @@ func _input(event): # this is better
 		if Input.is_key_pressed(KEY_RIGHT): cur_quant += 1
 	
 var last_updated_sec:int = -1
+var last_got_bpm:float
 func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
 	#Game.remove_all([prev_notes, cur_notes, next_notes, cur_events], $Notes)
 	Game.remove_all([notes_loaded], $Notes)
@@ -633,18 +642,21 @@ func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
 		#var last_sec = SONG.notes[cur_section - 1]
 		#make_notes.call(last_sec, grid_0, -1, prev_notes)
 		#for i in prev_notes: i.modulate = Color.GRAY
-			
-	#var ev_times = {'start': get_section_time(cur_section), 'end': get_section_time(cur_section + 1)}
-	#var tot:int = 0
-	#for evn in events:
-	#	if evn.strum_time >= ev_times.start and evn.strum_time < ev_times.end:
-	#		tot += 1
-	#		var new_event = EventNote.new(evn)
-	#		$Notes.add_child(new_event)
-	#		new_event.strum_time = evn.strum_time
-	#		cur_events.append(new_event)
-	#		do_note_shit(new_event)
-	#		new_event.position.y = floori(get_y_from_time(fmod(floor(evn.strum_time) - get_section_time(), Conductor.step_crochet * 16)))
+	
+	if events.size() > 0:
+		var ev_times = {'start': get_section_time(cur_section - 1), 'end': get_section_time(cur_section + 2)}
+		#var tot:int = 0
+		for evn in events:
+			if evn.strum_time >= ev_times.start and evn.strum_time < ev_times.end:
+				#tot += 1
+				var new_event = EventNote.new(evn)
+				$Notes.add_child(new_event)
+				new_event.strum_time = evn.strum_time
+				notes_loaded.append(new_event)
+				update_note_pos(new_event)
+				if floor(new_event.strum_time) < floor(Conductor.song_pos) - 10: # slight offset so the first note of a section can always get hit
+					new_event.modulate = Color.GRAY
+				new_event.position.y = floori(get_y_from_time(fmod(floor(evn.strum_time) - get_section_time(), Conductor.step_crochet * 48)))
 	#print('loaded '+ str(tot) +' events')
 		
 	#var new_sec = SONG.notes[cur_section]
@@ -654,7 +666,7 @@ func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
 	#	var next_sec = SONG.notes[cur_section + 1]
 	#	make_notes.call(next_sec, grid_2, 1, next_notes)
 	
-func do_note_shit(note, dir:int = 0) -> void:
+func update_note_pos(note, dir:int = 0) -> void:
 	note.scale = Vector2(0.26, 0.26)
 	if note is not EventNote:
 		note.lane = dir
@@ -677,13 +689,15 @@ func check_note() -> void:
 				select_note(note)
 			else:
 				remove_note(note)
+			break
 		
 	if !clicked_note and over_grid: # so you can click notes that are somehow off the grid, but not add more
 		add_note()
 		
 func add_note() -> void:
 	var time = get_strum_from_y(selected.position.y) + get_section_time()
-	var direct:int = floor(mouse_pos.x / GRID_SIZE) - (1 if SONG.notes[cur_section].mustHitSection else 5)
+	var direct:int = floor(mouse_pos.x / GRID_SIZE) - 5
+	print('adding note ('+ str(direct) +')')
 	
 	SONG.notes[cur_section].sectionNotes.append([time, direct, 0])
 	SONG.notes[cur_section].sectionNotes.sort_custom(func(a, b): return a[0] < b[0])
@@ -742,25 +756,25 @@ func get_section_time(this_sec:int = -1):
 		pos += 4.0 * (1000.0 * 60.0 / bpm)
 	return pos
 
-class EventNote extends Note:
+class EventNote extends BasicNote:
 	var ev_name:String = 'Nothing!'
 	var ev_extra:String = '' 
 	
-	var label:Label
 	func _init(event:EventData):
 		is_sustain = false # just in case
 		label = Label.new()
-		label.add_theme_font_override('font', ResourceLoader.load('res://assets/fonts/vcr.ttf', 'FontFile'))
+		label.add_theme_font_override('font', ResourceLoader.load('res://assets/fonts/vcr.ttf'))
 		label.add_theme_font_size_override('font_size', 15)
 		label.add_theme_constant_override('outline_size', 5)
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		label.size = Vector2(300, 48)
 		add_child(label)
 		label.scale *= 4
 		
-		label.position.x -= 550 + (label.get_total_character_count() * 5)
+		label.position.x -= 1300 #+ (label.get_total_character_count() * 5)
+		label.position.y -= 10
 
-		chart_note = true
 		note = Sprite2D.new()
 		note.texture = ResourceLoader.load('res://assets/images/ui/event.png')
 		add_child(note)
@@ -770,7 +784,9 @@ class EventNote extends Note:
 			#ev_extra.substr(0, ev_extra.length() - 2)
 		label.text = ev_name +'\n'+ ev_extra
 	
-	func _ready(): pass
+	func _ready(): 
+		spawned = true
+		pass # just to overwrite the BasicNote's ready
 
 class NoteGrid extends Control:
 	var width:int
