@@ -25,12 +25,9 @@ var selected_id:int = 0:
 		var got = offsets[cur_anim] if offsets.has(cur_anim) else [0, 0]
 		character.offset = Vector2(got[0], got[1])
 
-func _ready():
+func _ready() -> void:
 	Game.set_mouse_visibility()
 	Audio.play_music('artisticExpression')
-	#DebugInfo.get_node('FPS').visible = false
-	#if OS.is_debug_build():
-	#	DebugInfo.get_node('Other').visible = false
 	
 	shadow = Character.new(Vector2.ZERO, 'bf-dead', true)
 	add_child(shadow)
@@ -90,7 +87,7 @@ func _ready():
 			icon_list.append(i)
 			MAIN('IconSelect').get_popup().add_item(i)
 
-func _process(delta):
+func _process(delta:float) -> void:
 	if MAIN('Cam/Lock').button_pressed:
 		$Cam.position = $Point.position
 	$Backdrop.scale = Vector2.ONE / $Cam.zoom
@@ -145,7 +142,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		character.pause()
 		character.frame += 1
 	
-func change_icon(new_icon:String = 'bf'):
+func change_icon(new_icon:String = 'bf') -> void:
 	var ic:Icon = MAIN('IconSelect/Icon')
 	var hi:ColorRect = MAIN('IconSelect/Highlight')
 	char_json.icon = new_icon
@@ -159,7 +156,7 @@ func change_icon(new_icon:String = 'bf'):
 		hi.custom_minimum_size.x /= 2.0
 		hi.size /= 2.0
 	
-func change_char(new_char:String = 'bf'):
+func change_char(new_char:String = 'bf') -> void:
 	char_json = JsonHandler.get_character(new_char)
 	if char_json == null: return
 	cur_char = new_char
