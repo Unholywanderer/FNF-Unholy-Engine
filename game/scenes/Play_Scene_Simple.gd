@@ -46,6 +46,9 @@ var combo:int = 0
 var misses:int = 0
 
 func _ready():
+	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
+	Game.persist.note_splash = load(spl_path)
+	
 	auto_play = Prefs.auto_play # there is a reason
 	if Game.persist.song_list.size() > 0:
 		story_mode = true
@@ -330,8 +333,8 @@ func good_note_hit(note:Note) -> void:
 		note_miss(note)
 		return
 	
-	if Conductor.vocals.stream: 
-		Conductor.vocals.volume_db = linear_to_db(1.0)
+	if Conductor.vocals: 
+		Conductor.audio_volume(1, 1)
 		
 	var time:float = Conductor.song_pos - note.strum_time if !auto_play else 0.0
 	note.rating = Judge.get_rating(time)
@@ -374,8 +377,8 @@ func good_sustain_press(sustain:Note) -> void:
 		if !sustain.should_hit:
 			note_miss(null)
 		else:
-			if Conductor.vocals.stream: 
-				Conductor.vocals.volume_db = linear_to_db(1.0) 
+			if Conductor.vocals: 
+				Conductor.audio_volume(1, 1)
 			
 			ui.get_group('player').note_hit(sustain)
 			
@@ -389,17 +392,15 @@ func good_sustain_press(sustain:Note) -> void:
 func opponent_note_hit(note:Note) -> void:
 	if note.type.length() > 0: print(note.type, ' dad')
 	
-	if Conductor.vocals.stream:
-		var v = Conductor.vocals_opp if Conductor.mult_vocals else Conductor.vocals
-		v.volume_db = linear_to_db(1)
+	if Conductor.vocals:
+		Conductor.audio_volume((2 if Conductor.mult_vocals else 1), 1)
 	
 	ui.get_group('opponent').note_hit(note)
 	kill_note(note)
 
 func opponent_sustain_press(sustain:Note) -> void:
-	if Conductor.vocals.stream:
-		var v = Conductor.vocals_opp if Conductor.mult_vocals else Conductor.vocals
-		v.volume_db = linear_to_db(1)
+	if Conductor.vocals:
+		Conductor.audio_volume((2 if Conductor.mult_vocals else 1), 1)
 	
 	ui.get_group('opponent').note_hit(sustain)
 
@@ -428,8 +429,8 @@ func note_miss(note:Note) -> void:
 	pop_up_combo(['miss', ('000' if combo >= 10 else '')], true)
 	combo = 0
 	
-	if Conductor.vocals.stream:
-		Conductor.vocals.volume_db = linear_to_db(0)
+	if Conductor.vocals:
+		Conductor.audio_volume(1, 0)
 	ui.update_score_txt()
 	#if !note.sustain: 
 	
@@ -450,8 +451,8 @@ func ghost_tap(dir:int) -> void:
 
 	pop_up_combo(['miss', ''], true)
 	
-	if Conductor.vocals.stream:
-		Conductor.vocals.volume_db = linear_to_db(0)
+	if Conductor.vocals:
+		Conductor.audio_volume(1, 0)
 	ui.update_score_txt()
 	
 func pop_up_combo(_info:Array = ['sick', -1], is_miss:bool = false) -> void:
