@@ -18,8 +18,7 @@ var song_pos:float = 0.0:
 		if song_pos < 0: 
 			song_started = false
 			audio.stop()
-			#for_all_audio('stop')
-
+			
 var playback_rate:float = 1.0:
 	get: return AudioServer.playback_speed_scale
 	set(rate): 
@@ -28,8 +27,7 @@ var playback_rate:float = 1.0:
 		for i in Game.scene.get_child_count():
 			if Game.scene.get_child(i) is AnimatedSprite2D:
 				Game.scene.get_child(i).speed_scale = rate
-		#Engine.time_scale = 1
-		
+
 var safe_zone:float = 166.0
 var song_length:float = INF
 
@@ -48,10 +46,14 @@ var paused:bool = false:
 		pause()
 
 var mult_vocals:bool = false
+var total_streams:int:
+	get: return audio.stream.stream_count if audio.stream else 0
+	#set(total): audio.stream.stream_total = total
+	
 var audio:AudioStreamPlayer
-var inst
-var vocals
-var vocals_opp
+var inst:AudioStream
+var vocals:AudioStream # make this an array for vocals at this rate
+var vocals_opp:AudioStream
 
 var bpm_changes
 func _ready():
@@ -69,6 +71,8 @@ func load_song(song:String = '') -> void:
 	if song.is_empty(): song = 'tutorial'
 		
 	song = Game.format_str(song)
+	mult_vocals = false
+
 	var grabbed_audios:Array = []
 	var path:String = 'res://assets/songs/'+ song +'/audio/%s.ogg' # myehh
 	if JsonHandler.song_variant != '':
@@ -89,22 +93,14 @@ func load_song(song:String = '') -> void:
 			grabbed_audios.append(load(path % ['Voices-player'+ suffix]))
 			grabbed_audios.append(load(path % ['Voices-opponent'+ suffix]))
 		elif ResourceLoader.exists(path % ['Voices'+ suffix]):
-			mult_vocals = false
 			grabbed_audios.append(load(path % ['Voices'+ suffix]))
 	
 	audio.stream = AudioStreamSynchronized.new()
 	audio.stream.stream_count = grabbed_audios.size()
 	for i in grabbed_audios.size():
 		audio.stream.set_sync_stream(i, grabbed_audios[i])
-		var new_stream = audio.stream.get_sync_stream(i)
-		set(['inst', 'vocals', 'vocals_opp'][i], new_stream)
-		#new_stream.bus = 'Vocals'
-		#'Instrumental'
+		set(['inst', 'vocals', 'vocals_opp'][i], audio.stream.get_sync_stream(i))
 		
-	inst = audio.stream.get_sync_stream(0)
-	vocals = audio.stream.get_sync_stream(1)
-	if mult_vocals: vocals_opp = audio.stream.get_sync_stream(2)
-	
 	if inst:
 		song_length = inst.get_length() * 1000.0
 	
@@ -156,7 +152,7 @@ func connect_signals(scene = null) -> void: # connect all signals
 		if Game.scene.has_method(i):
 			get(i).connect(Callable(this_scene, i))
 
-func add_voice(new_id:int, file_name:String, song_name:String):
+func add_voice(new_id:int, file_name:String, song_name:String) -> void:
 	if song_name.is_empty(): song_name = JsonHandler.song_root
 	var path_to_check:String = 'assets/songs/%s/audio/%s.ogg' % [song_name, file_name]
 	if !ResourceLoader.exists('res://'+ path_to_check):
@@ -167,11 +163,10 @@ func add_voice(new_id:int, file_name:String, song_name:String):
 	audio.stream.stream_count += 1
 	audio.stream.set_sync_stream(new_id, voc)
 
-func audio_volume(id:int, vol:float = 1.0):
-	if audio.stream.stream_count - 1 < id: 
-		printerr(str(id) +' id doesnt exist!')
-		if id > 0: return audio_volume(id - 1, vol) # would be funny
-		else: return
+func audio_volume(id:int, vol:float = 1.0) -> void:
+	var stream_count = audio.stream.stream_count - 1
+	if id > stream_count: printerr('ID '+ str(id) +' doesn\'t exist!')
+	id = clamp(id, 0, stream_count)
 	audio.stream.set_sync_stream_volume(id, linear_to_db(vol))
 
 func resync_audio() -> void:
@@ -181,6 +176,8 @@ func resync_audio() -> void:
 func stop() -> void:
 	song_pos = 0
 	audio.stop()
+	for i in [inst, vocals, vocals_opp]: 
+		if i != null and is_instance_valid(i): i.unreference()
 	audio.stream = null
 	reset_beats()
 

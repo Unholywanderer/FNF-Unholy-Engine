@@ -213,12 +213,10 @@ func _ready():
 	Conductor.connect_signals(stage)
 	
 	for i in DirAccess.get_files_at('res://assets/data/scripts'):
-		if !i.ends_with('.lua'): continue
-		LuaHandler.add_script('data/scripts/'+ i)
+		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
 		
 	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
-		if !i.ends_with('.lua'): continue
-		LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
+		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
 		
 	if DIE == null:
 		var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
@@ -491,10 +489,18 @@ func event_hit(event:EventData) -> void:
 		'Hey!':
 			var time:float = float(event.values[1])
 			if is_nan(time): time = 0.6
-			char_from_string(event.values[0]).play_anim('hey', true)
-			char_from_string(event.values[0]).anim_timer = time
-			#gf.play_anim('cheer', true)
-			#gf.anim_timer = time
+			match event.values[0].to_lower():
+				'bf', 'boyfriend', '0':
+					boyfriend.play_anim('hey', true)
+					boyfriend.anim_timer = time
+				'gf', 'girlfriend', '2':
+					gf.play_anim('cheer', true)
+					gf.anim_timer = time
+				_:
+					boyfriend.play_anim('hey', true)
+					boyfriend.anim_timer = time
+					gf.play_anim('cheer', true)
+					gf.anim_timer = time
 		'Play Animation':
 			if event.values[1] == '1': event.values[1] = '0'
 

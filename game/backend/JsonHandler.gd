@@ -51,7 +51,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	var meta:Dictionary = {}
 	match parse_type:
 		'v_slice':
-			meta = JSON.parse_string(FileAccess.open(meta_path % ['metadata'+ song_variant], FileAccess.READ).get_as_text())
+			meta = JSON.parse_string(FileAccess.get_file_as_string(meta_path % ['metadata'+ song_variant]))
 			_SONG.speed = _SONG.scrollSpeed[diff] if _SONG.scrollSpeed.has(diff) else _SONG.scrollSpeed.default
 			_SONG.player1 = meta.playData['characters'].player
 			_SONG.gfVersion = meta.playData['characters'].girlfriend
@@ -64,7 +64,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			_SONG.player2 = _SONG.players[1]
 			_SONG.gfVersion = _SONG.players[2]
 		'codename':
-			meta = JSON.parse_string(FileAccess.open(meta_path % ['meta'], FileAccess.READ).get_as_text())
+			meta = JSON.parse_string(FileAccess.get_file_as_string(meta_path % ['meta']))
 			_SONG.speed = _SONG.scrollSpeed
 			_SONG.song = meta.displayName
 			_SONG.bpm = meta.bpm
@@ -169,7 +169,6 @@ func get_character(character:String = 'bf'):
 		return null
 	var file = FileAccess.open(json_path, FileAccess.READ).get_as_text()
 	return_json = JSON.parse_string(file)
-	if return_json.has('no_antialiasing'): return_json.type = 'psych'
 	return return_json
 
 func parse_week(week:String = 'week1') -> Dictionary: # in week folder

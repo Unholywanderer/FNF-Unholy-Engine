@@ -159,6 +159,7 @@ func change_icon(new_icon:String = 'bf') -> void:
 func change_char(new_char:String = 'bf') -> void:
 	char_json = JsonHandler.get_character(new_char)
 	if char_json == null: return
+	selected_id = 0
 	cur_char = new_char
 	MAIN('CharacterSelect').text = cur_char
 	if char_json.has('no_antialiasing'):
@@ -203,7 +204,6 @@ func change_char(new_char:String = 'bf') -> void:
 	shadow_anim_change(0)
 	
 func reload_list(anims:Array) -> void:
-	selected_id = 0
 	Game.remove_all([anim_list], $UILayer/Animations)
 	offsets.clear()
 	MAIN('Shadow/AnimSelect').get_popup().clear()
@@ -275,8 +275,10 @@ func save_pressed() -> void:
 	new_json.cam_offset = cur_cam_offset
 	new_json.pos_offset = cur_pos_offset
 	new_json.scale = MAIN('ScaleBox').value
+	if old_json.has('speaker'):
+		new_json.speaker = old_json.speaker
 	
-	var file:FileAccess = FileAccess.open("res://assets/data/characters/TESTJSON-3.json", FileAccess.WRITE)
+	var file:FileAccess = FileAccess.open("res://assets/data/characters/"+ cur_char +".json", FileAccess.WRITE)
 	file.resize(0) # clear the file, if it has stuff in it
 	file.store_string(JSON.stringify(new_json, '\t', false))
 	file.close()
