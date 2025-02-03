@@ -15,8 +15,7 @@ func _ready():
 		
 	change_selection()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _unhandled_input(event:InputEvent) -> void:
 	if Input.is_action_just_pressed('menu_down'):
 		change_selection(1)
 	elif Input.is_action_just_pressed('menu_up'):
@@ -40,7 +39,6 @@ func change_selection(by:int = 0) -> void:
 	if by != 0: Audio.play_sound('scrollMenu')
 	cur_option = wrapi(cur_option + by, 0, menu_sprites.size())
 	menu_sprites[cur_option].play('selected')
-
 	
 	for i in menu_sprites.size():
 		if i == cur_option: continue
