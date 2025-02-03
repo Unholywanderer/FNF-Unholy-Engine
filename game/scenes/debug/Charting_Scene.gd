@@ -164,6 +164,25 @@ func _ready():
 	tab('Song', 'Stage').get_popup().connect("id_pressed", func(id):
 		tab('Song', 'Stage').text = stage_list[id]
 	)
+	
+	tab('Song', 'Clear').pressed.connect(func():
+		var _notes = tab('Song', 'Clear/NotesBox')
+		var _event = tab('Song', 'Clear/EventBox')
+		if _notes.button_pressed:
+			if section_based:
+				for sec in SONG.notes:
+					if !sec.has('sectionNotes'): continue
+					sec.sectionNotes.clear()
+			else:
+				note_list.clear()
+					
+		if _event.button_pressed:
+			if SONG.has('events'): SONG.events.clear()
+		
+		regen_notes()
+		_notes.button_pressed = false
+		_event.button_pressed = false
+	)
 
 	var chars = [JsonHandler.get_character(SONG.player2), JsonHandler.get_character(SONG.player1)]
 	$ChartLine/IconL.change_icon(chars[0].icon if chars[0] != null else 'face')
@@ -312,7 +331,7 @@ func _process(delta):
 					
 					if (tab('Chart', 'HitsoundsR').button_pressed and note.must_press):
 						Audio.play_sound('hitsound', tab('Chart', 'HitsoundsR/Vol').value)
-		
+					
 					play_strum(note)
 					
 	if this_note != null:
@@ -321,7 +340,8 @@ func _process(delta):
 	if Input.is_action_just_pressed("back"):
 		Conductor.reset_beats()
 		Game.reset_scene()
-		
+
+var last_bpm:float
 func event_hit(event:EventNote):
 	var le_values = event.raw_data.values
 	match event.ev_name:
@@ -330,6 +350,8 @@ func event_hit(event:EventNote):
 			if char_int is Dictionary:
 				char_int = char_int.char
 			$ChartLine/Highlight.position = ($ChartLine/IconR.position if char_int == 0 else $ChartLine/IconL.position) - Vector2(37.5, 37.5)
+		'ChangeBPM':
+			Conductor.bpm = le_values[0]
 		
 func make_note(info, must_hit:bool = true):
 	var new_note:BasicNote
@@ -503,10 +525,11 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 				temp_croch = (60.0 / bpm) * 1000.0
 			
 			# set beats and steps back to what they would be
-			for j in 16:
+			var le_beats:int = int(da_sec.sectionBeats) if da_sec.has('sectionBeats') else 4
+			for j in le_beats * 4:
 				temp.step_t += (temp_croch / 4.0)
 				temp.step += 1
-				if j % int(da_sec.sectionBeats if da_sec.has('sectionBeats') else 4) == 0:
+				if j % 4 == 0:
 					temp.beat_t += (60.0 / bpm) * 1000.0
 					temp.beat += 1
 				
@@ -669,7 +692,7 @@ func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
 					make_note(note, SONG.notes[cur_section + int(chunk)].mustHitSection)
 	else:
 		var min_time = get_section_time(cur_section - 1)
-		var cur_time = get_section_time()
+		#var cur_time = get_section_time()
 		var max_time = get_section_time(cur_section + 2)
 		for note in note_list:
 			if note.t >= min_time and note.t < max_time:
@@ -721,14 +744,16 @@ func add_note() -> void:
 	var direct:int = floor(mouse_pos.x / GRID_SIZE) - 5
 	print('adding note ('+ str(direct) +')')
 	
+	if !section_based: return
 	SONG.notes[cur_section].sectionNotes.append([time, direct, 0])
 	SONG.notes[cur_section].sectionNotes.sort_custom(func(a, b): return a[0] < b[0])
-	
 	this_note = SONG.notes[cur_section].sectionNotes[(SONG.notes[cur_section].sectionNotes.find([time, direct, 0]))]
+	
 	regen_notes()
 	
 func select_note(note:BasicNote) -> void:
 	var id:int = 0
+	if !section_based: return
 	for i in SONG.notes[cur_section].sectionNotes:
 		if floor(i[0]) == note.strum_time and i[1] == note.true_dir:
 			this_note = SONG.notes[cur_section].sectionNotes[id]
@@ -737,6 +762,7 @@ func select_note(note:BasicNote) -> void:
 		id += 1
 
 func remove_note(note:BasicNote) -> void:
+	if !section_based: return
 	for i in SONG.notes[cur_section].sectionNotes:
 		if floor(i[0]) == note.strum_time and i[1] == note.true_dir:
 			this_note.clear()
@@ -775,7 +801,8 @@ func get_section_time(this_sec:int = -1):
 		var da_sec = SONG.notes[i] if section_based else {}
 		if da_sec.has('changeBPM') and da_sec.changeBPM:
 			bpm = max(da_sec.bpm, 1)
-		pos += 4.0 * (1000.0 * 60.0 / bpm)
+		var le_beat = da_sec.sectionBeats if da_sec.has('sectionBeats') else 4.0
+		pos += le_beat * (1000.0 * 60.0 / bpm)
 	return pos
 
 class EventNote extends BasicNote:

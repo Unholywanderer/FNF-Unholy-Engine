@@ -36,6 +36,7 @@ func _ready():
 	for file in added_weeks: 
 		var week_file = JsonHandler.parse_week(file)
 		var d_list = week_file.difficulties if week_file.has('difficulties') else []
+		if d_list is String: d_list = d_list.split(',')
 		var v_list = {}
 		if 'variants' in week_file:
 			v_list = week_file.variants

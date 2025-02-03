@@ -588,6 +588,8 @@ func event_hit(event:EventData) -> void:
 				_cam_tween.finished.connect(func(): _cam_tween = null)
 			else:
 				$Camera.zoom = Vector2(new_zoom, new_zoom)
+		'ChangeBPM':
+			Conductor.bpm = event.values[0]
 
 func good_note_hit(note:Note) -> void:
 	if note.type.length() > 0: print(note.type, ' bf')

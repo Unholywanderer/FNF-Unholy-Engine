@@ -59,6 +59,11 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			_SONG.stage = stage_to(meta.playData.stage)
 			_SONG.song = meta.songName
 			_SONG.bpm = meta.timeChanges[0].bpm
+			if meta.timeChanges.size() > 1:
+				var times = meta.timeChanges.duplicate(true)
+				times.remove_at(0) # skip first one
+				for i in times:
+					_SONG.events.append({'t': i.t, 'e': 'ChangeBPM', 'v': i.bpm})
 		'maru':
 			_SONG.player1 = _SONG.players[0]
 			_SONG.player2 = _SONG.players[1]

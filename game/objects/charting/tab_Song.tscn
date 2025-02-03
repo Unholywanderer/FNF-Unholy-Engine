@@ -133,7 +133,7 @@ theme_override_font_sizes/font_size = 15
 text = "Stage"
 horizontal_alignment = 1
 
-[node name="ClearAll" type="Button" parent="."]
+[node name="Clear" type="Button" parent="."]
 self_modulate = Color(1, 0, 0, 1)
 layout_mode = 0
 offset_left = 85.0
@@ -143,7 +143,7 @@ offset_bottom = 265.0
 focus_mode = 0
 text = "Clear"
 
-[node name="NotesBox" type="CheckBox" parent="ClearAll"]
+[node name="NotesBox" type="CheckBox" parent="Clear"]
 layout_mode = 0
 offset_left = -4.0
 offset_top = 35.0
@@ -152,7 +152,7 @@ offset_bottom = 66.0
 focus_mode = 0
 text = "Notes"
 
-[node name="EventBox" type="CheckBox" parent="ClearAll"]
+[node name="EventBox" type="CheckBox" parent="Clear"]
 layout_mode = 0
 offset_left = 121.0
 offset_top = 35.0

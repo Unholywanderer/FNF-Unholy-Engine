@@ -48,14 +48,14 @@ var paused:bool = false:
 var mult_vocals:bool = false
 var total_streams:int:
 	get: return audio.stream.stream_count if audio.stream else 0
-	#set(total): audio.stream.stream_total = total
+	set(total): if audio.stream: audio.stream.stream_count = abs(total)
 	
 var audio:AudioStreamPlayer
 var inst:AudioStream
 var vocals:AudioStream # make this an array for vocals at this rate
 var vocals_opp:AudioStream
 
-var bpm_changes
+var bpm_changes = {}
 func _ready():
 	audio = AudioStreamPlayer.new()
 	add_child(audio)
@@ -69,9 +69,12 @@ func _ready():
 	
 func load_song(song:String = '') -> void:
 	if song.is_empty(): song = 'tutorial'
-		
+	print('Cond 1')
+
 	song = Game.format_str(song)
 	mult_vocals = false
+	total_streams = 0
+	print('Cond 2')
 
 	var grabbed_audios:Array = []
 	var path:String = 'res://assets/songs/'+ song +'/audio/%s.ogg' # myehh
@@ -94,15 +97,17 @@ func load_song(song:String = '') -> void:
 			grabbed_audios.append(load(path % ['Voices-opponent'+ suffix]))
 		elif ResourceLoader.exists(path % ['Voices'+ suffix]):
 			grabbed_audios.append(load(path % ['Voices'+ suffix]))
+	print('Cond 3')
 	
 	audio.stream = AudioStreamSynchronized.new()
-	audio.stream.stream_count = grabbed_audios.size()
-	for i in grabbed_audios.size():
+	total_streams = grabbed_audios.size()
+	for i in total_streams:
 		audio.stream.set_sync_stream(i, grabbed_audios[i])
 		set(['inst', 'vocals', 'vocals_opp'][i], audio.stream.get_sync_stream(i))
 		
 	if inst:
 		song_length = inst.get_length() * 1000.0
+	print('Cond 4')
 	
 	audio.stream_paused = true
 	song_loaded = true
@@ -145,7 +150,7 @@ func _process(delta):
 		if audio.playing:
 			if absf((audio.get_playback_position() * 1000) - (song_pos + Prefs.offset)) > 20: 
 				resync_audio()
-				
+			
 func connect_signals(scene = null) -> void: # connect all signals
 	var this_scene = scene if scene != null else Game.scene
 	for i in ['beat_hit', 'step_hit', 'section_hit', 'song_end']:
@@ -176,13 +181,13 @@ func resync_audio() -> void:
 func stop() -> void:
 	song_pos = 0
 	audio.stop()
-	for i in [inst, vocals, vocals_opp]: 
-		if i != null and is_instance_valid(i): i.unreference()
+	#for i in [inst, vocals, vocals_opp]: 
+	#	if i != null and is_instance_valid(i): i.unreference()
 	audio.stream = null
 	reset_beats()
 
-func pause() -> void: # NOTE: you shouldn't call this function, you should set Conductor.paused instead
-	audio.stream_paused = paused
+# NOTE: you shouldn't call this function, you should set Conductor.paused instead
+func pause() -> void: audio.stream_paused = paused
 
 func start(at_point:float = -1) -> void:
 	song_started = true # lol
