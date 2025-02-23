@@ -41,8 +41,8 @@ func _ready() -> void:
 	
 	move_child(shadow, character.get_index() - 1)
 	
-	MAIN('CharacterSelect').get_popup().connect("id_pressed", on_char_change)
-	MAIN('IconSelect').get_popup().connect("id_pressed", on_icon_change)
+	MAIN('CharacterSelect').get_popup().connect("id_pressed", func(id:int): change_char(char_list[id]))
+	MAIN('IconSelect').get_popup().connect("id_pressed", func(id:int): change_icon(icon_list[id]))
 	MAIN('Shadow/AnimSelect').get_popup().connect("id_pressed", shadow_anim_change)
 
 	MAIN('IconSelect/Icon').default_scale = 0.7
@@ -145,20 +145,27 @@ func _unhandled_input(event: InputEvent) -> void:
 func change_icon(new_icon:String = 'bf') -> void:
 	var ic:Icon = MAIN('IconSelect/Icon')
 	var hi:ColorRect = MAIN('IconSelect/Highlight')
+	var lo:ColorRect = MAIN('IconSelect/Lowlight')
+	
 	char_json.icon = new_icon
-	ic.position = Vector2(-845, 590)
 	ic.change_icon(new_icon.strip_edges())
+	var ic_size = Vector2(ic.texture.get_width() * 0.7, ic.texture.get_height() * 0.7)
+	ic.position = Vector2(-845, 590)
 	ic.hframes = 1
 	
-	hi.custom_minimum_size = Vector2(ic.texture.get_width() * 0.7, ic.texture.get_height() * 0.7)
+	hi.custom_minimum_size = ic_size
 	hi.position = ic.position - hi.custom_minimum_size / 2.0
+	lo.visible = ic.has_lose
 	if ic.has_lose:
-		hi.custom_minimum_size.x /= 2.0
-		hi.size /= 2.0
+		hi.custom_minimum_size.x = ic_size.x / 2.0
+		hi.size = hi.custom_minimum_size
+		lo.custom_minimum_size = hi.custom_minimum_size
+		lo.position = hi.position
+		lo.position.x += hi.size.x
 	
 func change_char(new_char:String = 'bf') -> void:
 	char_json = JsonHandler.get_character(new_char)
-	if char_json == null: return
+	if char_json == null or cur_char == new_char: return
 	selected_id = 0
 	cur_char = new_char
 	MAIN('CharacterSelect').text = cur_char
@@ -239,10 +246,6 @@ func on_char_change(id:int) -> void:
 	if cur_char != got_char:
 		change_char(got_char)
 
-func on_icon_change(id:int) -> void:
-	var new_icon = icon_list[id]
-	change_icon(new_icon)
-
 func make_label() -> Label:
 	var lab = Label.new()
 	lab.add_theme_font_override('font', load('res://assets/fonts/vcr.ttf'))
@@ -294,6 +297,6 @@ func shadow_anim_change(id:int) -> void:
 	MAIN('Shadow/Frame').value = frame_lim
 	shadow.offset = Vector2(offsets[new_anim][0], offsets[new_anim][1])
 	
-func shadow_frame_change(value:float) -> void:
-	shadow.frame = int(value)
-	MAIN('Shadow/Frame/Txt').text = 'Frame: '+ str(int(value))
+func shadow_frame_change(value:int) -> void:
+	shadow.frame = value
+	MAIN('Shadow/Frame/Txt').text = 'Frame: '+ str(value)

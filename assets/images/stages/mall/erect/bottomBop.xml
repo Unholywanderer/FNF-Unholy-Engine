@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="bottomBop.png" width="4501" height="2805" spritePadding="3" borderPadding="1">
+	<SubTexture name="bottomBop0000" x="1" y="2115" width="2250" height="686" frameX="0" frameY="-16" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0001" x="1" y="2115" width="2250" height="686" frameX="0" frameY="-16" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0002" x="2254" y="2111" width="2246" height="693" frameX="-3" frameY="-9" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0003" x="2254" y="2111" width="2246" height="693" frameX="-3" frameY="-9" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0004" x="2251" y="705" width="2246" height="700" frameX="-3" frameY="-2" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0005" x="2251" y="1408" width="2246" height="700" frameX="-3" frameY="-2" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0006" x="1" y="1411" width="2247" height="701" frameX="-2" frameY="-1" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0007" x="2251" y="1" width="2247" height="701" frameX="-2" frameY="-1" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0008" x="1" y="1" width="2247" height="702" frameX="-2" frameY="0" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0009" x="1" y="1" width="2247" height="702" frameX="-2" frameY="0" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0010" x="1" y="706" width="2247" height="702" frameX="-2" frameY="0" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0011" x="1" y="706" width="2247" height="702" frameX="-2" frameY="0" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0012" x="1" y="706" width="2247" height="702" frameX="-2" frameY="0" frameWidth="2253" frameHeight="706"/>
+	<SubTexture name="bottomBop0013" x="1" y="706" width="2247" height="702" frameX="-2" frameY="0" frameWidth="2253" frameHeight="706"/>
+</TextureAtlas>

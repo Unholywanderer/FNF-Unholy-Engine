@@ -73,6 +73,7 @@ var stage_list:Array = []
 var SONG
 func _ready():
 	Game.set_mouse_visibility(true)
+	Audio.stop_music() # just in case
 	Conductor.reset()
 	if JsonHandler.chart_notes.is_empty(): 
 		JsonHandler.parse_song('bopeebo', 'hard')
@@ -108,7 +109,7 @@ func _ready():
 	funky_boys[1].position = Vector2(200, 520)
 	funky_boys[2].position = Vector2(180, 500)
 	
-	var voices = [Conductor.vocals, Conductor.vocals_opp, 'Voices', 'VoicesOpp']
+	var voices = [Conductor.vocals, Conductor.mult_vocals, 'Voices', 'VoicesOpp']
 	for i in 2:
 		if !voices[i]:
 			tab('Chart', voices[i + 2]).button_pressed = false
@@ -269,7 +270,7 @@ func _process(delta):
 		bg_colors[1] = Color(randf(), randf(), randf())
 	$BG.modulate = bg_colors[0].lerp(bg_colors[1], time_lerped / 2.0)
 	
-	$ChartLine/TimeTxt.text = str(floor(Conductor.song_pos))
+	$ChartLine/TimeTxt.text = str(floor(int(Conductor.song_pos)))
 	#var strum_y = round(get_y_from_time(fmod(Conductor.song_pos - get_section_time(), Conductor.step_crochet * 16.0)))
 	$ChartLine.position.x = (grid_1.position.x / 7.0) - 0.5
 	$ChartLine.position.y = round(get_y_from_time(fmod(Conductor.song_pos - get_section_time(), Conductor.step_crochet * 16.0)))

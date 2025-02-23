@@ -140,18 +140,21 @@ func you_WILL_get_a_json(song:String) -> FileAccess:
 	return FileAccess.open(returned, FileAccess.READ)
 
 func stage_to(stage:String) -> String:
+	var le_stage:String = 'stage'
 	match stage.replace('Erect', ''):
-		'spookyMansion': return 'spooky'
-		'limoRide': return 'limo'
-		'phillyTrain': return 'philly'
-		'phillyStreets': return 'philly-streets'
-		'phillyBlazin': return 'philly-blazin'
-		'mallXmas': return 'mall'
-		'mallXmasEvil': return 'mall-evil'
-		'school': return 'school'
-		'schoolEvil': return 'school-evil'
-		'tankmanBattlefield': return 'tank'
-		_: return 'stage'
+		'spookyMansion': le_stage = 'spooky'
+		'limoRide'     : le_stage = 'limo'
+		'phillyTrain'  : le_stage = 'philly'
+		'phillyStreets': le_stage = 'philly-streets'
+		'phillyBlazin' : le_stage = 'philly-blazin'
+		'mallXmas'     : le_stage = 'mall'
+		'mallEvil'     : le_stage = 'mall-evil'
+		'school'       : le_stage = 'school'
+		'schoolEvil'   : le_stage = 'school-evil'
+		'tankmanBattlefield': le_stage = 'tank'
+	if stage.ends_with('Erect'): 
+		le_stage += '-erect'
+	return le_stage
 
 func generate_chart(data, keep_loaded:bool = true) -> Array:
 	if data == null: 

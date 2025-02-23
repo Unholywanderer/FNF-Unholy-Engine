@@ -8,24 +8,7 @@
 				0
 			],
 			"framerate": 24,
-			"frames": [
-				30,
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-				6,
-				7,
-				8,
-				9,
-				10,
-				11,
-				12,
-				13,
-				14
-			],
+			"frames": [],
 			"loop": false
 		},
 		{
@@ -36,23 +19,7 @@
 				0
 			],
 			"framerate": 24,
-			"frames": [
-				15,
-				16,
-				17,
-				18,
-				19,
-				20,
-				21,
-				22,
-				23,
-				24,
-				25,
-				26,
-				27,
-				28,
-				29
-			],
+			"frames": [],
 			"loop": false
 		},
 		{
@@ -72,8 +39,8 @@
 	"facing_left": false,
 	"antialiasing": false,
 	"cam_offset": [
-		-20,
-		80
+		-160,
+		105
 	],
 	"pos_offset": [
 		0,

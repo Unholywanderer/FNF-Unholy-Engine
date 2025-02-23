@@ -1,0 +1,100 @@
+[gd_scene load_steps=17 format=3 uid="uid://lpfwqjpp2odt"]
+
+[ext_resource type="Script" path="res://game/scenes/stages/stage-erect.gd" id="1_7l83x"]
+[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
+[ext_resource type="Texture2D" uid="uid://bwsaml3reng0a" path="res://assets/images/stages/stage/erect/backDark.png" id="2_ibnow"]
+[ext_resource type="Texture2D" uid="uid://c8fh2i5qofoj7" path="res://assets/images/stages/stage/erect/brightLightSmall.png" id="3_e5r2c"]
+[ext_resource type="SpriteFrames" uid="uid://cy8qb8arkewjw" path="res://assets/images/stages/stage/erect/crowd.res" id="4_y2f8n"]
+[ext_resource type="Texture2D" uid="uid://d2wkxujxon3b7" path="res://assets/images/stages/stage/erect/bg.png" id="6_cikhn"]
+[ext_resource type="Texture2D" uid="uid://ba1qmgxl6veeg" path="res://assets/images/stages/stage/erect/server.png" id="7_k6hug"]
+[ext_resource type="Texture2D" uid="uid://3itm1m34disi" path="res://assets/images/stages/stage/erect/lightgreen.png" id="8_mve7i"]
+[ext_resource type="Texture2D" uid="uid://cxl8e22ecs5hk" path="res://assets/images/stages/stage/erect/lightred.png" id="9_scb3m"]
+[ext_resource type="Texture2D" uid="uid://buu0dfy1hglfj" path="res://assets/images/stages/stage/erect/lightAbove.png" id="10_26sbp"]
+[ext_resource type="Texture2D" uid="uid://p15imv3jrik6" path="res://assets/images/stages/stage/erect/orangeLight.png" id="11_bloje"]
+[ext_resource type="Texture2D" uid="uid://cmjopp6fmew8e" path="res://assets/images/stages/stage/erect/lights.png" id="12_cbs1l"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6pptx"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_th2c7"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_4lpqo"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_5gidl"]
+blend_mode = 1
+
+[node name="Stage Erect" type="Node2D"]
+script = ExtResource("1_7l83x")
+
+[node name="Back" type="Sprite2D" parent="."]
+position = Vector2(729, -170)
+texture = ExtResource("2_ibnow")
+centered = false
+
+[node name="Crowd" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.8, 0.8)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Crowd"]
+position = Vector2(560, 290)
+sprite_frames = ExtResource("4_y2f8n")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.655778
+centered = false
+
+[node name="LightSmall" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(1.2, 1.2)
+
+[node name="Sprite" type="Sprite2D" parent="LightSmall"]
+position = Vector2(967, -103)
+texture = ExtResource("3_e5r2c")
+centered = false
+
+[node name="BG" type="Sprite2D" parent="."]
+position = Vector2(-603, -187)
+texture = ExtResource("6_cikhn")
+centered = false
+
+[node name="Server" type="Sprite2D" parent="."]
+position = Vector2(-361, 205)
+texture = ExtResource("7_k6hug")
+centered = false
+
+[node name="LightGreen" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_6pptx")
+position = Vector2(-171, 242)
+texture = ExtResource("8_mve7i")
+centered = false
+
+[node name="LightRed" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_th2c7")
+position = Vector2(-101, 560)
+texture = ExtResource("9_scb3m")
+centered = false
+
+[node name="LightOrange" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_4lpqo")
+position = Vector2(189, -195)
+texture = ExtResource("11_bloje")
+centered = false
+
+[node name="CharGroup" type="Node2D" parent="."]
+
+[node name="LightAbove" type="Sprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_5gidl")
+position = Vector2(804, -117)
+texture = ExtResource("10_26sbp")
+centered = false
+
+[node name="Lights" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(1.2, 1.2)
+
+[node name="Sprite" type="Sprite2D" parent="Lights"]
+position = Vector2(-601, -147)
+texture = ExtResource("12_cbs1l")
+centered = false

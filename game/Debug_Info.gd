@@ -51,7 +51,7 @@ func _process(delta):
 			vol_tween = create_tween()
 			vol_tween.tween_property($Volume, 'position:y', -100, 0.12)
 	
-	$FPS.text = 'FPS: '+ str(Engine.get_frames_per_second())
+	$FPS.text = 'FPS: '+ str(int(Engine.get_frames_per_second()))
 	if OS.is_debug_build():
 		var mem:String = String.humanize_size(OS.get_static_memory_usage())
 		var mem_peak:String = String.humanize_size(OS.get_static_memory_peak_usage())

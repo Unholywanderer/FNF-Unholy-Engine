@@ -4,7 +4,7 @@ class_name Icon; extends Sprite2D;
 @export var is_player:bool = false
 var is_menu:bool = false
 var follow_spr = null
-var center_offset:float = 6.8
+var center_offset:float = 12.0
 
 @export var default_scale:float = 1.0
 @export var icon_speed:float = 15.0  
@@ -43,13 +43,13 @@ func _process(delta):
 		if follow_spr is HealthBar: # is healthbar or something
 			var bar_width:float = follow_spr.width
 			var remapped:float = remap(follow_spr.value, 0, 100, 100, 0) * 0.01
-			var cen:float = (((bar_width * remapped) - bar_width) + Game.screen[0] / 3.5) + center_offset
+			var cen:float = (((bar_width * remapped) - bar_width) + Game.screen[0] / 1.95) + center_offset
 			if is_player:
 				position.x = cen + (150 * scale.x - 150) / 2 - 26
 			else:
 				position.x = cen - (150 * scale.x) / 2 - 26 * 2
 		
-			position.y = -80 + (75 * scale.y) # goofy..
+			position.y = -75 + (75 * scale.y) # goofy..
 			rotation = -follow_spr.rotation
 			if has_lose:
 				if is_player:

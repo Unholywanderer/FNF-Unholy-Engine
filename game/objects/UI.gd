@@ -42,7 +42,7 @@ var total_hit:float = 0.0
 var note_percent:float = 0.0
 var accuracy:float = -1.0
 var hit_count:Dictionary = {'epic': 0, 'sick': 0, 'good': 0, 'bad': 0, 'shit': 0, 'miss': 0}
-var fc:String = 'N/A'
+var grade:String = 'N/A'
 
 var def_mark_scale:Vector2 = Vector2(0.7, 0.7)
 var zoom:float = 1.0:
@@ -106,19 +106,20 @@ func _ready():
 		opponent.z_index = -1
 		opponent.position = Vector2(60, 400 if downscroll else 300)
 	
-	health_bar.position.x = (Game.screen[0] / 2.0) # 340
+	health_bar.position.x = (Game.screen[0] / 2.0) - health_bar.width / 2.0 # 340
 	health_bar.position.y = 85 if downscroll else 630
 	health_bar.z_index = -2
 	icon_p1.follow_spr = health_bar
 	icon_p2.follow_spr = health_bar
 	
-	time_bar.position.y = 618 if downscroll else 110
+	time_bar.position.y = 695 if downscroll else 25
 	score_txt.position.x = (Game.screen[0] / 2) - (score_txt.size[0] / 2)
 	if downscroll:
 		score_txt.position.y = 130
 		
 	mark.texture = load('res://assets/images/ui/skins/'+ cur_skin +'/auto.png')
-	mark.scale = SKIN.strum_scale
+	mark.scale = SKIN.mark_scale
+	$HealthBar/MarkBG.scale = mark.scale
 	
 	#player.scale = Vector2(0.9, 0.9)
 	#opponent.scale = Vector2(0.9, 0.9)
@@ -141,12 +142,14 @@ func _process(delta):
 		$Left.text = str(Game.to_time(abs(floor((Conductor.song_length - Conductor.song_pos) / Conductor.playback_rate))))
 
 	#$Elasped.position = time_bar.position - Vector2($Elasped.size.x / 2, 30)
-	$Left.position = time_bar.position - Vector2($Left.size.x / 2, -10)
+	$Left.position = (time_bar.position + (time_bar.size / 2.0)) - Vector2($Left.size.x / 2, $Left.size.y / 2)
 		
 	health_bar.value = lerpf(hp, health_bar.value, exp(-delta * 8))
 
-	mark.scale = lerp(def_mark_scale, mark.scale, exp(-delta * 10))
-	
+	mark.scale = lerp(SKIN.mark_scale, mark.scale, exp(-delta * 10))
+	$HealthBar/MarkBG.visible = mark.visible
+	$HealthBar/MarkBG.rotation = mark.rotation
+
 	offset.x = (scale.x - 1.0) * -(Game.screen[0] * 0.5)
 	offset.y = (scale.y - 1.0) * -(Game.screen[1] * 0.5)
 	
@@ -159,23 +162,23 @@ func get_acc() -> String:
 	var new_acc = clampf(note_percent / total_hit, 0, 1)
 	if is_nan(new_acc): return '?'
 	accuracy = Game.round_d(new_acc * 100, 2)
-	fc = get_fc()
-	return str(accuracy) +'% - '+ fc 
+	grade = get_grade(accuracy)
+	return str(accuracy).pad_decimals(2) +'% - '+ grade 
 	
-func get_fc() -> String:
-	if hit_count['miss'] == 0: # dumb
-		var da_fc:String = 'FC'
-		if hit_count['bad'] + hit_count['shit'] == 0:
-			if hit_count['epic'] > 0: da_fc = 'EFC'
-			if hit_count['sick'] > 0: da_fc = 'SFC'
-			if hit_count['good'] > 0: da_fc = 'GFC'
-		return da_fc
-	if hit_count['miss'] in range(1, 10):
-		return 'SDCB'
-	return 'Clear'
+func get_grade(acc:float) -> String:
+	if acc >= 100.0: return 'S+' # accuracy should technically never get above 100% but lol
+	if acc >= 99.0 : return 'SA' # sexual assault
+	if acc >= 90.0 : return 'A'
+	if acc >= 85.0 : return 'AB'
+	if acc >= 80.0 : return 'B'
+	if acc >= 75.0 : return 'BC'
+	if acc >= 70.0 : return 'C'
+	if acc >= 60.0 : return 'CD'
+	if acc >= 50.0 : return 'D'
+	return 'F'
 	
 func reset_stats() -> void:
-	fc = 'N/A'
+	grade = 'N/A'
 	total_hit = 0
 	note_percent = 0
 	accuracy = -1

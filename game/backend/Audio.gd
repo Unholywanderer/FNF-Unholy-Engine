@@ -55,7 +55,9 @@ func play_music(to_play:String = '', looped:bool = true, vol:float = 1) -> void:
 	
 func stop_music(clear:bool = true) -> void: # stop and clear the stream if needed
 	Player.stop()
-	if clear: Player.stream = null
+	if clear:
+		Player.stream = null
+		music = ''
 
 func finished():
 	print('Music Finished')

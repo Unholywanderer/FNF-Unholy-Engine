@@ -37,6 +37,7 @@ var dad_cam_offset:Vector2 = Vector2(0, 0)
 var gf_cam_offset:Vector2 = Vector2(0, 0)
 
 # song functions for signals
+func post_ready() -> void: pass
 func countdown_start() -> void: pass
 func countdown_tick(tick:int) -> void: pass
 func song_start() -> void: pass

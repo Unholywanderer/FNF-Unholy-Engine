@@ -71,11 +71,12 @@ func convert_xml() -> void:
 			print(path_string + " loading failed.")
 
 func _ready() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	Game.set_mouse_visibility(true)
+	Audio.play_music('artisticExpression')
 
 func _process(_delta :float) -> void:
-	if Input.is_action_just_pressed("ui_cancel") and not fps_box.has_focus():
-		Game.switch_scene("menus/MainMenu")
+	if Input.is_action_just_pressed("back") and not fps_box.has_focus():
+		Game.switch_scene("menus/main_menu")
 
 # funny signal shits
 func set_path(new_path :String) -> void:

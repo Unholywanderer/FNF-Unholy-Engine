@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="bgLimo.png" width="4397" height="768" spritePadding="3" borderPadding="1">
+	<SubTexture name="background limo blue0000" x="1" y="388" width="2187" height="379" frameX="-20" frameY="-6" frameWidth="2216" frameHeight="389"/>
+	<SubTexture name="background limo blue0001" x="2191" y="1" width="2205" height="380" frameX="-1" frameY="-5" frameWidth="2216" frameHeight="389"/>
+	<SubTexture name="background limo blue0002" x="1" y="1" width="2187" height="384" frameX="-20" frameY="-2" frameWidth="2216" frameHeight="389"/>
+	<SubTexture name="background limo blue0003" x="2191" y="384" width="2187" height="383" frameX="-20" frameY="-2" frameWidth="2216" frameHeight="389"/>
+</TextureAtlas>

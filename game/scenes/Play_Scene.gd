@@ -86,43 +86,18 @@ func _ready():
 	
 	if SONG.has('stage'):
 		cur_stage = SONG.stage.to_lower().replace(' ', '-')
-	else:
-		var song = SONG.song.to_lower().replace(' ', '-')
-		match song: # daily reminder to kiss daniel
-			'spookeez', 'south', 'monster': cur_stage = 'spooky'
-			'pico', 'philly-nice', 'blammed': cur_stage = 'philly'
-			'satin-panties', 'high', 'milf': cur_stage = 'limo'
-			'cocoa', 'eggnog': cur_stage = 'mall'
-			'winter-horrorland': cur_stage = 'mall-evil'
-			'senpai', 'roses': cur_stage = 'school'
-			'thorns': cur_stage = 'school-evil'
-			'ugh', 'guns', 'stress': cur_stage = 'tank'
-
-	var to_load = 'stage'
-	if ResourceLoader.exists('res://game/scenes/stages/'+ cur_stage +'.tscn'):
-		to_load = cur_stage
+		if !ResourceLoader.exists('res://game/scenes/stages/'+ cur_stage +'.tscn'):
+			cur_stage = 'stage'
 		
-	stage = load('res://game/scenes/stages/%s.tscn' % [to_load]).instantiate() # im sick of grey bg FUCK
+	stage = load('res://game/scenes/stages/%s.tscn' % [cur_stage]).instantiate() # im sick of grey bg FUCK
 	add_child(stage)
 	default_zoom = stage.default_zoom
 	
-	if SONG.has('players'): 
-		SONG.player1 = SONG.players[0]
-		SONG.player2 = SONG.players[1]
-		SONG.gfVersion = SONG.players[2]
-		
 	var gf_ver
 	if SONG.has('gfVersion'):
 		gf_ver = SONG.gfVersion
 	elif SONG.has('player3'):
 		gf_ver = SONG.player3
-	else: # base game type shit baybeee
-		match Game.format_str(SONG.song):
-			'satin-panties', 'high', 'milf': gf_ver = 'gf-car'
-			'cocoa', 'eggnog', 'winter-horrorland': gf_ver = 'gf-christmas'
-			'senpai', 'roses', 'thorns': gf_ver = 'gf-pixel'
-			'ugh', 'guns': gf_ver = 'gf-tankmen'
-			'stress': gf_ver = 'pico-speaker'
 			
 	if gf_ver == null or gf_ver.is_empty(): gf_ver = 'gf'
 
@@ -221,7 +196,8 @@ func _ready():
 	if DIE == null:
 		var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
 		DIE = load('res://game/scenes/game_over'+ char_suff +'.tscn')
-		
+	
+	stage.post_ready()
 	ui.start_countdown(true)
 		
 	if JsonHandler.parse_type == 'v_slice': move_cam('dad')
@@ -338,7 +314,7 @@ func beat_hit(beat) -> void:
 		ui.zoom += zoom_add.ui
 		if !_cam_tween:
 			cam.zoom += Vector2(zoom_add.game, zoom_add.game)
-		ui.mark.scale = ui.def_mark_scale + (ui.def_mark_scale / 5)
+		ui.mark.scale += Vector2(0.1, 0.1)
 
 func step_hit(step) -> void:
 	if LuaHandler.call_func('stepHit', [step]) == LuaHandler.RET_TYPES.STOP: return
@@ -424,7 +400,7 @@ func try_death() -> void:
 
 func song_end() -> void:
 	if should_save and JsonHandler.song_variant == '':
-		var save_data = [score, ui.accuracy, misses, ui.fc, combo]
+		var save_data = [score, ui.accuracy, misses, ui.grade, combo]
 		var saved_score = HighScore.get_score(SONG.song, JsonHandler.get_diff)
 		
 		if save_data[0] > saved_score:
@@ -570,7 +546,7 @@ func event_hit(event:EventData) -> void:
 				peep.special_anim = true
 		'SetCameraBop':
 			zoom_beat = event.values[0].rate
-			zoom_add.game = event.values[0].intensity / 15.0
+			zoom_add.game = event.values[0].intensity / 25.0
 		'ZoomCamera':
 			var data = event.values[0]
 			var zoom_mode = 'direct'
@@ -590,6 +566,7 @@ func event_hit(event:EventData) -> void:
 				$Camera.zoom = Vector2(new_zoom, new_zoom)
 		'ChangeBPM':
 			Conductor.bpm = event.values[0]
+			print('Changed BPM: '+ str(Conductor.bpm))
 
 func good_note_hit(note:Note) -> void:
 	if note.type.length() > 0: print(note.type, ' bf')
@@ -659,7 +636,7 @@ func good_sustain_press(sustain:Note) -> void:
 				Conductor.audio_volume(1, 1.0)
 			
 			LuaHandler.call_func('goodSustainPress', [sustain.dir])
-
+			stage.good_note_hit(sustain)
 			if section_data != null:
 				if section_data.has('gfSection') and section_data.gfSection and section_data.mustHitSection: sustain.gf = true
 			
@@ -670,7 +647,7 @@ func good_sustain_press(sustain:Note) -> void:
 			
 			grace = true
 			if !Prefs.legacy_score: # change this | if fps too high it dont worky
-				score += floor((550 * get_process_delta_time()) * Conductor.playback_rate)
+				score += round((550 * get_process_delta_time()) * Conductor.playback_rate)
 			ui.hp += (4 * get_process_delta_time())
 			ui.update_score_txt()
 
@@ -704,6 +681,7 @@ func opponent_sustain_press(sustain:Note) -> void:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 	
 	LuaHandler.call_func('opponentSustainPress', [sustain.dir])
+	stage.opponent_note_hit(sustain)
 
 	if section_data != null:
 		if section_data.has('altAnim') and section_data.altAnim:

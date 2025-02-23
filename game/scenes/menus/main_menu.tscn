@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0c427w6cul2x"]
+[gd_scene load_steps=11 format=3 uid="uid://c0c427w6cul2x"]
 
 [ext_resource type="Script" path="res://game/scenes/menus/Main_Menu.gd" id="1_3iiqa"]
 [ext_resource type="Texture2D" uid="uid://dmko1yd3b8k25" path="res://assets/images/menuBG.png" id="2_m1ms6"]
@@ -8,6 +8,13 @@
 [ext_resource type="SpriteFrames" uid="uid://c27hvg6wcqyay" path="res://assets/images/main_menu/menu_donate.res" id="5_q6c1y"]
 [ext_resource type="SpriteFrames" uid="uid://cyqkiyjdqah78" path="res://assets/images/main_menu/menu_options.res" id="6_bjomy"]
 [ext_resource type="SpriteFrames" uid="uid://djy7e7f7k8qpx" path="res://assets/images/main_menu/menu_credits.res" id="8_v0fd6"]
+[ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="9_s2p14"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_i3xqd"]
+font = ExtResource("9_s2p14")
+font_size = 18
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Main_Menu" type="Node2D"]
 script = ExtResource("1_3iiqa")
@@ -51,3 +58,11 @@ animation = &"normal"
 
 [node name="Cam" type="Camera2D" parent="."]
 position = Vector2(640, 360)
+
+[node name="Alert" type="Label" parent="."]
+offset_left = 5.0
+offset_top = 695.0
+offset_right = 416.0
+offset_bottom = 718.0
+text = "Press (Debug 1) to open Editor Menu"
+label_settings = SubResource("LabelSettings_i3xqd")

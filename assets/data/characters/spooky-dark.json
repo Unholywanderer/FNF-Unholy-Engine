@@ -1,0 +1,104 @@
+{
+	"animations": [
+		{
+			"name": "hey",
+			"prefix": "spooky kids YEAH!!",
+			"offsets": [
+				-59,
+				20
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT",
+			"prefix": "note sing left",
+			"offsets": [
+				-130,
+				10
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "spooky sing right",
+			"offsets": [
+				130,
+				14
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "spooky DOWN note",
+			"offsets": [
+				50,
+				130
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceLeft",
+			"prefix": "spooky dance idle",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 12,
+			"frames": [
+				0,
+				2,
+				6
+			],
+			"loop": false
+		},
+		{
+			"name": "danceRight",
+			"prefix": "spooky dance idle",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 12,
+			"frames": [
+				8,
+				10,
+				12,
+				14
+			],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "spooky UP NOTE",
+			"offsets": [
+				20,
+				-26
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/spooky-dark",
+	"icon": "spooky",
+	"facing_left": false,
+	"antialiasing": true,
+	"cam_offset": [
+		0,
+		0
+	],
+	"pos_offset": [
+		0,
+		200
+	],
+	"sing_dur": 4,
+	"scale": 1
+}

@@ -88,7 +88,9 @@ func add_song(song:FreeplaySong) -> void:
 var lerp_score:int = 0
 var actual_score:int = 2384397
 
+var in_time:float = 0.0
 func _process(delta):
+	in_time += delta
 	lerp_score = floor(lerp(actual_score, lerp_score, exp(-delta * 24)))
 	if abs(lerp_score - actual_score) <= 10:
 		lerp_score = actual_score
@@ -148,7 +150,7 @@ func change_variant(amount:int = 0) -> void:
 	change_diff()
 
 var hold_time:float = 0.0
-func _unhandled_key_input(_event):
+func _unhandled_key_input(event):
 	var shifty = Input.is_key_pressed(KEY_SHIFT)
 	var diff:int = 4 if shifty else 1
 	var just_pressed:Callable = func(action): return Input.is_action_just_pressed(action)
@@ -179,7 +181,7 @@ func _unhandled_key_input(_event):
 		Audio.play_sound('cancelMenu')
 		Game.switch_scene('menus/main_menu')
 		
-	if Input.is_key_pressed(KEY_ENTER):
+	if Input.is_key_pressed(KEY_ENTER) and in_time >= 0.15:
 		Audio.stop_music()
 		Conductor.reset()
 		if last_loaded.song != songs[cur_song].text or last_loaded.diff != diff_str\

@@ -11,8 +11,9 @@ func _ready() -> void:
 	dad_cam_offset = Vector2(350, 250)
 	UI.health_bar.rotation = deg_to_rad(90)
 	UI.health_bar.scale = Vector2(0.90, 0.90)
-	UI.health_bar.position = Vector2(Game.screen[0] - 80, Game.screen[1] / 2.0)
+	UI.health_bar.position = Vector2(Game.screen[0] - 80, (Game.screen[1] / 2.0) - 280)
 	UI.mark.rotation = -UI.health_bar.rotation
+	UI.mark.position -= Vector2(15, -25)
 	UI.time_bar.position.x = (Game.screen[0] / 2.0) - 400
 	UI.icon_p2.flip_h = true
 	UI.get_group('opponent').visible = false

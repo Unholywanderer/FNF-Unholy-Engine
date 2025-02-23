@@ -1,0 +1,85 @@
+[gd_scene load_steps=11 format=3 uid="uid://xkq8alffrwjv"]
+
+[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
+[ext_resource type="Script" path="res://game/scenes/stages/mall-erect.gd" id="1_uctkg"]
+[ext_resource type="Texture2D" uid="uid://dbrejlos6krme" path="res://assets/images/stages/mall/erect/bgWalls.png" id="3_whrvw"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/mall/erect/upperBop.res" id="4_05wpd"]
+[ext_resource type="Texture2D" uid="uid://d2y0ffbd51x6g" path="res://assets/images/stages/mall/erect/bgEscalator.png" id="5_lq5so"]
+[ext_resource type="Texture2D" uid="uid://e11cfxjcf40m" path="res://assets/images/stages/mall/erect/christmasTree.png" id="6_1160q"]
+[ext_resource type="Texture2D" uid="uid://bminvbbpass31" path="res://assets/images/stages/mall/fgSnow.png" id="7_jqly5"]
+[ext_resource type="Texture2D" uid="uid://dur3cehi8wurq" path="res://assets/images/stages/mall/erect/white.png" id="7_ucm06"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/mall/erect/bottomBop.res" id="8_e40gr"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/mall/santa.res" id="9_8fu1q"]
+
+[node name="Mall Erect" type="Node2D"]
+script = ExtResource("1_uctkg")
+
+[node name="BGWall" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.2, 0.2)
+
+[node name="Sprite" type="Sprite2D" parent="BGWall"]
+position = Vector2(-1000, -440)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("3_whrvw")
+centered = false
+
+[node name="UpperBop" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.3, 0.3)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="UpperBop"]
+position = Vector2(-250, -90)
+scale = Vector2(0.85, 0.85)
+sprite_frames = ExtResource("4_05wpd")
+animation = &"upperBop"
+centered = false
+
+[node name="Escalator" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.3, 0.3)
+
+[node name="Sprite" type="Sprite2D" parent="Escalator"]
+position = Vector2(-1100, -600)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("5_lq5so")
+centered = false
+
+[node name="Tree" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.4, 0.4)
+
+[node name="Sprite" type="Sprite2D" parent="Tree"]
+position = Vector2(370, -250)
+texture = ExtResource("6_1160q")
+centered = false
+
+[node name="ScrollSprite" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.85, 0.85)
+
+[node name="Fog" type="Sprite2D" parent="ScrollSprite"]
+position = Vector2(-1000, 100)
+scale = Vector2(0.9, 0.9)
+texture = ExtResource("7_ucm06")
+centered = false
+
+[node name="FGSnow" type="Sprite2D" parent="."]
+position = Vector2(-700, 644)
+scale = Vector2(1, 1.5)
+texture = ExtResource("7_jqly5")
+centered = false
+
+[node name="BottomBop" type="AnimatedSprite2D" parent="."]
+position = Vector2(-300, 110)
+sprite_frames = ExtResource("8_e40gr")
+animation = &"bottomBop"
+centered = false
+
+[node name="CharGroup" type="Node2D" parent="."]
+
+[node name="Santa" type="AnimatedSprite2D" parent="."]
+position = Vector2(-840, 150)
+sprite_frames = ExtResource("9_8fu1q")
+animation = &"santa idle in fear"
+centered = false

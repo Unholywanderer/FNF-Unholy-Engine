@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://bpe4b2tmyx2x4"]
+
+[ext_resource type="Script" path="res://game/scenes/stages/spooky-erect.gd" id="1_8pmlf"]
+[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="2_gfpnc"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/spooky/erect/bgtrees.res" id="3_ey5pp"]
+[ext_resource type="Texture2D" uid="uid://bety4ryjjrkf4" path="res://assets/images/stages/spooky/erect/bgDark.png" id="4_j1kom"]
+[ext_resource type="Texture2D" uid="uid://dg7ecnkhpkbtu" path="res://assets/images/stages/spooky/erect/stairsDark.png" id="5_f4tjt"]
+[ext_resource type="Texture2D" uid="uid://fcndirjhsd8p" path="res://assets/images/stages/spooky/erect/bgLight.png" id="6_3fgsl"]
+[ext_resource type="Texture2D" uid="uid://cdeisebr5yo8p" path="res://assets/images/stages/spooky/erect/stairsLight.png" id="7_guobi"]
+
+[node name="Spooky" type="Node2D"]
+script = ExtResource("1_8pmlf")
+
+[node name="Trees" type="Node2D" parent="."]
+script = ExtResource("2_gfpnc")
+scroll_factor = Vector2(0.8, 0.8)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Trees"]
+position = Vector2(200, 50)
+sprite_frames = ExtResource("3_ey5pp")
+animation = &"bgtrees"
+autoplay = "bgtrees"
+frame_progress = 0.085523
+centered = false
+
+[node name="DARK" type="Node2D" parent="."]
+
+[node name="BG" type="Sprite2D" parent="DARK"]
+position = Vector2(-360, -220)
+texture = ExtResource("4_j1kom")
+centered = false
+
+[node name="Stairs" type="Sprite2D" parent="DARK"]
+position = Vector2(966, -225)
+texture = ExtResource("5_f4tjt")
+centered = false
+
+[node name="BG" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(-360, -220)
+texture = ExtResource("6_3fgsl")
+centered = false
+
+[node name="CharGroup" type="Node2D" parent="."]
+
+[node name="Stairs" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+position = Vector2(966, -225)
+texture = ExtResource("7_guobi")
+centered = false

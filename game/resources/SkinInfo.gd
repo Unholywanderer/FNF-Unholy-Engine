@@ -11,6 +11,7 @@ var note_scale:Vector2 = Vector2(0.7, 0.7)
 var rating_scale:Vector2 = Vector2(0.7, 0.7)
 var num_scale:Vector2 = Vector2(0.5, 0.5)
 var time_scale:Vector2 = Vector2(0.7, 0.7)
+var mark_scale:Vector2 = Vector2(0.4, 0.4)
 
 var cached_note_types:Dictionary = {
 	'hurt': preload('res://assets/images/ui/skins/default/notes/hurt/note.res')

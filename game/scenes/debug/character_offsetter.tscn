@@ -156,6 +156,15 @@ offset_left = -940.0
 offset_top = 520.0
 offset_right = -835.0
 offset_bottom = 625.0
+color = Color(0, 1, 0, 0.392157)
+
+[node name="Lowlight" type="ColorRect" parent="UILayer/Main/IconSelect"]
+custom_minimum_size = Vector2(105, 105)
+layout_mode = 0
+offset_left = -835.0
+offset_top = 520.0
+offset_right = -730.0
+offset_bottom = 625.0
 color = Color(1, 1, 0, 0.392157)
 
 [node name="Icon" type="Sprite2D" parent="UILayer/Main/IconSelect"]
