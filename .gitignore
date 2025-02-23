@@ -4,6 +4,8 @@ assets/data/weeks/
 assets/images/ui/skins/default/hold this/
 assets/images/icons/peaks/
 assets/songs/*
+!assets/songs/test/
+!assets/songs/tutorial/
 !assets/songs/bopeebo/
 !assets/songs/fresh/
 !assets/songs/dadbattle/
