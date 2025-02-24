@@ -53,7 +53,7 @@ var should_save:bool = !Prefs.auto_play
 		ui.get_group('player').is_cpu = auto_play
 		ui.mark.visible = auto_play
 
-var score:int = 0
+var score:float = 0
 var combo:int = 0
 var misses:int = 0
 
@@ -400,7 +400,7 @@ func try_death() -> void:
 
 func song_end() -> void:
 	if should_save and JsonHandler.song_variant == '':
-		var save_data = [score, ui.accuracy, misses, ui.grade, combo]
+		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
 		var saved_score = HighScore.get_score(SONG.song, JsonHandler.get_diff)
 		
 		if save_data[0] > saved_score:
@@ -646,8 +646,8 @@ func good_sustain_press(sustain:Note) -> void:
 			group.note_hit(sustain)
 			
 			grace = true
-			if !Prefs.legacy_score: # change this | if fps too high it dont worky
-				score += round((550 * get_process_delta_time()) * Conductor.playback_rate)
+			if !Prefs.legacy_score:
+				score += (550 * get_process_delta_time()) * Conductor.playback_rate
 			ui.hp += (4 * get_process_delta_time())
 			ui.update_score_txt()
 

@@ -64,6 +64,13 @@ scale = Vector2(0.9, 0.9)
 texture = ExtResource("7_ucm06")
 centered = false
 
+[node name="Extend" type="ColorRect" parent="."]
+offset_left = -1679.0
+offset_top = 801.0
+offset_right = 3381.0
+offset_bottom = 1568.0
+color = Color(0.952941, 0.956863, 0.960784, 1)
+
 [node name="FGSnow" type="Sprite2D" parent="."]
 position = Vector2(-700, 644)
 scale = Vector2(1, 1.5)

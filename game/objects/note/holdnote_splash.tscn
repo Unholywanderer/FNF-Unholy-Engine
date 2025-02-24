@@ -1,11 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://blkbp71fr4vjs"]
 
-[ext_resource type="SpriteFrames" uid="uid://5rup2im3mf7o" path="res://assets/images/ui/holdCoverMerged.res" id="1_ijov6"]
+[ext_resource type="SpriteFrames" uid="uid://f7spw2q6vdac" path="res://assets/images/ui/notesplashes/hold_cover.res" id="1_ijov6"]
 [ext_resource type="Script" path="res://game/objects/note/HoldNote_splash.gd" id="2_sfdvs"]
 
 [node name="HoldNote_Splash" type="AnimatedSprite2D"]
 sprite_frames = ExtResource("1_ijov6")
-animation = &"holdCoverBlue"
+animation = &"blue"
+autoplay = "start"
 script = ExtResource("2_sfdvs")
 
 [connection signal="animation_finished" from="." to="." method="_on_animation_finished"]

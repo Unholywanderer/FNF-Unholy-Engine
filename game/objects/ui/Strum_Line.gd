@@ -2,7 +2,7 @@ class_name Strum_Line; extends Node2D;
 # DO NOT ADD AS AN OBJECT TO SCENE, NEEDS TO BE INSTANTIATED
 
 #var SPLASH = preload('res://game/objects/note/note_splash.tscn')
-#var SPARK = preload('res://game/objects/note/holdnote_splash.tscn')
+var SPARK = preload('res://game/objects/note/holdnote_splash.tscn')
 
 var INIT_POS:PackedVector2Array = [Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO]
 @export var is_cpu:bool = true:
@@ -47,7 +47,8 @@ func note_hit(note:Note) -> void:
 					singer.anim_timer = 0.6
 				_:
 					singer.sing(note.dir, note.alt, !note.is_sustain)
-	
+					
+	if note.is_sustain: spawn_hold_splash(get_strums()[note.dir], note)
 	var can_splash = note.rating == 'sick' or note.rating == 'epic'
 	if Prefs.note_splashes == 'all' or \
 	  (Prefs.note_splashes == 'epics' and note.rating == 'epic') or \
@@ -59,6 +60,17 @@ func note_miss(note:Note) -> void:
 		singer.sing(note.dir, 'miss')
 		if note.length > 0:
 			singer.anim_timer = 0.5 + (note.length / Conductor.step_crochet * 0.16)
+
+var cur_sparks:Array = [null, null, null, null]
+var is_holding:Array = [false, false, false, false]
+func _process(delta:float) -> void:
+	if !is_cpu:
+		for i in ['left', 'down', 'up', 'right'].size():
+			is_holding[i] = Input.is_action_pressed('note_'+ ['left', 'down', 'up', 'right'][i])
+			if !is_holding[i] and cur_sparks[i] != null and !cur_sparks[i].animation.ends_with('_splash'):
+				cur_sparks[i].queue_free()
+				remove_child(cur_sparks[i])
+				cur_sparks[i] = null
 
 var total_splash:Array[AnimatedSprite2D] = []
 func spawn_splash(strum:Strum) -> void:
@@ -78,9 +90,16 @@ func spawn_splash(strum:Strum) -> void:
 	#move_child(new_splash, 4)
 	total_splash.append(new_splash)
 	
-func spawn_hold_splash(strum:Strum) -> void:
-	pass
-	
+func spawn_hold_splash(strum:Strum, note:Note) -> void:
+	if cur_sparks[strum.dir] != null:
+		cur_sparks[strum.dir].anim_time += get_process_delta_time()
+	else:
+		var spark:AnimatedSprite2D = SPARK.instantiate()
+		spark.strum = strum
+		spark.player = note.must_press
+		spark.anim_time += get_process_delta_time()
+		add_child(spark)
+		cur_sparks[strum.dir] = spark
 func add_strum() -> void:
 	pass
 

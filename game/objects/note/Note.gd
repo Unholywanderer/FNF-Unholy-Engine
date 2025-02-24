@@ -225,7 +225,7 @@ func resize_hold(update_control:bool = false) -> void:
 	if update_control:
 		sustain.set_anchor_and_offset(SIDE_BOTTOM, 1.0, -end.texture.get_height() + 1.0)
 		hold_group.size.x = maxf(end.texture.get_width(), sustain.texture.get_width())
-		hold_group.position.x = 0 - (hold_group.size.x * 0.5) 
+		hold_group.position.x = (width * 0.5) - hold_group.size.x
 
 func copy_from(item) -> void:
 	if item != null and (item is Note or item is NoteData):
@@ -240,7 +240,7 @@ func convert_type(t:String) -> String:
 		'alt animation', 'true', 'mom': return 'Alt'
 		'no animation': return 'No Anim'
 		'gf sing': return 'GF'
-		'hurt note', 'markov note', 'ebola', 'burger note': return 'Hurt'
+		'hurt note', '3', 'markov note', 'ebola', 'burger note': return 'Hurt'
 		'hey!': return 'Hey'
 		_: return t
 

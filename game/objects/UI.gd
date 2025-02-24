@@ -155,7 +155,7 @@ func _process(delta):
 	
 func update_score_txt() -> void:
 	if Game.scene.get('score') != null:
-		var stuff = [Game.scene.score, get_acc(), Game.scene.misses]
+		var stuff = [roundi(Game.scene.score), get_acc(), Game.scene.misses]
 		score_txt.text = 'Score: %s / Accuracy: [%s] \\ Misses: %s' % stuff
 
 func get_acc() -> String:

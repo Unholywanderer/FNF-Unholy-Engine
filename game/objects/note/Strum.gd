@@ -21,7 +21,10 @@ var skin:SkinInfo = SkinInfo.new()
 		if d != downscroll:
 			downscroll = d
 			scroll *= -1
-		
+var width:float:
+	get: return sprite_frames.get_frame_texture(DIRECTION[dir] +'_static', 0).get_width() * scale.x
+var height:float:
+	get: return sprite_frames.get_frame_texture(DIRECTION[dir] +'_static', 0).get_height() * scale.y
 
 var anim_timer:float = 0.0 # used for confirm anim looping on sustains
 var reset_timer:float = 0.0
