@@ -15,6 +15,7 @@ offset_left = 10.0
 offset_top = 10.0
 offset_right = 165.0
 offset_bottom = 41.0
+focus_mode = 0
 text = "Must Hit Section"
 
 [node name="AltAnim" type="CheckBox" parent="."]
@@ -23,6 +24,7 @@ offset_left = 10.0
 offset_top = 34.0
 offset_right = 237.0
 offset_bottom = 65.0
+focus_mode = 0
 text = "Alt Anim (Opponent)"
 
 [node name="AltAnimPlayer" type="CheckBox" parent="."]
@@ -31,6 +33,7 @@ offset_left = 10.0
 offset_top = 59.0
 offset_right = 237.0
 offset_bottom = 90.0
+focus_mode = 0
 text = "Alt Anim (Player)"
 
 [node name="SetAll" type="OptionButton" parent="."]
@@ -39,6 +42,7 @@ offset_left = 31.0
 offset_top = 199.0
 offset_right = 157.0
 offset_bottom = 246.0
+focus_mode = 0
 item_count = 4
 popup/item_0/text = "default"
 popup/item_1/text = "Alt"
@@ -54,6 +58,7 @@ offset_left = 64.0
 offset_top = -40.0
 offset_right = 190.0
 offset_bottom = -9.0
+focus_mode = 0
 selected = 0
 item_count = 2
 popup/item_0/text = "Player"
@@ -73,6 +78,7 @@ offset_left = 144.0
 offset_top = 8.0
 offset_right = 227.0
 offset_bottom = 39.0
+focus_mode = 0
 text = "Set Notes"
 
 [node name="CopySec" type="Button" parent="."]
@@ -81,6 +87,7 @@ offset_left = 33.0
 offset_top = 257.0
 offset_right = 116.0
 offset_bottom = 288.0
+focus_mode = 0
 text = "Copy"
 
 [node name="PasteSec" type="Button" parent="."]
@@ -89,6 +96,7 @@ offset_left = 148.0
 offset_top = 257.0
 offset_right = 231.0
 offset_bottom = 288.0
+focus_mode = 0
 text = "Paste"
 
 [node name="ClearSec" type="Button" parent="."]
@@ -97,6 +105,7 @@ offset_left = 265.0
 offset_top = 257.0
 offset_right = 348.0
 offset_bottom = 288.0
+focus_mode = 0
 theme_override_colors/font_color = Color(1, 0, 0, 1)
 text = "Clear"
 
@@ -106,6 +115,7 @@ offset_left = 10.0
 offset_top = 95.0
 offset_right = 136.0
 offset_bottom = 126.0
+focus_mode = 0
 text = "Change BPM"
 
 [node name="NewBPM" type="SpinBox" parent="."]

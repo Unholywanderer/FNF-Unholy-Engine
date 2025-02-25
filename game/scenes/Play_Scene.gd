@@ -158,9 +158,6 @@ func _ready():
 	
 	if cur_stage.begins_with('school'):
 		cur_skin = 'pixel'
-	if cur_stage == 'limo': # lil dumb...
-		gf.reparent(stage.get_node('FGLimo'))
-		gf.show_behind_parent = true
 	
 	if Prefs.rating_cam == 'game':
 		Judge.rating_pos = boyfriend.position + Vector2(0, -40)

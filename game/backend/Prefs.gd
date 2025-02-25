@@ -30,6 +30,7 @@ var allow_rpc:bool = true:
 		Discord.update(false, !allow)
 var note_splashes:String = 'both'
 var splash_sprite:String = 'vis'
+var hold_splash:String = 'cover/splash'
 
 var behind_strums:bool = false
 var rating_cam:String = 'game'

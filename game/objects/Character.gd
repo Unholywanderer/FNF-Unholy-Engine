@@ -105,6 +105,8 @@ func load_char(new_char:String = 'bf') -> void:
 	dance_beat = 1 if dance_idle else 2
 	
 	match(cur_char):
+		'senpai':
+			dance_beat = 2
 		'senpai-angry':
 			forced_suffix = '-alt' # boooo
 		'pico-speaker':

@@ -89,4 +89,5 @@ centered = false
 position = Vector2(-840, 150)
 sprite_frames = ExtResource("9_8fu1q")
 animation = &"santa idle in fear"
+frame = 13
 centered = false

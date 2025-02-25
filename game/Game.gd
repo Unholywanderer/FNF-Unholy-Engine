@@ -10,6 +10,10 @@ var persist = { # change this to a global script or something
 	'note_splash': null,
 	'loaded_already': false,
 	'week_list': ['test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'],
+	'stage_list': [
+		'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank', 'philly-streets', 'philly-blazin',
+		'stage-erect', 'spooky-erect', 'philly-erect', 'limo-erect', 'mall-erect'
+		],
 	'week_int': -1, 'week_diff': -1,
 	'song_list': [],
 	'deaths': 0

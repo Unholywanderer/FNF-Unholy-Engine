@@ -1,6 +1,7 @@
 extends Node2D
 
 var cur_section:int = 0
+var clicked_section:int = 0
 
 var strums = []
 
@@ -15,8 +16,6 @@ var grid_2:NoteGrid
 var event_grid_0:NoteGrid
 var event_grid_1:NoteGrid
 var event_grid_2:NoteGrid
-
-var total_grids = []
 
 # Quant/Snap stuff
 var note_snap:int = 16
@@ -46,9 +45,7 @@ var quant_colors = [
 var selected:ColorRect
 var this_note:Array = []
 
-var prev_notes:Array = []
-var cur_notes:Array = []
-var next_notes:Array = []
+var copied_notes:Array = []
 
 var note_chunks:Dictionary = {
 	'-1': [], '0': [], '1': []
@@ -64,8 +61,7 @@ var next_events:Array = []
 var funky_boys:Array[Character] = []
 
 var events:Array[EventData] = []
-# TODO
-# add events
+
 var section_based:bool = true
 var char_list:Array = []
 var invalid_chars:Array = [] # should only ever be a max of 3, since how song chars works
@@ -90,6 +86,7 @@ func _ready():
 	Conductor.connect_signals()
 	Conductor.bpm = SONG.bpm
 	Conductor.paused = true
+	Game.focus_change.connect(focus_changed)
 	
 	var lil_box = ColorRect.new()
 	lil_box.color = Color.DARK_SLATE_GRAY
@@ -133,12 +130,13 @@ func _ready():
 			tab('Song', 'Player1').get_popup().add_item(char)
 			tab('Song', 'Player2').get_popup().add_item(char)
 			tab('Song', 'GF').get_popup().add_item(char)
-	
-	for i in DirAccess.get_files_at('res://game/scenes/stages'):
-		if stage_list.has(i.replace('.tscn', '')) or !i.ends_with('.tscn'): continue
-		i = i.replace('.tscn', '')
-		stage_list.append(i)
-		tab('Song', 'Stage').get_popup().add_item(i)
+		
+	for i in [Game.persist.stage_list, DirAccess.get_files_at('res://game/scenes/stages')]:
+		for stage in i:
+			if stage_list.has(stage.replace('.tscn', '')) or stage.ends_with('.gd'): continue
+			stage = stage.replace('.tscn', '')
+			stage_list.append(stage)
+			tab('Song', 'Stage').get_popup().add_item(stage)
 
 	var realgf = 'gf'
 	#print('love you maru..')
@@ -176,6 +174,7 @@ func _ready():
 					sec.sectionNotes.clear()
 			else:
 				note_list.clear()
+				SONG.notes[JsonHandler.get_diff].clear()
 					
 		if _event.button_pressed:
 			if SONG.has('events'): SONG.events.clear()
@@ -184,10 +183,32 @@ func _ready():
 		_notes.button_pressed = false
 		_event.button_pressed = false
 	)
+	
+	#tab('Section', 'MustHit').toggled.connect(func(togg:bool):
+	#	SONG.notes[cur_section].mustHitSection = togg
+	#	regen_notes()
+	#)
+	
+	tab('Section', 'CopySec').pressed.connect(func():
+		pass
+		#copied_notes = note_chunks['0'].duplicate()
+	)
+	tab('Section', 'PasteSec').pressed.connect(func():
+		if copied_notes.size() > 0:
+			for i in copied_notes: 
+				i[0] += get_section_time()
+			SONG.notes[cur_section].sectionNotes = copied_notes.duplicate()
+			regen_notes()
+	)
+	
+	tab('Section', 'ClearSec').pressed.connect(func():
+		SONG.notes[cur_section].sectionNotes.clear()
+		regen_notes()
+	)
 
 	var chars = [JsonHandler.get_character(SONG.player2), JsonHandler.get_character(SONG.player1)]
-	$ChartLine/IconL.change_icon(chars[0].icon if chars[0] != null else 'face')
-	$ChartLine/IconR.change_icon(chars[1].icon if chars[1] != null else 'face', true)
+	$ChartLine/IconL.change_icon(chars[0].icon if chars[0] else 'face')
+	$ChartLine/IconR.change_icon(chars[1].icon if chars[1] else 'face', true)
 	
 	$ChartUI/SongProgress/Length.text = Game.to_time(Conductor.song_length)
 	
@@ -363,6 +384,7 @@ func make_note(info, must_hit:bool = true):
 
 		var type:String = (str(info.k) if info.has('k') else '')
 		new_note = BasicNote.new([info.t, info.d, null, sus_len, info.d <= 3, type], false)
+		new_note.true_dir = info.d
 	else:
 		if info.is_empty() or info[1] == -1: return
 		if info[2] is not float: info[2] = 0
@@ -372,9 +394,9 @@ func make_note(info, must_hit:bool = true):
 		var type:String = (str(info[3]) if info.size() > 3 else '')
 		sus_len = info[2]
 		new_note = BasicNote.new([info[0], info[1], null, info[2], must_press, type], false)
+		new_note.true_dir = info[1]
 
 	$Notes.add_child(new_note)
-	
 	var lane_to_use:int = int(new_note.dir) % 4
 	if new_note.must_press:
 		lane_to_use += 4
@@ -455,6 +477,7 @@ func beat_hit(beat:int) -> void:
 		#print(str(Conductor.song_pos) +' | '+ str(get_section_time(cur_section)))
 
 func section_hit(sec:int):
+	if Conductor.cur_section == 0: Conductor.cur_section = 1 # cheap fix
 	load_section(Conductor.cur_section)
 
 func step_hit(step:int) -> void:
@@ -588,8 +611,7 @@ func _input(event): # this is better
 				SONG.bpm = tab('Song', 'BPM').value
 				SONG.speed = tab('Song', 'Speed').value
 				SONG.stage = tab('Song', 'Stage').text
-				if SONG.notes != JsonHandler._SONG.notes:
-					JsonHandler.generate_chart(SONG)
+				JsonHandler.generate_chart(SONG)
 				JsonHandler._SONG = SONG
 				Conductor.audio.volume_db = linear_to_db(1)
 				Game.switch_scene('Play_Scene')
@@ -653,7 +675,6 @@ func _input(event): # this is better
 var last_updated_sec:int = -1
 var last_got_bpm:float
 func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
-	#Game.remove_all([prev_notes, cur_notes, next_notes, cur_events], $Notes)
 	Game.remove_all([notes_loaded], $Notes)
 	
 	if section_based:
@@ -674,10 +695,11 @@ func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
 	grid_0.visible = cur_section > 0
 	event_grid_0.visible = grid_0.visible
 
-	
 	for i in note_chunks.keys():
 		note_chunks[i].clear()
 	
+	var min_time = get_section_time(cur_section - 1)
+	var max_time = get_section_time(cur_section + 2)
 	if section_based and SONG.notes is Array:
 		grid_2.visible = cur_section < SONG.notes.size() - 1
 		event_grid_2.visible = grid_2.visible
@@ -692,17 +714,13 @@ func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
 				for note in arr:
 					make_note(note, SONG.notes[cur_section + int(chunk)].mustHitSection)
 	else:
-		var min_time = get_section_time(cur_section - 1)
-		#var cur_time = get_section_time()
-		var max_time = get_section_time(cur_section + 2)
 		for note in note_list:
 			if note.t >= min_time and note.t < max_time:
 				make_note(note, true)
 			
 	if events.size() > 0:
-		var ev_times = {'start': get_section_time(cur_section - 1), 'end': get_section_time(cur_section + 2)}
 		for evn in events:
-			if evn.strum_time >= ev_times.start and evn.strum_time < ev_times.end:
+			if evn.strum_time >= min_time and evn.strum_time < max_time:
 				var new_event = EventNote.new(evn)
 				$Notes.add_child(new_event)
 				new_event.strum_time = evn.strum_time
@@ -725,13 +743,19 @@ func update_note_pos(note, dir:int = 0) -> void:
 	
 func check_note() -> void:
 	var clicked_note:bool = false
-	for note in cur_notes:
+	clicked_section = cur_section 
+	if mouse_pos.y < grid_1.position.y: clicked_section -= 1
+	if mouse_pos.y >= grid_2.position.y: clicked_section += 1
+	print(clicked_section, ' | ', cur_section)
+	
+	for note in notes_loaded:
 		if note.is_sustain: continue
-		var note_pos = note.position.x - note.width / 2
-		if mouse_pos.x - 100 >= note_pos and mouse_pos.x - 100 <= note_pos + GRID_SIZE \
+		var note_pos = note.position.x - (note.width / 2.0)
+		if mouse_pos.x - OFF >= note_pos and mouse_pos.x - OFF <= note_pos + GRID_SIZE \
 		  and mouse_pos.y >= note.position.y and mouse_pos.y <= note.position.y + GRID_SIZE:
 			clicked_note = true
-			if Input.is_key_pressed(KEY_CTRL): #Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+			print('we over a note babe')
+			if Input.is_key_pressed(KEY_CTRL):
 				select_note(note)
 			else:
 				remove_note(note)
@@ -741,36 +765,40 @@ func check_note() -> void:
 		add_note()
 		
 func add_note() -> void:
-	var time = get_strum_from_y(selected.position.y) + get_section_time()
-	var direct:int = floor(mouse_pos.x / GRID_SIZE) - 5
-	print('adding note ('+ str(direct) +')')
-	
 	if !section_based: return
-	SONG.notes[cur_section].sectionNotes.append([time, direct, 0])
-	SONG.notes[cur_section].sectionNotes.sort_custom(func(a, b): return a[0] < b[0])
-	this_note = SONG.notes[cur_section].sectionNotes[(SONG.notes[cur_section].sectionNotes.find([time, direct, 0]))]
+	var time:float = get_time_from_y(selected.position.y) + get_section_time()
+	var dir_edit:int = 0 if JsonHandler.parse_type == 'psych_v1' else (-4 if SONG.notes[cur_section].mustHitSection else 0)
+	var direct:int = fmod(abs(floor(mouse_pos.x / GRID_SIZE) - (5 + dir_edit)), 8) # no need to go above 7
 	
+	print('adding note ('+ str(direct) +' ['+ str(time) +'])')
+	var note_sec = SONG.notes[cur_section].sectionNotes
+	note_sec.append([time, direct, 0])
+	note_sec.sort_custom(func(a, b): return a[0] < b[0])
+	this_note = note_sec[(note_sec.find([time, direct, 0]))]
 	regen_notes()
 	
 func select_note(note:BasicNote) -> void:
-	var id:int = 0
 	if !section_based: return
-	for i in SONG.notes[cur_section].sectionNotes:
-		if floor(i[0]) == note.strum_time and i[1] == note.true_dir:
-			this_note = SONG.notes[cur_section].sectionNotes[id]
-			print('selected note')
-			break
+	print('we trying to select a note hun')
+	var id:int = 0
+	for i in SONG.notes[clicked_section].sectionNotes:
+		if int(i[0]) == int(note.strum_time) and i[1] == note.true_dir:
+			this_note = SONG.notes[clicked_section].sectionNotes[id]
+			print('Selected Note')
+			return
 		id += 1
 
 func remove_note(note:BasicNote) -> void:
 	if !section_based: return
-	for i in SONG.notes[cur_section].sectionNotes:
-		if floor(i[0]) == note.strum_time and i[1] == note.true_dir:
-			this_note.clear()
-			SONG.notes[cur_section].sectionNotes.erase(i)
-			print('cleared note')
-			break
-	
+	print('we trying to remove a note love')
+	var le_notes:Array = SONG.notes[clicked_section].sectionNotes
+	print(le_notes.size())
+	for i in le_notes:
+		if int(i[0]) == int(note.strum_time) and i[1] == note.true_dir:
+			this_note = [] # clear() wouldnt always clear it ironically
+			le_notes.remove_at(le_notes.find(i))
+			print('Removed Note')
+			
 	regen_notes()
 
 func update_text() -> void:
@@ -787,11 +815,15 @@ func _toggle_grid(toggled:bool) -> void:
 			for sqr in i.grid: sqr.visible = toggled
 			for mrk in i.markers: mrk.visible = !toggled
 	regen_notes()
+	
+func focus_changed(is_focused:bool) -> void:
+	if is_focused and Conductor.paused:
+		Conductor.paused = true
 
 func get_y_from_time(strum_time:float) -> float:
 	return remap(strum_time, 0, 16 * Conductor.step_crochet, grid_1.position.y, grid_1.position.y + grid_1.height)
 
-func get_strum_from_y(y_pos:float) -> float:
+func get_time_from_y(y_pos:float) -> float:
 	return remap(y_pos, grid_1.position.y, grid_1.position.y + grid_1.height, 0, 16 * Conductor.step_crochet)
 	
 func get_section_time(this_sec:int = -1):

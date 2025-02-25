@@ -14,6 +14,10 @@ func _ready():
 		var new_dancer = LimoDancer.new(Vector2((370 * i) + 440 + limo.x, limo.y - 870))
 		$BGLimo/LimoDancers.add_child(new_dancer)
 		dancers.append(new_dancer)
+		
+func post_ready() -> void:
+	gf.reparent($FGLimo)
+	gf.show_behind_parent = true
 
 func beat_hit(_beat:int) -> void:
 	for dancer in dancers:

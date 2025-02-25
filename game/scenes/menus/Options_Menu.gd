@@ -26,6 +26,7 @@ var visuals = [
 	['basic_play',     'bool'],
 	['note_splashes', 'array', ['epics', 'both', 'all', 'none']],
 	['splash_sprite', 'array', ['vis', 'base', 'haxe', 'forever']],
+	['hold_splash',   'array', ['disabled', 'cover', 'cover/splash']],
 	['behind_strums',  'bool'],
 	['rating_cam',    'array', ['game', 'hud', 'none']],
 	['auto_pause',     'bool'],

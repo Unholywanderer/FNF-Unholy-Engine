@@ -35,7 +35,7 @@ var dir:int:
 				note.texture = load(tex_path + COLORS[dir] +'.png')
 			
 var true_dir:int # the actual direction the note is, from 0-7
-var lane:int # player notes 4-7, opponent notes 0-3
+var lane:int # player notes always 4-7, opponent notes always 0-3
 
 var was_hit:bool = false # for normal notes
 var hitting:bool = false # for sustains

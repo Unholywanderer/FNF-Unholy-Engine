@@ -48,7 +48,7 @@ func note_hit(note:Note) -> void:
 				_:
 					singer.sing(note.dir, note.alt, !note.is_sustain)
 					
-	if note.is_sustain: spawn_hold_splash(get_strums()[note.dir], note)
+	if note.is_sustain and Prefs.hold_splash != 'disabled': spawn_hold_splash(get_strums()[note.dir], note)
 	var can_splash = note.rating == 'sick' or note.rating == 'epic'
 	if Prefs.note_splashes == 'all' or \
 	  (Prefs.note_splashes == 'epics' and note.rating == 'epic') or \
@@ -91,7 +91,7 @@ func spawn_splash(strum:Strum) -> void:
 	total_splash.append(new_splash)
 	
 func spawn_hold_splash(strum:Strum, note:Note) -> void:
-	if cur_sparks[strum.dir] != null:
+	if cur_sparks[strum.dir] != null and !cur_sparks[strum.dir].animation.contains('_splash'):
 		cur_sparks[strum.dir].anim_time += get_process_delta_time()
 	else:
 		var spark:AnimatedSprite2D = SPARK.instantiate()

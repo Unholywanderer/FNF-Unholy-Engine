@@ -12,6 +12,28 @@
 			"loop": false
 		},
 		{
+			"name": "danceLeft",
+			"prefix": "Senpai Idle",
+			"offsets": [
+				1,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceRight",
+			"prefix": "Senpai Idle",
+			"offsets": [
+				1,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
 			"name": "singUP",
 			"prefix": "SENPAI UP NOTE",
 			"offsets": [
