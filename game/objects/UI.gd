@@ -176,6 +176,18 @@ func get_grade(acc:float) -> String:
 	if acc >= 60.0 : return 'CD'
 	if acc >= 50.0 : return 'D'
 	return 'F'
+
+func get_fc() -> String:
+	if hit_count['miss'] == 0: # dumb
+		var da_fc:String = 'FC'
+		if hit_count['bad'] + hit_count['shit'] == 0:
+			if hit_count['epic'] > 0: da_fc = 'EFC'
+			if hit_count['sick'] > 0: da_fc = 'SFC'
+			if hit_count['good'] > 0: da_fc = 'GFC'
+		return da_fc
+	if hit_count['miss'] in range(1, 10):
+		return 'SDCB'
+	return 'Clear'
 	
 func reset_stats() -> void:
 	grade = 'N/A'

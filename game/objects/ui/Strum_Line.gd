@@ -48,7 +48,8 @@ func note_hit(note:Note) -> void:
 				_:
 					singer.sing(note.dir, note.alt, !note.is_sustain)
 					
-	if note.is_sustain and Prefs.hold_splash != 'disabled': spawn_hold_splash(get_strums()[note.dir], note)
+	if note.is_sustain and Prefs.hold_splash != 'disabled' and !Prefs.behind_strums: 
+		spawn_hold_splash(get_strums()[note.dir], note)
 	var can_splash = note.rating == 'sick' or note.rating == 'epic'
 	if Prefs.note_splashes == 'all' or \
 	  (Prefs.note_splashes == 'epics' and note.rating == 'epic') or \

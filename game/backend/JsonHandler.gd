@@ -16,7 +16,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	_SONG.clear()
 	song_root = ''
 	song_variant = ''
-	parse_type = ''
+	parse_type = 'legacy'
 
 	if !variant.is_empty(): 
 		if variant != 'normal' and !variant.begins_with('-'):
@@ -85,13 +85,13 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 		generate_chart(_SONG)
 
 func get_song_data(song:String) -> Dictionary:
-	if parse_type.is_empty(): parse_type = 'psych_v1'
-	
 	var json = you_WILL_get_a_json(song)
 	var parsed = JSON.parse_string(json.get_as_text())
-	if parsed.has('song') and parsed.song is Dictionary:
-		parsed = parsed.song # i dont want to have to do no SONG.song.bpm or something
-		if parse_type == 'psych_v1': parse_type = 'legacy'
+	if parsed.has('song'):
+		if parsed.has('format') and parsed.format.contains('psych_v1'):
+			parse_type = 'psych_v1'
+		if parsed.song is Dictionary:
+			parsed = parsed.song # i dont want to have to do no SONG.song.bpm or something
 		
 	return parsed 
 

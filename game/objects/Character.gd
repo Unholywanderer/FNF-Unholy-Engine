@@ -177,9 +177,7 @@ func dance(forced:bool = false) -> void:
 	if dance_idle:
 		danced = !danced
 		idle = 'dance'+ ('Right' if danced else 'Left')
-	
-	#modulate.v = 1000
-	#test.tween_property(self, 'modulate:v', 1, Conductor.step_crochet / 500.0)
+
 	play_anim(idle + idle_suffix, forced)
 	hold_timer = 0
 	sing_timer = 0
@@ -193,19 +191,7 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 		
 	if sing_timer >= Conductor.step_crochet / 1000.0 or reset:
 		sing_timer = 0.0 #if reset else Conductor.step_crochet / 1000.0
-		
 		play_anim(to_sing, true)
-		#if is_player:
-		#	frame = 3
-		
-#	if reset:
-#		sing_timer = 0.0
-#		play_anim(to_sing, true)
-#	else:
-#		sing_timer += get_process_delta_time()
-#		if sing_timer >= ((2.0 / 24.0) - 0.01): #Conductor.step_crochet / 1000.0:
-#			play_anim(to_sing, true)
-#			sing_timer = 0.0
 
 func flip_char() -> void:
 	scale.x *= -1
@@ -215,6 +201,7 @@ func flip_char() -> void:
 	swap_sing('singLEFT', 'singRIGHT')
 
 func swap_sing(anim1:String, anim2:String) -> void:
+	if !sing_anims.has(anim1) or !sing_anims.has(anim2): return
 	var index1 = sing_anims.find(anim1)
 	var index2 = sing_anims.find(anim2)
 	sing_anims[index1] = anim2
