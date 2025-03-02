@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://c4168g031gyyo"]
 
-[ext_resource type="Script" path="res://game/objects/ui/Alert_Window.gd" id="1_o5qc4"]
-[ext_resource type="Texture2D" uid="uid://j0r80jw04sck" path="res://assets/images/ui/noti_check.png" id="2_2pk5r"]
+[ext_resource type="Script" path="res://game/objects/ui/Alert_Window.gd" id="1_b2piy"]
+[ext_resource type="Texture2D" uid="uid://j0r80jw04sck" path="res://assets/images/ui/noti_check.png" id="2_a4jql"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gy3fy"]
 content_margin_left = 10.0
@@ -45,6 +45,7 @@ bg_color = Color(0.306923, 0.306923, 0.306923, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iuocy"]
 
 [node name="Window" type="Window"]
+process_mode = 3
 title = "ERROR!"
 position = Vector2i(8, 36)
 size = Vector2i(350, 100)
@@ -57,12 +58,12 @@ keep_title_visible = true
 theme = SubResource("Theme_kdoal")
 theme_override_constants/title_outline_size = 4
 theme_override_constants/close_v_offset = -3
-script = ExtResource("1_o5qc4")
+script = ExtResource("1_b2piy")
 
 [node name="Icon" type="Sprite2D" parent="."]
 position = Vector2(50, 50)
 scale = Vector2(0.8, 0.8)
-texture = ExtResource("2_2pk5r")
+texture = ExtResource("2_a4jql")
 
 [node name="Text" type="RichTextLabel" parent="."]
 clip_contents = false

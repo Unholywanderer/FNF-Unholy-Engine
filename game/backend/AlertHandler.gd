@@ -1,6 +1,6 @@
 extends Node
 
-const ALERT = preload('res://game/objects/alert_window.tscn')
+const ALERT = preload('res://game/objects/ui/alert_window.tscn')
 enum {ERROR, WARN, CHECK}
 
 var all_alerts:Array = []

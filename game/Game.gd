@@ -17,50 +17,53 @@ var persist = { # change this to a global script or something
 	'week_int': -1, 'week_diff': -1,
 	'song_list': [],
 	'deaths': 0
-} 
+}
+
+var main_window:Window
 var scene:Node2D = null:
 	get: return get_tree().current_scene
-	
+
 var screen = [
 	ProjectSettings.get_setting("display/window/size/viewport_width"),
 	ProjectSettings.get_setting("display/window/size/viewport_height")
 ]
+var fullscreen = false:
+	set(f): 
+		fullscreen = f
+		var window_mode = Window.MODE_EXCLUSIVE_FULLSCREEN if f else Window.MODE_WINDOWED
+		main_window.mode = window_mode
 
 # fix pause screen because it sets the paused of the tree as well
 func _ready():
+	main_window = get_window()
+	main_window.focus_entered.connect(_focus_in)
+	main_window.focus_exited.connect(_focus_out)
 	set_mouse_visibility(false)
-	focus_change.connect(focus_changed)
 
 var just_pressed:bool = false
-var is_full:bool = false
-
 func _process(_delta):
 	if Input.is_key_pressed(KEY_F6):
 		if !just_pressed:
-			var window_mode = DisplayServer.WINDOW_MODE_FULLSCREEN if !is_full else DisplayServer.WINDOW_MODE_WINDOWED
-			DisplayServer.window_set_mode(window_mode)
-			is_full = !is_full
+			fullscreen = !fullscreen
 		just_pressed = true
 	else: just_pressed = false
-
-func _notification(what):
-	if what == MainLoop.NOTIFICATION_APPLICATION_FOCUS_IN:
-		focus_change.emit(true)
-	elif what == MainLoop.NOTIFICATION_APPLICATION_FOCUS_OUT:
-		focus_change.emit(false)
 
 var is_paused:bool = false:
 	set(paus): 
 		is_paused = paus
 		get_tree().paused = is_paused
-func focus_changed(is_focused:bool):
-	if Prefs.auto_pause:
-		Engine.max_fps = Prefs.fps if is_focused else 12 # no need to process shit if its paused
-		Audio.process_mode = Node.PROCESS_MODE_ALWAYS if is_focused else Node.PROCESS_MODE_DISABLED
-		if is_focused:
-			if is_paused: is_paused = false
-		else:
-			if !get_tree().paused: is_paused = true
+		
+func _focus_in():
+	focus_change.emit(true)
+	if !Prefs.auto_pause: return
+	Audio.process_mode = Node.PROCESS_MODE_ALWAYS
+	if is_paused: is_paused = false
+
+func _focus_out():
+	focus_change.emit(false)
+	if !Prefs.auto_pause: return
+	Audio.process_mode = Node.PROCESS_MODE_DISABLED
+	if !get_tree().paused: is_paused = true
 
 func center_obj(obj = null, axis:String = 'xy') -> void:
 	if obj == null: return
@@ -113,7 +116,7 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 		await cur_trans.trans_out(0.7)
 
 		get_tree().change_scene_to_packed(new_scene)
-		get_tree().paused = false
+		get_tree().paused = is_paused
 		
 		cur_trans.on_finish = func():
 			remove_child(cur_trans)

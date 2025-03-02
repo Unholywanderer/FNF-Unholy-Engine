@@ -529,7 +529,7 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 			tab('Section', 'AltAnim').button_pressed = sec.altAnim or false
 		if sec.has('changeBPM') and sec.has('bpm'):
 			tab('Section', 'ChangeBPM').button_pressed = sec.changeBPM if sec.changeBPM != null else false
-			tab('Section', 'NewBPM').value = sec.bpm
+			tab('Section', 'NewBPM').value = sec.bpm if sec.bpm != null else Conductor.bpm
 		else:
 			tab('Section', 'ChangeBPM').button_pressed = false
 			tab('Section', 'NewBPM').value = 0
@@ -641,10 +641,8 @@ func _input(event): # this is better
 			#JsonHandler.generate_chart(SONG)
 		#	Conductor.for_all_audio('volume_db', linear_to_db(1), true)
 		#	Game.switch_scene('Play_Scene')
-		
 		if Input.is_key_pressed(KEY_G):
-			var save_son
-			
+			$ChartUI/SaveWindow.popup()
 		
 		if Input.is_key_pressed(KEY_SPACE):
 			Conductor.paused = !Conductor.paused
@@ -819,6 +817,21 @@ func _toggle_grid(toggled:bool) -> void:
 func focus_changed(is_focused:bool) -> void:
 	if is_focused and Conductor.paused:
 		Conductor.paused = true
+		
+func save_song(path:String = ''):
+	var is_file:bool = path.ends_with('.json')
+	#print($ChartUI/SaveWindow.current_dir)
+	#return
+	var save_son = Legacy.chart_format.duplicate()
+	for i in SONG.keys():
+		if save_son.has(i):
+			save_son[i] = SONG[i]
+	
+	#var save_path = path if path.length() > 0 else 'assets/data/'+ $ChartUI/SaveWindow.current_dir +'/'
+	var fil = FileAccess.open('res://assets/tests/Test.json', FileAccess.WRITE)
+	fil.store_string(JSON.stringify(save_son, '\t'))
+	fil.close()
+	#pass
 
 func get_y_from_time(strum_time:float) -> float:
 	return remap(strum_time, 0, 16 * Conductor.step_crochet, grid_1.position.y, grid_1.position.y + grid_1.height)

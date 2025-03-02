@@ -12,7 +12,7 @@ var gameplay = [
 	['ghost_tapping',    'array', ['on', 'off', 'insta-kill']],
 	['scroll_type',      'array', ['up', 'down', 'left', 'right', 'middle', 'split']],
 	['center_strums',    'bool'],
-	['hitsound_volume',   'int', [0, 100]],
+	['hitsound_volume',   'int', [0, 200]],
 	['offset',            'int', [-500, 500]], 
 	['epic_window',     'float', [15, 22.5]], 
 	['sick_window',     'float', [15, 45]], 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://deksi37bicvb3"]
+[gd_scene load_steps=18 format=3 uid="uid://deksi37bicvb3"]
 
 [ext_resource type="Script" path="res://game/scenes/debug/Charting_Scene.gd" id="1_li1ut"]
 [ext_resource type="Texture2D" uid="uid://c2r5ulxx1lb0t" path="res://assets/images/menuDark.png" id="2_g7jes"]
@@ -52,6 +52,21 @@ Window/constants/title_height = 0
 Window/constants/title_outline_size = 0
 Window/styles/embedded_border = SubResource("StyleBoxFlat_63kew")
 Window/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_jqob8")
+
+[sub_resource type="Theme" id="Theme_c70nj"]
+Window/colors/title_color = Color(0, 0, 0, 1)
+Window/colors/title_outline_modulate = Color(0, 0, 0, 1)
+Window/constants/close_h_offset = 0
+Window/constants/close_v_offset = 0
+Window/constants/resize_margin = 0
+Window/constants/title_height = 0
+Window/constants/title_outline_size = 0
+Window/font_sizes/title_font_size = 16
+Window/fonts/title_font = null
+Window/icons/close = null
+Window/icons/close_pressed = null
+Window/styles/embedded_border = null
+Window/styles/embedded_unfocused_border = null
 
 [node name="Charting_Scene" type="Node2D"]
 script = ExtResource("1_li1ut")
@@ -160,3 +175,14 @@ theme = SubResource("Theme_rolgm")
 offset_top = -4.0
 offset_right = 266.0
 offset_bottom = 122.435
+
+[node name="SaveWindow" type="FileDialog" parent="ChartUI"]
+initial_position = 4
+size = Vector2i(475, 400)
+borderless = true
+theme = SubResource("Theme_c70nj")
+ok_button_text = "Save"
+filters = PackedStringArray("*.json;Song Chart")
+
+[connection signal="confirmed" from="ChartUI/SaveWindow" to="." method="save_song"]
+[connection signal="file_selected" from="ChartUI/SaveWindow" to="." method="save_song"]

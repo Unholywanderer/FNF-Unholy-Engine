@@ -1,5 +1,25 @@
 class_name Legacy; extends Chart
 
+const sec_format = {
+	'lengthInSteps': 16,
+	'changeBPM': false,
+	'bpm': 0,
+	'sectionNotes': [],
+	'mustHitSection': false,
+	'altAnim': false
+}
+const chart_format = {
+	'song': 'Test',
+	'events': [],
+	'notes': [],
+	'bpm': 100,
+	'speed': 1.0,
+	'player1': 'bf',
+	'player2': 'dad',
+	'gfVersion': 'gf'
+}
+
+
 var p_v1:bool = false
 func _init(s:bool = false): p_v1 = s
 
