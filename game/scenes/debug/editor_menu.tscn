@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cywrtqa27bgl3"]
 
-[ext_resource type="Script" path="res://game/scenes/debug/Editor_Menu.gd" id="1_l0bfc"]
+[ext_resource type="Script" uid="uid://pc6fvxlnjorm" path="res://game/scenes/debug/Editor_Menu.gd" id="1_l0bfc"]
 
 [node name="EditorMenu" type="Node2D"]
 process_mode = 2

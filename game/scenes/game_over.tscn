@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dfmsn8pvbrl8n"]
 
-[ext_resource type="Script" path="res://game/scenes/Game_Over.gd" id="1_frtla"]
+[ext_resource type="Script" uid="uid://bv0aey11nievt" path="res://game/scenes/Game_Over.gd" id="1_frtla"]
 
 [node name="Game_Over" type="Node2D"]
 process_mode = 3

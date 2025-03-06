@@ -1,11 +1,11 @@
 [gd_scene load_steps=9 format=3 uid="uid://cjneaxd1l4bw2"]
 
-[ext_resource type="Script" path="res://game/scenes/stages/school.gd" id="1_7so5l"]
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
-[ext_resource type="Texture2D" uid="uid://d31wdieurxpwt" path="res://assets/images/stages/school/weebSky.png" id="3_wfeh0"]
-[ext_resource type="Texture2D" uid="uid://dyaug8om5pqvx" path="res://assets/images/stages/school/weebSchool.png" id="4_p2ijp"]
-[ext_resource type="Texture2D" uid="uid://b7k0uvk1f3um7" path="res://assets/images/stages/school/weebStreet.png" id="5_reupb"]
-[ext_resource type="Texture2D" uid="uid://bg606ljv0auun" path="res://assets/images/stages/school/weebTreesBack.png" id="6_orcuo"]
+[ext_resource type="Script" uid="uid://cfjqgvw7gww5y" path="res://game/scenes/stages/school.gd" id="1_7so5l"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
+[ext_resource type="Texture2D" uid="uid://bkuttjwrhxaor" path="res://assets/images/stages/school/weebSky.png" id="3_wfeh0"]
+[ext_resource type="Texture2D" uid="uid://dgpb553ip7ttr" path="res://assets/images/stages/school/weebSchool.png" id="4_p2ijp"]
+[ext_resource type="Texture2D" uid="uid://udutbu65kej4" path="res://assets/images/stages/school/weebStreet.png" id="5_reupb"]
+[ext_resource type="Texture2D" uid="uid://dedjtn3mmlge0" path="res://assets/images/stages/school/weebTreesBack.png" id="6_orcuo"]
 [ext_resource type="SpriteFrames" uid="uid://cyaao6ofht74r" path="res://assets/images/stages/school/weebTrees.res" id="7_bh1kv"]
 [ext_resource type="SpriteFrames" path="res://assets/images/stages/school/petals.res" id="8_w8kqe"]
 

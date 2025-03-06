@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dho30ko8csxeb"]
 
-[ext_resource type="Script" path="res://game/objects/A_Bot.gd" id="1_63ws8"]
+[ext_resource type="Script" uid="uid://dcehs8gcfm8ms" path="res://game/objects/A_Bot.gd" id="1_63ws8"]
 [ext_resource type="Texture2D" uid="uid://chl10r3un5m22" path="res://assets/images/characters/speakers/abot/eyes.png" id="1_kxgvh"]
 [ext_resource type="Texture2D" uid="uid://dop4x3nfiywc2" path="res://assets/images/characters/speakers/abot/BG.png" id="2_k3joh"]
 [ext_resource type="Texture2D" uid="uid://ciaf2q46epu2k" path="res://assets/images/characters/speakers/abot/eyes2.png" id="3_dcqkq"]

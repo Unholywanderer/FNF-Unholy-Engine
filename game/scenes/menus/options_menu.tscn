@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dpqvj0l125gl5"]
 
-[ext_resource type="Script" path="res://game/scenes/menus/Options_Menu.gd" id="1_b1snu"]
+[ext_resource type="Script" uid="uid://wbka8dsljxni" path="res://game/scenes/menus/Options_Menu.gd" id="1_b1snu"]
 [ext_resource type="Texture2D" uid="uid://cg7ftu5fhls3v" path="res://assets/images/menuBGBlue.png" id="1_xcv5o"]
 [ext_resource type="FontFile" uid="uid://dgbxo5q4vbi80" path="res://assets/fonts/PM Full.ttf" id="3_cu7cg"]
 

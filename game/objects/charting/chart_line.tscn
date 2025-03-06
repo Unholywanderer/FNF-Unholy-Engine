@@ -2,9 +2,9 @@
 
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="1_mhs8o"]
 [ext_resource type="Texture2D" uid="uid://cu42tcwatrxkv" path="res://assets/images/icons/icon-face.png" id="2_nd4l3"]
-[ext_resource type="Script" path="res://game/objects/ui/Icon.gd" id="3_e2i7v"]
+[ext_resource type="Script" uid="uid://ba5ivc6samb40" path="res://game/objects/ui/Icon.gd" id="3_e2i7v"]
 [ext_resource type="SpriteFrames" uid="uid://ci217b3da2a6l" path="res://assets/images/ui/eventStrum.res" id="4_f3h05"]
-[ext_resource type="Script" path="res://game/objects/note/Strum.gd" id="5_y8sj8"]
+[ext_resource type="Script" uid="uid://c86ejc2uawybx" path="res://game/objects/note/Strum.gd" id="5_y8sj8"]
 [ext_resource type="PackedScene" uid="uid://cj2ryjlbhxh8b" path="res://game/objects/ui/strum_line.tscn" id="6_kaw2g"]
 
 [node name="ChartLine" type="Node2D"]

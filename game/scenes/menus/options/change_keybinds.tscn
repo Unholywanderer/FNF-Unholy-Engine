@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b0wo268gpmvn8"]
 
-[ext_resource type="Script" path="res://game/scenes/menus/options/Change_Keybinds.gd" id="1_fh0k4"]
+[ext_resource type="Script" uid="uid://c183pagnu2gnx" path="res://game/scenes/menus/options/Change_Keybinds.gd" id="1_fh0k4"]
 [ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="2_lej5l"]
 
 [node name="ChangeKeybinds" type="Node2D"]

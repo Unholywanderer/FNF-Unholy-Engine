@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c4168g031gyyo"]
 
-[ext_resource type="Script" path="res://game/objects/ui/Alert_Window.gd" id="1_b2piy"]
+[ext_resource type="Script" uid="uid://bolagcgxsfe6o" path="res://game/objects/ui/Alert_Window.gd" id="1_b2piy"]
 [ext_resource type="Texture2D" uid="uid://j0r80jw04sck" path="res://assets/images/ui/noti_check.png" id="2_a4jql"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gy3fy"]

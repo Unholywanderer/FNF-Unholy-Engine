@@ -1,11 +1,11 @@
 [gd_scene load_steps=8 format=3 uid="uid://dom5tyfk1in3q"]
 
-[ext_resource type="Script" path="res://game/scenes/debug/CharacterOffsetter.gd" id="1_q8ujq"]
+[ext_resource type="Script" uid="uid://c7lvju4x5a3pa" path="res://game/scenes/debug/CharacterOffsetter.gd" id="1_q8ujq"]
 [ext_resource type="Texture2D" uid="uid://dave1imbc216x" path="res://assets/images/leGrid.png" id="3_0k3qt"]
-[ext_resource type="Shader" path="res://game/resources/shaders/scroll.gdshader" id="3_f84mi"]
+[ext_resource type="Shader" uid="uid://bh2xopks8xxis" path="res://game/resources/shaders/scroll.gdshader" id="3_f84mi"]
 [ext_resource type="Texture2D" uid="uid://daba84ejgj2x1" path="res://assets/images/ui/cross.png" id="4_7buq4"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="4_e8b0o"]
-[ext_resource type="Script" path="res://game/objects/ui/Icon.gd" id="5_36ais"]
+[ext_resource type="Script" uid="uid://ba5ivc6samb40" path="res://game/objects/ui/Icon.gd" id="5_36ais"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3m81g"]
 shader = ExtResource("3_f84mi")

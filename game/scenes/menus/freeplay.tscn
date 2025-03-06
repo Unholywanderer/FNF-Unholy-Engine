@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://1ug712tid640"]
 
-[ext_resource type="Script" path="res://game/scenes/menus/Freeplay.gd" id="1_xub5q"]
+[ext_resource type="Script" uid="uid://ulnoidha3rn8" path="res://game/scenes/menus/Freeplay.gd" id="1_xub5q"]
 [ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="2_j3wpw"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="3_vuq8a"]
 [ext_resource type="PackedScene" uid="uid://dcc3n6k7cac8y" path="res://game/objects/music_player.tscn" id="4_8m3d5"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://548wadsc4u4o"]
 
-[ext_resource type="Script" path="res://game/objects/ui/Transition.gd" id="1_d20kq"]
+[ext_resource type="Script" uid="uid://dbckemnhmptgd" path="res://game/objects/ui/Transition.gd" id="1_d20kq"]
 
 [sub_resource type="Gradient" id="Gradient_maa3h"]
 offsets = PackedFloat32Array(0.985401)

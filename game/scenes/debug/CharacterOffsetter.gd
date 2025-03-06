@@ -4,9 +4,9 @@ var character:Character
 var shadow:Character
 var char_json = {}
 var anim_list:Array[Label] = []
-var offsets:Dictionary = {}
-var cur_cam_offset:Array = [0, 0]
-var cur_pos_offset:Array = [0, 0]
+var offsets:Dictionary[String, Array] = {}
+var cur_cam_offset:Array[int] = [0, 0]
+var cur_pos_offset:Array[int] = [0, 0]
 
 var icon_list:Array = []
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dkr0x6eknd0lh"]
 
 [ext_resource type="SpriteFrames" path="res://assets/images/stages/school-evil/evilSchool.res" id="1_0xa1s"]
-[ext_resource type="Script" path="res://game/scenes/stages/school-evil.gd" id="1_vrd0f"]
+[ext_resource type="Script" uid="uid://wh2jttypx3un" path="res://game/scenes/stages/school-evil.gd" id="1_vrd0f"]
 
 [node name="School Evil" type="Node2D"]
 script = ExtResource("1_vrd0f")

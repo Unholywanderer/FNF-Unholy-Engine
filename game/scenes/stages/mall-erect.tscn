@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://xkq8alffrwjv"]
 
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
-[ext_resource type="Script" path="res://game/scenes/stages/mall-erect.gd" id="1_uctkg"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
+[ext_resource type="Script" uid="uid://df5lh3b2ne3u7" path="res://game/scenes/stages/mall-erect.gd" id="1_uctkg"]
 [ext_resource type="Texture2D" uid="uid://dbrejlos6krme" path="res://assets/images/stages/mall/erect/bgWalls.png" id="3_whrvw"]
 [ext_resource type="SpriteFrames" path="res://assets/images/stages/mall/erect/upperBop.res" id="4_05wpd"]
 [ext_resource type="Texture2D" uid="uid://d2y0ffbd51x6g" path="res://assets/images/stages/mall/erect/bgEscalator.png" id="5_lq5so"]

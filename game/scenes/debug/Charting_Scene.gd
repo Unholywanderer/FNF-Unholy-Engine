@@ -133,7 +133,7 @@ func _ready():
 		
 	for i in [Game.persist.stage_list, DirAccess.get_files_at('res://game/scenes/stages')]:
 		for stage in i:
-			if stage_list.has(stage.replace('.tscn', '')) or stage.ends_with('.gd'): continue
+			if stage_list.has(stage.replace('.tscn', '')) or !stage.ends_with('.tscn'): continue
 			stage = stage.replace('.tscn', '')
 			stage_list.append(stage)
 			tab('Song', 'Stage').get_popup().add_item(stage)
@@ -641,8 +641,8 @@ func _input(event): # this is better
 			#JsonHandler.generate_chart(SONG)
 		#	Conductor.for_all_audio('volume_db', linear_to_db(1), true)
 		#	Game.switch_scene('Play_Scene')
-		if Input.is_key_pressed(KEY_G):
-			$ChartUI/SaveWindow.popup()
+		#if Input.is_key_pressed(KEY_G):
+			#$ChartUI/SaveWindow.popup()
 		
 		if Input.is_key_pressed(KEY_SPACE):
 			Conductor.paused = !Conductor.paused
@@ -919,6 +919,16 @@ class NoteGrid extends Control:
 	
 		width = x
 		height = y
+		#var left_bord = ColorRect.new()
+		#left_bord.color = Color.LIGHT_SLATE_GRAY
+		#left_bord.custom_minimum_size = Vector2(3, height)
+		#add_child(left_bord)
+		
+		#var right_bord = ColorRect.new()
+		#right_bord.position.x = width
+		#right_bord.color = Color.LIGHT_SLATE_GRAY
+		#right_bord.custom_minimum_size = Vector2(3, height)
+		#add_child(right_bord)
 		
 		if cell_size.x != grid_size.x: # if the grid is 1 cell wide, no need for the center mark
 			var center = ColorRect.new()
@@ -937,6 +947,7 @@ class NoteGrid extends Control:
 			add_child(beat_mark)
 			
 		for i in 16:
+			if i % 4 == 0: continue
 			var step_mark = ColorRect.new()
 			step_mark.custom_minimum_size = Vector2(width - (width / 4.0), 2)
 			step_mark.modulate = Color.SKY_BLUE

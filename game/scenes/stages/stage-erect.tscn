@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=3 uid="uid://lpfwqjpp2odt"]
 
-[ext_resource type="Script" path="res://game/scenes/stages/stage-erect.gd" id="1_7l83x"]
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
+[ext_resource type="Script" uid="uid://ddachhpk20iwy" path="res://game/scenes/stages/stage-erect.gd" id="1_7l83x"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
 [ext_resource type="Texture2D" uid="uid://bwsaml3reng0a" path="res://assets/images/stages/stage/erect/backDark.png" id="2_ibnow"]
 [ext_resource type="Texture2D" uid="uid://c8fh2i5qofoj7" path="res://assets/images/stages/stage/erect/brightLightSmall.png" id="3_e5r2c"]
 [ext_resource type="SpriteFrames" uid="uid://cy8qb8arkewjw" path="res://assets/images/stages/stage/erect/crowd.res" id="4_y2f8n"]

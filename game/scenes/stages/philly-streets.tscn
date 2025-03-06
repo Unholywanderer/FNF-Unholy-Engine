@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=3 uid="uid://b1aps5umea8ha"]
 
-[ext_resource type="Script" path="res://game/scenes/stages/philly-streets.gd" id="1_gj0t7"]
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="2_oc14b"]
+[ext_resource type="Script" uid="uid://4tm27sr1yioq" path="res://game/scenes/stages/philly-streets.gd" id="1_gj0t7"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_oc14b"]
 [ext_resource type="Texture2D" uid="uid://c5gqsyh3kj73c" path="res://assets/images/stages/philly-streets/skybox.png" id="3_qsx48"]
 [ext_resource type="Texture2D" uid="uid://cn72yqpp04cg" path="res://assets/images/stages/philly-streets/skyline.png" id="4_gs54s"]
 [ext_resource type="Texture2D" uid="uid://2ocv1kknnm1j" path="res://assets/images/stages/philly-streets/foregroundCity.png" id="5_jhuvl"]
@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://bhguloi17x5qi" path="res://assets/images/stages/philly-streets/highway.png" id="8_yyosp"]
 [ext_resource type="Texture2D" uid="uid://cr4mbsiwg36b7" path="res://assets/images/stages/philly-streets/smog.png" id="9_y50c5"]
 [ext_resource type="Texture2D" uid="uid://do02w5dqgativ" path="res://assets/images/stages/philly-streets/foreground.png" id="10_rdxjr"]
-[ext_resource type="Texture2D" uid="uid://dja1w25ifvdmg" path="res://assets/images/stages/philly-streets/spraycanPile.png" id="11_j4p15"]
+[ext_resource type="Texture2D" uid="uid://dja1w25ifvdmg" path="res://assets/images/stages/philly-streets/SpraycanPile.png" id="11_j4p15"]
 
 [node name="Philly Streets" type="Node2D"]
 script = ExtResource("1_gj0t7")

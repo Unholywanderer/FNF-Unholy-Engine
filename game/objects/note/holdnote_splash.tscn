@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://blkbp71fr4vjs"]
 
 [ext_resource type="SpriteFrames" uid="uid://f7spw2q6vdac" path="res://assets/images/ui/notesplashes/hold_cover.res" id="1_ijov6"]
-[ext_resource type="Script" path="res://game/objects/note/HoldNote_splash.gd" id="2_sfdvs"]
+[ext_resource type="Script" uid="uid://c2mel7lugequw" path="res://game/objects/note/HoldNote_splash.gd" id="2_sfdvs"]
 
 [node name="HoldNote_Splash" type="AnimatedSprite2D"]
 sprite_frames = ExtResource("1_ijov6")

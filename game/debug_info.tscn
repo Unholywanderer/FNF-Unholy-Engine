@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdcyuec4wvih5"]
 
-[ext_resource type="Script" path="res://game/Debug_Info.gd" id="1_hoswi"]
+[ext_resource type="Script" uid="uid://ce7oiqw22jbs8" path="res://game/Debug_Info.gd" id="1_hoswi"]
 [ext_resource type="FontFile" uid="uid://pu2dvns1070g" path="res://assets/fonts/Poppins-Medium.ttf" id="2_56t0x"]
 
 [node name="Debug_Info" type="CanvasLayer"]

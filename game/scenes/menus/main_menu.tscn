@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://c0c427w6cul2x"]
 
-[ext_resource type="Script" path="res://game/scenes/menus/Main_Menu.gd" id="1_3iiqa"]
+[ext_resource type="Script" uid="uid://kk7svqb4v3nn" path="res://game/scenes/menus/Main_Menu.gd" id="1_3iiqa"]
 [ext_resource type="Texture2D" uid="uid://dmko1yd3b8k25" path="res://assets/images/menuBG.png" id="2_m1ms6"]
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="2_r4b4n"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_r4b4n"]
 [ext_resource type="SpriteFrames" uid="uid://ow5p14d6snwg" path="res://assets/images/main_menu/menu_story_mode.res" id="3_kkkin"]
 [ext_resource type="SpriteFrames" uid="uid://bhyejko6u1ivh" path="res://assets/images/main_menu/menu_freeplay.res" id="4_668ve"]
 [ext_resource type="SpriteFrames" uid="uid://c27hvg6wcqyay" path="res://assets/images/main_menu/menu_donate.res" id="5_q6c1y"]

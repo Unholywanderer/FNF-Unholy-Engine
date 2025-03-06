@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://b1aps5umea8ha"]
 
-[ext_resource type="Script" path="res://game/scenes/stages/philly-blazin.gd" id="1_gj0t7"]
+[ext_resource type="Script" uid="uid://bel20qqcuybr1" path="res://game/scenes/stages/philly-blazin.gd" id="1_gj0t7"]
 [ext_resource type="Texture2D" uid="uid://b7yubq6h1uxtu" path="res://assets/images/stages/philly-blazin/skyBlur.png" id="2_dqmug"]
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="2_oc14b"]
-[ext_resource type="Shader" path="res://game/resources/shaders/scroll.gdshader" id="3_xixle"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_oc14b"]
+[ext_resource type="Shader" uid="uid://bh2xopks8xxis" path="res://game/resources/shaders/scroll.gdshader" id="3_xixle"]
 [ext_resource type="SpriteFrames" path="res://assets/images/stages/philly-blazin/lightning.res" id="5_ekwuh"]
 [ext_resource type="Texture2D" uid="uid://devcm1mp4lvjf" path="res://assets/images/stages/philly-blazin/streetBlur.png" id="6_wciij"]
 

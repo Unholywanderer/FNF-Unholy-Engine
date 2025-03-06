@@ -8,7 +8,7 @@ var alert_count:int = 0
 
 func make_alert(text:String = '', type:int = CHECK) -> void:
 	Game.remove_all([all_alerts], self)
-	var new_alert = load('res://game/objects/alert_window.tscn').instantiate()
+	var new_alert = load('res://game/objects/ui/alert_window.tscn').instantiate()
 	var type_str = 'ERROR'
 	match type:
 		WARN: type_str = 'WARN'

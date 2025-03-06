@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://btb8naqubifyk"]
 
-[ext_resource type="Script" path="res://game/objects/ui/Health_Bar.gd" id="1_5oe4u"]
+[ext_resource type="Script" uid="uid://cykog3bocvah4" path="res://game/objects/ui/Health_Bar.gd" id="1_5oe4u"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8eeax"]
 resource_local_to_scene = true

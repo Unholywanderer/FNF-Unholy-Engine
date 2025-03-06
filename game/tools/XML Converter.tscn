@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dxf7y7sr7css4"]
 
-[ext_resource type="Script" path="res://game/tools/XML Converter.gd" id="1_ri1eg"]
+[ext_resource type="Script" uid="uid://dwcyqjxui40mn" path="res://game/tools/XML Converter.gd" id="1_ri1eg"]
 [ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="1_t4lam"]
-[ext_resource type="Script" path="res://game/tools/Choose Sprites.gd" id="2_i47a8"]
+[ext_resource type="Script" uid="uid://cb66trdgfr8ea" path="res://game/tools/Choose Sprites.gd" id="2_i47a8"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chckx"]
 bg_color = Color(0.129412, 0.129412, 0.129412, 1)

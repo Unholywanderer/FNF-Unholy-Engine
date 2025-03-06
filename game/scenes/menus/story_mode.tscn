@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://w7qtrprfa54m"]
 
-[ext_resource type="Script" path="res://game/scenes/menus/Story_Mode.gd" id="1_3ouuw"]
+[ext_resource type="Script" uid="uid://dbbjuigqo5vx4" path="res://game/scenes/menus/Story_Mode.gd" id="1_3ouuw"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="1_bbas5"]
 [ext_resource type="SpriteFrames" uid="uid://d3x7u76ar7tyl" path="res://assets/images/story_mode/arrows.res" id="3_0xjby"]
 [ext_resource type="Texture2D" uid="uid://c2vsbmigb5d81" path="res://assets/images/story_mode/difficulties/normal.png" id="4_g360v"]

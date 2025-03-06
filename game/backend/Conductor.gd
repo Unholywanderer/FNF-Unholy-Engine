@@ -171,7 +171,7 @@ func add_voice(new_id:int, file_name:String, song_name:String) -> void:
 func audio_volume(id:int, vol:float = 1.0) -> void:
 	var stream_count = audio.stream.stream_count - 1
 	#if id > stream_count: printerr('ID '+ str(id) +' doesn\'t exist!')
-	id = clamp(id, 0, stream_count)
+	id = clampi(id, 0, stream_count)
 	audio.stream.set_sync_stream_volume(id, linear_to_db(vol))
 
 func resync_audio() -> void:

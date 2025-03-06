@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://boepqt17m73oo"]
 
-[ext_resource type="Script" path="res://game/tools/TXT Converter.gd" id="1_cddkf"]
+[ext_resource type="Script" uid="uid://c3lv73t7llguk" path="res://game/tools/TXT Converter.gd" id="1_cddkf"]
 [ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="1_ei875"]
-[ext_resource type="Script" path="res://game/tools/Choose Sprites.gd" id="2_8o1m8"]
+[ext_resource type="Script" uid="uid://cb66trdgfr8ea" path="res://game/tools/Choose Sprites.gd" id="2_8o1m8"]
 
 [node name="TXT Converter" type="Node2D"]
 

@@ -76,7 +76,7 @@ func _ready():
 		var try = SONG.player1.replace('bf', 'bf-girl')
 		var it_exists = ResourceLoader.exists('res://assets/data/characters/'+ try +'.json')
 		SONG.player1 = try if it_exists else 'bf-girl'
-
+		
 	Conductor.load_song(SONG.song)
 	Conductor.bpm = SONG.bpm
 	
@@ -231,7 +231,7 @@ func _process(delta):
 	
 	if chart_notes != null:
 		while chart_notes.size() > 0 and chunk != chart_notes.size() and chart_notes[chunk][0] - Conductor.song_pos < spawn_time / cur_speed:
-			if chart_notes[chunk][0] - Conductor.song_pos > spawn_time / cur_speed:
+			if chart_notes[chunk][0] - Conductor.song_pos > (spawn_time / cur_speed):
 				break
 			
 			var new_note:Note = Note.new(NoteData.new(chart_notes[chunk]))
@@ -609,7 +609,7 @@ func good_note_hit(note:Note) -> void:
 	kill_note(note)
 
 	if Prefs.hitsound_volume > 0:
-		Audio.play_sound('hitsound', Prefs.hitsound_volume / 100.0)
+		Audio.play_sound('hitsound2', Prefs.hitsound_volume / 100.0)
 
 var time_dropped:float = 0
 func good_sustain_press(sustain:Note) -> void:

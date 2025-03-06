@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://cj2ryjlbhxh8b"]
 
-[ext_resource type="Script" path="res://game/objects/ui/Strum_Line.gd" id="1_6qhpl"]
+[ext_resource type="Script" uid="uid://lt27kl8jfvvo" path="res://game/objects/ui/Strum_Line.gd" id="1_6qhpl"]
 [ext_resource type="SpriteFrames" uid="uid://cwj3c82v68hde" path="res://assets/images/ui/skins/default/strums.res" id="2_surtv"]
-[ext_resource type="Script" path="res://game/objects/note/Strum.gd" id="3_h255v"]
+[ext_resource type="Script" uid="uid://c86ejc2uawybx" path="res://game/objects/note/Strum.gd" id="3_h255v"]
 
 [node name="Strum_Line" type="Node2D"]
 script = ExtResource("1_6qhpl")

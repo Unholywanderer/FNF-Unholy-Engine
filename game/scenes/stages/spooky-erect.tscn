@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://bpe4b2tmyx2x4"]
 
-[ext_resource type="Script" path="res://game/scenes/stages/spooky-erect.gd" id="1_8pmlf"]
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="2_gfpnc"]
+[ext_resource type="Script" uid="uid://c8k7no5swa7x0" path="res://game/scenes/stages/spooky-erect.gd" id="1_8pmlf"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_gfpnc"]
 [ext_resource type="SpriteFrames" path="res://assets/images/stages/spooky/erect/bgtrees.res" id="3_ey5pp"]
 [ext_resource type="Texture2D" uid="uid://bety4ryjjrkf4" path="res://assets/images/stages/spooky/erect/bgDark.png" id="4_j1kom"]
 [ext_resource type="Texture2D" uid="uid://dg7ecnkhpkbtu" path="res://assets/images/stages/spooky/erect/stairsDark.png" id="5_f4tjt"]

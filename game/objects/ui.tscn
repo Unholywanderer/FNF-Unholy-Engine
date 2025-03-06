@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://c0w7bffyud3s7"]
 
-[ext_resource type="Script" path="res://game/objects/UI.gd" id="1_sa7x1"]
+[ext_resource type="Script" uid="uid://ccbusjji41o3e" path="res://game/objects/UI.gd" id="1_sa7x1"]
 [ext_resource type="PackedScene" uid="uid://cj2ryjlbhxh8b" path="res://game/objects/ui/strum_line.tscn" id="2_fxgad"]
 [ext_resource type="Texture2D" uid="uid://cggo31fhlo02s" path="res://assets/images/ui/skins/default/auto.png" id="4_1wnqx"]
 [ext_resource type="Texture2D" uid="uid://bfobu48eo2lq2" path="res://assets/images/ui/skins/default/auto_back.png" id="4_ph8qy"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://btb8naqubifyk" path="res://game/objects/ui/health_bar.tscn" id="7_e1wxe"]
 [ext_resource type="Texture2D" uid="uid://cqyoymkqgy4le" path="res://assets/images/ui/skins/default/practice_back.png" id="7_p16uu"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="8_1567e"]
-[ext_resource type="Script" path="res://game/objects/ui/Icon.gd" id="8_ojola"]
+[ext_resource type="Script" uid="uid://ba5ivc6samb40" path="res://game/objects/ui/Icon.gd" id="8_ojola"]
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_sa7x1")
@@ -24,20 +24,25 @@ offset_left = 4.80002
 offset_top = 4.35999
 offset_right = -4.80005
 offset_bottom = -3.35999
+metadata/_edit_lock_ = true
 
 [node name="IconP1" type="Sprite2D" parent="HealthBar"]
+position = Vector2(345, 0)
 script = ExtResource("8_ojola")
 
 [node name="IconP2" type="Sprite2D" parent="HealthBar"]
+position = Vector2(256, 0)
 script = ExtResource("8_ojola")
 
 [node name="MarkBG" type="Sprite2D" parent="HealthBar"]
+visible = false
 show_behind_parent = true
 position = Vector2(613, -5.00012)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("4_ph8qy")
 
 [node name="Mark" type="Sprite2D" parent="HealthBar"]
+visible = false
 position = Vector2(613, -22.0001)
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("4_1wnqx")
@@ -136,3 +141,4 @@ text = "Score: 0 / Accuracy: [?] \\ Misses: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 text_direction = 3
+metadata/_edit_lock_ = true

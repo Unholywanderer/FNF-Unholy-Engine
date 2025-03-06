@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://v7swvrlf65l"]
 
-[ext_resource type="Script" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
-[ext_resource type="Script" path="res://game/scenes/stages/philly.gd" id="1_hhiqb"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
+[ext_resource type="Script" uid="uid://d13pf8n18npvk" path="res://game/scenes/stages/philly.gd" id="1_hhiqb"]
 [ext_resource type="Texture2D" uid="uid://b3d25nqwieajx" path="res://assets/images/stages/philly/sky.png" id="3_4wq54"]
 [ext_resource type="Texture2D" uid="uid://2e8vjg4xl7pv" path="res://assets/images/stages/philly/city.png" id="4_klsyb"]
 [ext_resource type="Texture2D" uid="uid://0le1mumsjovq" path="res://assets/images/stages/philly/window.png" id="5_q0fgx"]
