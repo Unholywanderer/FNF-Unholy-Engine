@@ -12,6 +12,7 @@ var gameplay = [
 	['ghost_tapping',    'array', ['on', 'off', 'insta-kill']],
 	['scroll_type',      'array', ['up', 'down', 'left', 'right', 'middle', 'split']],
 	['center_strums',    'bool'],
+	['hitsound',        'array', []],
 	['hitsound_volume',   'int', [0, 200]],
 	['offset',            'int', [-500, 500]], 
 	['epic_window',     'float', [15, 22.5]], 
@@ -39,12 +40,17 @@ var from_play:bool = false
 var cur_option:int = 0
 var sub_option:int = 0
 var in_sub:bool = false
+var cur_shit:AudioStreamPlayer
 
 var main_text:Array[Alphabet]
 var pref_list:Array[Alphabet]
 func _ready():
 	Discord.change_presence('Maining some Menus', 'Checkin some options')
 	
+	for shit in DirAccess.get_files_at('res://assets/sounds/hitsounds'):
+		if !shit.ends_with('.ogg'): continue
+		gameplay[5][2].append(shit.replace('.ogg', ''))
+		
 	var b = JSON.new()
 	b.parse(FileAccess.open('res://assets/data/prefInfo.json', FileAccess.READ).get_as_text())
 	descriptions = b.data
@@ -64,6 +70,7 @@ func _ready():
 	$Description/Text.text = 'Choose a Catagory'
 	update_scroll()
 
+func _exit_tree() -> void: Audio.stop_all_sounds()
 func _unhandled_key_input(_event:InputEvent) -> void:
 	if in_sub:
 		if Input.is_action_just_pressed('menu_up'): update_scroll(-1)
@@ -94,6 +101,8 @@ func _unhandled_key_input(_event:InputEvent) -> void:
 	
 func show_main() -> void:
 	Audio.play_sound('cancelMenu')
+	Audio.volume = 0.7
+
 	for i in pref_list.size():
 		var o = pref_list[i]
 		o.lock.y = 60 + (75 * i)
@@ -134,6 +143,7 @@ func update_scroll(diff:int = 0) -> void:
 				o.target_y = i - sub_option
 				o.lock.y = 60 + (75 * (o.target_y + 3))
 		
+		Audio.volume = 0.15 if pref_list[sub_option].option == 'hitsound' else 0.7
 		$Description/Text.text = pref_list[sub_option].description
 		$Options/SelectBox.position.y = pref_list[sub_option].lock.y - 60
 	else:
@@ -168,6 +178,7 @@ class Option extends Alphabet:
 	
 	var cur_op:int = 0
 	var choices:Array = [] # if the option is an array, will hold all possible options
+	var audio:AudioStreamPlayer
 	
 	var min_val:float = 0.0;  var max_val:float = 0.0
 	var cur_val:float = 0.0
@@ -184,6 +195,7 @@ class Option extends Alphabet:
 			add_child(vis)
 			vis.position.x += 750
 			
+		add_child(audio)
 		#color = Color.WHITE
 		
 		match type:
@@ -206,10 +218,14 @@ class Option extends Alphabet:
 		
 	# update the preference and the option text
 	func update_option(diff:float = 0.0) -> void: # diff for arrays/nums
+		if audio: audio.stop()
 		match type:
 			'array':
 				cur_op = wrapi(cur_op + round(diff), 0, choices.size())
 				Prefs.set(option, choices[cur_op].to_lower())
+				if option == 'hitsound':
+					audio = Audio.return_sound('hitsounds/'+ choices[cur_op])
+					audio.play()
 			'int', 'float':
 				if Input.is_key_pressed(KEY_SHIFT): diff *= 10
 				cur_val = clamp(cur_val + diff, min_val, max_val)

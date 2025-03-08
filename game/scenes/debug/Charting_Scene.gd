@@ -349,10 +349,10 @@ func _process(delta):
 				if !note.is_sustain and note.modulate != Color.GRAY:
 					note.modulate = Color.GRAY
 					if (tab('Chart', 'HitsoundsL').button_pressed and !note.must_press):
-						Audio.play_sound('hitsnap', tab('Chart', 'HitsoundsL/Vol').value)
+						Audio.play_sound('hitsounds/snap', tab('Chart', 'HitsoundsL/Vol').value)
 					
 					if (tab('Chart', 'HitsoundsR').button_pressed and note.must_press):
-						Audio.play_sound('hitsound', tab('Chart', 'HitsoundsR/Vol').value)
+						Audio.play_sound('hitsounds/normal', tab('Chart', 'HitsoundsR/Vol').value)
 					
 					play_strum(note)
 					

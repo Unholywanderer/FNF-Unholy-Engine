@@ -9,6 +9,7 @@ var center_strums:bool = false
 var legacy_score:bool = false
 
 var saved_volume:float = 1.0
+var hitsound:String = 'default'
 var hitsound_volume:int = 0 # will be divided by 100
 var offset:int = 0
 

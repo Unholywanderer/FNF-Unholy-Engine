@@ -395,6 +395,9 @@ func try_death() -> void:
 	stage.game_over_start(death)
 	add_child(death)
 
+func _exit_tree() -> void:
+	Audio.stop_all_sounds()
+	
 func song_end() -> void:
 	if should_save and JsonHandler.song_variant == '':
 		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
@@ -609,7 +612,7 @@ func good_note_hit(note:Note) -> void:
 	kill_note(note)
 
 	if Prefs.hitsound_volume > 0:
-		Audio.play_sound('hitsound2', Prefs.hitsound_volume / 100.0)
+		Audio.play_sound('hitsounds/'+ Prefs.hitsound, Prefs.hitsound_volume / 100.0)
 
 var time_dropped:float = 0
 func good_sustain_press(sustain:Note) -> void:

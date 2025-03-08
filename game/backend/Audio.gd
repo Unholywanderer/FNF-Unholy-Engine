@@ -3,11 +3,10 @@ extends Node2D
 
 var exclude:Array = ['Play_Scene', 'Charting_Scene'] # scenes to not auto start music on
 var Player := AudioStreamPlayer.new()
-var volume:float = 1:
+var volume:float = 1.0:
 	set(vol): 
 		volume = vol
-		if Player.stream != null:
-			Player.volume_db = linear_to_db(volume)
+		Player.volume_db = linear_to_db(volume)
 		
 var pos:float = 0.0 # in case you need the position for something or whatever
 
@@ -39,7 +38,7 @@ func set_music(new_music:String, vol:float = 1, looped:bool = true): # set the m
 		printerr('MUSIC PLAYER | SET MUSIC: CAN\'T FIND FILE "'+ path +'"')
 	
 # play the stated music. if called empty, will replay current track, if there is one
-func play_music(to_play:String = '', looped:bool = true, vol:float = 1) -> void:
+func play_music(to_play:String = '', looped:bool = true, vol:float = 1.0) -> void:
 	if to_play.is_empty() and Player.stream == null: # why not, fuck errors
 		printerr('MUSIC PLAYER | PLAY_MUSIC: MUSIC IS NULL')
 		return
@@ -82,12 +81,8 @@ func play_sound(sound:String, vol:float = 1.0, use_skin:bool = false, ext:String
 	new_sound.play()
 
 func stop_all_sounds() -> void:
-	for sound in sound_list:
-		if sound.stream:
-			sound.stop()
-			sound.stream = null
-			sound.finish()
-			#sound_list.remove_at(sound_list.find(sound))
+	while sound_list.size() != 0:
+		sound_list[0].finish()
 
 class AutoSound extends AudioStreamPlayer:
 	func _init(sound_path:String = '', vol:float = 1):
