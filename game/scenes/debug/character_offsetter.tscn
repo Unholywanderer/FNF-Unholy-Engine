@@ -104,6 +104,16 @@ text = "none"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Center" type="CheckBox" parent="UILayer/Main"]
+offset_left = -224.0
+offset_top = 131.0
+offset_right = -17.0
+offset_bottom = 162.0
+focus_mode = 0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+text = "Centered Offsetting"
+
 [node name="Anti" type="CheckBox" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 5.0

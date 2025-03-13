@@ -1,15 +1,16 @@
-[gd_scene load_steps=8 format=3 uid="uid://cr6pysa5853rq"]
+[gd_scene load_steps=9 format=3 uid="uid://cr6pysa5853rq"]
 
-[ext_resource type="Script" uid="uid://dc4qxhde1tybp" path="res://game/scenes/stages/limo.gd" id="1_eghoy"]
+[ext_resource type="Script" uid="uid://2gbepg7hf5xp" path="res://game/scenes/stages/limo-erect.gd" id="1_bv0jv"]
 [ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
-[ext_resource type="Texture2D" uid="uid://b7hjf46tlqisv" path="res://assets/images/stages/limo/limoSunset.png" id="3_yfw1f"]
-[ext_resource type="SpriteFrames" uid="uid://cjxb6jdx6srfv" path="res://assets/images/stages/limo/bgLimo.res" id="4_vq5r0"]
+[ext_resource type="Texture2D" uid="uid://ygxxta372br8" path="res://assets/images/stages/limo/erect/limoSunset.png" id="3_pq2ux"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/limo/erect/shooting star.res" id="4_pq2ux"]
 [ext_resource type="Texture2D" uid="uid://c56jvn0q6ksva" path="res://assets/images/stages/limo/fastCarLol.png" id="5_ksijh"]
-[ext_resource type="SpriteFrames" uid="uid://dft0d8wo6xkih" path="res://assets/images/stages/limo/limoDrive.res" id="5_mus74"]
 [ext_resource type="Script" uid="uid://bwm24u7374alu" path="res://game/objects/VelocitySprite.gd" id="5_tauk7"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/limo/erect/bgLimo.res" id="5_ucidh"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/limo/erect/limoDrive.res" id="6_w88m6"]
 
-[node name="Limo" type="Node2D"]
-script = ExtResource("1_eghoy")
+[node name="Limo Erect" type="Node2D"]
+script = ExtResource("1_bv0jv")
 
 [node name="Sky" type="Node2D" parent="."]
 script = ExtResource("1_fgt6k")
@@ -17,7 +18,17 @@ scroll_factor = Vector2(0.1, 0.1)
 
 [node name="Sprite" type="Sprite2D" parent="Sky"]
 position = Vector2(-120, -50)
-texture = ExtResource("3_yfw1f")
+texture = ExtResource("3_pq2ux")
+centered = false
+
+[node name="Star" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.12, 0.12)
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Star"]
+position = Vector2(200, 0)
+sprite_frames = ExtResource("4_pq2ux")
+animation = &"shooting star"
 centered = false
 
 [node name="BGLimo" type="Node2D" parent="."]
@@ -26,10 +37,9 @@ scroll_factor = Vector2(0.4, 0.4)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="BGLimo"]
 position = Vector2(-150, 480)
-sprite_frames = ExtResource("4_vq5r0")
-animation = &"background limo pink"
-autoplay = "background limo pink"
-frame_progress = 0.97461
+sprite_frames = ExtResource("5_ucidh")
+animation = &"background limo blue"
+autoplay = "background limo blue"
 centered = false
 
 [node name="LimoDancers" type="Node2D" parent="BGLimo"]
@@ -37,10 +47,9 @@ position = Vector2(-150, 480)
 
 [node name="FGLimo" type="AnimatedSprite2D" parent="."]
 position = Vector2(-120, 550)
-sprite_frames = ExtResource("5_mus74")
+sprite_frames = ExtResource("6_w88m6")
 animation = &"Limo stage"
 autoplay = "Limo stage"
-frame_progress = 0.39828
 centered = false
 
 [node name="CharGroup" type="Node2D" parent="."]

@@ -1,0 +1,169 @@
+{
+	"animations": [
+		{
+			"name": "cheer",
+			"prefix": "GF Cheer",
+			"offsets": [
+				185.0,
+				204.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT",
+			"prefix": "GF left note",
+			"offsets": [
+				174.0,
+				207.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "GF Down Note",
+			"offsets": [
+				14.0,
+				8.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "GF Up Note",
+			"offsets": [
+				10.0,
+				-14.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "GF Right Note",
+			"offsets": [
+				0.0,
+				7.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "sad",
+			"prefix": "gf sad",
+			"offsets": [
+				18.0,
+				12.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceLeft",
+			"prefix": "GF Dancing Beat",
+			"offsets": [
+				164.0,
+				210.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceRight",
+			"prefix": "GF Dancing Beat",
+			"offsets": [
+				164.0,
+				210.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceLeft-hair",
+			"prefix": "GF Dancing Beat Hair blowing",
+			"offsets": [
+				-231.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceRight-hair",
+			"prefix": "GF Dancing Beat Hair blowing",
+			"offsets": [
+				-231.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hairBlow",
+			"prefix": "GF Dancing Beat Hair blowing",
+			"offsets": [
+				-231.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hairFall",
+			"prefix": "GF Dancing Beat Hair Landing",
+			"offsets": [
+				-140.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "scared",
+			"prefix": "GF FEAR",
+			"offsets": [
+				2.0,
+				5.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/gf/char",
+	"icon": "gf",
+	"facing_left": false,
+	"antialiasing": true,
+	"cam_offset": [
+		-150.0,
+		200.0
+	],
+	"pos_offset": [
+		0.0,
+		0.0
+	],
+	"sing_dur": 4,
+	"scale": 1.0,
+	"speaker": {
+		"sprite": "speaker",
+		"offsets": [
+			-180.0,
+			299.0
+		],
+		"scale": 1.0
+	}
+}

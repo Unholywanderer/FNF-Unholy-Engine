@@ -1,0 +1,117 @@
+{
+	"animations": [
+		{
+			"name": "singLEFT",
+			"prefix": "Dad Sing Note LEFT",
+			"offsets": [
+				199.0,
+				377.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "Dad Sing Note DOWN",
+			"offsets": [
+				231.0,
+				399.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "Dad Sing Note UP",
+			"offsets": [
+				214.0,
+				357.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "Dad Sing Note RIGHT",
+			"offsets": [
+				239.0,
+				370.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "idle",
+			"prefix": "Dad idle dance",
+			"offsets": [
+				214.0,
+				382.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "idle-loop",
+			"prefix": "Dad idle dance",
+			"offsets": [
+				214.0,
+				382.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT-loop",
+			"prefix": "Dad Sing Note LEFT",
+			"offsets": [
+				199.0,
+				377.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT-loop",
+			"prefix": "Dad Sing Note RIGHT",
+			"offsets": [
+				239.0,
+				370.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP-loop",
+			"prefix": "Dad Sing Note UP",
+			"offsets": [
+				214.0,
+				357.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/dad",
+	"icon": "dad",
+	"facing_left": false,
+	"antialiasing": true,
+	"cam_offset": [
+		0.0,
+		0.0
+	],
+	"pos_offset": [
+		0.0,
+		0.0
+	],
+	"sing_dur": 4,
+	"scale": 1.0
+}

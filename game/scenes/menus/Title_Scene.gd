@@ -118,7 +118,7 @@ func finish_intro() -> void:
 	$GodotLogo.visible = false
 	$cow.visible = false
 	
-	if Audio.Player.stream == null: #or Audio.volume < 0.7:
+	if !Audio.playing_music: #or Audio.volume < 0.7:
 		Audio.play_music('freakyMenu', true, 0.7)
 	elif Audio.volume < 0.7:
 		Audio.volume = 0.7

@@ -1,0 +1,183 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"prefix": "BF idle dance",
+			"offsets": [
+				211.0,
+				207.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT",
+			"prefix": "BF NOTE LEFT0",
+			"offsets": [
+				187.0,
+				210.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "BF NOTE DOWN0",
+			"offsets": [
+				209.0,
+				232.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "BF NOTE UP0",
+			"offsets": [
+				236.0,
+				192.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "BF NOTE RIGHT0",
+			"offsets": [
+				252.0,
+				209.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFTmiss",
+			"prefix": "BF NOTE LEFT MISS",
+			"offsets": [
+				190.0,
+				197.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWNmiss",
+			"prefix": "BF NOTE DOWN MISS",
+			"offsets": [
+				214.0,
+				218.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUPmiss",
+			"prefix": "BF NOTE UP MISS",
+			"offsets": [
+				229.0,
+				195.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHTmiss",
+			"prefix": "BF NOTE RIGHT MISS",
+			"offsets": [
+				254.0,
+				196.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hey",
+			"prefix": "BF HEY",
+			"offsets": [
+				211.0,
+				204.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hurt",
+			"prefix": "BF hit",
+			"offsets": [
+				210.0,
+				202.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "scared",
+			"prefix": "BF idle shaking",
+			"offsets": [
+				211.0,
+				205.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "dodge",
+			"prefix": "boyfriend dodge",
+			"offsets": [
+				200.0,
+				216.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "attack",
+			"prefix": "boyfriend attack",
+			"offsets": [
+				66.0,
+				73.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "pre-attack",
+			"prefix": "bf pre attack",
+			"offsets": [
+				230.0,
+				228.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/bf/char",
+	"icon": "bf",
+	"facing_left": true,
+	"antialiasing": true,
+	"cam_offset": [
+		0.0,
+		0.0
+	],
+	"pos_offset": [
+		0.0,
+		350.0
+	],
+	"sing_dur": 4,
+	"scale": 1.0
+}

@@ -1,6 +1,9 @@
 extends StageBase
 
 var can_drive:bool = true
+var star_offset:int = 2
+var star_beat:int = 0
+
 var dancers:Array[LimoDancer] = []
 func _ready():
 	default_zoom = 0.9
@@ -15,7 +18,22 @@ func _ready():
 		$BGLimo/LimoDancers.add_child(new_dancer)
 		dancers.append(new_dancer)
 
-func beat_hit(_beat:int) -> void:
+func post_ready() -> void:
+	gf.reparent($FGLimo)
+	gf.show_behind_parent = true
+	
+	var new = ShaderMaterial.new()
+	new.shader = load('res://game/resources/shaders/adjust_color.gdshader')
+	new.set_shader_parameter('hue', -30)
+	new.set_shader_parameter('saturation', -20)
+	new.set_shader_parameter('brightness', -30)
+	
+	var fucks = [boyfriend, gf, dad, $Car]
+	fucks.append_array(dancers)
+	for i in fucks:
+		i.material = new
+	
+func beat_hit(beat:int) -> void:
 	for dancer in dancers:
 		dancer.dance()
 	
@@ -28,7 +46,17 @@ func beat_hit(_beat:int) -> void:
 		$Car.velocity.x = 0
 		$Car.position = Vector2(-12600, randi_range(220, 250))
 		can_drive = true
+	
+	if Game.rand_bool(10) and beat > star_beat + star_offset:
+		var le_star:AnimatedSprite2D = $Star/Sprite
+		le_star.position.x = randi_range(50,900)
+		le_star.position.y = randi_range(-10,20)
+		le_star.flip_h = Game.rand_bool(50)
+		le_star.play()
 
+		star_beat = beat
+		star_offset = randi_range(4, 8)
+		
 class LimoDancer extends AnimatedSprite2D:
 	var danced:bool = false
 	func _init(pos:Vector2):

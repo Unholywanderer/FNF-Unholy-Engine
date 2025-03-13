@@ -1,10 +1,10 @@
-extends Node2D
+extends Node3D
 
-@onready var cam:Camera2D = $Camera
-@onready var ui:CanvasLayer = $UI
-@onready var other:CanvasLayer = $OtherUI # like psych cam other, above ui, and unaffected by ui zoom
+@onready var cam:Camera3D = $Path3D/PathFollow3D/Camera
+@onready var ui:CanvasLayer = $HUD/View/UI
+@onready var other:CanvasLayer = $HUD/View/Other # like psych cam other, above ui, and unaffected by ui zoom
 
-@onready var Judge:Rating = Rating.new()
+@onready var Judge:Rating3D = Rating3D.new()
 
 var DIE
 
@@ -21,7 +21,7 @@ var cur_speed:float = 1.0:
 		for note in notes: note.speed = cur_speed
 		
 var cur_stage:String = 'stage'
-var stage:StageBase
+#var stage:StageBase
 
 var zoom_beat:int = 4
 var zoom_add:Dictionary = {ui = 0.04, game = 0.045}
@@ -35,9 +35,9 @@ var spawn_time:int = 2000
 var song_idx:int = 0
 var playlist:Array[String] = []
 
-var boyfriend:Character
-var dad:Character
-var gf:Character
+var boyfriend:Character3D
+var dad:Character3D
+var gf:Character3D
 var characters:Array = []
 var speaker
 
@@ -58,6 +58,8 @@ var combo:int = 0
 var misses:int = 0
 
 func _ready():
+	Audio.volume = 0
+	JsonHandler.parse_song('bopeebo', 'nightmare', 'erect')
 	if LuaHandler.call_func('onReady') == LuaHandler.RET_TYPES.STOP: return # can't reach this wit lua lol
 	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
 	Game.persist.note_splash = load(spl_path)
@@ -89,9 +91,9 @@ func _ready():
 		if !ResourceLoader.exists('res://game/scenes/stages/'+ cur_stage +'.tscn'):
 			cur_stage = 'stage'
 		
-	stage = load('res://game/scenes/stages/%s.tscn' % [cur_stage]).instantiate() # im sick of grey bg FUCK
-	add_child(stage)
-	default_zoom = stage.default_zoom
+	#stage = load('res://game/scenes/stages/%s.tscn' % [cur_stage]).instantiate() # im sick of grey bg FUCK
+	#add_child(stage)
+	default_zoom = 1 #stage.default_zoom
 	
 	var gf_ver
 	if SONG.has('gfVersion'):
@@ -101,53 +103,57 @@ func _ready():
 			
 	if gf_ver == null or gf_ver.is_empty(): gf_ver = 'gf'
 
-	var has_group = stage.has_node('CharGroup')
-	var add:Callable = stage.get_node('CharGroup').add_child if has_group else add_child
-	
-	gf = Character.new(stage.gf_pos, gf_ver)
-	add.call(gf)
+	gf = Character3D.new(Vector3.ZERO, 'gf-centered')
+	gf.position = $Stage/CSGMesh3D.position - Vector3(3, -2.8, 0)
+	add_child(gf)
 	
 	if gf.speaker_data.keys().size() > 0:
 		var _data = gf.speaker_data
-		match _data.sprite:
-			'ABot': 
-				speaker = load('res://game/objects/a_bot.tscn').instantiate()
-			_: speaker = Speaker.new()
-		speaker.offset = Vector2(_data.offsets[0], _data.offsets[1])
+	#	match _data.sprite:
+		#	'ABot': 
+		#		speaker = load('res://game/objects/a_bot.tscn').instantiate()
+		#	_: speaker = Speaker3D.new()
+		speaker = Speaker3D.new()
+		speaker.offset = Vector2(_data.offsets[0], -_data.offsets[1] + 68)
+		#speaker.offset = Vector2(-10, -20)
+		speaker.sorting_offset -= 1
+		#speaker.position.z = gf.position.z
 		gf.add_child(speaker)
-		speaker.show_behind_parent = true
-		speaker.use_parent_material = true
+		#speaker.show_behind_parent = true
+		#speaker.use_parent_material = true
 		
 		if _data.has('addons'):
 			for i in _data.addons: # [sprite_name, [offset_x, offset_y], scale, flip_x, add_behind_speaker]
-				var new := AnimatedSprite2D.new()
+				var new := AnimatedSprite3D.new()
 				new.sprite_frames = load('res://assets/images/characters/speakers/addons/'+ i[0] +'.res')
 				new.centered = false
 				new.name = i[0]
 				
 				new.offset = Vector2(i[1][0], i[1][1])
-				new.scale = Vector2(i[2], i[2])
+				new.scale = Vector3(i[2], i[2], i[2])
 				new.flip_h = i[3]
 				
 				gf.add_child(new)
-				new.show_behind_parent = true
+				#new.show_behind_parent = true
 				if i.size() >= 5 and i[4]: # add behind speaker
 					new.reparent(speaker)
 				speaker.addons.append(new)
 	
-	if gf.cur_char.to_lower() == 'pico-speaker' and cur_stage.contains('tank'):
-		stage.init_tankmen()
+	#if gf.cur_char.to_lower() == 'pico-speaker' and cur_stage.contains('tank'):
+		#stage.init_tankmen()
 	
-	dad = Character.new(stage.dad_pos, SONG.player2)
-	add.call(dad)
+	dad = Character3D.new(Vector3.ZERO, 'dad-centered')
+	dad.position = $Stage/CSGMesh3D.position - Vector3(12, -0.35, 0)
+	add_child(dad)
 	if dad.cur_char == gf.cur_char and dad.cur_char.contains('gf'): #and SONG.song == 'Tutorial':
 		dad.position = gf.position
 		dad.focus_offsets.x -= dad.width / 4
 		gf.visible = false
 		speaker.reparent(dad)
 	
-	boyfriend = Character.new(stage.bf_pos, SONG.player1, true)
-	add.call(boyfriend)
+	boyfriend = Character3D.new(Vector3.ZERO, 'bf-centered', true)
+	boyfriend.position = $Stage/CSGMesh3D.position + Vector3(5, 0.3, 0)
+	add_child(boyfriend)
 	
 	ui.icon_p1.change_icon(boyfriend.icon, true)
 	ui.icon_p2.change_icon(dad.icon)
@@ -162,11 +168,11 @@ func _ready():
 	
 	Judge.skin = ui.SKIN
 	if Prefs.rating_cam == 'game':
-		Judge.rating_pos = boyfriend.position + Vector2(0, -40)
-		Judge.combo_pos = boyfriend.position + Vector2(-150, 70)
+		Judge.rating_pos = boyfriend.position - Vector3(1, -3, 0)
+		Judge.combo_pos = boyfriend.position - Vector3(1, -2.5, 0)
 	elif Prefs.rating_cam == 'hud':
-		Judge.rating_pos = Vector2(580, 300)
-		Judge.combo_pos = Vector2(420, 420)
+		Judge.rating_pos = Vector3(580, 300, 100)
+		Judge.combo_pos = Vector3(420, 420, 100)
 	
 	Discord.change_presence('Starting '+ SONG.song.capitalize())
 	
@@ -179,12 +185,12 @@ func _ready():
 	print(SONG.song +' '+ JsonHandler.get_diff.to_upper())
 	print('TOTAL EVENTS: '+ str(events.size()))
 
-	for i in [self, stage]:
+	for i in [self]:#, stage]:
 		ui.countdown_start.connect(Callable(i, 'countdown_start'))
 		ui.countdown_tick.connect(Callable(i, 'countdown_tick'))
 		ui.song_start.connect(Callable(i, 'song_start'))
 	
-	Conductor.connect_signals(stage)
+	#Conductor.connect_signals(stage)
 	
 	for i in DirAccess.get_files_at('res://assets/data/scripts'):
 		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
@@ -196,7 +202,7 @@ func _ready():
 		var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
 		DIE = load('res://game/scenes/game_over'+ char_suff +'.tscn')
 	
-	stage.post_ready()
+	#stage.post_ready()
 	ui.start_countdown(true)
 		
 	if JsonHandler.parse_type == 'v_slice': move_cam('dad')
@@ -228,8 +234,11 @@ func _process(delta):
 	
 	var scale_ratio = 5.0 / Conductor.step_crochet * 100.0
 	ui.zoom = lerpf(1.0, ui.zoom, exp(-delta * scale_ratio))
-	cam.zoom.x = lerpf(default_zoom, cam.zoom.x, exp(-delta * scale_ratio))
-	cam.zoom.y = cam.zoom.x
+	
+	$Path3D/PathFollow3D.progress_ratio += 0.2 * delta
+	cam.look_at(focused_peep.position)
+	#cam.zoom.x = lerpf(default_zoom, cam.zoom.x, exp(-delta * scale_ratio))
+	#cam.zoom.y = cam.zoom.x
 	
 	if chart_notes != null:
 		while chart_notes.size() > 0 and chunk != chart_notes.size() and chart_notes[chunk][0] - Conductor.song_pos < spawn_time / cur_speed:
@@ -311,8 +320,8 @@ func beat_hit(beat) -> void:
 	
 	if beat % zoom_beat == 0:
 		ui.zoom += zoom_add.ui
-		if !_cam_tween:
-			cam.zoom += Vector2(zoom_add.game, zoom_add.game)
+#		if !_cam_tween:
+#			cam.zoom += Vector2(zoom_add.game, zoom_add.game)
 		ui.mark.scale += Vector2(0.1, 0.1)
 
 func step_hit(step) -> void:
@@ -336,22 +345,30 @@ func section_hit(section) -> void:
 				print('Changed BPM: ' + str(section_data.bpm))
 
 var focus_offset:Vector2 = Vector2.ZERO
+var focused_peep
 func move_cam(to_char:Variant) -> void:
-	var peep:Character
+	
+	var peep:Character3D
 	var cam_off:Vector2
 	match typeof(to_char): 
 		TYPE_STRING, TYPE_INT:
 			peep = char_from_string(str(to_char))
-			match peep:
-				gf: cam_off = stage.gf_cam_offset
-				dad: cam_off = stage.dad_cam_offset
-				_: cam_off = stage.bf_cam_offset
+			#match peep:
+			#	gf: cam_off = stage.gf_cam_offset
+			#	dad: cam_off = stage.dad_cam_offset
+			#	_: cam_off = stage.bf_cam_offset
 		_:
 			peep = boyfriend if to_char else dad
-			cam_off = stage.bf_cam_offset if to_char else stage.dad_cam_offset
-		
+			#cam_off = stage.bf_cam_offset if to_char else stage.dad_cam_offset
+	
+	focused_peep = peep
+	return
 	var new_pos:Vector2 = peep.get_cam_pos()
-	cam.position = new_pos + cam_off + focus_offset
+	var lol = new_pos + cam_off + focus_offset
+	lol = Vector3(lol.x, lol.y, 0)
+	#cam.rotation.y = int(peep.position.x) % 360
+
+	#cam.position = lol
 	focus_offset = Vector2.ZERO
 
 func _unhandled_key_input(_event) -> void:
@@ -393,7 +410,7 @@ func try_death() -> void:
 	gf.play_anim('sad')
 	get_tree().paused = true
 	var death = DIE.instantiate()
-	stage.game_over_start(death)
+	#stage.game_over_start(death)
 	add_child(death)
 
 func _exit_tree() -> void:
@@ -450,7 +467,7 @@ func refresh(restart:bool = true) -> void: # start song from beginning with no r
 		Conductor.start(0)
 	section_hit(0)
 
-func char_from_string(peep:String) -> Character:
+func char_from_string(peep:String) -> Character3D:
 	match peep.to_lower().strip_edges():
 		'2', 'girlfriend', 'gf', 'spectator': return gf
 		'1', 'dad', 'opponent': return dad
@@ -510,11 +527,7 @@ func event_hit(event:EventData) -> void:
 			
 			var last_anim:String = peep.animation
 			var last_frame:int = peep.frame
-			var last_pos:Vector2
-			match peep:
-				dad: last_pos = stage.dad_pos
-				gf: last_pos = stage.gf_pos
-				_: last_pos = stage.bf_pos
+			var last_pos:Vector3 = Vector3(peep.position.x - peep.json.pos_offsets[0], peep.position.y - peep.json.pos_offsets[1], peep.position.z)
 				
 			if JsonHandler.get_character(new_char) != null and new_char != peep.cur_char:
 				peep.position = last_pos
@@ -552,7 +565,7 @@ func event_hit(event:EventData) -> void:
 			var data = event.values[0]
 			var zoom_mode = 'direct'
 			if data.has('mode'): zoom_mode = data.mode
-			var new_zoom:float = data.zoom if zoom_mode == 'direct' else stage.default_zoom * data.zoom
+			var new_zoom:float = data.zoom if zoom_mode == 'direct' else 1 * data.zoom #stage.default_zoom * data.zoom
 			var dur:float = 0.0
 			if data.has('duration'):
 				dur = Conductor.step_crochet * data.duration / 1000.0
@@ -590,7 +603,7 @@ func good_note_hit(note:Note) -> void:
 
 	var judge_info = Judge.get_score(note.rating)
 	
-	stage.good_note_hit(note)
+	#stage.good_note_hit(note)
 	var group = ui.get_group('player')
 	#if note.gf: group = ui.get_group('gf')
 	group.singer = gf if note.gf else boyfriend 
@@ -637,7 +650,7 @@ func good_sustain_press(sustain:Note) -> void:
 				Conductor.audio_volume(1, 1.0)
 			
 			LuaHandler.call_func('goodSustainPress', [sustain.dir])
-			stage.good_note_hit(sustain)
+			#stage.good_note_hit(sustain)
 			if section_data != null:
 				if section_data.has('gfSection') and section_data.gfSection and section_data.mustHitSection: sustain.gf = true
 			
@@ -668,7 +681,7 @@ func opponent_note_hit(note:Note) -> void:
 	if Conductor.vocals:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 	
-	stage.opponent_note_hit(note)
+	#stage.opponent_note_hit(note)
 	var group = ui.get_group('opponent')
 	#if note.gf: group = ui.get_group('gf')
 	group.singer = gf if note.gf else dad
@@ -682,7 +695,7 @@ func opponent_sustain_press(sustain:Note) -> void:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 	
 	LuaHandler.call_func('opponentSustainPress', [sustain.dir])
-	stage.opponent_note_hit(sustain)
+	#stage.opponent_note_hit(sustain)
 
 	if section_data != null:
 		if section_data.has('altAnim') and section_data.altAnim:
@@ -700,7 +713,7 @@ func note_miss(note:Note) -> void:
 	var luad = LuaHandler.call_func('noteMiss', [notes.find(note), note.dir, note.type])
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
-	stage.note_miss(note)
+	#stage.note_miss(note)
 
 	misses += 1
 	ui.hit_count['miss'] = misses
@@ -737,7 +750,7 @@ func ghost_tap(dir:int) -> void:
 	var luad = LuaHandler.call_func('onGhostTap', [dir])
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
-	stage.ghost_tap(dir)
+	#stage.ghost_tap(dir)
 	if Prefs.ghost_tapping == 'insta-kill':
 		ui.hp = 0
 		return try_death()

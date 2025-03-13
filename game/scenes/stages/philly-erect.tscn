@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://bmgbybwys0u4w"]
+
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
+[ext_resource type="Script" uid="uid://iy81fmfmgfnr" path="res://game/scenes/stages/philly-erect.gd" id="1_hhiqb"]
+[ext_resource type="Texture2D" uid="uid://ovbiogc2m3f0" path="res://assets/images/stages/philly/erect/sky.png" id="3_vo374"]
+[ext_resource type="Texture2D" uid="uid://cvo8lmkf1yjqs" path="res://assets/images/stages/philly/erect/city.png" id="4_0hpfe"]
+[ext_resource type="Texture2D" uid="uid://0le1mumsjovq" path="res://assets/images/stages/philly/window.png" id="5_q0fgx"]
+[ext_resource type="Texture2D" uid="uid://cpoawvrja6w11" path="res://assets/images/stages/philly/erect/behindTrain.png" id="6_m3mo6"]
+[ext_resource type="Texture2D" uid="uid://bxoqn3lccvc68" path="res://assets/images/stages/philly/erect/street.png" id="7_s76dx"]
+
+[sub_resource type="Gradient" id="Gradient_610ao"]
+offsets = PackedFloat32Array(0.24026, 0.701299)
+colors = PackedColorArray(0, 0, 0, 1, 0.121569, 0.121569, 0.196078, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_lnm64"]
+gradient = SubResource("Gradient_610ao")
+fill_to = Vector2(0, 1)
+
+[node name="Philly Erect" type="Node2D"]
+script = ExtResource("1_hhiqb")
+
+[node name="Black" type="ColorRect" parent="."]
+offset_left = -271.0
+offset_top = -105.0
+offset_right = 1788.0
+offset_bottom = 1121.0
+color = Color(0, 0, 0, 1)
+
+[node name="Sky" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.1, 0.1)
+
+[node name="Sprite" type="Sprite2D" parent="Sky"]
+position = Vector2(-100, 0)
+texture = ExtResource("3_vo374")
+centered = false
+
+[node name="City" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.3, 0.3)
+
+[node name="Sprite" type="Sprite2D" parent="City"]
+position = Vector2(-10, 0)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("4_0hpfe")
+centered = false
+
+[node name="Windows" type="Node2D" parent="."]
+script = ExtResource("1_fgt6k")
+scroll_factor = Vector2(0.3, 0.3)
+
+[node name="Sprite" type="Sprite2D" parent="Windows"]
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(-10, 0)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("5_q0fgx")
+centered = false
+
+[node name="Line" type="Line2D" parent="Windows"]
+visible = false
+position = Vector2(20, 202)
+points = PackedVector2Array(-58, 25, 64, -26, 133, 10, 152, 144, 269, 135, 266, 104, 290, 88, 288, 73, 268, 73, 278, 47, 268, 27, 277, 20, 289, 41, 313, 35, 298, 66, 303, 81, 382, 36, 393, 123, 432, 118, 418, -12, 452, -23, 448, -77, 589, -90, 592, -45, 626, -44, 631, 125, 782, 108, 781, -17, 763, -19, 763, -37, 890, -41, 905, -156, 913, -153, 908, -41, 978, -40, 978, -19, 953, -17, 952, 109, 1041, 107, 1044, 143, 1144, 136, 1155, 60, 1228, 23, 1302, 66, 1291, 139, 1414, 160)
+width = 7.0
+
+[node name="BehindTrain" type="Sprite2D" parent="."]
+position = Vector2(-40, 50)
+texture = ExtResource("6_m3mo6")
+centered = false
+
+[node name="Street" type="Sprite2D" parent="."]
+position = Vector2(-40, 50)
+texture = ExtResource("7_s76dx")
+centered = false
+
+[node name="Gradifloor" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(802, 805.5)
+scale = Vector2(28.3437, 5.23437)
+texture = SubResource("GradientTexture2D_lnm64")

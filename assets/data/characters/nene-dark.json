@@ -1,0 +1,114 @@
+{
+	"animations": [
+		{
+			"name": "danceLeft",
+			"prefix": "Idle",
+			"offsets": [
+				0,
+				9
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceRight",
+			"prefix": "Idle",
+			"offsets": [
+				0,
+				9
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "knifeIdle",
+			"prefix": "KnifeIdle",
+			"offsets": [
+				98,
+				-42
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "raise",
+			"prefix": "KnifeRaise",
+			"offsets": [
+				0,
+				-42
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "lower",
+			"prefix": "KnifeLower",
+			"offsets": [
+				-134,
+				-41
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "laugh",
+			"prefix": "Laugh",
+			"offsets": [
+				0,
+				16
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "cheer",
+			"prefix": "ComboCheer",
+			"offsets": [
+				130,
+				-40
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "sad",
+			"prefix": "ComboFawn",
+			"offsets": [
+				50,
+				20
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/gf/nene/dark",
+	"icon": "gf",
+	"facing_left": false,
+	"antialiasing": true,
+	"cam_offset": [
+		-120,
+		110
+	],
+	"pos_offset": [
+		-40,
+		0
+	],
+	"sing_dur": 4,
+	"scale": 1,
+	"speaker": {
+		"sprite": "ABot",
+		"offsets": [
+			-100,
+			320
+		],
+		"scale": 1
+	}
+}

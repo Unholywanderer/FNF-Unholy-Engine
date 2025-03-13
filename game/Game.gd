@@ -36,6 +36,7 @@ var fullscreen = false:
 # fix pause screen because it sets the paused of the tree as well
 func _ready():
 	main_window = get_window()
+	# this is cool but its funky
 	main_window.focus_entered.connect(_focus_in)
 	main_window.focus_exited.connect(_focus_out)
 	set_mouse_visibility(false)

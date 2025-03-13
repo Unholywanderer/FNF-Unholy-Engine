@@ -5,8 +5,8 @@ var shadow:Character
 var char_json = {}
 var anim_list:Array[Label] = []
 var offsets:Dictionary[String, Array] = {}
-var cur_cam_offset:Array[int] = [0, 0]
-var cur_pos_offset:Array[int] = [0, 0]
+var cur_cam_offset:Array = [0, 0]
+var cur_pos_offset:Array = [0, 0]
 
 var icon_list:Array = []
 
@@ -69,7 +69,9 @@ func _ready() -> void:
 		character.antialiasing = tog
 		shadow.antialiasing = tog
 	)
-
+	MAIN('Center').connect('toggled', func(tog:bool):
+		character.centered = tog
+	)
 	$Cam.position = get_viewport_rect().size / 2.0
 	
 	var grab = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
@@ -121,10 +123,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_key_pressed(KEY_K): $Cam.position.y += 5 * (5 if shift else 1)
 	## CHARACTER OFFSETTING
 	var replay_anim = false
-	if Input.is_key_pressed(KEY_LEFT) : offsets[cur_anim][0] -= 1; replay_anim = true
-	if Input.is_key_pressed(KEY_RIGHT): offsets[cur_anim][0] += 1; replay_anim = true
-	if Input.is_key_pressed(KEY_UP)   : offsets[cur_anim][1] -= 1; replay_anim = true
-	if Input.is_key_pressed(KEY_DOWN) : offsets[cur_anim][1] += 1; replay_anim = true
+	if Input.is_key_pressed(KEY_LEFT) : offsets[cur_anim][0] -= (1 if !shift else 10); replay_anim = true
+	if Input.is_key_pressed(KEY_RIGHT): offsets[cur_anim][0] += (1 if !shift else 10); replay_anim = true
+	if Input.is_key_pressed(KEY_UP)   : offsets[cur_anim][1] -= (1 if !shift else 10); replay_anim = true
+	if Input.is_key_pressed(KEY_DOWN) : offsets[cur_anim][1] += (1 if !shift else 10); replay_anim = true
 	if Input.is_key_pressed(KEY_SPACE): replay_anim = true
 		
 	if replay_anim:

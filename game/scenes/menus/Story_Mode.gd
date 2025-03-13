@@ -11,7 +11,7 @@ var characters:Array[MenuChar] = []
 
 var precache = {}
 func _ready():
-	if Audio.Player.stream == null:
+	if !Audio.playing_music:
 		Audio.play_music('freakyMenu', true, 0.7)
 	Discord.change_presence('I play FNF for the plot', 'Story Mode')
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmvrinvq3xc61"
-path="res://.godot/imported/nene.png-eb12599be7663794cb48799e499535de.ctex"
+uid="uid://cg6vhjx21rgb2"
+path="res://.godot/imported/dark.png-172373c6d7bbde42d2f7046dafa1c1ab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/characters/gf/nene/nene.png"
-dest_files=["res://.godot/imported/nene.png-eb12599be7663794cb48799e499535de.ctex"]
+source_file="res://assets/images/characters/gf/nene/dark.png"
+dest_files=["res://.godot/imported/dark.png-172373c6d7bbde42d2f7046dafa1c1ab.ctex"]
 
 [params]
 

@@ -1,7 +1,8 @@
 extends StageBase
 
 # Blammed Shit #
-var blammed_shader:ShaderMaterial
+var blammed_shader:ShaderMaterial = null
+var last_mat:ShaderMaterial
 var blammin:bool = false:
 	set(blam):
 		for i in get_children():
@@ -14,8 +15,9 @@ var blammin:bool = false:
 		$Black.visible = true
 		$Gradifloor.visible = blam
 		blammin = blam
-		
+		#THIS.speaker.modulate = Color.BLACK if blam else Color.WHITE
 		if blam:
+			last_mat = boyfriend.material
 			for i in [boyfriend, gf, dad]:
 				if i == null: continue
 				i.material = blammed_shader.duplicate()
@@ -29,26 +31,49 @@ var blammin:bool = false:
 		else:
 			for i in [boyfriend, gf, dad]:
 				if i == null: continue
-				i.material = null
+				i.material = last_mat
 		
 @onready var initial_points:Array = $Windows/Line.points
 var spec = AudioServer.get_bus_effect_instance(1, 0)
 
-var windows:Array = ['31A2FD', '31FD8C', 'FB33F5', 'FD4531', 'FBA633'] # window colors so fancy wow woah woaoh
+var windows:Array = ['b66f43', '329a6d', '932c28', '2663ac', '502d64'] # window colors so fancy wow woah woaoh
 
 var train:Train = Train.new(Vector2(2000, 360))
 func _ready():
-	if SONG.song.to_lower().contains('blammed'):
-		blammed_shader = ShaderMaterial.new()
-		blammed_shader.shader = load('res://game/resources/shaders/blammed.gdshader')
-		
 	default_zoom = 1.05
 	bf_pos += Vector2(70, -50)
 	dad_pos += Vector2(100, -50)
 	gf_pos.x += 100
 	add_child(train)
 	move_child(train, 5)
-	
+
+var test_pic:AnimateSymbol
+func post_ready() -> void:
+	if SONG.song.to_lower().contains('blammed') or Game.format_str(SONG.song) == 'pico-erect':
+		blammed_shader = ShaderMaterial.new()
+		blammed_shader.shader = load('res://game/resources/shaders/blammed.gdshader')
+		
+	var new = ShaderMaterial.new()
+	new.shader = load('res://game/resources/shaders/adjust_color.gdshader')
+	new.set_shader_parameter('hue', -26)
+	new.set_shader_parameter('saturation', -16)
+	new.set_shader_parameter('contrast', 0)
+	new.set_shader_parameter('brightness', -5)
+	for i in [boyfriend, gf, dad, train]:
+		i.material = new
+		
+	if SONG.player1.contains('pico') and SONG.player2.contains('pico'):
+		test_pic = AnimateSymbol.new()
+		test_pic.position = dad.position + Vector2(-368, 400)
+		test_pic.z_index = dad.z_index + 1
+		test_pic.atlas = 'res://assets/images/stages/philly/erect/pico_doppleganger'
+		test_pic.playing = true
+		add_child(test_pic)
+		test_pic.material = new
+		dad.visible = false
+		Conductor.mult_vocals = false
+		Conductor.audio_volume(2, 0)
+		
 func countdown_start():
 	pass
 	#gf.load_char('gf-car')
@@ -58,7 +83,11 @@ func countdown_start():
 	#gf.position -= Vector2(155, train.texture.get_size()[1] / (1.28 / gf.scale.x))
 	#Game.scene.speaker.visible = false
 
+var pla:bool = false
 func _process(delta):
+	#if test_pic.frame == 512 and !pla:
+	#	pla = true
+	#	Audio.play_sound('picoExplode')
 	$Windows/Sprite.self_modulate.a -= (Conductor.crochet / 1000.0) * delta * 1.5
 	
 	if blammin:
@@ -82,7 +111,10 @@ func beat_hit(beat:int):
 	if SONG.song.to_lower().contains('blammed'):
 		if beat == 128: blammin = true
 		if beat == 192: blammin = false
-	
+	if SONG.song.to_lower().contains('pico'):
+		if beat == 160: blammin = true
+		if beat == 224: blammin = false
+		
 	if beat % 4 == 0:
 		var can_cols = windows.duplicate()
 		can_cols.remove_at(windows.find(last_color))

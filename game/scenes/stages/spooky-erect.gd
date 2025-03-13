@@ -12,11 +12,17 @@ var lightning_beat:int = 0
 var lighting_offset:int = 8
 
 func post_ready():
-	other_gf = Character.new(gf_pos, 'gf')
+	var light_alts = ['gf', 'spooky', 'bf']
+	var le_fucks = [SONG.gfVersion, SONG.player2, SONG.player1]
+	for i in light_alts.size():
+		if JsonHandler.get_character(le_fucks[i].replace('-dark', '')):
+			light_alts[i] = le_fucks[i].replace('-dark', '')
+	
+	other_gf = Character.new(gf_pos, light_alts[0])
 	$CharGroup.add_child(other_gf)
-	other_spook = Character.new(dad_pos, 'spooky')
+	other_spook = Character.new(dad_pos, light_alts[1])
 	$CharGroup.add_child(other_spook)
-	other_bf = Character.new(bf_pos, 'bf', true)
+	other_bf = Character.new(bf_pos, light_alts[2], true)
 	$CharGroup.add_child(other_bf)
 	for i in [other_bf, other_gf, other_spook]: i.modulate.a = 0
 	
@@ -39,7 +45,18 @@ func strike():
 	
 	for i in [$BG, $Stairs, other_bf, other_gf, other_spook]:
 		i.modulate.a = 1
-		create_tween().tween_property(i, 'modulate:a', 0, 1).set_delay(0.5)
+	
+	get_tree().create_timer(0.06).timeout.connect(func():
+		for i in [$BG, $Stairs, other_bf, other_gf, other_spook]:
+			i.modulate.a = 0
+	)
+	
+	get_tree().create_timer(0.12).timeout.connect(func():
+		for i in [$BG, $Stairs, other_bf, other_gf, other_spook]:
+			i.modulate.a = 1
+			create_tween().tween_property(i, 'modulate:a', 0, 1.5)
+	)
+	
 	Audio.play_sound('thunder_'+ str(randi_range(1, 2)))
 	boyfriend.play_anim('scared', true)
 	other_bf.play_anim('scared', true)

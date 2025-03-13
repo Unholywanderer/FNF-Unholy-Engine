@@ -21,7 +21,7 @@ var songs:Array[FreeplaySong] = []
 var icons:Array[Icon] = []
 func _ready():
 	Game.persist.song_list = []
-	if Audio.Player.stream == null:
+	if !Audio.playing_music:
 		Audio.play_music('freakyMenu', true, 0.7)
 	Discord.change_presence('Maining some Menus', 'In Freeplay')
 		
@@ -150,12 +150,12 @@ func change_variant(amount:int = 0) -> void:
 	change_diff()
 
 var hold_time:float = 0.0
-func _unhandled_key_input(event):
+func _unhandled_key_input(_event):
 	var shifty = Input.is_key_pressed(KEY_SHIFT)
 	var diff:int = 4 if shifty else 1
 	var just_pressed:Callable = func(action): return Input.is_action_just_pressed(action)
 	var is_held:Callable = func(action): return Input.is_action_pressed(action) and !just_pressed.call(action)
-	var is_pressed:Callable = func(action): return just_pressed.call(action) or is_held.call(action)
+	#var is_pressed:Callable = func(action): return just_pressed.call(action) or is_held.call(action)
 
 	if Input.is_key_pressed(KEY_R):
 		print('Erasing '+ ('all' if shifty else diff_str) +' | '+ songs[cur_song].text)
@@ -166,11 +166,10 @@ func _unhandled_key_input(event):
 	if just_pressed.call('menu_up')  : update_list(-diff)
 	
 	if is_held.call('menu_down') or is_held.call('menu_up'):
-		var mult:int = -1 if is_held.call('menu_up') else 1
 		hold_time += get_process_delta_time()
 		if hold_time >= (1.5 * get_process_delta_time()):
 			hold_time = 0
-			update_list(diff * mult)
+			update_list(diff * Input.get_axis('menu_up', 'menu_down'))
 			
 	if just_pressed.call('menu_left') : change_diff(-1)
 	if just_pressed.call('menu_right'): change_diff(1)

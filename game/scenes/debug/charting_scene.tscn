@@ -117,6 +117,12 @@ theme_override_font_sizes/font_size = 25
 text = "0:00"
 horizontal_alignment = 2
 
+[node name="Control" type="Control" parent="ChartUI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [node name="Tabs" type="TabContainer" parent="ChartUI"]
 offset_left = 850.0
 offset_top = 348.0

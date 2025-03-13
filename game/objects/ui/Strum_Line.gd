@@ -16,7 +16,7 @@ var INIT_POS:PackedVector2Array = [Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vec
 		for i in get_strums():
 			i.position.x = spacing * i.dir
 			
-var singer:Character = null
+var singer = null
 var notes:Array[Note] = []
 
 func _ready():

@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3 uid="uid://dk4p5m2uy8mwm"]
+
+[ext_resource type="Script" uid="uid://wq7eak2tcxn6" path="res://game/scenes/3D/3DPlay_Scene.gd" id="1_0dkcm"]
+[ext_resource type="Texture2D" uid="uid://bq5u0q8ntba0" path="res://assets/images/stages/stage/stagefront.png" id="2_vkpov"]
+[ext_resource type="PackedScene" uid="uid://c0w7bffyud3s7" path="res://game/objects/ui.tscn" id="3_2jll4"]
+
+[sub_resource type="Curve3D" id="Curve3D_0dkcm"]
+closed = true
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 12, 0, 0, -12, 21, 0, -6, 0, 0, 0, 0, 0, 0, 0, 0, -19, 0, 0, -15, 0, 0, 15, -20, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
+
+[sub_resource type="BoxMesh" id="BoxMesh_1gqgg"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_0dkcm")
+
+[node name="FocusPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.05118, -3.93721)
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_0dkcm")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
+transform = Transform3D(0.553595, 0, -0.832752, 0, 0.999973, 0, 0.832758, 0, 0.553591, 14.9748, 0, 3.62234)
+progress = 16.02
+
+[node name="Camera" type="Camera3D" parent="Path3D/PathFollow3D"]
+transform = Transform3D(-0.00269959, -1.30967e-10, 1.00001, -0.00278719, 1.00001, -7.52402e-06, -1.00001, -0.00278721, -0.00269959, 0, 7.14495, 0.0328347)
+
+[node name="Stage" type="Sprite3D" parent="."]
+texture = ExtResource("2_vkpov")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="Stage"]
+transform = Transform3D(26, 0, 0, 0, 1, 0, 0, 0, 9, 0, 1.94102, -4.55202)
+mesh = SubResource("BoxMesh_1gqgg")
+
+[node name="HUD" type="SubViewportContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="View" type="SubViewport" parent="HUD"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="UI" parent="HUD/View" instance=ExtResource("3_2jll4")]
+
+[node name="Other" type="CanvasLayer" parent="HUD/View"]

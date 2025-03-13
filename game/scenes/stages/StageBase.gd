@@ -27,14 +27,14 @@ var gf:Character:
 
 # initial positions the characters will take
 # set these on _ready()
-var bf_pos:Vector2 = Vector2(770, 100)
-var dad_pos:Vector2 = Vector2(100, 100)
-var gf_pos:Vector2 = Vector2(550, 100)
+@export var bf_pos:Vector2 = Vector2(770, 100)
+@export var dad_pos:Vector2 = Vector2(100, 100)
+@export var gf_pos:Vector2 = Vector2(550, 100)
 
 # added onto the character's camera position
-var bf_cam_offset:Vector2 = Vector2(0, 0)
-var dad_cam_offset:Vector2 = Vector2(0, 0)
-var gf_cam_offset:Vector2 = Vector2(0, 0)
+@export var bf_cam_offset:Vector2 = Vector2(0, 0)
+@export var dad_cam_offset:Vector2 = Vector2(0, 0)
+@export var gf_cam_offset:Vector2 = Vector2(0, 0)
 
 # song functions for signals
 func post_ready() -> void: pass
