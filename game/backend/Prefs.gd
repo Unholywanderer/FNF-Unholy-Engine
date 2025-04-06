@@ -9,7 +9,7 @@ var center_strums:bool = false
 var legacy_score:bool = false
 
 var saved_volume:float = 1.0
-var hitsound:String = 'default'
+var hitsound:String = 'normal'
 var hitsound_volume:int = 0 # will be divided by 100
 var offset:int = 0
 
@@ -29,6 +29,9 @@ var allow_rpc:bool = true:
 	set(allow): 
 		allow_rpc = allow
 		Discord.update(false, !allow)
+		
+var judgement_pos:Dictionary = {'game': [0, -40, -150, 70], 'hud': [580, 300, 420, 420]}
+	
 var note_splashes:String = 'both'
 var splash_sprite:String = 'vis'
 var hold_splash:String = 'cover/splash'

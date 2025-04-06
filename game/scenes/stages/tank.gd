@@ -16,8 +16,7 @@ func _ready():
 	$Tank.add_child(tank_boy)
 
 func init_tankmen():
-	var chart = Chart.new()
-	gf.chart = chart.load_named_chart(SONG.song, 'pico-speaker')
+	gf.chart = Chart.load_named_chart(JsonHandler.song_root, 'picospeaker', 'v_slice')
 	tank_notes = gf.chart.duplicate()
 
 	for note in tank_notes:

@@ -79,7 +79,9 @@ func _ready():
 	if JsonHandler.parse_type == 'v_slice':
 		section_based = false
 		note_list = SONG.notes[JsonHandler.get_diff]
-		
+	if JsonHandler.parse_type == 'codename': 
+		section_based = false # prevent crash
+
 	Discord.change_presence('Charting '+ SONG.song.capitalize(), 'One must imagine a charter happy')
 	#get_signal_list()
 	Conductor.load_song(SONG.song)
@@ -94,9 +96,14 @@ func _ready():
 	lil_box.custom_minimum_size = Vector2(100, 55)
 	$ChartUI.add_child(lil_box)
 	
-	for i in ['bf', 'bf-pixel-opponent', 'gf']:
+	var chars_to_use:Array = ['bf', 'bf-pixel', 'gf']
+	if JsonHandler.song_variant == '-pico': 
+		chars_to_use = ['pico', 'pico-pixel', 'nene']
+	for i in chars_to_use:
 		var new_boy = Character.new(Vector2.ZERO, i)
 		new_boy.scale *= 0.3
+		if i.ends_with('-pixel'):
+			new_boy.scale += Vector2(-0.2, 0.2)
 		$ChartUI.add_child(new_boy)
 		funky_boys.append(new_boy)
 	$ChartUI.move_child(funky_boys[2], lil_box.get_index() + 1)
@@ -105,6 +112,9 @@ func _ready():
 	funky_boys[0].position = Vector2(250, 550)
 	funky_boys[1].position = Vector2(200, 520)
 	funky_boys[2].position = Vector2(180, 500)
+	if JsonHandler.song_variant == '-pico':
+		funky_boys[1].position = Vector2(220, 527)
+		funky_boys[2].position = Vector2(150, 493)
 	
 	var voices = [Conductor.vocals, Conductor.mult_vocals, 'Voices', 'VoicesOpp']
 	for i in 2:
@@ -457,8 +467,8 @@ func on_char_change(c:String):
 	
 var bg_tween:Tween
 func beat_hit(beat:int) -> void:
-	$ChartLine/IconL.bump(0.6)
-	$ChartLine/IconR.bump(0.6)
+	$ChartLine/IconL.bump(1.2)
+	$ChartLine/IconR.bump(1.2)
 	
 	for i in funky_boys:
 		if !i.animation.begins_with('sing') and beat % i.dance_beat == 0:

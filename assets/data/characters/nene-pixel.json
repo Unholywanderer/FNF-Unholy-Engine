@@ -1,0 +1,51 @@
+{
+	"animations": [
+		{
+			"name": "danceLeft",
+			"prefix": "GF IDLE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "danceRight",
+			"prefix": "GF IDLE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "GF IDLE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/nene/pixel/char",
+	"icon": "gf",
+	"facing_left": false,
+	"antialiasing": false,
+	"cam_offset": [
+		-160,
+		105
+	],
+	"pos_offset": [
+		0,
+		0
+	],
+	"sing_dur": 4,
+	"scale": 6
+}

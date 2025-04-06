@@ -75,6 +75,7 @@ func _ready():
 	if SONG.has('stage') and SONG.stage.begins_with('school'):
 		cur_skin = 'pixel'
 	
+	Judge.skin = ui.SKIN
 	if Prefs.rating_cam == 'game':
 		Judge.rating_pos = $Camera.position + Vector2(0, -40)
 		Judge.combo_pos = $Camera.position + Vector2(-150, 70)
@@ -195,7 +196,7 @@ func beat_hit(beat) -> void:
 	
 	if beat % zoom_beat == 0:
 		ui.zoom += zoom_add.ui / 2.0
-		ui.mark.scale = ui.def_mark_scale + (ui.def_mark_scale / 5.0)
+		ui.mark.scale += Vector2(0.1, 0.1)
 
 func step_hit(_step) -> void: pass
 

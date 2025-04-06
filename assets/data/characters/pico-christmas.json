@@ -1,0 +1,117 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"prefix": "Pico Idle Dance",
+			"offsets": [
+				-3.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "pico Up note0",
+			"offsets": [
+				-21.0,
+				-27.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "Pico Down Note0",
+			"offsets": [
+				-49.0,
+				90.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWNmiss",
+			"prefix": "Pico Down Note MISS",
+			"offsets": [
+				-49.0,
+				48.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUPmiss",
+			"prefix": "pico Up note miss",
+			"offsets": [
+				-18.0,
+				-67.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "Pico Note Right0",
+			"offsets": [
+				90.0,
+				4.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT",
+			"prefix": "Pico NOTE LEFT0",
+			"offsets": [
+				-68.0,
+				16.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHTmiss",
+			"prefix": "Pico Note Right Miss",
+			"offsets": [
+				85.0,
+				-40.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFTmiss",
+			"prefix": "Pico NOTE LEFT miss",
+			"offsets": [
+				-63.0,
+				-18.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/pico/christmas/char",
+	"icon": "pico",
+	"facing_left": true,
+	"antialiasing": true,
+	"cam_offset": [
+		0.0,
+		0.0
+	],
+	"pos_offset": [
+		0.0,
+		300.0
+	],
+	"sing_dur": 4,
+	"scale": 1.0
+}

@@ -52,14 +52,17 @@ var should_save:bool = !Prefs.auto_play
 		auto_play = auto
 		ui.get_group('player').is_cpu = auto_play
 		ui.mark.visible = auto_play
+		ui.health_bar.set_colors(Color.RED, Color.SLATE_GRAY if auto else Color('66ff33'))
 
 var score:float = 0
 var combo:int = 0
 var misses:int = 0
+var max_combo:int = -1
 
 func _ready():
 	if LuaHandler.call_func('onReady') == LuaHandler.RET_TYPES.STOP: return # can't reach this wit lua lol
 	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
+	if Prefs.daniel: spl_path = 'res://assets/images/ui/notesplashes/FOREVER.res'
 	Game.persist.note_splash = load(spl_path)
 	
 	auto_play = Prefs.auto_play # there is a reason
@@ -71,6 +74,11 @@ func _ready():
 		LuaHandler.remove_all()
 	
 	SONG = JsonHandler._SONG
+	#SONG.player1 = 'darnell'
+	#SONG.player2 = 'darnell'
+	#SONG.gfVersion = 'darnell'
+	
+	
 	#if Prefs.femboy: SONG.player1 = 'bf-femboy'
 	if Prefs.daniel and !SONG.player1.contains('bf-girl'):
 		var try = SONG.player1.replace('bf', 'bf-girl')
@@ -91,6 +99,13 @@ func _ready():
 		
 	stage = load('res://game/scenes/stages/%s.tscn' % [cur_stage]).instantiate() # im sick of grey bg FUCK
 	add_child(stage)
+	#for i in stage.get_children(true):
+		#if i is Sprite2D: i.texture = load('res://assets/images/characters/darnell.png')
+		#if i is AnimatedSprite2D: i.sprite_frames = load('res://assets/images/characters/darnell.res')
+		#for j in i.get_children(): 
+			#if j is Sprite2D: j.texture = load('res://assets/images/characters/darnell.png')
+			#if j is AnimatedSprite2D: i.sprite_frames = load('res://assets/images/characters/darnell.res')
+
 	default_zoom = stage.default_zoom
 	
 	var gf_ver
@@ -159,6 +174,9 @@ func _ready():
 	
 	if cur_stage.begins_with('school'):
 		cur_skin = 'pixel'
+		#Game.persist.note_splash = load('res://assets/images/ui/notesplashes/BASE-pixel.res')
+		#Prefs.splash_sprite = 'base-pixel'
+
 	
 	Judge.skin = ui.SKIN
 	if Prefs.rating_cam == 'game':
@@ -191,7 +209,10 @@ func _ready():
 		
 	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
 		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
-		
+
+	#for i in DirAccess.get_files_at('../'):
+	#	print(i)
+
 	if DIE == null:
 		var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
 		DIE = load('res://game/scenes/game_over'+ char_suff +'.tscn')
@@ -239,6 +260,7 @@ func _process(delta):
 			var new_note:Note = Note.new(NoteData.new(chart_notes[chunk]))
 			new_note.speed = cur_speed
 			notes.append(new_note)
+			if new_note.must_press and new_note.should_hit: JsonHandler.note_count += 1
 			
 			var to_add:String = 'player' if new_note.must_press else 'opponent'
 			#if new_note.gf: to_add = 'gf'
@@ -254,7 +276,10 @@ func _process(delta):
 			chunk += 1
 
 	if !notes.is_empty():
-		for note in notes:
+		var i:int = 0
+		while i < notes.size():
+			var note = notes[i]
+		#for note in notes:
 			if !note.spawned: continue
 			note.follow_song_pos(ui.player_strums[note.dir] if note.must_press else ui.opponent_strums[note.dir])
 			if note.strum_time <= Conductor.song_pos:
@@ -278,6 +303,7 @@ func _process(delta):
 							note_func.call(note)
 					else:
 						opponent_note_hit(note)
+			i += 1
 						
 	if events.size() != 0:
 		for event in events:
@@ -349,7 +375,7 @@ func move_cam(to_char:Variant) -> void:
 		_:
 			peep = boyfriend if to_char else dad
 			cam_off = stage.bf_cam_offset if to_char else stage.dad_cam_offset
-		
+	if speaker != null and peep != gf and speaker.has_method('look'): speaker.look(peep == boyfriend)
 	var new_pos:Vector2 = peep.get_cam_pos()
 	cam.position = new_pos + cam_off + focus_offset
 	focus_offset = Vector2.ZERO
@@ -368,19 +394,18 @@ func key_press(key:int = 0) -> void:
 	
 	if hittable_notes.is_empty():
 		if Prefs.ghost_tapping != 'on': ghost_tap(key)
-	else:
-		var note:Note = hittable_notes[0]
-		if hittable_notes.size() > 1: # mmm idk anymore
-			for funny in hittable_notes: # temp dupe note thing killer bwargh i hate it
-				if note == funny: continue 
-				if absf(funny.strum_time - note.strum_time) < 1.0:
-					kill_note(funny)
-		good_note_hit(note)
-	
-	var strum = ui.player_strums[key]
-	if !strum.animation.contains('confirm'):
+		var strum = ui.player_strums[key]
 		strum.play_anim('press')
 		strum.reset_timer = 0
+		return
+	
+	var note:Note = hittable_notes[0]
+	if hittable_notes.size() > 1: # mmm idk anymore
+		for funny in hittable_notes: # temp dupe note thing killer bwargh i hate it
+			if note == funny: continue 
+			if absf(funny.strum_time - note.strum_time) < 1.0:
+				kill_note(funny)
+	good_note_hit(note)
 
 func key_release(key:int = 0) -> void:
 	ui.player_strums[key].play_anim('static')
@@ -410,8 +435,16 @@ func song_end() -> void:
 	Conductor.reset()
 	if playlist.is_empty() or song_idx >= playlist.size() - 1:
 		Game.persist.song_list = []
-		var back_to = 'story_mode' if story_mode else 'freeplay'
-		Game.switch_scene("menus/"+ back_to)
+		#var back_to = 'story_mode' if story_mode else 'freeplay'
+		Game.persist.scoring = ScoreData.new()
+		Game.persist.scoring.hits = ui.hit_count.duplicate()
+		Game.persist.scoring.total_notes = JsonHandler.note_count
+		Game.persist.scoring.song_name = SONG.song
+		Game.persist.scoring.score = score
+		Game.persist.scoring.max_combo = max_combo
+		Game.persist.scoring.difficulty = JsonHandler.get_diff
+		Game.switch_scene('results_screen')
+		#Game.switch_scene("menus/"+ back_to)
 	else:
 		song_idx += 1
 		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
@@ -482,10 +515,14 @@ func event_hit(event:EventData) -> void:
 			if event.values[1] == '1': event.values[1] = '0'
 
 			var peep := char_from_string(event.values[1])
-			if peep.has_anim(event.values[0]):
+			if peep.has_anim(str(event.values[0])):
 				peep.play_anim(event.values[0], true)
 				peep.special_anim = true
-		'Change Scroll Speed': 
+		'Change Scroll Speed', "Scroll Speed Change": # [true,2.67,16,"cube","In"],"name":"Scroll Speed Change" 
+			var codin = event.values[0] is bool
+			if codin: 
+				event.values.pop_front()
+				event.values[1] /= Conductor.step_crochet
 			var new_speed = SONG.speed * float(event.values[0])
 			var tween_dur := float(event.values[1])
 			if abs(tween_dur) > 0:
@@ -531,13 +568,13 @@ func event_hit(event:EventData) -> void:
 			var new_speed = int(event.values[0])
 			gf.dance_beat = new_speed if new_speed != null else 1
 		#endregion
-		'FocusCamera':
+		'FocusCamera', 'Camera Movement':
 			var char_int = event.values[0] # a little fix
 			if event.values[0] is Dictionary:
 				char_int = char_int.char
 				#if event.values[0].has('x'): focus_offset.x = -event.values[0].x
 				if event.values[0].has('y'): focus_offset.y = float(event.values[0].y)
-				
+			if event.event == 'Camera Movement': char_int = abs(char_int - 1)
 			move_cam(int(char_int))
 		'PlayAnimation':
 			var data = event.values[0]
@@ -583,12 +620,12 @@ func good_note_hit(note:Note) -> void:
 	#boyfriend.material.set_shader_parameter('color_to_be', Color(randf(), randf(), randf()))
 		
 	var time:float = Conductor.song_pos - note.strum_time if !auto_play else 0.0
-	note.rating = Judge.get_rating(time)
+	note.rating = Rating.get_rating(time)
 	
 	if section_data != null:
 		if section_data.has('gfSection') and section_data.gfSection and section_data.mustHitSection: note.gf = true
 
-	var judge_info = Judge.get_score(note.rating)
+	var judge_info = Rating.get_score(note.rating)
 	
 	stage.good_note_hit(note)
 	var group = ui.get_group('player')
@@ -597,6 +634,7 @@ func good_note_hit(note:Note) -> void:
 	group.note_hit(note)
 
 	combo += 1
+	max_combo = max(combo, max_combo)
 	grace = combo > 10
 	pop_up_combo([note.rating, combo, time])
 	var to_add = int(300 * (((1.0 + exp(-0.08 * (abs(time) - 40))) + 66.3)) / (55.0 / judge_info[2])) # good enough im happy
@@ -697,7 +735,8 @@ func opponent_sustain_press(sustain:Note) -> void:
 
 var grace:bool = true
 func note_miss(note:Note) -> void:
-	var luad = LuaHandler.call_func('noteMiss', [notes.find(note), note.dir, note.type])
+	var le_call = [] if note == null else [notes.find(note), note.dir, note.type] 
+	var luad = LuaHandler.call_func('noteMiss', le_call)
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
 	stage.note_miss(note)

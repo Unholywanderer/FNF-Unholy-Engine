@@ -16,6 +16,11 @@ var offset:Vector2 = Vector2.ZERO:
 		offset = off
 		position = unedited_pos + offset
 
+func _ready() -> void:
+	$Eyes.frame_changed.connect(func(frame:int): 
+		if !looking_right and frame >= 23: $Eyes.playing = false
+	)
+
 func _update(): # yes i did steal code from @what-is-a-git 😊😊😊
 	var prev_hz:float = 0.0
 	for i in 7:
@@ -32,7 +37,13 @@ func _process(delta):
 		_update()
 		timer = 0.0
 	
-func bump(forced:bool = true):
+func bump():
 	$Frame.play('bump')
-	if forced:
-		$Frame.frame = 0
+	$Frame.frame = 0
+	
+var looking_right:bool = false
+func look(right:bool = false):
+	if looking_right != right:
+		$Eyes.playing = true
+		looking_right = right
+		$Eyes.frame = 13 if right else 0

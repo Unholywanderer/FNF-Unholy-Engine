@@ -151,7 +151,9 @@ func change_icon(new_icon:String = 'bf') -> void:
 	
 	char_json.icon = new_icon
 	ic.change_icon(new_icon.strip_edges())
-	var ic_size = Vector2(ic.texture.get_width() * 0.7, ic.texture.get_height() * 0.7)
+	var scale_diff:float = 0.7 * (5 if new_icon.ends_with('pixel') else 1)
+	ic.default_scale = (5 if new_icon.ends_with('pixel') else 1) * 0.7
+	var ic_size = Vector2(ic.texture.get_width() * scale_diff, ic.texture.get_height() * scale_diff)
 	ic.position = Vector2(-845, 590)
 	ic.hframes = 1
 	

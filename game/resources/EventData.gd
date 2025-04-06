@@ -25,5 +25,8 @@ func _init(new_event, type:String = 'psych'):
 					values.append(temp_vals)
 				else:
 					values.append(new_event.v)
-				
+			'codename':
+				strum_time = new_event.time
+				event = new_event.name
+				values.append_array(new_event.params)
 				#print([event, strum_time, values])

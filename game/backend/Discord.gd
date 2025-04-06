@@ -2,20 +2,20 @@ extends Node2D
 
 var initalized:bool = false
 var can_rpc:bool = true
-var _info = {
-	'true' : {id = 1227081103932657664, l_img = 'daniel', l_txt = 'I LOVE DANIEL'},
-	'false': {id = 1225971084998737952, l_img = 'deedee_phantonm', l_txt = 'out here unholy-ing baby'}
+var _info = [
+	{id = 1225971084998737952, l_img = 'deedee_phantonm', l_txt = 'out here unholy-ing baby'},
+	{id = 1227081103932657664, l_img = 'daniel', l_txt = 'I LOVE DANIEL'}
 	#'false': {id = 1225971084998737952, l_img = 'deedee_phantonm', l_txt = 'out here unholy-ing baby'}
-}
+]
 
 var last_presence:Array[String] = ['Nutthin', 'Check it'] # hold the actual presence text, so it can swap
 func init_discord() -> void:
 	if initalized: return
 	print('Initializing Discord...')
 
-	DiscordRPC.app_id = _info[str(Prefs.daniel)].id
-	DiscordRPC.large_image = _info[str(Prefs.daniel)].l_img
-	DiscordRPC.large_image_text = _info[str(Prefs.daniel)].l_txt
+	DiscordRPC.app_id = _info[int(Prefs.daniel)].id
+	DiscordRPC.large_image = _info[int(Prefs.daniel)].l_img
+	DiscordRPC.large_image_text = _info[int(Prefs.daniel)].l_txt
 	DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system())
 
 	DiscordRPC.run_callbacks()
@@ -44,10 +44,10 @@ func update(update_id:bool = false, disable:bool = false) -> void:
 	
 	if update_id:
 		clear()
-		DiscordRPC.app_id = _info[str(Prefs.daniel)].id
-		DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system())
-	DiscordRPC.large_image = _info[str(Prefs.daniel)].l_img
-	DiscordRPC.large_image_text = _info[str(Prefs.daniel)].l_txt
+		DiscordRPC.app_id = _info[int(Prefs.daniel)].id
+		DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system() * 100)
+	DiscordRPC.large_image = _info[int(Prefs.daniel)].l_img
+	DiscordRPC.large_image_text = _info[int(Prefs.daniel)].l_txt
 	
 	change_presence(last_presence[0], last_presence[1])
 

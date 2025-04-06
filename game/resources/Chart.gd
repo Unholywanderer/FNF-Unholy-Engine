@@ -1,7 +1,7 @@
 class_name Chart; extends Resource;
 # makes a chart from a json
 
-enum FORMAT {
+enum {
 	LEGACY, # old base game, old psych
 	V_SLICE, 
 	PSYCH_V1,
@@ -10,7 +10,7 @@ enum FORMAT {
 	MARU,
 	OSU
 }
-var format:FORMAT = FORMAT.LEGACY
+var format:int = LEGACY
 
 var return_notes:Array = []
 func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Array:
@@ -18,40 +18,28 @@ func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Ar
 	return_notes.clear()
 	format = get_format(chart_type)
 	
-	var le_parse
-	match format:
-		FORMAT.LEGACY, FORMAT.PSYCH_V1, FORMAT.FPS_PLUS:
-			le_parse = Legacy.new(format == FORMAT.PSYCH_V1)
-		FORMAT.V_SLICE: 
-			le_parse = VSlice.new(diff)
-		FORMAT.CODENAME:
-			le_parse = Codename.new()
-		FORMAT.MARU:
-			le_parse = Maru.new()
-		FORMAT.OSU:
-			le_parse = Osu.new()
-			le_parse.load_file(data.song)
-		_: 
-			printerr('Couldn\'t get chart type')
-			return []
+	var le_parse = get_parse(format, diff)
+	if le_parse is Osu:
+		le_parse.load_file(data.song)
 	
 	return le_parse.parse_chart(data)
 	
-# for loading a chart that isnt named a difficulty
-# used for pico speaker # assumes its legacy by default, should fix that later
-func load_named_chart(song_name:String, chart_name:String = ''):
-	var le_parse := Legacy.new()
-	var path:String = 'res://assets/songs/%s/charts/%s.json' % [Game.format_str(song_name), chart_name]
+## For loading a chart that isn't specifically named a difficulty
+static func load_named_chart(song:String, chart_name:String, format:String = 'legacy'):
+	var path:String = 'res://assets/songs/%s/charts/%s.json' % [Game.format_str(song), chart_name]
+	if format == 'v_slice': 
+		path = 'res://assets/songs/%s/chart%s.json' % [Game.format_str(song), JsonHandler.song_variant]
+	var le_parse = get_parse(get_format(format), chart_name)
 	print(path)
 	if ResourceLoader.exists(path):
 		var json = JSON.parse_string(FileAccess.open(path, FileAccess.READ).get_as_text())
-		return le_parse.parse_chart(json.song)
+		if json.get('song') is Dictionary: json = json.song
+		return le_parse.parse_chart(json)
 	return []
-
-func get_must_hits(player_hit:bool = true) -> Array:
+	
+static func get_must_hits(chart_notes:Array, player_hit:bool = true) -> Array:
 	var notes:Array = []
-	for i in return_notes:
-		print(i[4])
+	for i in chart_notes:
 		if i[4] == player_hit: notes.append(i)
 	return notes
 
@@ -67,12 +55,12 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 	if SONG.has('events'): # check current song json for any events
 		events_found.append_array(SONG.events)
 	
-	if format != FORMAT.V_SLICE and ResourceLoader.exists(path_to_check): # then check if there is a event json
+	if format != V_SLICE and ResourceLoader.exists(path_to_check): # then check if there is a event json
 		print(path_to_check)
 		
 		var json = JSON.parse_string(FileAccess.open(path_to_check, FileAccess.READ).get_as_text())
 		if json.has('song'): json = json.song
-		if format == FORMAT.FPS_PLUS:
+		if format == FPS_PLUS:
 			json = json.events
 		
 		if json.has('notes') and json.notes.size() > 0: # if events are a -1 note
@@ -85,10 +73,10 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 	
 	for event in events_found:
 		match format:
-			FORMAT.V_SLICE: events.append(EventData.new(event, 'v_slice'))
-			FORMAT.CODENAME: pass
-			FORMAT.FPS_PLUS: pass
-			FORMAT.MARU: pass
+			V_SLICE: events.append(EventData.new(event, 'v_slice'))
+			CODENAME: events.append(EventData.new(event, 'codename'))
+			FPS_PLUS: pass
+			MARU: pass
 			_:
 				for i in event[1]:
 					events.append(EventData.new([event[0], i]))
@@ -96,13 +84,29 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 	events.sort_custom(func(a, b): return a.strum_time < b.strum_time)
 	return events
 
-func get_format(f:String) -> FORMAT:
-	var e:FORMAT = FORMAT.LEGACY
+static func get_format(f:String):
+	var e:= LEGACY
 	match f.to_lower().strip_edges():
-		'v_slice': e = FORMAT.V_SLICE
-		'psych_v1': e = FORMAT.PSYCH_V1
-		'codename': e = FORMAT.CODENAME
-		'fps_plus': e = FORMAT.FPS_PLUS
-		'osu': e = FORMAT.OSU
-		'maru': e = FORMAT.MARU
+		'v_slice': e = V_SLICE
+		'psych_v1': e = PSYCH_V1
+		'codename': e = CODENAME
+		'fps_plus': e = FPS_PLUS
+		'osu': e = OSU
+		'maru': e = MARU
 	return e
+
+static func get_parse(f:int, d:String):
+	match f:
+		LEGACY, PSYCH_V1, FPS_PLUS:
+			return Legacy.new(f == PSYCH_V1)
+		V_SLICE: 
+			return VSlice.new(d)
+		CODENAME:
+			return Codename.new()
+		MARU:
+			return Maru.new()
+		OSU:
+			return Osu.new()
+		_: 
+			printerr('Couldn\'t get chart type')
+			return Legacy.new()

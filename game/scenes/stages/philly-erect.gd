@@ -1,6 +1,7 @@
 extends StageBase
 
 # Blammed Shit #
+var can_blam:bool = false
 var blammed_shader:ShaderMaterial = null
 var last_mat:ShaderMaterial
 var blammin:bool = false:
@@ -50,6 +51,7 @@ func _ready():
 var test_pic:AnimateSymbol
 func post_ready() -> void:
 	if SONG.song.to_lower().contains('blammed') or Game.format_str(SONG.song) == 'pico-erect':
+		can_blam = true
 		blammed_shader = ShaderMaterial.new()
 		blammed_shader.shader = load('res://game/resources/shaders/blammed.gdshader')
 		
@@ -108,12 +110,13 @@ func _process(delta):
 var last_color:String
 func beat_hit(beat:int):
 	train.beat_hit(beat)
-	if SONG.song.to_lower().contains('blammed'):
-		if beat == 128: blammin = true
-		if beat == 192: blammin = false
-	if SONG.song.to_lower().contains('pico'):
-		if beat == 160: blammin = true
-		if beat == 224: blammin = false
+	if can_blam:
+		if SONG.song.to_lower().contains('blammed'):
+			if beat == 128: blammin = true
+			if beat == 192: blammin = false
+		if SONG.song.to_lower().contains('pico'):
+			if beat == 160: blammin = true
+			if beat == 224: blammin = false
 		
 	if beat % 4 == 0:
 		var can_cols = windows.duplicate()

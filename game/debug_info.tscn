@@ -25,9 +25,9 @@ offset_top = 30.0
 offset_right = 156.0
 offset_bottom = 53.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("2_56t0x")
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 12
 text = "Freams you sec: 104!"
 
 [node name="Volume" type="Control" parent="."]

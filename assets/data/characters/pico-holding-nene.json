@@ -1,0 +1,139 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"prefix": "BF idle dance",
+			"offsets": [
+				5.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT",
+			"prefix": "BF NOTE LEFT0",
+			"offsets": [
+				-21.0,
+				16.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "BF NOTE DOWN0",
+			"offsets": [
+				-77.0,
+				71.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "BF NOTE UP0",
+			"offsets": [
+				-51.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "BF NOTE RIGHT0",
+			"offsets": [
+				56.0,
+				22.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFTmiss",
+			"prefix": "BF NOTE LEFT MISS",
+			"offsets": [
+				-21.0,
+				11.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWNmiss",
+			"prefix": "BF NOTE DOWN MISS",
+			"offsets": [
+				-80.0,
+				70.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUPmiss",
+			"prefix": "BF NOTE UP MISS",
+			"offsets": [
+				-61.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHTmiss",
+			"prefix": "BF NOTE RIGHT MISS",
+			"offsets": [
+				52.0,
+				15.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "knifeToss",
+			"prefix": "BF catches GF",
+			"offsets": [
+				-10.0,
+				-27.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "laugh",
+			"prefix": "BF catches GF",
+			"offsets": [
+				0.0,
+				-7.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/pico/nene/char",
+	"icon": "pico",
+	"facing_left": true,
+	"antialiasing": true,
+	"cam_offset": [
+		0.0,
+		0.0
+	],
+	"pos_offset": [
+		0.0,
+		300.0
+	],
+	"sing_dur": 4,
+	"scale": 1.0
+}

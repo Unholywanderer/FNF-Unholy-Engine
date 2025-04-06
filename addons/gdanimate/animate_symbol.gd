@@ -19,8 +19,14 @@ class_name AnimateSymbol extends Node2D
 ## atlas when changed.
 @export var frame: int = 0:
 	set(v):
+		if loop_frame > -1 and v > _timeline.length - 1:
+			v = loop_frame
 		frame = v
+		frame_changed.emit(frame)
 		queue_redraw()
+
+var loop_frame:int = -1
+var _animations:Dictionary[String, Array] = {}
 
 ## The current symbol used by the animation. Empty uses the timeline symbol.
 ## [br][br][b]Note[/b]: This automatically sets [member frame] to 0 when
@@ -57,7 +63,14 @@ var _filters: Array[Filter] = []
 
 signal finished
 signal symbol_changed(symbol: String)
+signal frame_changed(frame_int: int)
 
+func add_anim_by_frames(alias:String, frames:Array[int] = []):
+	if frames.size() == 2:
+		var lol = frames
+		for i in range(frames[0], frames[1]):
+			pass 
+	pass
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(_animation):
@@ -70,9 +83,9 @@ func _process(delta: float) -> void:
 	
 	_timer += delta
 	if _timer >= 1.0 / _animation.framerate:
-		var frame_diff := _timer / (1.0 / _animation.framerate)
-		frame += floori(frame_diff)
-		_timer -= (1.0 / _animation.framerate) * frame_diff
+		#var frame_diff := _timer / (1.0 / _animation.framerate)
+		frame += 1 #floori(frame_diff)
+		_timer -= (1.0 / _animation.framerate) #* frame_diff
 		if frame > _timeline.length - 1:
 			match loop_mode:
 				'Loop':
@@ -82,7 +95,6 @@ func _process(delta: float) -> void:
 						playing = false
 						finished.emit()
 					frame = _timeline.length - 1
-
 
 func _cache_atlas() -> void:
 	var parsed := ParsedAtlas.new()

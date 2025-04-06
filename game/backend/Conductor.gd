@@ -54,6 +54,7 @@ var audio:AudioStreamPlayer
 var inst:AudioStream
 var vocals:AudioStream # make this an array for vocals at this rate
 var vocals_opp:AudioStream
+var ex_audio:Array[AudioStream] = []
 
 var bpm_changes = {}
 func _ready():
@@ -69,12 +70,10 @@ func _ready():
 	
 func load_song(song:String = '') -> void:
 	if song.is_empty(): song = 'tutorial'
-	print('Cond 1')
 
 	song = Game.format_str(song)
 	mult_vocals = false
 	total_streams = 0
-	print('Cond 2')
 
 	var grabbed_audios:Array = []
 	var path:String = 'res://assets/songs/'+ song +'/audio/%s.ogg' # myehh
@@ -97,7 +96,6 @@ func load_song(song:String = '') -> void:
 			grabbed_audios.append(load(path % ['Voices-opponent'+ suffix]))
 		elif ResourceLoader.exists(path % ['Voices'+ suffix]):
 			grabbed_audios.append(load(path % ['Voices'+ suffix]))
-	print('Cond 3')
 	
 	audio.stream = AudioStreamSynchronized.new()
 	total_streams = grabbed_audios.size()
@@ -107,11 +105,13 @@ func load_song(song:String = '') -> void:
 		
 	if inst:
 		song_length = inst.get_length() * 1000.0
-	print('Cond 4')
 	
 	audio.stream_paused = true
 	song_loaded = true
 
+var _resync_timer:float = 0.0
+var _last_time:float = 0.0
+var raw_time:float
 func _process(delta):
 	if paused: return
 	
@@ -122,7 +122,16 @@ func _process(delta):
 		if !song_started: 
 			start()
 			return
-
+		
+		'if inst: # later
+			if audio.get_playback_position() == _last_time:
+				_resync_timer += delta * 1000
+			else:
+				_resync_timer = 0
+			_last_time = audio.get_playback_position();
+			raw_time = audio.get_playback_position() #- songOffset;
+			song_pos = raw_time + _resync_timer;
+		'
 		if song_pos > beat_time + crochet:
 			beat_time += crochet
 			cur_beat += 1
@@ -157,21 +166,26 @@ func connect_signals(scene = null) -> void: # connect all signals
 		if Game.scene.has_method(i):
 			get(i).connect(Callable(this_scene, i))
 
-func add_voice(new_id:int, file_name:String, song_name:String) -> void:
+func add_audio(new_id:int = -1, file_name:String = '', vol:float = 0.7, song_name:String = '') -> void:
 	if song_name.is_empty(): song_name = JsonHandler.song_root
+	if file_name.is_empty(): file_name = 'Voices'
+	if new_id < 0: new_id = total_streams
 	var path_to_check:String = 'assets/songs/%s/audio/%s.ogg' % [song_name, file_name]
 	if !ResourceLoader.exists('res://'+ path_to_check):
-		printerr('No voice file at '+ path_to_check)
+		printerr('No audio file at '+ path_to_check)
 		return
 	
-	var voc = load('res://'+ path_to_check)
-	audio.stream.stream_count += 1
-	audio.stream.set_sync_stream(new_id, voc)
-
-func audio_volume(id:int, vol:float = 1.0) -> void:
+	var new_aud = load('res://'+ path_to_check)
+	total_streams += 1
+	audio.stream.set_sync_stream(new_id, new_aud)
+	audio_volume(new_id, vol)
+	ex_audio.append(new_aud)
+	
+func audio_volume(id:int, vol:float = 1.0, can_wrap:bool = true) -> void:
 	var stream_count = audio.stream.stream_count - 1
 	#if id > stream_count: printerr('ID '+ str(id) +' doesn\'t exist!')
-	id = clampi(id, 0, stream_count)
+	if id > stream_count: return
+	#id = clampi(id, 0, stream_count)
 	audio.stream.set_sync_stream_volume(id, linear_to_db(vol))
 
 func resync_audio() -> void:

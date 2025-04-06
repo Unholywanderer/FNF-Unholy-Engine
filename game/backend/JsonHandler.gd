@@ -7,6 +7,7 @@ var get_diff:String
 var _SONG:Dictionary = {} # change name of this to like SONG_DATA or something
 var song_variant:String = '' # (erect, pico mix and whatnot)
 var song_root:String = ''
+var note_count:int = 0
 
 var chart_notes:Array = [] # keep loaded chart and events for restarting songs
 var song_events:Array[EventData] = []
@@ -17,6 +18,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	song_root = ''
 	song_variant = ''
 	parse_type = 'legacy'
+	note_count = 0
 
 	if !variant.is_empty(): 
 		if variant != 'normal' and !variant.begins_with('-'):
@@ -44,7 +46,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	
 	if _SONG.has('scrollSpeed'): parse_type = 'v_slice'
 	if _SONG.has('codenameChart'): parse_type = 'codename'
-	if _SONG.has('gf'): parse_type = 'fps_plus'
+	#if _SONG.has('gf'): parse_type = 'fps_plus'
 	if _SONG.has('players'): parse_type = 'maru'
 
 	var meta_path:String = 'res://assets/songs/'+ song +'/%s.json'
@@ -71,12 +73,13 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 		'codename':
 			meta = JSON.parse_string(FileAccess.get_file_as_string(meta_path % ['meta']))
 			_SONG.speed = _SONG.scrollSpeed
-			_SONG.song = meta.displayName
+			_SONG.song = meta.name
 			_SONG.bpm = meta.bpm
 			for i in _SONG.strumLines:
 				match i.position:
 					'boyfriend': _SONG.player1 = i.characters[0]
 					'girlfriend': _SONG.gfVersion = i.characters[0]
+					'dad': _SONG.player2 = i.characters[0]
 			if !_SONG.has('player2') and _SONG.has('gfVersion'):
 				_SONG.player2 = _SONG.gfVersion
 	
@@ -141,7 +144,7 @@ func you_WILL_get_a_json(song:String) -> FileAccess:
 
 func stage_to(stage:String) -> String:
 	var le_stage:String = 'stage'
-	match stage.replace('Erect', ''):
+	match stage.replace('Erect', '').replace('Pico', ''):
 		'spookyMansion': le_stage = 'spooky'
 		'limoRide'     : le_stage = 'limo'
 		'phillyTrain'  : le_stage = 'philly'
@@ -163,7 +166,7 @@ func generate_chart(data, keep_loaded:bool = true) -> Array:
 	var chart = Chart.new()
 	var _notes := chart.load_chart(data, parse_type, get_diff) # get diff here only matters for base game as of now
 	song_events = chart.get_events(data) # load events whenever chart is made
-
+	#note_count = chart.get_must_hits(_notes).size() # change this later future me
 	if keep_loaded:
 		chart_notes = _notes.duplicate()
 		

@@ -7,7 +7,7 @@ var anim_time:float = 0.0 # how long the thing will last
 
 func _ready():
 	#if !Prefs.hold_splash: return
-	scale = Vector2(0.8, 0.8) # 0.95, 0.95
+	scale = Vector2(0.7, 0.7) # 0.95, 0.95
 	#modulate.a = 0.8 #0.6
 	play('start')
 	position = strum.position + Vector2(-8, 35)

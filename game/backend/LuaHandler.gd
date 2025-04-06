@@ -26,6 +26,8 @@ func add_script(script:String) -> void:
 	lua.push_variant("AnimSprite", SparrowSprite) # WIP
 	
 	if SCENE.name == "Play_Scene":
+		lua.push_variant("song_root", JsonHandler.song_root)
+		lua.push_variant("variant", JsonHandler.song_variant.substr(1))
 		lua.push_variant("Chart", Chart)
 		lua.push_variant("move_cam", SCENE.move_cam)
 		lua.push_variant("UI", SCENE.ui)
@@ -46,6 +48,7 @@ func add_script(script:String) -> void:
 	lua.push_variant("play_sound", Audio.play_sound)
 	lua.push_variant("play_music", Audio.play_music)
 	lua.push_variant("cache", cache_file)
+	lua.push_variant("file_exists", file_exists)
 	lua.push_variant("get_cache", get_cached_file)
 	# Shaders #
 	lua.push_variant("load_shader", load_shader)
@@ -54,6 +57,7 @@ func add_script(script:String) -> void:
 	#lua.push_variant("import", add_variant)
 	
 	if !load_lua(lua, script): return
+	print(lua.script_path +' is loaded')
 	#var err = lua.do_file('res://assets/'+ script)
 	#if err is LuaError:
 	#	printerr(err.message)
@@ -116,6 +120,7 @@ func move_obj(obj:Variant, indx):
 		indx = indx.get_index() # assume its an object and get it's layer
 	add_to.move_child(obj, indx)
 
+func file_exists(file:String): return ResourceLoader.exists('res://assets/'+ file)
 func cache_file(tag:String, file_path:String):
 	if cached_items.has(tag):
 		print(tag +' already cached, overwriting')

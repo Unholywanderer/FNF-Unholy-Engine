@@ -1,0 +1,51 @@
+{
+	"animations": [
+		{
+			"name": "deathStart",
+			"prefix": "BF IDLE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "deathLoop",
+			"prefix": "BF LEFT MISS",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "deathConfirm",
+			"prefix": "BF LEFT NOTE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/pico/pixel/dead",
+	"icon": "pico-pixel",
+	"facing_left": true,
+	"antialiasing": false,
+	"cam_offset": [
+		50,
+		-60
+	],
+	"pos_offset": [
+		0,
+		350
+	],
+	"sing_dur": 4,
+	"scale": 6
+}

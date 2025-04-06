@@ -12,12 +12,10 @@
 [ext_resource type="PackedScene" uid="uid://bfvp1yk8ek2e6" path="res://game/objects/charting/tab_ChartWin.tscn" id="10_7fjlb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jwrmc"]
-bg_color = Color(0, 0, 0, 0)
+bg_color = Color(0.237539, 0.237539, 0.237539, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dor2"]
 bg_color = Color(0.788235, 0.788235, 0.788235, 1)
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_omfdg"]
 bg_color = Color(0.152941, 0.152941, 0.152941, 0.921569)

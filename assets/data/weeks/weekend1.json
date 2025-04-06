@@ -11,7 +11,7 @@
 		"pico",
 		"nene"
 	],
-	"variants": {"bf": []},
+	"variants": {"erect": ["erect", "nightmare"], "bf": []},
 	"difficulties": ["easy", "normal", "hard"],
 	"weekBackground": "stage",
 

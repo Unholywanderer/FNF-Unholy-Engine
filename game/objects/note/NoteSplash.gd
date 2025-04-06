@@ -1,10 +1,11 @@
 class_name NoteSplash; extends AnimatedSprite2D;
 
 var info:Dictionary = {
-	'vis'     = [[1, 2], 0.57, -40, -1], # [variant_min, variant_max], scale, y_offset
-	'base'    = [[1, 2], 0.75,   0],
-	'haxe'    = [[],     0.65,   0],
-	'forever' = [[1, 2], 1,      0]
+	'vis'        = [[1, 2], 0.57, -40, -1], # [variant_min, variant_max], scale, y_offset
+	'base'       = [[1, 2], 0.75,   0],
+	'base-pixel' = [[1, 3], 4.00,   0],
+	'haxe'       = [[],     0.65,   0],
+	'forever'    = [[1, 2], 1,      0]
 }
 
 func _init(da_strum:Strum):
@@ -20,3 +21,4 @@ func _init(da_strum:Strum):
 	if info[spl].size() == 4: z_index = info[spl][3]
 	play('splash %s %s' % [rand, ['purple', 'blue', 'green', 'red'][da_strum.dir % 4]])
 	position = da_strum.position + Vector2(0, info[spl][2])
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR if false else CanvasItem.TEXTURE_FILTER_NEAREST

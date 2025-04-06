@@ -112,7 +112,7 @@
 		}
 	],
 	"path": "characters/senpai",
-	"icon": "senpai-pixel",
+	"icon": "senpai-angry-pixel",
 	"facing_left": false,
 	"antialiasing": false,
 	"cam_offset": [

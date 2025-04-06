@@ -1,0 +1,95 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"prefix": "Tankman Idle Dance",
+			"offsets": [
+				0.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "Tankman UP note 1",
+			"offsets": [
+				-8.0,
+				-114.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "Tankman DOWN note 1",
+			"offsets": [
+				-56.0,
+				157.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "Tankman Right Note 1",
+			"offsets": [
+				38.0,
+				34.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "redheadsAnim",
+			"prefix": "Tankman Right Note 1",
+			"offsets": [
+				-175.0,
+				-66.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hehPrettyGood",
+			"prefix": "Tankman Right Note 1",
+			"offsets": [
+				-84.0,
+				-38.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT",
+			"prefix": "Tankman Note Left 1",
+			"offsets": [
+				-111.0,
+				31.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/tankman-bloody",
+	"icon": "tankman-bloody",
+	"facing_left": true,
+	"antialiasing": true,
+	"cam_offset": [
+		-100.0,
+		0.0
+	],
+	"pos_offset": [
+		0.0,
+		180.0
+	],
+	"sing_dur": 4,
+	"scale": 1.0
+}

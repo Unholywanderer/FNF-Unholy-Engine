@@ -1,0 +1,117 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"prefix": "BF IDLE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFTmiss",
+			"prefix": "BF LEFT MISS",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT",
+			"prefix": "BF LEFT NOTE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUPmiss",
+			"prefix": "BF UP MISS",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "BF UP NOTE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "BF RIGHT NOTE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHTmiss",
+			"prefix": "BF RIGHT MISS",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN",
+			"prefix": "BF DOWN NOTE",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWNmiss",
+			"prefix": "BF DOWN MISS",
+			"offsets": [
+				0,
+				0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/pico/pixel/char",
+	"icon": "pico-pixel",
+	"facing_left": true,
+	"antialiasing": false,
+	"cam_offset": [
+		50,
+		-60
+	],
+	"pos_offset": [
+		0,
+		350
+	],
+	"sing_dur": 4,
+	"scale": 6
+}

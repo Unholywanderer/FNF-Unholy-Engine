@@ -26,8 +26,8 @@ var visuals = [
 	['allow_rpc',      'bool'],
 	['basic_play',     'bool'],
 	['note_splashes', 'array', ['epics', 'both', 'all', 'none']],
-	['splash_sprite', 'array', ['vis', 'base', 'haxe', 'forever']],
-	['hold_splash',   'array', ['disabled', 'cover', 'cover/splash']],
+	['splash_sprite', 'array', ['vis', 'base', 'base-pixel', 'haxe', 'forever']],
+	['hold_splash',   'array', ['disabled', 'cover', 'full']],
 	['behind_strums',  'bool'],
 	['rating_cam',    'array', ['game', 'hud', 'none']],
 	['auto_pause',     'bool'],
@@ -73,8 +73,8 @@ func _ready():
 func _exit_tree() -> void: Audio.stop_all_sounds()
 func _unhandled_key_input(_event:InputEvent) -> void:
 	if in_sub:
-		if Input.is_action_just_pressed('menu_up'): update_scroll(-1)
-		if Input.is_action_just_pressed('menu_down'): update_scroll(1)
+		if Input.is_action_pressed('menu_up'): update_scroll(-1)
+		if Input.is_action_pressed('menu_down'): update_scroll(1)
 		
 		var da_pref = pref_list[sub_option]
 		if ['array', 'int', 'float'].has(da_pref.type):

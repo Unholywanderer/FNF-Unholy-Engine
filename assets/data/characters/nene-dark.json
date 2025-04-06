@@ -89,7 +89,7 @@
 			"loop": false
 		}
 	],
-	"path": "characters/gf/nene/dark",
+	"path": "characters/nene/dark/char",
 	"icon": "gf",
 	"facing_left": false,
 	"antialiasing": true,

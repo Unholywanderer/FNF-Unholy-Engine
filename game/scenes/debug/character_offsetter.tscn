@@ -10,7 +10,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3m81g"]
 shader = ExtResource("3_f84mi")
 shader_parameter/direction = Vector2(1, 1)
-shader_parameter/speed_scale = 0.3
+shader_parameter/speed_scale = 0.05
 
 [node name="CharacterOffsetting" type="Node2D"]
 script = ExtResource("1_q8ujq")
@@ -105,6 +105,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Center" type="CheckBox" parent="UILayer/Main"]
+layout_mode = 0
 offset_left = -224.0
 offset_top = 131.0
 offset_right = -17.0

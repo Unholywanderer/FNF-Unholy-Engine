@@ -1,0 +1,153 @@
+[gd_scene load_steps=19 format=3 uid="uid://b4ak3xkj6rf5u"]
+
+[ext_resource type="Script" uid="uid://baxvs6iejfkdl" path="res://game/scenes/stages/philly-streets-erect.gd" id="1_5hbh3"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_edors"]
+[ext_resource type="Texture2D" uid="uid://c13f1rhlcu8do" path="res://assets/images/stages/philly-streets/erect/phillySkybox.png" id="3_jff5v"]
+[ext_resource type="Texture2D" uid="uid://bh806frnpo8jg" path="res://assets/images/stages/philly-streets/erect/phillySkyline.png" id="4_vp3vk"]
+[ext_resource type="Texture2D" uid="uid://fkknhr7rili7" path="res://assets/images/stages/philly-streets/erect/phillyForegroundCity.png" id="5_wgm1y"]
+[ext_resource type="Texture2D" uid="uid://cmac1gtkj06co" path="res://assets/images/stages/philly-streets/erect/phillyConstruction.png" id="6_f7e6q"]
+[ext_resource type="Texture2D" uid="uid://dh76dxsrcwofd" path="res://assets/images/stages/philly-streets/erect/phillyHighwayLights.png" id="7_hrt6w"]
+[ext_resource type="Texture2D" uid="uid://ce2j6hivl354y" path="res://assets/images/stages/philly-streets/highwayLights_lightmap.png" id="8_1ca8i"]
+[ext_resource type="Texture2D" uid="uid://bojbuef6naypv" path="res://assets/images/stages/philly-streets/erect/phillyHighway.png" id="9_ayq7a"]
+[ext_resource type="Texture2D" uid="uid://cr4mbsiwg36b7" path="res://assets/images/stages/philly-streets/smog.png" id="10_78rkc"]
+[ext_resource type="SpriteFrames" path="res://assets/images/stages/philly-streets/cars.res" id="11_rlb3y"]
+[ext_resource type="SpriteFrames" uid="uid://c8xjkosko2jyi" path="res://assets/images/stages/philly-streets/traffic.res" id="12_lul0e"]
+[ext_resource type="Texture2D" uid="uid://dlmaetgi2ouy7" path="res://assets/images/stages/philly-streets/traffic_lightmap.png" id="13_iie03"]
+[ext_resource type="Texture2D" uid="uid://f3u76qbllkqq" path="res://assets/images/stages/philly-streets/erect/phillyForeground.png" id="14_f8pte"]
+[ext_resource type="Texture2D" uid="uid://dja1w25ifvdmg" path="res://assets/images/stages/philly-streets/SpraycanPile.png" id="15_1jb5k"]
+[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="16_n78te"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_x0kr0"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_aklk8"]
+blend_mode = 1
+
+[node name="Philly Streets Erect" type="Node2D"]
+script = ExtResource("1_5hbh3")
+
+[node name="Skybox" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.1, 0.1)
+
+[node name="Sprite" type="Sprite2D" parent="Skybox"]
+texture_repeat = 2
+position = Vector2(-550, -280)
+scale = Vector2(0.65, 0.65)
+texture = ExtResource("3_jff5v")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 3850, 718)
+
+[node name="Skyline" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.2, 0.2)
+
+[node name="Sprite" type="Sprite2D" parent="Skyline"]
+position = Vector2(-545, -237)
+texture = ExtResource("4_vp3vk")
+centered = false
+
+[node name="FGCity" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.3, 0.3)
+
+[node name="Sprite" type="Sprite2D" parent="FGCity"]
+position = Vector2(625, 94)
+texture = ExtResource("5_wgm1y")
+centered = false
+
+[node name="Construction" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.7, 1)
+
+[node name="Sprite" type="Sprite2D" parent="Construction"]
+position = Vector2(1800, 364)
+texture = ExtResource("6_f7e6q")
+centered = false
+
+[node name="HighwayLights" type="Sprite2D" parent="."]
+position = Vector2(284, 305)
+texture = ExtResource("7_hrt6w")
+centered = false
+
+[node name="LightMap" type="Sprite2D" parent="HighwayLights"]
+self_modulate = Color(1, 1, 1, 0.6)
+material = SubResource("CanvasItemMaterial_x0kr0")
+texture = ExtResource("8_1ca8i")
+centered = false
+
+[node name="Highway" type="Sprite2D" parent="."]
+position = Vector2(139, 209)
+texture = ExtResource("9_ayq7a")
+centered = false
+
+[node name="Smog" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.8, 1)
+
+[node name="Sprite" type="Sprite2D" parent="Smog"]
+position = Vector2(-6, 245)
+texture = ExtResource("10_78rkc")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 2761, 1125)
+
+[node name="Car2" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.9, 1)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Car2"]
+position = Vector2(1748, 818)
+sprite_frames = ExtResource("11_rlb3y")
+animation = &"car1"
+centered = false
+flip_h = true
+
+[node name="Car1" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.9, 1)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Car1"]
+position = Vector2(1748, 818)
+sprite_frames = ExtResource("11_rlb3y")
+animation = &"car1"
+centered = false
+
+[node name="Traffic" type="Node2D" parent="."]
+script = ExtResource("2_edors")
+scroll_factor = Vector2(0.9, 1)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Traffic"]
+position = Vector2(1840, 608)
+sprite_frames = ExtResource("12_lul0e")
+animation = &"to_green"
+centered = false
+
+[node name="LightMap" type="Sprite2D" parent="Traffic/Sprite"]
+self_modulate = Color(1, 1, 1, 0.6)
+material = SubResource("CanvasItemMaterial_aklk8")
+texture = ExtResource("13_iie03")
+centered = false
+
+[node name="Foreground" type="Sprite2D" parent="."]
+position = Vector2(88, 317)
+texture = ExtResource("14_f8pte")
+centered = false
+
+[node name="CharGroup" type="Node2D" parent="."]
+
+[node name="SprayCanPile" type="Sprite2D" parent="."]
+position = Vector2(920, 1045)
+texture = ExtResource("15_1jb5k")
+centered = false
+
+[node name="AnimateSymbol" type="Node2D" parent="."]
+visible = false
+script = ExtResource("16_n78te")
+atlas = "res://assets/images/stages/philly-streets/effects/spraycan"
+loop_mode = "Play Once"
+metadata/_custom_type_script = "uid://bvq0ling1c7sm"

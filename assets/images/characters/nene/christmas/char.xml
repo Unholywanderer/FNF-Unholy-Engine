@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="neneChristmas.png" width="5818" height="2028" spritePadding="3" borderPadding="1">
+	<SubTexture name="combo celebration 1 nene xmas0001" x="3680" y="1558" width="294" height="426" frameX="-16" frameY="-57" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0002" x="1639" y="1558" width="294" height="439" frameX="-16" frameY="-44" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0003" x="315" y="1558" width="312" height="446" frameX="0" frameY="-44" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0004" x="5505" y="1023" width="312" height="470" frameX="0" frameY="-20" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0005" x="5505" y="1023" width="312" height="470" frameX="0" frameY="-20" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0006" x="5190" y="1023" width="312" height="473" frameX="0" frameY="-17" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0007" x="5190" y="1023" width="312" height="473" frameX="0" frameY="-17" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0008" x="4875" y="1023" width="312" height="483" frameX="0" frameY="-7" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0009" x="4875" y="1023" width="312" height="483" frameX="0" frameY="-7" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0010" x="4560" y="1023" width="312" height="488" frameX="0" frameY="-2" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0011" x="4560" y="1023" width="312" height="488" frameX="0" frameY="-2" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0012" x="3930" y="1023" width="312" height="490" frameX="0" frameY="0" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0013" x="3930" y="1023" width="312" height="490" frameX="0" frameY="0" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0014" x="4245" y="1023" width="312" height="490" frameX="0" frameY="0" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0015" x="4245" y="1023" width="312" height="490" frameX="0" frameY="0" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0016" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0017" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0018" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0019" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0020" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0021" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0022" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0023" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0024" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="combo celebration 1 nene xmas0025" x="967" y="1558" width="312" height="430" frameX="0" frameY="-60" frameWidth="312" frameHeight="490"/>
+	<SubTexture name="fawn nene xmas0001" x="1646" y="487" width="396" height="461" frameX="-21" frameY="-4" frameWidth="396" frameHeight="461"/>
+	<SubTexture name="fawn nene xmas0002" x="1646" y="487" width="396" height="461" frameX="-21" frameY="-4" frameWidth="396" frameHeight="461"/>
+	<SubTexture name="fawn nene xmas0003" x="2045" y="487" width="389" height="456" frameX="-27" frameY="-1" frameWidth="396" frameHeight="461"/>
+	<SubTexture name="fawn nene xmas0004" x="2045" y="487" width="389" height="456" frameX="-27" frameY="-1" frameWidth="396" frameHeight="461"/>
+	<SubTexture name="fawn nene xmas0005" x="2771" y="487" width="386" height="456" frameX="-29" frameY="0" frameWidth="396" frameHeight="461"/>
+	<SubTexture name="fawn nene xmas0006" x="2771" y="487" width="386" height="456" frameX="-29" frameY="0" frameWidth="396" frameHeight="461"/>
+	<SubTexture name="fawn nene xmas0007" x="2771" y="487" width="386" height="456" frameX="-29" frameY="0" frameWidth="396" frameHeight="461"/>
+	<SubTexture name="knife high held xmas0001" x="4489" y="487" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0002" x="4821" y="487" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0003" x="4821" y="487" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0004" x="5153" y="487" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0005" x="5485" y="487" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0006" x="5485" y="487" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0007" x="1" y="1023" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0008" x="333" y="1023" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0009" x="333" y="1023" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife high held xmas0010" x="4489" y="487" width="329" height="532" frameX="0" frameY="0" frameWidth="329" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0001" x="3160" y="487" width="330" height="532" frameX="-246" frameY="0" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0002" x="2437" y="487" width="331" height="532" frameX="-246" frameY="0" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0003" x="2437" y="487" width="331" height="532" frameX="-246" frameY="0" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0004" x="1329" y="1023" width="330" height="521" frameX="-246" frameY="-11" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0005" x="1329" y="1023" width="330" height="521" frameX="-246" frameY="-11" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0006" x="2801" y="1023" width="328" height="495" frameX="-246" frameY="-37" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0007" x="2801" y="1023" width="328" height="495" frameX="-246" frameY="-37" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0008" x="1232" y="487" width="411" height="471" frameX="-172" frameY="-55" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0009" x="1232" y="487" width="411" height="471" frameX="-172" frameY="-55" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0010" x="3531" y="1023" width="396" height="402" frameX="-201" frameY="-66" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0011" x="3531" y="1023" width="396" height="402" frameX="-201" frameY="-66" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife lower xmas0012" x="1936" y="1558" width="354" height="364" frameX="-246" frameY="-64" frameWidth="411" frameHeight="532"/>
+	<SubTexture name="knife raise xmas0001" x="484" y="1" width="444" height="483" frameX="0" frameY="-50" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0002" x="484" y="1" width="444" height="483" frameX="0" frameY="-50" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0003" x="420" y="487" width="399" height="486" frameX="-43" frameY="-47" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0004" x="420" y="487" width="399" height="486" frameX="-43" frameY="-47" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0005" x="997" y="1023" width="329" height="526" frameX="-112" frameY="-7" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0006" x="997" y="1023" width="329" height="526" frameX="-112" frameY="-7" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0007" x="665" y="1023" width="329" height="530" frameX="-112" frameY="-3" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0008" x="665" y="1023" width="329" height="530" frameX="-112" frameY="-3" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0009" x="3493" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0010" x="3493" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0011" x="3825" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0012" x="3825" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0013" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0014" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0015" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0016" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0017" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0018" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0019" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="knife raise xmas0020" x="4157" y="487" width="329" height="533" frameX="-112" frameY="0" frameWidth="444" frameHeight="533"/>
+	<SubTexture name="laughing nene xmas0001" x="1" y="1" width="480" height="464" frameX="-1" frameY="-45" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0002" x="1" y="1" width="480" height="464" frameX="-1" frameY="-45" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0003" x="2708" y="1" width="460" height="458" frameX="0" frameY="-39" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0004" x="2708" y="1" width="460" height="458" frameX="0" frameY="-39" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0005" x="4922" y="1" width="449" height="446" frameX="-11" frameY="-41" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0006" x="4922" y="1" width="449" height="446" frameX="-11" frameY="-41" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0007" x="2424" y="1023" width="374" height="439" frameX="-43" frameY="-4" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0008" x="2424" y="1023" width="374" height="439" frameX="-43" frameY="-4" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0009" x="2043" y="1023" width="378" height="444" frameX="-39" frameY="-1" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0010" x="2043" y="1023" width="378" height="444" frameX="-39" frameY="-1" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0011" x="1662" y="1023" width="378" height="446" frameX="-39" frameY="0" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="laughing nene xmas0012" x="1662" y="1023" width="378" height="446" frameX="-39" frameY="0" frameWidth="480" frameHeight="464"/>
+	<SubTexture name="Nene Abot Idle xmas0001" x="1" y="1558" width="311" height="469" frameX="-107" frameY="-7" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0002" x="1" y="1558" width="311" height="469" frameX="-107" frameY="-7" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0003" x="822" y="487" width="407" height="476" frameX="-13" frameY="-6" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0004" x="822" y="487" width="407" height="476" frameX="-13" frameY="-6" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0005" x="5374" y="1" width="416" height="476" frameX="-4" frameY="-5" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0006" x="1" y="487" width="416" height="476" frameX="-4" frameY="-5" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0007" x="4494" y="1" width="425" height="476" frameX="0" frameY="-3" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0008" x="1376" y="1" width="441" height="479" frameX="0" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0009" x="2265" y="1" width="440" height="479" frameX="-1" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0010" x="3171" y="1" width="440" height="477" frameX="-1" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0011" x="1820" y="1" width="442" height="477" frameX="-3" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0012" x="1820" y="1" width="442" height="477" frameX="-3" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0013" x="931" y="1" width="442" height="478" frameX="-3" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0014" x="3614" y="1" width="437" height="478" frameX="-9" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0015" x="4054" y="1" width="437" height="476" frameX="-9" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0016" x="3132" y="1023" width="396" height="402" frameX="-67" frameY="-15" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0017" x="3132" y="1023" width="396" height="402" frameX="-67" frameY="-15" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0018" x="1282" y="1558" width="354" height="365" frameX="-111" frameY="-13" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0019" x="1282" y="1558" width="354" height="365" frameX="-111" frameY="-13" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0020" x="2631" y="1558" width="353" height="355" frameX="-111" frameY="-13" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0021" x="2987" y="1558" width="353" height="355" frameX="-111" frameY="-13" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0022" x="3977" y="1558" width="349" height="353" frameX="-111" frameY="-12" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0023" x="5006" y="1558" width="336" height="364" frameX="-111" frameY="-1" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0024" x="5345" y="1558" width="336" height="364" frameX="-111" frameY="-1" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0025" x="4329" y="1558" width="336" height="366" frameX="-111" frameY="-1" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0026" x="4668" y="1558" width="335" height="367" frameX="-111" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0027" x="4668" y="1558" width="335" height="367" frameX="-111" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0028" x="2293" y="1558" width="335" height="375" frameX="-111" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0029" x="3343" y="1558" width="334" height="375" frameX="-111" frameY="0" frameWidth="442" frameHeight="479"/>
+	<SubTexture name="Nene Abot Idle xmas0030" x="630" y="1558" width="334" height="402" frameX="-111" frameY="0" frameWidth="442" frameHeight="479"/>
+</TextureAtlas>

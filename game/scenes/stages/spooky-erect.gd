@@ -58,10 +58,9 @@ func strike():
 	)
 	
 	Audio.play_sound('thunder_'+ str(randi_range(1, 2)))
-	boyfriend.play_anim('scared', true)
-	other_bf.play_anim('scared', true)
-	gf.play_anim('scared', true)
-	other_gf.play_anim('scared', true)
+	for i in [boyfriend, gf, other_bf, other_gf]:
+		if i.has_anim('scared'):
+			i.play_anim('scared', true)
 	
 func good_note_hit(note): other_bf.sing(note.dir, '', !note.is_sustain)
 func opponent_note_hit(note): other_spook.sing(note.dir, '', !note.is_sustain)

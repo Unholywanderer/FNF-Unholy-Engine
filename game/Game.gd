@@ -6,6 +6,7 @@ var TRANS = preload('res://game/objects/ui/transition.tscn') # always have it lo
 var cur_trans
 
 var persist = { # change this to a global script or something
+	'scoring': null,
 	'prev_scene': null,
 	'note_splash': null,
 	'loaded_already': false,
@@ -13,7 +14,7 @@ var persist = { # change this to a global script or something
 	'stage_list': [
 		'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank', 'philly-streets', 'philly-blazin',
 		'stage-erect', 'spooky-erect', 'philly-erect', 'limo-erect', 'mall-erect'
-		],
+	],
 	'week_int': -1, 'week_diff': -1,
 	'song_list': [],
 	'deaths': 0

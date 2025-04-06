@@ -1,4 +1,4 @@
-shader_type canvas_item; //ported by @mableovo 
+shader_type canvas_item; //ported by @mableovo
 //put this shader on a colorRect!!
 uniform float Intensity :hint_range(0.0, 8.0) = 0.2;
 uniform float Timescale :hint_range(-10.0, 10.0) = 0.05;
@@ -32,7 +32,7 @@ void fragment() {
     vec2 iResolution = 1.0 / SCREEN_PIXEL_SIZE;
     vec2 uv = fragCoord / iResolution;
     vec2 wpos = uv * iResolution;
-    
+
     float intensity = Intensity;
     float uTime = TIME * Timescale;
     vec3 add = vec3(0.0);

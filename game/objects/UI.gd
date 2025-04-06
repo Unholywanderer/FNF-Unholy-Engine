@@ -157,6 +157,8 @@ func update_score_txt() -> void:
 	if Game.scene.get('score') != null:
 		var stuff = [roundi(Game.scene.score), get_acc(), Game.scene.misses]
 		score_txt.text = 'Score: %s / Accuracy: [%s] \\ Misses: %s' % stuff
+		
+	$Tally.text = '[color=magenta]Epics: %s\n[color=cyan]Sicks: %s\n[color=green]Goods: %s\n[color=yellow]Bads : %s\n[color=red]Shits: %s' % [hit_count.epic, hit_count.sick, hit_count.good, hit_count.bad, hit_count.shit]
 
 func get_acc() -> String:
 	var new_acc = clampf(note_percent / total_hit, 0, 1)

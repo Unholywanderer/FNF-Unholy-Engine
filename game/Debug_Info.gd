@@ -41,9 +41,9 @@ func _process(delta):
 		if vol_tween: vol_tween.kill()
 
 		$Volume/Percent.text = str(round(volume * 100)) +'%'
-		for i in 10:
+		for i:int in 10:
 			var bar = get_node('Volume/BarsBG/VolBar'+ str(i + 1))
-			bar.scale.y = clamp(lerp(0.0 if round(volume * 10) <= i else 1.0, bar.scale.y, exp(-delta * 15)), 0, 1)
+			bar.scale.y = clampf(lerp(0.0 if round(volume * 10) <= i else 1.0, bar.scale.y, exp(-delta * 15)), 0, 1)
 			
 		time_existed += delta
 		vol_visible = time_existed < 1
@@ -55,14 +55,24 @@ func _process(delta):
 	if OS.is_debug_build():
 		var mem:String = String.humanize_size(OS.get_static_memory_usage())
 		var mem_peak:String = String.humanize_size(OS.get_static_memory_peak_usage())
+		var vid_mem:String = String.humanize_size(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED))
+		var tex_mem:String = String.humanize_size(Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED))
+		#if tex_mem > texture_memory_peak:
+		#	texture_memory_peak = tex_mem
 		
 		if Input.is_action_just_pressed('debug_2'):
 			debug_data = !debug_data
 			
 		var txt_add:String = 'Press (Debug 2) for more info'
-		$Other.text = 'Mem: %s / %s\n' % [mem, mem_peak]
+		$Other.text = 'Mem: %s / %s\nVideo Mem: %s\nTexture Mem: %s\n' % [mem, mem_peak, vid_mem, tex_mem]
 		if debug_data:
-			var other_data:Array = [get_tree().get_node_count(), '???', Performance.get_monitor(Performance.OBJECT_COUNT), Performance.get_monitor(Performance.TIME_PROCESS), Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)]
+			var other_data:Array = [
+				get_tree().get_node_count(), 
+				'???', 
+				Performance.get_monitor(Performance.OBJECT_COUNT), 
+				Performance.get_monitor(Performance.TIME_PROCESS), 
+				Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
+				]
 			if get_tree().current_scene != null:
 				other_data[1] = get_tree().current_scene.name
 			txt_add = 'Nodes: %s\nScene: %s\nAll Objs: %s\nFrm Delay: %s\nDraw Calls: %s' % other_data

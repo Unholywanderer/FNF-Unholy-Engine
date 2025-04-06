@@ -108,19 +108,20 @@ is_cpu = false
 
 [node name="Tally" type="RichTextLabel" parent="."]
 visible = false
+custom_minimum_size = Vector2(135, 92)
 offset_left = 15.0
-offset_top = 254.0
-offset_right = 218.0
-offset_bottom = 448.0
+offset_top = 555.0
+offset_right = 150.0
+offset_bottom = 647.0
 theme_override_constants/outline_size = 4
-theme_override_constants/line_separation = 14
+theme_override_constants/line_separation = 0
 theme_override_fonts/normal_font = ExtResource("8_1567e")
-theme_override_font_sizes/normal_font_size = 18
+theme_override_font_sizes/normal_font_size = 20
 bbcode_enabled = true
-text = "[color=purple]Epics: 0
+text = "[color=magenta]Epics: 0
 [color=cyan]Sicks: 0
 [color=green]Goods: 0
-[color=yellow]Bads: 0
+[color=yellow]Bads : 0
 [color=red]Shits: 0"
 scroll_active = false
 

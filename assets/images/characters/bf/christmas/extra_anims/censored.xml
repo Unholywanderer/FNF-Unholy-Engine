@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="censored.png" width="406" height="4691" spritePadding="3" borderPadding="1">
+	<SubTexture name="bf swear down0000" x="1" y="2475" width="379" height="364" frameX="-1" frameY="-5" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0001" x="1" y="2842" width="379" height="364" frameX="-1" frameY="-5" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0002" x="1" y="3209" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0003" x="1" y="3580" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0004" x="1" y="3951" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0005" x="1" y="4322" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0006" x="1" y="3209" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0007" x="1" y="3580" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0008" x="1" y="3951" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0009" x="1" y="4322" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0010" x="1" y="3209" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0011" x="1" y="3580" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0012" x="1" y="3951" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear down0013" x="1" y="4322" width="376" height="368" frameX="0" frameY="0" frameWidth="379" frameHeight="369"/>
+	<SubTexture name="bf swear right0000" x="1" y="1653" width="403" height="408" frameX="-2" frameY="-2" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0001" x="1" y="2064" width="403" height="408" frameX="-2" frameY="-2" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0002" x="1" y="1" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0003" x="1" y="414" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0004" x="1" y="827" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0005" x="1" y="1240" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0006" x="1" y="1" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0007" x="1" y="414" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0008" x="1" y="827" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0009" x="1" y="1240" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0010" x="1" y="1" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0011" x="1" y="414" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0012" x="1" y="827" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+	<SubTexture name="bf swear right0013" x="1" y="1240" width="404" height="410" frameX="0" frameY="0" frameWidth="404" frameHeight="410"/>
+</TextureAtlas>

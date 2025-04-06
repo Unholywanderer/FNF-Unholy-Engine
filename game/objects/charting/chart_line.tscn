@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://cj2ryjlbhxh8b" path="res://game/objects/ui/strum_line.tscn" id="6_kaw2g"]
 
 [node name="ChartLine" type="Node2D"]
-position = Vector2(0, -1)
 
 [node name="Line" type="ColorRect" parent="."]
 offset_left = 16.0

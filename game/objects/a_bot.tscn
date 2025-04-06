@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dho30ko8csxeb"]
+[gd_scene load_steps=6 format=3 uid="uid://dho30ko8csxeb"]
 
 [ext_resource type="Script" uid="uid://dcehs8gcfm8ms" path="res://game/objects/A_Bot.gd" id="1_63ws8"]
-[ext_resource type="Texture2D" uid="uid://chl10r3un5m22" path="res://assets/images/characters/speakers/abot/eyes.png" id="1_kxgvh"]
+[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="2_6g1xa"]
 [ext_resource type="Texture2D" uid="uid://dop4x3nfiywc2" path="res://assets/images/characters/speakers/abot/BG.png" id="2_k3joh"]
-[ext_resource type="Texture2D" uid="uid://ciaf2q46epu2k" path="res://assets/images/characters/speakers/abot/eyes2.png" id="3_dcqkq"]
 [ext_resource type="SpriteFrames" path="res://assets/images/characters/speakers/abot/viz.res" id="3_e6bxv"]
 [ext_resource type="SpriteFrames" uid="uid://1lw5qm4bp1jj" path="res://assets/images/characters/speakers/abot/abot.res" id="4_42hql"]
 
@@ -17,14 +16,13 @@ offset_top = 246.0
 offset_right = 156.0
 offset_bottom = 286.0
 
-[node name="Eyes" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(111, 257)
-texture = ExtResource("1_kxgvh")
-
-[node name="Eyes2" type="Sprite2D" parent="."]
-position = Vector2(87, 266)
-texture = ExtResource("3_dcqkq")
+[node name="Eyes" type="Node2D" parent="."]
+position = Vector2(57, 238)
+script = ExtResource("2_6g1xa")
+atlas = "res://assets/images/characters/speakers/abot/systemEyes"
+frame = 13
+loop_mode = "Play Once"
+metadata/_custom_type_script = "uid://bvq0ling1c7sm"
 
 [node name="VizBG" type="Sprite2D" parent="."]
 position = Vector2(171, 23)

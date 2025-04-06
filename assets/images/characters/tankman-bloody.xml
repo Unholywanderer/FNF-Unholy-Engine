@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="tankman-bloody.png" width="4468" height="4504" spritePadding="3" borderPadding="1">
+	<SubTexture name="Tankman DOWN note bloody0000" x="1" y="1" width="565" height="452" frameX="-10" frameY="-20" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0001" x="1" y="1" width="565" height="452" frameX="-10" frameY="-20" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0002" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0003" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0004" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0005" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0006" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0007" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0008" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman DOWN note bloody0009" x="3857" y="647" width="579" height="469" frameX="0" frameY="0" frameWidth="579" frameHeight="469"/>
+	<SubTexture name="Tankman Idle bloody0000" x="1015" y="1" width="438" height="586" frameX="-3" frameY="-38" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0001" x="1015" y="1" width="438" height="586" frameX="-3" frameY="-38" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0002" x="569" y="1" width="443" height="578" frameX="0" frameY="-46" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0003" x="569" y="1" width="443" height="578" frameX="0" frameY="-46" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0004" x="407" y="647" width="441" height="592" frameX="-4" frameY="-33" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0005" x="407" y="647" width="441" height="592" frameX="-4" frameY="-33" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0006" x="1704" y="647" width="428" height="621" frameX="-19" frameY="-4" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0007" x="2135" y="647" width="429" height="621" frameX="-18" frameY="-4" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0008" x="3425" y="647" width="429" height="625" frameX="-18" frameY="0" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0009" x="3425" y="647" width="429" height="625" frameX="-18" frameY="0" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0010" x="3425" y="647" width="429" height="625" frameX="-18" frameY="0" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0011" x="3425" y="647" width="429" height="625" frameX="-18" frameY="0" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0012" x="3425" y="647" width="429" height="625" frameX="-18" frameY="0" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Idle bloody0013" x="3425" y="647" width="429" height="625" frameX="-18" frameY="0" frameWidth="443" frameHeight="625"/>
+	<SubTexture name="Tankman Note Left bloody0000" x="2105" y="2496" width="532" height="570" frameX="0" frameY="-17" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Note Left bloody0001" x="2105" y="2496" width="532" height="570" frameX="0" frameY="-17" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Note Left bloody0002" x="530" y="1904" width="506" height="589" frameX="-29" frameY="0" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Note Left bloody0003" x="530" y="1904" width="506" height="589" frameX="-29" frameY="0" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Note Left bloody0004" x="530" y="1904" width="506" height="589" frameX="-29" frameY="0" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Note Left bloody0005" x="530" y="1904" width="506" height="589" frameX="-29" frameY="0" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Note Left bloody0006" x="530" y="1904" width="506" height="589" frameX="-29" frameY="0" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Note Left bloody0007" x="530" y="1904" width="506" height="589" frameX="-29" frameY="0" frameWidth="532" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0000" x="975" y="1313" width="484" height="573" frameX="-11" frameY="-15" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0001" x="975" y="1313" width="484" height="573" frameX="-11" frameY="-15" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0002" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0003" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0004" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0005" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0006" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0007" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0008" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman Right Note bloody0009" x="2947" y="1313" width="482" height="588" frameX="0" frameY="0" frameWidth="484" frameHeight="589"/>
+	<SubTexture name="Tankman UP note bloody0000" x="3164" y="3077" width="491" height="731" frameX="0" frameY="0" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0001" x="3164" y="3077" width="491" height="731" frameX="0" frameY="0" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0002" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0003" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0004" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0005" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0006" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0007" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0008" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="Tankman UP note bloody0009" x="2664" y="3077" width="497" height="714" frameX="-7" frameY="-19" frameWidth="497" frameHeight="731"/>
+	<SubTexture name="pretty good anim0000" x="2972" y="647" width="450" height="595" frameX="-79" frameY="-68" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0001" x="851" y="647" width="445" height="588" frameX="-84" frameY="-75" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0002" x="2567" y="647" width="402" height="663" frameX="-129" frameY="0" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0003" x="1299" y="647" width="402" height="653" frameX="-129" frameY="-10" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0004" x="2390" y="1" width="404" height="639" frameX="-127" frameY="-24" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0005" x="2797" y="1" width="404" height="639" frameX="-127" frameY="-24" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0006" x="3204" y="1" width="404" height="639" frameX="-127" frameY="-24" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0007" x="3611" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0008" x="3611" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0009" x="3611" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0010" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0011" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0012" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0013" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0014" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0015" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0016" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0017" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0018" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0019" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0020" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0021" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0022" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0023" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0024" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0025" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0026" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0027" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0028" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0029" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0030" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0031" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0032" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0033" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0034" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0035" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0036" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0037" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0038" x="4018" y="1" width="404" height="643" frameX="-127" frameY="-20" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0039" x="1" y="647" width="403" height="645" frameX="-128" frameY="-18" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0040" x="1456" y="1" width="464" height="556" frameX="-62" frameY="-107" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0041" x="1923" y="1" width="464" height="556" frameX="-62" frameY="-107" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0042" x="2640" y="2496" width="526" height="578" frameX="0" frameY="-85" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0043" x="2640" y="2496" width="526" height="578" frameX="0" frameY="-85" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0044" x="2113" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0045" x="2639" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0046" x="2639" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0047" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0048" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0049" x="3691" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0050" x="1" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0051" x="1" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0052" x="527" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0053" x="527" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0054" x="1053" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0055" x="1053" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0056" x="1579" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0057" x="1579" y="2496" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0058" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0059" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0060" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0061" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0062" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0063" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0064" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0065" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="pretty good anim0066" x="3165" y="1904" width="523" height="573" frameX="-4" frameY="-90" frameWidth="526" frameHeight="663"/>
+	<SubTexture name="redheads anim0000" x="2448" y="1313" width="496" height="566" frameX="-140" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0001" x="2448" y="1313" width="496" height="566" frameX="-140" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0002" x="485" y="1313" width="487" height="566" frameX="-123" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0003" x="485" y="1313" width="487" height="566" frameX="-123" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0004" x="485" y="1313" width="487" height="566" frameX="-123" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0005" x="1462" y="1313" width="490" height="566" frameX="-118" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0006" x="1462" y="1313" width="490" height="566" frameX="-118" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0007" x="1955" y="1313" width="490" height="566" frameX="-118" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0008" x="1955" y="1313" width="490" height="566" frameX="-118" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0009" x="1955" y="1313" width="490" height="566" frameX="-118" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0010" x="1955" y="1313" width="490" height="566" frameX="-118" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0011" x="1" y="1313" width="481" height="566" frameX="-132" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0012" x="1" y="1313" width="481" height="566" frameX="-132" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0013" x="3432" y="1313" width="506" height="566" frameX="-111" frameY="-125" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0014" x="3941" y="1313" width="526" height="560" frameX="-115" frameY="-131" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0015" x="1" y="1904" width="526" height="560" frameX="-115" frameY="-131" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0016" x="1039" y="1904" width="534" height="561" frameX="-112" frameY="-130" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0017" x="1039" y="1904" width="534" height="561" frameX="-112" frameY="-130" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0018" x="1576" y="1904" width="534" height="561" frameX="-112" frameY="-130" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0019" x="3169" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0020" x="3169" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0021" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0022" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0023" x="1" y="3077" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0024" x="1" y="3077" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0025" x="547" y="3077" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0026" x="547" y="3077" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0027" x="1093" y="3077" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0028" x="1093" y="3077" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0029" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0030" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0031" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0032" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0033" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0034" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0035" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0036" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0037" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0038" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0039" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0040" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0041" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0042" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0043" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0044" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0045" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0046" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0047" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0048" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0049" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0050" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0051" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0052" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0053" x="3715" y="2496" width="543" height="562" frameX="-108" frameY="-129" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0054" x="1639" y="3077" width="517" height="644" frameX="-103" frameY="-47" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0055" x="1" y="3811" width="650" height="691" frameX="-81" frameY="-1" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0056" x="3384" y="3811" width="697" height="692" frameX="-35" frameY="0" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0057" x="1333" y="3811" width="657" height="692" frameX="-35" frameY="0" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0058" x="3658" y="3077" width="673" height="666" frameX="-19" frameY="-26" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0059" x="654" y="3811" width="676" height="668" frameX="-19" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0060" x="2686" y="3811" width="695" height="668" frameX="0" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0061" x="1993" y="3811" width="690" height="668" frameX="-5" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0062" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0063" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0064" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0065" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0066" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0067" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0068" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0069" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0070" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0071" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0072" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0073" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0074" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0075" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0076" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0077" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+	<SubTexture name="redheads anim0078" x="2159" y="3077" width="502" height="668" frameX="-195" frameY="-24" frameWidth="697" frameHeight="692"/>
+</TextureAtlas>
