@@ -1,8 +1,8 @@
 class_name StageBase extends Node2D
 
 # things all stages will have
-var default_zoom:float = 0.8
-var cam_speed:float = 4.0
+@export var default_zoom:float = 0.8
+@export var cam_speed:float = 4.0
 
 var THIS:
 	get: return Game.scene

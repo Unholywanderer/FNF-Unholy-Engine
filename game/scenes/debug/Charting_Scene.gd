@@ -463,7 +463,7 @@ func on_char_change(c:String):
 	tab('Song', c).text = new_char
 	var new_json = JsonHandler.get_character(new_char)
 	if _icon != null:
-		_icon.change_icon(new_json.icon if new_json != null else 'face', c.to_lower() == 'Player1')
+		_icon.change_icon(new_json.icon if new_json else 'face', c.to_lower() == 'player1')
 	
 var bg_tween:Tween
 func beat_hit(beat:int) -> void:
@@ -582,7 +582,7 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 		
 	regen_notes(remake_notes)
 	
-func _input(event): # this is better
+func _unhandled_input(event:InputEvent): # this is better | no you fucking idiot
 	mouse_pos = get_viewport().get_mouse_position() # 
 	if event is InputEventMouseButton:
 		#if event.is_pressed(): return

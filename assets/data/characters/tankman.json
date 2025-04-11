@@ -56,6 +56,28 @@
 			"loop": false
 		},
 		{
+			"name": "ugh",
+			"prefix": "TANKMAN UGH",
+			"offsets": [
+				12,
+				8
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hehPrettyGood",
+			"prefix": "PRETTY GOOD tankman",
+			"offsets": [
+				-101,
+				-16
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
 			"name": "singUPmiss",
 			"prefix": "Tankman UP note MISS",
 			"offsets": [

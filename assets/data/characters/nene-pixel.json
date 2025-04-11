@@ -43,9 +43,17 @@
 		105
 	],
 	"pos_offset": [
-		0,
-		0
+		50,
+		30
 	],
+	"speaker": {
+		"sprite": "ABot-pixel",
+		"offsets": [
+			-10,
+			50
+		],
+		"scale": 1
+	},
 	"sing_dur": 4,
 	"scale": 6
 }

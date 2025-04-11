@@ -60,10 +60,11 @@ autoplay = "viz4"
 centered = false
 
 [node name="Bar4" type="AnimatedSprite2D" parent="VIZ"]
-position = Vector2(471, 180)
+position = Vector2(440, 73)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz5"
 autoplay = "viz5"
+centered = false
 
 [node name="Bar5" type="AnimatedSprite2D" parent="VIZ"]
 position = Vector2(495, 77)

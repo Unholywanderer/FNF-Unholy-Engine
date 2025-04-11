@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbvffwjt7k57k"]
+
+[ext_resource type="Script" uid="uid://852brhc84by2" path="res://game/scenes/stages/tank-erect.gd" id="1_7kr0n"]
+[ext_resource type="Texture2D" uid="uid://m8bowq7b2ae6" path="res://assets/images/stages/tank/erect/bg.png" id="2_7kr0n"]
+[ext_resource type="SpriteFrames" uid="uid://cflu6471p1qyn" path="res://assets/images/stages/tank/erect/sniper.res" id="3_p4x6o"]
+[ext_resource type="SpriteFrames" uid="uid://bnp73bk1mudhm" path="res://assets/images/stages/tank/erect/guy.res" id="4_opmbn"]
+
+[node name="Tank Erect" type="Node2D"]
+script = ExtResource("1_7kr0n")
+default_zoom = 0.7
+bf_pos = Vector2(900, 100)
+dad_pos = Vector2(-180, 45)
+gf_pos = Vector2(320, 100)
+
+[node name="Ground" type="Sprite2D" parent="."]
+position = Vector2(-1205, -835)
+scale = Vector2(1.15, 1.15)
+texture = ExtResource("2_7kr0n")
+centered = false
+
+[node name="Sniper" type="AnimatedSprite2D" parent="."]
+position = Vector2(-313, 342)
+sprite_frames = ExtResource("3_p4x6o")
+animation = &"idle"
+centered = false
+
+[node name="Guy" type="AnimatedSprite2D" parent="."]
+position = Vector2(1185, 414)
+sprite_frames = ExtResource("4_opmbn")
+animation = &"idle"
+frame = 14
+frame_progress = 1.0
+centered = false
+
+[node name="RunMen" type="Node2D" parent="."]
+position = Vector2(0, 165)

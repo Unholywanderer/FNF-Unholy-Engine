@@ -162,7 +162,7 @@ func _process(delta):
 					chart.remove_at(chart.find(i))
 			else:
 				if i[0] <= Conductor.song_pos:
-					var suff = str(randi_range(1, 2)) if cur_char == 'pico-speaker' else ''
+					var suff = str(randi_range(1, 2)) if cur_char.ends_with('-speaker') else ''
 					sing(dir, suff)
 					chart.remove_at(chart.find(i))
 

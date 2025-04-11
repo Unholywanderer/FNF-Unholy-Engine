@@ -1,0 +1,86 @@
+[gd_scene load_steps=6 format=3 uid="uid://be458nvmad1ap"]
+
+[ext_resource type="Script" uid="uid://bm2qdt1k5ndts" path="res://game/objects/A_Bot_pixel.gd" id="1_obkj1"]
+[ext_resource type="Texture2D" uid="uid://birria3hm5lld" path="res://assets/images/characters/speakers/abotPixel/aBotPixelBack.png" id="2_fa712"]
+[ext_resource type="SpriteFrames" path="res://assets/images/characters/speakers/abotPixel/abotHead.res" id="3_k4qvt"]
+[ext_resource type="SpriteFrames" path="res://assets/images/characters/speakers/abotPixel/aBotVizPixel.res" id="4_mxd34"]
+[ext_resource type="SpriteFrames" uid="uid://b0gxlfa7ynjn0" path="res://assets/images/characters/speakers/abotPixel/aBotPixel.res" id="5_8c1aq"]
+
+[node name="ABot Pixel" type="Node2D"]
+script = ExtResource("1_obkj1")
+
+[node name="VizBG" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(27, 5)
+texture = ExtResource("2_fa712")
+centered = false
+
+[node name="Head" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(16, 35)
+sprite_frames = ExtResource("3_k4qvt")
+animation = &"right"
+
+[node name="VIZ" type="Node2D" parent="."]
+
+[node name="Bar0" type="AnimatedSprite2D" parent="VIZ"]
+texture_filter = 1
+position = Vector2(36, 14)
+sprite_frames = ExtResource("4_mxd34")
+animation = &"viz1"
+autoplay = "viz1"
+centered = false
+
+[node name="Bar1" type="AnimatedSprite2D" parent="VIZ"]
+texture_filter = 1
+position = Vector2(43, 11)
+sprite_frames = ExtResource("4_mxd34")
+animation = &"viz2"
+autoplay = "viz2"
+centered = false
+
+[node name="Bar2" type="AnimatedSprite2D" parent="VIZ"]
+texture_filter = 1
+position = Vector2(51, 9)
+sprite_frames = ExtResource("4_mxd34")
+animation = &"viz3"
+autoplay = "viz3"
+centered = false
+
+[node name="Bar3" type="AnimatedSprite2D" parent="VIZ"]
+texture_filter = 1
+position = Vector2(60, 9)
+sprite_frames = ExtResource("4_mxd34")
+animation = &"viz4"
+autoplay = "viz4"
+centered = false
+
+[node name="Bar4" type="AnimatedSprite2D" parent="VIZ"]
+texture_filter = 1
+position = Vector2(70, 9)
+sprite_frames = ExtResource("4_mxd34")
+animation = &"viz5"
+autoplay = "viz5"
+centered = false
+
+[node name="Bar5" type="AnimatedSprite2D" parent="VIZ"]
+texture_filter = 1
+position = Vector2(76, 11)
+sprite_frames = ExtResource("4_mxd34")
+animation = &"viz6"
+autoplay = "viz6"
+centered = false
+
+[node name="Bar6" type="AnimatedSprite2D" parent="VIZ"]
+texture_filter = 1
+position = Vector2(83, 14)
+sprite_frames = ExtResource("4_mxd34")
+animation = &"viz7"
+autoplay = "viz7"
+centered = false
+
+[node name="Frame" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = ExtResource("5_8c1aq")
+animation = &"bump"
+centered = false

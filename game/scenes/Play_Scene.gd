@@ -91,6 +91,7 @@ func _ready():
 	Conductor.paused = false
 	Conductor.connect_signals()
 	cur_speed = SONG.speed
+	if Prefs.scroll_speed > 0: cur_speed = Prefs.scroll_speed
 	
 	if SONG.has('stage'):
 		cur_stage = SONG.stage.to_lower().replace(' ', '-')
@@ -125,8 +126,8 @@ func _ready():
 	if gf.speaker_data.keys().size() > 0:
 		var _data = gf.speaker_data
 		match _data.sprite:
-			'ABot': 
-				speaker = load('res://game/objects/a_bot.tscn').instantiate()
+			'ABot': speaker = load('res://game/objects/a_bot.tscn').instantiate()
+			'ABot-pixel': speaker = load('res://game/objects/a_bot_pixel.tscn').instantiate()
 			_: speaker = Speaker.new()
 		speaker.offset = Vector2(_data.offsets[0], _data.offsets[1])
 		gf.add_child(speaker)
@@ -203,7 +204,16 @@ func _ready():
 		ui.song_start.connect(Callable(i, 'song_start'))
 	
 	Conductor.connect_signals(stage)
-	
+	if Prefs.deaf: 
+		RenderingServer.set_default_clear_color(Color.BLACK)
+		Conductor.audio_volume(0, 0)
+		Conductor.audio_volume(2, 0)
+		for i in stage.get_children(true):
+			if i.name != 'CharGroup': i.hide()
+		gf.hide()
+		dad.hide()
+		ui.get_group('opponent').hide()
+		ui.icon_p2.hide()
 	for i in DirAccess.get_files_at('res://assets/data/scripts'):
 		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
 		
@@ -335,7 +345,7 @@ func beat_hit(beat) -> void:
 	ui.icon_p1.bump()
 	ui.icon_p2.bump()
 	
-	if beat % zoom_beat == 0:
+	if beat % zoom_beat == 0 and !Prefs.deaf:
 		ui.zoom += zoom_add.ui
 		if !_cam_tween:
 			cam.zoom += Vector2(zoom_add.game, zoom_add.game)
@@ -380,15 +390,15 @@ func move_cam(to_char:Variant) -> void:
 	cam.position = new_pos + cam_off + focus_offset
 	focus_offset = Vector2.ZERO
 
-func _unhandled_key_input(_event) -> void:
+func _unhandled_key_input(event:InputEvent) -> void:
 	if auto_play: return
 	for i in 4:
-		if Input.is_action_just_pressed(key_names[i]): key_press(i)
-		if Input.is_action_just_released(key_names[i]): key_release(i)
+		if event.is_action_pressed(key_names[i]): key_press(i)
+		if event.is_action_released(key_names[i]): key_release(i)
 
 func key_press(key:int = 0) -> void:
 	var hittable_notes:Array[Note] = notes.filter(func(i:Note):
-		return i.dir == key and i.spawned and !i.is_sustain and i.must_press and i.can_hit and !i.was_good_hit
+		return i.can_hit and i.dir == key and i.spawned and !i.is_sustain and i.must_press and !i.was_good_hit
 	)
 	hittable_notes.sort_custom(func(a, b): return a.strum_time < b.strum_time)
 	
@@ -403,7 +413,7 @@ func key_press(key:int = 0) -> void:
 	if hittable_notes.size() > 1: # mmm idk anymore
 		for funny in hittable_notes: # temp dupe note thing killer bwargh i hate it
 			if note == funny: continue 
-			if absf(funny.strum_time - note.strum_time) < 1.0:
+			if absf(funny.strum_time - note.strum_time) < 0.1:
 				kill_note(funny)
 	good_note_hit(note)
 
@@ -434,17 +444,17 @@ func song_end() -> void:
 	
 	Conductor.reset()
 	if playlist.is_empty() or song_idx >= playlist.size() - 1:
-		Game.persist.song_list = []
-		#var back_to = 'story_mode' if story_mode else 'freeplay'
-		Game.persist.scoring = ScoreData.new()
-		Game.persist.scoring.hits = ui.hit_count.duplicate()
-		Game.persist.scoring.total_notes = JsonHandler.note_count
-		Game.persist.scoring.song_name = SONG.song
-		Game.persist.scoring.score = score
-		Game.persist.scoring.max_combo = max_combo
-		Game.persist.scoring.difficulty = JsonHandler.get_diff
-		Game.switch_scene('results_screen')
-		#Game.switch_scene("menus/"+ back_to)
+		#Game.persist.song_list = []
+		#Game.persist.scoring = ScoreData.new()
+		#Game.persist.scoring.hits = ui.hit_count.duplicate()
+		#Game.persist.scoring.total_notes = JsonHandler.note_count
+		#Game.persist.scoring.song_name = SONG.song
+		#Game.persist.scoring.score = score
+		#Game.persist.scoring.max_combo = max_combo
+		#Game.persist.scoring.difficulty = JsonHandler.get_diff
+		#Game.switch_scene('results_screen')
+		var back_to = 'story_mode' if story_mode else 'freeplay'
+		Game.switch_scene("menus/"+ back_to)
 	else:
 		song_idx += 1
 		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
@@ -493,6 +503,7 @@ var _cam_tween
 func event_hit(event:EventData) -> void:
 	var luad = LuaHandler.call_func('eventHit', [event.event, event.values])
 	if luad == LuaHandler.RET_TYPES.STOP: return
+	stage.event_hit(event)
 	print(event.event, event.values)
 	match event.event:
 		#region PSYCH EVENTS
@@ -519,6 +530,7 @@ func event_hit(event:EventData) -> void:
 				peep.play_anim(event.values[0], true)
 				peep.special_anim = true
 		'Change Scroll Speed', "Scroll Speed Change": # [true,2.67,16,"cube","In"],"name":"Scroll Speed Change" 
+			if Prefs.scroll_speed != 0: return
 			var codin = event.values[0] is bool
 			if codin: 
 				event.values.pop_front()
@@ -602,6 +614,10 @@ func event_hit(event:EventData) -> void:
 				_cam_tween.finished.connect(func(): _cam_tween = null)
 			else:
 				$Camera.zoom = Vector2(new_zoom, new_zoom)
+		'SetHealthIcon':
+			if int(event.values[0].char) == 1: ui.icon_p2.change_icon(event.values[0].id)
+			if int(event.values[0].char) == 0: ui.icon_p1.change_icon(event.values[0].id)
+			
 		'ChangeBPM':
 			Conductor.bpm = event.values[0]
 			print('Changed BPM: '+ str(Conductor.bpm))
@@ -703,7 +719,7 @@ func opponent_note_hit(note:Note) -> void:
 		if section_data.has('gfSection') and section_data.gfSection and !section_data.mustHitSection: 
 			note.gf = true
 
-	if Conductor.vocals:
+	if Conductor.vocals and !Prefs.deaf:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 	
 	stage.opponent_note_hit(note)
@@ -716,7 +732,7 @@ func opponent_note_hit(note:Note) -> void:
 func opponent_sustain_press(sustain:Note) -> void:
 	var luad = LuaHandler.call_func('opponentSustainPress', [notes.find(sustain), sustain.dir, sustain.type])
 	if luad == LuaHandler.RET_TYPES.STOP: return
-	if Conductor.vocals:
+	if Conductor.vocals and !Prefs.deaf:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 	
 	LuaHandler.call_func('opponentSustainPress', [sustain.dir])

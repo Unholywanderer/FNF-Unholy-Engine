@@ -1,0 +1,81 @@
+{
+	"animations": [
+		{
+			"name": "shootRight1",
+			"prefix": "Pico shoot 10",
+			"offsets": [
+				-1.0,
+				-14.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "shootRight2",
+			"prefix": "Pico shoot 20",
+			"offsets": [
+				40.0,
+				-22.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "idle",
+			"prefix": "Pico Dual Wield on Speaker idle",
+			"offsets": [
+				0.0,
+				0.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "shootLeft1",
+			"prefix": "Pico shoot 30",
+			"offsets": [
+				-238.0,
+				-97.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "shootLeft2",
+			"prefix": "Pico shoot 40",
+			"offsets": [
+				-258.0,
+				-24.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		}
+	],
+	"path": "characters/otis-speaker",
+	"icon": "pico",
+	"facing_left": false,
+	"antialiasing": true,
+	"cam_offset": [
+		-310.0,
+		100.0
+	],
+	"pos_offset": [
+		0.0,
+		10.0
+	],
+	"sing_dur": 4,
+	"scale": 1.0,
+	"speaker": {
+		"sprite": "ABot",
+		"offsets": [
+			-90.0,
+			330.5
+		],
+		"scale": 1.0
+	}
+}

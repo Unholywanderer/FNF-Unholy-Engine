@@ -2,19 +2,13 @@ extends StageBase
 
 var tank_notes:Array = [] # for the fucks that run in and get shot
 var runnin_boys:Array = []
-func _ready():
-	default_zoom = 0.9
-	bf_pos = Vector2(810, 100)
-	dad_pos = Vector2(20, 100)
-	gf_pos = Vector2(500, 65)
-	
-	$Clouds/Sprite.moving = true
-	$Clouds/Sprite.position = Vector2(randi_range(-700, -100), randi_range(-20, -20))
-	$Clouds/Sprite.velocity.x = randf_range(5, 15)
-	
-	var tank_boy = TankBG.new()
-	$Tank.add_child(tank_boy)
 
+func post_ready() -> void:
+	if gf.cur_char.begins_with('gf'): 
+		gf_pos.x += 150
+		gf.position.x = gf_pos.x
+		
+	
 func init_tankmen():
 	gf.chart = Chart.load_named_chart(JsonHandler.song_root, 'picospeaker', 'v_slice')
 	tank_notes = gf.chart.duplicate()
@@ -28,11 +22,13 @@ func init_tankmen():
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func beat_hit(beat:int):
-	for tank in $Forground.get_children():
-		tank.get_node('Sprite').frame = 0
-		tank.get_node('Sprite').play('idle')
-	$Watchtower/Sprite.frame = 0
-	$Watchtower/Sprite.play('idle')
+	for tank in [$Sniper, $Guy]:
+		tank.frame = 0
+		tank.play('idle')
+
+func event_hit(event:EventData) -> void:
+	if event.event == 'SetHealthIcon' and dad.cur_char == 'tankman-bloody':
+		dad.forced_suffix = '-bloody'
 
 var played_line:bool = false
 func game_over_start(scene): played_line = false
@@ -40,26 +36,10 @@ func game_over_idle(scene):
 	if !played_line:
 		played_line = true
 		Audio.volume = 0.4
-		Audio.play_sound('tank/jeffGameover-'+ str(randi_range(1, 25)))
+		var _death = Audio.return_sound('tank/jeffGameover-'+ str(randi_range(1, 25)))
+		_death.play()
+		_death.finished.connect(func(): Audio.volume = 1)
 
-
-class TankBG extends AnimatedSprite2D:
-	var off = Vector2(700, 1300)
-	var speed:float = 0.0
-	var angle:float = 0.0
-	func _init():
-		centered = false
-		sprite_frames = load('res://assets/images/stages/tank/tankRolling.res')
-		play('idle')
-		speed = randf_range(5, 7)
-		angle = randi_range(-90, 45)
-	
-	func _process(delta):
-		angle += delta * speed
-		rotation = deg_to_rad(angle - 90 + 15)
-		position.x = off.x + 1500 * cos(PI / 180 * (angle + 180))
-		position.y = off.y + 1100 * sin(PI / 180 * (angle + 180))
-	
 class Tankmen extends AnimatedSprite2D:
 	var t_speed:float = 0.0
 	var strum_time:float = 0.0

@@ -1,6 +1,83 @@
 {
 	"animations": [
 		{
+			"name": "idle-bloody",
+			"prefix": "Tankman Idle Dance",
+			"offsets": [
+				-17.0,
+				-52.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP-bloody",
+			"prefix": "Tankman UP note 1",
+			"offsets": [
+				-28.0,
+				-164.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN-bloody",
+			"prefix": "Tankman DOWN note 1",
+			"offsets": [
+				-76.0,
+				107.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT-bloody",
+			"prefix": "Tankman Right Note 1",
+			"offsets": [
+				27.0,
+				-16.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "redheadsAnim",
+			"prefix": "Tankman Right Note 1",
+			"offsets": [
+				-187.0,
+				-118.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hehPrettyGood-bloody",
+			"prefix": "Tankman Right Note 1",
+			"offsets": [
+				-100.0,
+				-90.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT-bloody",
+			"prefix": "Tankman Note Left 1",
+			"offsets": [
+				-131.0,
+				-21.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
 			"name": "idle",
 			"prefix": "Tankman Idle Dance",
 			"offsets": [
@@ -15,8 +92,8 @@
 			"name": "singUP",
 			"prefix": "Tankman UP note 1",
 			"offsets": [
-				-8.0,
-				-114.0
+				-28.0,
+				-54.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +103,8 @@
 			"name": "singDOWN",
 			"prefix": "Tankman DOWN note 1",
 			"offsets": [
-				-56.0,
-				157.0
+				-86.0,
+				107.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -37,19 +114,8 @@
 			"name": "singRIGHT",
 			"prefix": "Tankman Right Note 1",
 			"offsets": [
-				38.0,
-				34.0
-			],
-			"framerate": 24,
-			"frames": [],
-			"loop": false
-		},
-		{
-			"name": "redheadsAnim",
-			"prefix": "Tankman Right Note 1",
-			"offsets": [
-				-175.0,
-				-66.0
+				28.0,
+				10.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -59,8 +125,8 @@
 			"name": "hehPrettyGood",
 			"prefix": "Tankman Right Note 1",
 			"offsets": [
-				-84.0,
-				-38.0
+				-102.0,
+				-17.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -70,8 +136,19 @@
 			"name": "singLEFT",
 			"prefix": "Tankman Note Left 1",
 			"offsets": [
-				-111.0,
+				-91.0,
 				31.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "ugh",
+			"prefix": "Tankman Note Left 1",
+			"offsets": [
+				14.0,
+				10.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -79,7 +156,7 @@
 		}
 	],
 	"path": "characters/tankman-bloody",
-	"icon": "tankman-bloody",
+	"icon": "tankman",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
@@ -88,7 +165,7 @@
 	],
 	"pos_offset": [
 		0.0,
-		180.0
+		220.0
 	],
 	"sing_dur": 4,
 	"scale": 1.0

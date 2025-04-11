@@ -10,6 +10,7 @@ var gameplay = [
 	['auto_play',        'bool'],
 	['legacy_score',     'bool'],
 	['ghost_tapping',    'array', ['on', 'off', 'insta-kill']],
+	['scroll_speed',     'float', [0, 10]],
 	['scroll_type',      'array', ['up', 'down', 'left', 'right', 'middle', 'split']],
 	['center_strums',    'bool'],
 	['hitsound',        'array', []],
@@ -32,6 +33,7 @@ var visuals = [
 	['rating_cam',    'array', ['game', 'hud', 'none']],
 	['auto_pause',     'bool'],
 	['chart_grid',     'bool'],
+	['deaf',           'bool'],
 	['daniel',         'bool']
 ]
 #var controls = []
@@ -49,7 +51,7 @@ func _ready():
 	
 	for shit in DirAccess.get_files_at('res://assets/sounds/hitsounds'):
 		if !shit.ends_with('.ogg'): continue
-		gameplay[5][2].append(shit.replace('.ogg', ''))
+		gameplay[6][2].append(shit.replace('.ogg', ''))
 		
 	var b = JSON.new()
 	b.parse(FileAccess.open('res://assets/data/prefInfo.json', FileAccess.READ).get_as_text())

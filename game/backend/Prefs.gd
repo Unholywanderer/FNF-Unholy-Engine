@@ -4,6 +4,7 @@ var saved_prefs:ConfigFile = ConfigFile.new()
 ## GAMEPLAY ##
 var auto_play:bool = false
 var ghost_tapping:String = 'on'
+var scroll_speed:float = 0.0
 var scroll_type:String = 'up'
 var center_strums:bool = false
 var legacy_score:bool = false
@@ -41,6 +42,10 @@ var rating_cam:String = 'game'
 var chart_grid:bool = true
 var femboy:bool = false
 
+var deaf:bool = false:
+	set(d): 
+		if d: Audio.volume = 0 
+		deaf = d
 var daniel:bool = false: # if you switch too much, it'll break lol
 	set(dani): 
 		daniel = dani

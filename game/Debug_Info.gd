@@ -64,7 +64,7 @@ func _process(delta):
 			debug_data = !debug_data
 			
 		var txt_add:String = 'Press (Debug 2) for more info'
-		$Other.text = 'Mem: %s / %s\nVideo Mem: %s\nTexture Mem: %s\n' % [mem, mem_peak, vid_mem, tex_mem]
+		$Other.text = 'Mem: %s / %s\nVMem: %s\nTMem: %s\n' % [mem, mem_peak, vid_mem, tex_mem]
 		if debug_data:
 			var other_data:Array = [
 				get_tree().get_node_count(), 

@@ -4,8 +4,8 @@
 			"name": "idle",
 			"prefix": "BF IDLE",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -15,8 +15,8 @@
 			"name": "singLEFTmiss",
 			"prefix": "BF LEFT MISS",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +26,8 @@
 			"name": "singLEFT",
 			"prefix": "BF LEFT NOTE",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -37,8 +37,8 @@
 			"name": "singUPmiss",
 			"prefix": "BF UP MISS",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -48,8 +48,8 @@
 			"name": "singUP",
 			"prefix": "BF UP NOTE",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -59,8 +59,8 @@
 			"name": "singRIGHT",
 			"prefix": "BF RIGHT NOTE",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -70,8 +70,8 @@
 			"name": "singRIGHTmiss",
 			"prefix": "BF RIGHT MISS",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -81,8 +81,8 @@
 			"name": "singDOWN",
 			"prefix": "BF DOWN NOTE",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -92,8 +92,8 @@
 			"name": "singDOWNmiss",
 			"prefix": "BF DOWN MISS",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -105,13 +105,13 @@
 	"facing_left": true,
 	"antialiasing": false,
 	"cam_offset": [
-		50,
-		-60
+		-85.0,
+		-40.0
 	],
 	"pos_offset": [
-		0,
-		350
+		0.0,
+		350.0
 	],
 	"sing_dur": 4,
-	"scale": 6
+	"scale": 6.0
 }

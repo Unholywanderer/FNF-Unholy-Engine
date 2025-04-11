@@ -45,7 +45,7 @@ func update(update_id:bool = false, disable:bool = false) -> void:
 	if update_id:
 		clear()
 		DiscordRPC.app_id = _info[int(Prefs.daniel)].id
-		DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system() * 100)
+		DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system())
 	DiscordRPC.large_image = _info[int(Prefs.daniel)].l_img
 	DiscordRPC.large_image_text = _info[int(Prefs.daniel)].l_txt
 	
