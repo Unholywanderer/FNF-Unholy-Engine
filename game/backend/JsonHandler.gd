@@ -155,7 +155,7 @@ func stage_to(stage:String) -> String:
 		'school'       : le_stage = 'school'
 		'schoolEvil'   : le_stage = 'school-evil'
 		'tankmanBattlefield': le_stage = 'tank'
-	if stage.ends_with('Erect'): 
+	if stage.ends_with('Erect') or stage.ends_with('Pico'): 
 		le_stage += '-erect'
 	return le_stage
 

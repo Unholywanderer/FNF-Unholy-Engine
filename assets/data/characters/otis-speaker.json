@@ -61,7 +61,7 @@
 	"facing_left": false,
 	"antialiasing": true,
 	"cam_offset": [
-		-310.0,
+		-100.0,
 		100.0
 	],
 	"pos_offset": [

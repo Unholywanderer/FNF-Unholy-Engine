@@ -7,16 +7,18 @@
 [ext_resource type="SpriteFrames" uid="uid://b0gxlfa7ynjn0" path="res://assets/images/characters/speakers/abotPixel/aBotPixel.res" id="5_8c1aq"]
 
 [node name="ABot Pixel" type="Node2D"]
+use_parent_material = true
 script = ExtResource("1_obkj1")
 
 [node name="VizBG" type="Sprite2D" parent="."]
 texture_filter = 1
-position = Vector2(27, 5)
+position = Vector2(26, 5)
 texture = ExtResource("2_fa712")
 centered = false
 
 [node name="Head" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(16, 35)
 sprite_frames = ExtResource("3_k4qvt")
 animation = &"right"
@@ -81,6 +83,7 @@ centered = false
 
 [node name="Frame" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
+use_parent_material = true
 sprite_frames = ExtResource("5_8c1aq")
 animation = &"bump"
 centered = false

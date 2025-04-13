@@ -26,7 +26,7 @@ var visuals = [
 	['skip_transitions', 'bool'],
 	['allow_rpc',      'bool'],
 	['basic_play',     'bool'],
-	['note_splashes', 'array', ['epics', 'both', 'all', 'none']],
+	['note_splashes', 'array', ['epics', 'both', 'none']],
 	['splash_sprite', 'array', ['vis', 'base', 'base-pixel', 'haxe', 'forever']],
 	['hold_splash',   'array', ['disabled', 'cover', 'full']],
 	['behind_strums',  'bool'],

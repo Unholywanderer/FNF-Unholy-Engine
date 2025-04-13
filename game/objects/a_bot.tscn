@@ -7,9 +7,11 @@
 [ext_resource type="SpriteFrames" uid="uid://1lw5qm4bp1jj" path="res://assets/images/characters/speakers/abot/abot.res" id="4_42hql"]
 
 [node name="ABot" type="Node2D"]
+use_parent_material = true
 script = ExtResource("1_63ws8")
 
 [node name="EyeBG" type="ColorRect" parent="."]
+use_parent_material = true
 custom_minimum_size = Vector2(105, 40)
 offset_left = 56.0
 offset_top = 246.0
@@ -81,6 +83,7 @@ autoplay = "viz7"
 centered = false
 
 [node name="Frame" type="AnimatedSprite2D" parent="."]
+use_parent_material = true
 sprite_frames = ExtResource("4_42hql")
 animation = &"bump"
 centered = false

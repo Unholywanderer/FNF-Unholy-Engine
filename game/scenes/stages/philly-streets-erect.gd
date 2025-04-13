@@ -23,14 +23,13 @@ func _ready() -> void:
 		ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
 		ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
 
-	default_zoom = 0.77
-	bf_pos = Vector2(1800, 450)
-	dad_pos = Vector2(700, 445)
-	gf_pos = Vector2(1200, 430)
-	
-	bf_cam_offset.x = -200
-	dad_cam_offset.x = 200
 	THIS.cam.position = Vector2(400, 490)
+
+func post_ready() -> void:
+	if gf.cur_char.contains('gf'):
+		gf_pos.x += 150
+		gf.position.x = gf_pos.x
+		
 	
 func _process(delta:float) -> void:
 	$Skybox/Sprite.region_rect.position.x -= delta * 22

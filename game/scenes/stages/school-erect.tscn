@@ -12,6 +12,12 @@
 
 [node name="School Erect" type="Node2D"]
 script = ExtResource("1_771mw")
+default_zoom = 1.0
+bf_pos = Vector2(870, 90)
+dad_pos = Vector2(30, 10)
+gf_pos = Vector2(400, 130)
+bf_cam_offset = Vector2(-100, 100)
+dad_cam_offset = Vector2(100, 40)
 
 [node name="Sky" type="Node2D" parent="."]
 script = ExtResource("1_fgt6k")

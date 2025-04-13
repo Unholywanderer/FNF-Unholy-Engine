@@ -144,6 +144,7 @@ func _ready():
 				new.offset = Vector2(i[1][0], i[1][1])
 				new.scale = Vector2(i[2], i[2])
 				new.flip_h = i[3]
+				new.use_parent_material = true
 				
 				gf.add_child(new)
 				new.show_behind_parent = true
@@ -151,7 +152,7 @@ func _ready():
 					new.reparent(speaker)
 				speaker.addons.append(new)
 	
-	if gf.cur_char.to_lower() == 'pico-speaker' and cur_stage.contains('tank'):
+	if gf.cur_char.to_lower().ends_with('-speaker') and cur_stage.contains('tank'):
 		stage.init_tankmen()
 	
 	dad = Character.new(stage.dad_pos, SONG.player2)
@@ -224,7 +225,7 @@ func _ready():
 	#	print(i)
 
 	if DIE == null:
-		var char_suff = '-pico' if boyfriend.cur_char == 'pico' else ''
+		var char_suff = '-pico' if boyfriend.cur_char.contains('pico') else ''
 		DIE = load('res://game/scenes/game_over'+ char_suff +'.tscn')
 	
 	stage.post_ready()

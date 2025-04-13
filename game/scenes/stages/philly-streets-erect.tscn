@@ -25,6 +25,12 @@ blend_mode = 1
 
 [node name="Philly Streets Erect" type="Node2D"]
 script = ExtResource("1_5hbh3")
+default_zoom = 0.77
+bf_pos = Vector2(1800, 450)
+dad_pos = Vector2(700, 445)
+gf_pos = Vector2(1200, 430)
+bf_cam_offset = Vector2(-200, 0)
+dad_cam_offset = Vector2(200, 0)
 
 [node name="Skybox" type="Node2D" parent="."]
 script = ExtResource("2_edors")

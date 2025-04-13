@@ -4,7 +4,7 @@ signal on_game_over(s) # when you first die, with the deathStart anim and sounds
 signal on_game_over_idle(s) # after the timer is done and the deathLoop starts
 signal on_game_over_confirm(is_retry:bool, s) # once you choose to either leave or retry the song
 
-var dead:Character
+var dead
 var this = Game.scene
 var last_cam_pos:Vector2
 var last_zoom:Vector2
@@ -15,10 +15,10 @@ enum DEATH_TYPE {
 	NORMAL
 }
 var we_dyin:DEATH_TYPE = DEATH_TYPE.NORMAL
-
+var music:String = 'gameOver-pico'
 var on_death_start:Callable = func(): # once the death sound and deathStart finish playing
 	if !retried:
-		Audio.play_music('skins/'+ this.cur_skin +'/gameOver-pico')
+		Audio.play_music('skins/'+ this.cur_skin +'/'+ music)
 		dead.play_anim('deathLoop')
 	on_game_over_idle.emit(self)
 
@@ -86,7 +86,13 @@ func _ready():
 	if we_dyin == DEATH_TYPE.EXPLODE: da_boy = 'pico-explode'
 	if da_boy == 'bf-dead' and ResourceLoader.exists('res://assets/data/characters/'+ this.boyfriend.cur_char +'-dead.json'):
 		da_boy = this.boyfriend.cur_char +'-dead'
-		
+	
+	#if we_dyin == DEATH_TYPE.EXPLODE:
+		#dead = AnimateSymbol.new()
+		#dead.position = this.boyfriend.position - Vector2(100, 200)
+		#dead.atlas = 'res://assets/images/characters/pico/ex_death/explosion'
+		#dead.playing = false
+	#else:
 	dead = Character.new(this.boyfriend.position, da_boy, true)
 	
 	dead.play_anim('deathStart', true) # apply the offsets
@@ -100,6 +106,11 @@ func _ready():
 		DEATH_TYPE.EXPLODE:
 			death_delay = 2
 			sound_suff += '-explode'
+			music = 'gameOver-pico-explode'
+			Audio.Player.finished.connect(func():
+				if Audio.music.ends_with('-explode'):
+					Audio.play_music('gameOver-pico')
+			)
 			
 			var other = AnimatedSprite2D.new()
 			other.sprite_frames = ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
@@ -229,6 +240,10 @@ func _process(delta):
 			dead.play_anim('deathConfirm', true)
 			if retry != null: 
 				retry.play('confirm')
+				if we_dyin == DEATH_TYPE.NORMAL:
+					create_tween().tween_property(retry, "position:y", retry.position.y - 400, 2.0)\
+					 .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN).set_delay(0.5)
+					create_tween().tween_property(retry, 'modulate:a', 0, 1.2).set_delay(0.5)
 				
 			await get_tree().create_timer(0.5).timeout
 			dead.play_anim('deathStart', true, true)

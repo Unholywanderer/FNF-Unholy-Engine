@@ -4,19 +4,55 @@
 			"name": "idle",
 			"prefix": "Tankman Idle Dance",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
 			"loop": false
 		},
 		{
+			"name": "augh",
+			"prefix": "Tankman Idle Dance",
+			"offsets": [
+				-19.0,
+				-3.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false,
+			"flipX": true
+		},
+		{
+			"name": "beat it",
+			"prefix": "Tankman Idle Dance",
+			"offsets": [
+				10.0,
+				14.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false,
+			"flipX": true
+		},
+		{
+			"name": "laugh",
+			"prefix": "Tankman Idle Dance",
+			"offsets": [
+				20.0,
+				-13.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false,
+			"flipX": true
+		},
+		{
 			"name": "singUP",
 			"prefix": "Tankman UP note 1",
 			"offsets": [
-				-28,
-				-54
+				-28.0,
+				-54.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +62,8 @@
 			"name": "singDOWN",
 			"prefix": "Tankman DOWN note 1",
 			"offsets": [
-				-66,
-				107
+				-66.0,
+				107.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -37,8 +73,8 @@
 			"name": "singUP-alt",
 			"prefix": "TANKMAN UGH",
 			"offsets": [
-				12,
-				8
+				12.0,
+				8.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -48,8 +84,8 @@
 			"name": "singDOWN-alt",
 			"prefix": "PRETTY GOOD tankman",
 			"offsets": [
-				-101,
-				-16
+				-101.0,
+				-16.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -59,8 +95,8 @@
 			"name": "ugh",
 			"prefix": "TANKMAN UGH",
 			"offsets": [
-				12,
-				8
+				12.0,
+				8.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -70,8 +106,8 @@
 			"name": "hehPrettyGood",
 			"prefix": "PRETTY GOOD tankman",
 			"offsets": [
-				-101,
-				-16
+				-101.0,
+				-16.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -81,8 +117,8 @@
 			"name": "singUPmiss",
 			"prefix": "Tankman UP note MISS",
 			"offsets": [
-				-28,
-				-54
+				-28.0,
+				-54.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -92,8 +128,8 @@
 			"name": "singDOWNmiss",
 			"prefix": "Tankman DOWN note MISS",
 			"offsets": [
-				-66,
-				107
+				-66.0,
+				107.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -103,8 +139,8 @@
 			"name": "singRIGHT",
 			"prefix": "Tankman Right Note 1",
 			"offsets": [
-				21,
-				11
+				21.0,
+				11.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -114,8 +150,8 @@
 			"name": "singRIGHTmiss",
 			"prefix": "Tankman Right Note MISS",
 			"offsets": [
-				16,
-				11
+				16.0,
+				11.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -125,8 +161,8 @@
 			"name": "singLEFT",
 			"prefix": "Tankman Note Left 1",
 			"offsets": [
-				-91,
-				23
+				-91.0,
+				23.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -136,8 +172,8 @@
 			"name": "singLEFTmiss",
 			"prefix": "Tankman Note Left MISS",
 			"offsets": [
-				-91,
-				23
+				-91.0,
+				23.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -149,13 +185,13 @@
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		-100,
-		0
+		-100.0,
+		0.0
 	],
 	"pos_offset": [
-		0,
-		240
+		0.0,
+		240.0
 	],
 	"sing_dur": 4,
-	"scale": 1
+	"scale": 1.0
 }

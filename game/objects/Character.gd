@@ -3,6 +3,7 @@ class_name Character; extends AnimatedSprite2D;
 var json
 var chart:Array = []
 var offsets:Dictionary = {}
+var flippers:Dictionary = {}
 var speaker_data:Dictionary = {}
 var focus_offsets:Vector2 = Vector2.ZERO # cam offset type shit
 
@@ -88,6 +89,7 @@ func load_char(new_char:String = 'bf') -> void:
 	offsets.clear()
 	for anim in json.animations:
 		offsets[anim.name] = anim.offsets
+		flippers[anim.name] = anim.get('flipX')
 	
 	icon = json.icon
 	scale = Vector2(json.scale, json.scale)
@@ -109,7 +111,9 @@ func load_char(new_char:String = 'bf') -> void:
 			dance_beat = 2
 		'senpai-angry':
 			forced_suffix = '-alt' # boooo
-		'pico-speaker':
+		'pico-speaker', 'otis-speaker':
+			animation_changed.connect(func(): can_dance = animation == 'idle')
+			animation_finished.connect(func(): if animation != 'idle': play_anim('idle'))
 			can_dance = false
 			sing_anims = ['shootLeft', 'shootLeft', 'shootRight', 'shootRight']
 			play_anim('idle')
@@ -227,6 +231,7 @@ func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	var anim_offset:Vector2 = Vector2.ZERO
 	if offsets.has(anim):
 		anim_offset = Vector2(offsets[anim][0], offsets[anim][1])
+		flip_h = flippers[anim] if flippers[anim] else false
 	offset = anim_offset
 
 func get_cam_pos() -> Vector2:

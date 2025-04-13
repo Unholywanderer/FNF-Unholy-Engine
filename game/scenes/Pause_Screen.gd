@@ -1,8 +1,8 @@
 extends Node2D
 
-const OPT_MENU = preload('res://game/scenes/menus/options_menu.tscn')
+#const OPT_MENU = preload('res://game/scenes/menus/options_menu.tscn')
 var this = Game.scene
-@export var option_list:Array[String] = ['Resume', 'Restart Song', 'Change Difficulty', 'Options', 'Exit To Menu']
+@export var option_list:PackedStringArray = ['Resume', 'Restart Song', 'Change Difficulty', 'Options', 'Exit To Menu']
 var options = []
 var cur_option:int = 0
 var in_diff:bool = false
@@ -10,7 +10,8 @@ var in_diff:bool = false
 var diffs = JsonHandler.song_diffs
 var break_text = [
 	'Havin a snack break', 'Stop fucking pinging me', 'Oop I fell down the stairs', 
-	'Damn, I can\'t funk like this', 'Time to touch some grass', 'Shittin rn keep it down'
+	'Damn, I can\'t funk like this', 'Time to touch some grass', 'Shittin rn keep it down',
+	'pissing and shitting', 'who up straight up "funkin" it and by "it" i mean; the friday'
 ]
 func _ready():
 	Discord.change_presence('Paused '+ this.SONG.song +' - '+ JsonHandler.get_diff.to_upper(), break_text.pick_random())
@@ -111,24 +112,14 @@ var hold_this = []
 func toggle_diff_select(make_visible:bool = true):
 	if diffs.size() == 1: return # this shouldnt happen
 	cur_option = 0 if make_visible else 2
-	if make_visible:
-		while options.size() != 0:
-			remove_child(options[0])
-			options[0].queue_free()
-			options.remove_at(0)
-		
-		for i in diffs.size():
-			make_option(diffs[i], i)
-		make_option('Back', options.size())
+	Game.remove_all([options], self)
 	
-	else:
-		while options.size() != 0:
-			remove_child(options[0])
-			options[0].queue_free()
-			options.remove_at(0)
-			
-		for i in option_list.size():
-			make_option(option_list[i], i)
+	var list_to_use:Array = diffs if make_visible else option_list
+
+	for i in list_to_use.size():
+		make_option(list_to_use[i], i)
+	if make_visible: 
+		make_option('Back', options.size())
 		
 	change_selection()
 

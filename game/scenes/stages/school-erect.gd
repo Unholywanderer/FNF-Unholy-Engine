@@ -1,12 +1,16 @@
 extends StageBase
 
-func _ready():
-	#$FGTrees/Sprite.play()
-	#$Petals/Sprite.play()
-	default_zoom = 1
-	bf_pos = Vector2(900, 100)
-	dad_pos = Vector2(50, 10)
-	gf_pos = Vector2(400, 130)
+func post_ready() -> void:
+	var rimming = ShaderMaterial.new()
+	rimming.shader = load('res://game/resources/shaders/dropshadow.gdshader')
+	rimming.set_shader_parameter('dropColor', Color('52351D'))
 	
-	bf_cam_offset = Vector2(-100, 100)
-	dad_cam_offset = Vector2(100, -50)
+	rimming.set_shader_parameter('brightness', -66)
+	rimming.set_shader_parameter('hue', -10)
+	rimming.set_shader_parameter('saturation', 24)
+	rimming.set_shader_parameter('contrast', -23)
+	rimming.set_shader_parameter('dist', 5)
+	rimming.set_shader_parameter('ang', 90)
+	
+	for i in [boyfriend, dad, gf]:
+		i.material = rimming

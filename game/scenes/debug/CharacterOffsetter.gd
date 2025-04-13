@@ -5,6 +5,7 @@ var shadow:Character
 var char_json = {}
 var anim_list:Array[Label] = []
 var offsets:Dictionary[String, Array] = {}
+var flipped:Dictionary[String, Variant] = {}
 var cur_cam_offset:Array = [0, 0]
 var cur_pos_offset:Array = [0, 0]
 
@@ -24,6 +25,8 @@ var selected_id:int = 0:
 		character.play(cur_anim)
 		var got = offsets[cur_anim] if offsets.has(cur_anim) else [0, 0]
 		character.offset = Vector2(got[0], got[1])
+		if !flipped.is_empty():
+			character.flip_h = flipped[cur_anim] if flipped[cur_anim] else false
 
 func _ready() -> void:
 	Game.set_mouse_visibility()
@@ -222,6 +225,7 @@ func reload_list(anims:Array) -> void:
 	for i in anims.size():
 		var anim = anims[i]
 		offsets[anim.name] = anim.offsets
+		flipped[anim.name] = anim.get('flipX')
 		
 		var lab = make_label()
 		lab.position.x += 15
@@ -300,6 +304,9 @@ func shadow_anim_change(id:int) -> void:
 	MAIN('Shadow/Frame').max_value = frame_lim
 	MAIN('Shadow/Frame').value = frame_lim
 	shadow.offset = Vector2(offsets[new_anim][0], offsets[new_anim][1])
+	if !flipped.is_empty():
+		shadow.flip_h = flipped[new_anim] if flipped[new_anim] else false
+
 	
 func shadow_frame_change(value:int) -> void:
 	shadow.frame = value

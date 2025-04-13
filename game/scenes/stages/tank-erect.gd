@@ -7,7 +7,23 @@ func post_ready() -> void:
 	if gf.cur_char.begins_with('gf'): 
 		gf_pos.x += 150
 		gf.position.x = gf_pos.x
-		
+	
+	var rimming = ShaderMaterial.new()
+	rimming.shader = load('res://game/resources/shaders/dropshadow.gdshader')
+	rimming.set_shader_parameter('dropColor', Color('DFEF3C'))
+	
+	rimming.set_shader_parameter('brightness', -46)
+	rimming.set_shader_parameter('hue', -38)
+	rimming.set_shader_parameter('saturation', -25)
+	rimming.set_shader_parameter('contrast', -20)
+	
+	for i in [boyfriend, dad, gf]:
+		var funny = rimming.duplicate(true)
+		funny.set_shader_parameter('ang', 90)
+		if i == dad:
+			funny.set_shader_parameter('ang', 135)
+			funny.set_shader_parameter('thr', 0.3)
+		i.material = funny
 	
 func init_tankmen():
 	gf.chart = Chart.load_named_chart(JsonHandler.song_root, 'picospeaker', 'v_slice')
@@ -15,7 +31,7 @@ func init_tankmen():
 
 	for note in tank_notes:
 		if Game.rand_bool(16):
-			var tankyboy = Tankmen.new(Vector2(500, 240 + randi_range(10, 50)), note[1] < 2)
+			var tankyboy = Tankmen.new(Vector2(500, 100), note[1] < 2)
 			tankyboy.strum_time = note[0]
 			$RunMen.add_child(tankyboy)
 			runnin_boys.append(tankyboy)
@@ -46,14 +62,15 @@ class Tankmen extends AnimatedSprite2D:
 	var facing_right:bool = false
 	var ending_offset:int = 0
 	var shot_offset:Vector2 = Vector2(-400, -200)
-	func fin(): queue_free()
 	
 	func _init(pos:Vector2, right:bool):
 		centered = false
 		position = pos
 		sprite_frames = load('res://assets/images/stages/tank/tankmen/tankmanKilled1.res')
-		scale = Vector2(0.8, 0.8)
-	
+		scale = Vector2(1.1, 1.1)
+		use_parent_material = true
+		
+		ending_offset = randi_range(50, 200)
 		t_speed = randf_range(0.6, 1)
 
 		facing_right = right
@@ -62,7 +79,7 @@ class Tankmen extends AnimatedSprite2D:
 			shot_offset.x += 10
 		play('runIn')
 		frame = randi_range(0, sprite_frames.get_frame_count('runIn') - 1)
-		animation_finished.connect(fin)
+		animation_finished.connect(queue_free)
 	
 	func reset(pos:Vector2, right:bool):
 		position = pos

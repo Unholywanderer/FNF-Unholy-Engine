@@ -73,7 +73,8 @@ class Tankmen extends AnimatedSprite2D:
 		position = pos
 		sprite_frames = load('res://assets/images/stages/tank/tankmen/tankmanKilled1.res')
 		scale = Vector2(0.8, 0.8)
-	
+		ending_offset = randi_range(50, 200)
+
 		t_speed = randf_range(0.6, 1)
 
 		facing_right = right
