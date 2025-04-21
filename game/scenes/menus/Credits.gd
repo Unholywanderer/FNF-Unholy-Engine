@@ -5,7 +5,7 @@ var credits:Array[Array] = [
 	['Unholywanderer04', 'unholy', 'Wahoo programming', \
 		Color.REBECCA_PURPLE, func(): get_tree().quit()],
 	['TheConcealedCow', 'cow', 'Main artist fr fr trust me on god', \
-		Color(0.88, 0.88, 0.88), func(): 
+		Color('E0E0E0'), func(): 
 			$cow.visible = true
 			$cow.play()],
 	['Ashley', 'puta', 'Other main artist fr fr fr', \
@@ -14,18 +14,22 @@ var credits:Array[Array] = [
 	['People I Stole From', 'i love stealing code'],
 	['Shadow Mario', 'shadow', 'Stole plenty of psych code and sprites', \
 		Color.DIM_GRAY, func(): OS.shell_open('https://github.com/ShadowMario')],
-		
+	['Rudyrue', 'rudy', 'my cute and talented friend', \
+		Color('75471f'), func(): OS.shell_open('https://bsky.app/profile/rudyrue.bsky.social')],
 	['Zyflx', 'zyflx', 'Stole note handling and other shit', \
-		Color(0.24, 0.78, 0.29), func(): OS.shell_open('https://www.youtube.com/@Zyflx')],
+		Color('3DC74A'), func(): OS.shell_open('https://www.youtube.com/@Zyflx')],
 		
 	['Crowplexus', 'crow', 'Stole funny godot code and ideas', \
 		Color.DARK_RED, func(): OS.shell_open('https://github.com/crowplexus')],
 		
+	['Mae', 'mae', 'Funny godot ports of haxe shaders', \
+		Color('FF3B3B'), func(): OS.shell_open('https://bsky.app/profile/mableyea.bsky.social')],
+		
 	['Maru', 'maru',  'Stole spritesheets and also code i think', \
-		Color(0.21, 0.54, 0.76), func(): OS.shell_open('https://www.youtube.com/watch?v=BLqqWorGGz0')],
+		Color('368AC2'), func(): OS.shell_open('https://www.youtube.com/watch?v=BLqqWorGGz0')],
 		
 	['Daniel', 'daniel', 'who the FUCK', \
-		Color(0.22, 0.21, 0.34), func(): Prefs.daniel = true],
+		Color('383657'), func(): Prefs.daniel = true],
 		
 	['drew me fnf bfs', 'yeaha babye!!'],
 	['Ashley', 'puta', 'drew a bf i think idk', \
@@ -36,18 +40,10 @@ var credits:Array[Array] = [
 		Color.CYAN, func(): pass],
 	['Moro', 'empty', 'something about above average weight female dogs??', \
 		Color.CYAN, func(): pass],
-	#['Give me free art', 'cool art people'],
 
 	['this person did nothing', 'planky'],
 	['plank', 'faggot',  'made 4 commits', \
-		Color(0.58, 0.24, 0.84), func(): OS.shell_open('https://plankdev.gay')],
-	
-	#['Ashley', 'puta', 'Made Epic and Miss Judgements', \
-	#	Color.CYAN, func(): pass],
-	#['TheConcealedCow', 'empty', 'Made funny event strum and hurt note', \
-	#	Color(0.88, 0.88, 0.88), func(): 
-	#		$cow.visible = true
-	#		$cow.play()],
+		Color('943DD6'), func(): OS.shell_open('https://plankdev.gay')],
 	
 	['Funkin\' Crew', 'those people, you know them cmon'],
 	['NinjaMuffin99', 'empty', 'You know him'],
@@ -61,11 +57,13 @@ var quotes:Dictionary = {
 	'unholywanderer04': ['wee wee whaha yahoo yippee yay!!', 'i am a femboy!1!', 'guh!!!', 'balls', ':AINT_NO_WAY:'], # ill end your life with my own hands
 	'shadow mario': ['WikiHow: How to handle fame'],
 	'zyflx': ['i still dont know what i want my quote to be, i have no ideas'],
+	'rudyrue': ['i make things !!'],
 	'crowplexus': ['Venha pequena fruta, venha comigo', 'Press [ Crow ] to crow', 'sans is at my door'],
 	'maru': ['oogie boogie please call my phone number'],
 	'betty': ['daniel.........:heart;'],
 	'ashley': ['play beatblock 🎉🎉', 'this is so peam', 'what the hell!! give me wuote ideas\nquote'],
-	'theconcealedcow': ['who are you why are you in my house']
+	'theconcealedcow': ['who are you why are you in my house'],
+	'mae': ['waiter!, waiter! more shaders please!!']
 }
 
 var cred_group:Array = []
@@ -125,10 +123,9 @@ func update_selection(amount:int = 0) -> void:
 	cred_desc.text = cur_cred.description
 	cred_desc.color = Color.WHITE
 	
+	$Quote.text = '"Thank You!"'
 	if quotes.has(cur_cred.creditee.to_lower()):
 		$Quote.text = '"'+ quotes[cur_cred.creditee.to_lower()].pick_random() +'"'
-	else:
-		$Quote.text = '"Thank You!"'
 
 	if col_tween: col_tween.kill()
 	col_tween = create_tween()
@@ -152,13 +149,17 @@ class Credit extends Alphabet:
 		creditee = cred_info[0]
 		is_header = header
 		var da_size:int = cred_info.size()
-		if header:
-			if da_size > 1: description = cred_info[1]
-		else:
+		if da_size > 1: description = cred_info[1]
 			# fuck me
-			if da_size > 1: icon = cred_info[1]
-			if da_size > 2: description = cred_info[2]
-			if da_size > 3: bg_color = cred_info[3]
-			if da_size > 4: on_press = cred_info[4]
+		if da_size > 1: 
+			if header: 
+				description = cred_info[1]
+				super(creditee)
+				return
+			else: 
+				icon = cred_info[1]
+		if da_size > 2: description = cred_info[2]
+		if da_size > 3: bg_color = cred_info[3]
+		if da_size > 4: on_press = cred_info[4]
 		
 		super(creditee)

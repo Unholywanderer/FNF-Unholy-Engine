@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://k438q6eg6taa"
-path="res://.godot/imported/daniel_img.jpg-c4f222d7ca04224f501ae0754d343c0d.ctex"
+uid="uid://ce82qdidy0gay"
+path="res://.godot/imported/rudy.png-031a85f61258f368c02aa856096b2978.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/credits/daniel_img.jpg"
-dest_files=["res://.godot/imported/daniel_img.jpg-c4f222d7ca04224f501ae0754d343c0d.ctex"]
+source_file="res://assets/images/credits/rudy.png"
+dest_files=["res://.godot/imported/rudy.png-031a85f61258f368c02aa856096b2978.ctex"]
 
 [params]
 
