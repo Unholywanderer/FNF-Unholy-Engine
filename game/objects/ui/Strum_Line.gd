@@ -39,15 +39,14 @@ func set_all_skins(skin:String = '') -> void:
 func note_hit(note:Note) -> void:
 	strum_anim(note.dir, !is_cpu, !note.is_sustain)
 	
-	if singer != null:
-		if !note.no_anim:
-			match note.type:
-				'Hey':
-					singer.play_anim('hey', true)
-					singer.anim_timer = 0.6
-				_:
-					singer.sing(note.dir, note.alt, !note.is_sustain)
-					
+	if singer != null and !note.no_anim:
+		match note.type:
+			'Hey':
+				singer.play_anim('hey', true)
+				singer.anim_timer = 0.6
+			_:
+				singer.sing(note.dir, note.alt, !note.is_sustain)
+  			
 	if note.is_sustain and Prefs.hold_splash != 'disabled' and !Prefs.behind_strums: 
 		spawn_hold_splash(get_strums()[note.dir], note)
 		
@@ -75,8 +74,8 @@ func _process(delta:float) -> void:
 
 var total_splash:Array[AnimatedSprite2D] = []
 func spawn_splash(strum:Strum) -> void:
-	if total_splash.size() > 20:
-		while total_splash.size() > 20:
+	if total_splash.size() > 10:
+		while total_splash.size() > 10:
 			total_splash[0].visible = false
 			total_splash[0].animation_finished.emit()
 		

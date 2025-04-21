@@ -193,8 +193,8 @@ func _ready():
 	if JsonHandler.chart_notes.is_empty():
 		JsonHandler.generate_chart(SONG)
 	
-	chart_notes = JsonHandler.chart_notes.duplicate()
-	events = JsonHandler.song_events.duplicate()
+	chart_notes = JsonHandler.chart_notes.duplicate(true)
+	events = JsonHandler.song_events.duplicate(true)
 	
 	print(SONG.song +' '+ JsonHandler.get_diff.to_upper())
 	print('TOTAL EVENTS: '+ str(events.size()))
@@ -229,6 +229,8 @@ func _ready():
 		DIE = load('res://game/scenes/game_over'+ char_suff +'.tscn')
 	
 	stage.post_ready()
+	LuaHandler.call_func('post_ready')
+	
 	ui.start_countdown(true)
 		
 	if JsonHandler.parse_type == 'v_slice': move_cam('dad')
@@ -255,7 +257,7 @@ func _process(delta):
 	
 	if ui.finished_countdown:
 		Discord.change_presence('Playing '+ SONG.song +' - '+ JsonHandler.get_diff.to_upper(),\
-		 Game.to_time(Conductor.song_pos) +' / '+ Game.to_time(Conductor.song_length) +' | '+ \
+		 Util.to_time(Conductor.song_pos) +' / '+ Util.to_time(Conductor.song_length) +' | '+ \
 		  str(round(abs(Conductor.song_pos / Conductor.song_length) * 100.0)) +'% Complete')
 	
 	var scale_ratio = 5.0 / Conductor.step_crochet * 100.0
@@ -287,10 +289,7 @@ func _process(delta):
 			chunk += 1
 
 	if !notes.is_empty():
-		var i:int = 0
-		while i < notes.size():
-			var note = notes[i]
-		#for note in notes:
+		for note in notes:
 			if !note.spawned: continue
 			note.follow_song_pos(ui.player_strums[note.dir] if note.must_press else ui.opponent_strums[note.dir])
 			if note.strum_time <= Conductor.song_pos:
@@ -302,8 +301,8 @@ func _process(delta):
 							good_sustain_press(note)
 							if !auto_play and note.strum_time < kill_zone and !note.holding \
 								and note.should_hit: note_miss(note)
-						else:
-							opponent_sustain_press(note)
+					else:
+						opponent_sustain_press(note)
 					if note.temp_len <= 0: kill_note(note)
 				else:
 					if note.must_press:
@@ -314,8 +313,7 @@ func _process(delta):
 							note_func.call(note)
 					else:
 						opponent_note_hit(note)
-			i += 1
-						
+					
 	if events.size() != 0:
 		for event in events:
 			if event.strum_time <= Conductor.song_pos:
@@ -477,8 +475,8 @@ func refresh(restart:bool = true) -> void: # start song from beginning with no r
 	boyfriend.play_anim('idle', true)
 	dad.play_anim('idle', true)
 	
-	chart_notes = JsonHandler.chart_notes.duplicate()
-	events = JsonHandler.song_events.duplicate()
+	chart_notes = JsonHandler.chart_notes.duplicate(true)
+	events = JsonHandler.song_events.duplicate(true)
 	
 	chunk = 0
 	if restart:
@@ -532,16 +530,17 @@ func event_hit(event:EventData) -> void:
 				peep.special_anim = true
 		'Change Scroll Speed', "Scroll Speed Change": # [true,2.67,16,"cube","In"],"name":"Scroll Speed Change" 
 			if Prefs.scroll_speed != 0: return
-			var codin = event.values[0] is bool
-			if codin: 
-				event.values.pop_front()
-				event.values[1] /= Conductor.step_crochet
-			var new_speed = SONG.speed * float(event.values[0])
-			var tween_dur := float(event.values[1])
-			if abs(tween_dur) > 0:
-				create_tween().tween_property(Game.scene, 'cur_speed', new_speed, tween_dur)
+			var data = {'speed': SONG.speed * float(event.values[0]), 'dur': float(event.values[1])}
+			if event.event == 'Scroll Speed Change':
+				data.speed = event.values[1]
+				data.dur = 0
+				if event.values[0]:
+					data.dur = float(event.values[2]) / Conductor.step_crochet
+					
+			if abs(data.dur) > 0:
+				create_tween().tween_property(Game.scene, 'cur_speed', data.speed, data.dur)
 			else:
-				cur_speed = new_speed
+				cur_speed = data.speed
 		'Add Camera Zoom':
 			var ev_zoom = [float(event.values[0]), float(event.values[1])]
 
@@ -619,7 +618,7 @@ func event_hit(event:EventData) -> void:
 			if int(event.values[0].char) == 1: ui.icon_p2.change_icon(event.values[0].id)
 			if int(event.values[0].char) == 0: ui.icon_p1.change_icon(event.values[0].id)
 			
-		'ChangeBPM':
+		'ChangeBPM', 'BPM Change':
 			Conductor.bpm = event.values[0]
 			print('Changed BPM: '+ str(Conductor.bpm))
 
@@ -774,7 +773,7 @@ func note_miss(note:Note) -> void:
 			hp_diff = ui.hp - 0.1
 			
 		ui.hp -= hp_diff 
-
+		#if !note.is_sustain:
 		kill_note(note)
 	
 	var be_sad:bool = combo >= 10

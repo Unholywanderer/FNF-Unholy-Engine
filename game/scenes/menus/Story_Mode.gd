@@ -37,7 +37,7 @@ func _ready():
 		for song in week_data.songs:
 			song_list.append(song[0])
 		var new_week = WeekItem.new(to_add[i], song_list, diffs)
-		Game.center_obj(new_week)
+		Util.center_obj(new_week)
 		new_week.story_name = week_data.storyName if week_data.has('storyName') else 'Uhmmm'
 		new_week.target_y = i
 	

@@ -36,7 +36,7 @@ func beat_hit(beat):
 	for i:Character in [other_bf, other_gf, other_spook]:
 		if beat % i.dance_beat == 0 and !i.animation.begins_with('sing'):
 			i.dance()
-	if Game.rand_bool(10) and beat > lightning_beat + lighting_offset:
+	if Util.rand_bool(10) and beat > lightning_beat + lighting_offset:
 		strike()
 
 func strike():

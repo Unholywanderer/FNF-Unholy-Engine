@@ -11,7 +11,7 @@ func _ready():
 	Audio.volume = 0.7
 	if Audio.music != 'freakyMenu': Audio.play_music('freakyMenu')
 	for i in menu_sprites.size():
-		Game.center_obj(menu_sprites[i])
+		Util.center_obj(menu_sprites[i])
 		menu_sprites[i].position.y = (88 + (135 * i))
 	
 	$Cam.position.y = $MenuBG/Sprite2D.position.y - 3 #menu_sprites[ceil(menu_sprites.size() / 2)].position.y - 3

@@ -30,7 +30,7 @@ func init_tankmen():
 	tank_notes = gf.chart.duplicate()
 
 	for note in tank_notes:
-		if Game.rand_bool(16):
+		if Util.rand_bool(16):
 			var tankyboy = Tankmen.new(Vector2(500, 100), note[1] < 2)
 			tankyboy.strum_time = note[0]
 			$RunMen.add_child(tankyboy)

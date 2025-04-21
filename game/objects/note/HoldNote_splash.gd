@@ -17,7 +17,7 @@ func _process(delta:float) -> void:
 		anim_time -= delta
 		if anim_time <= 0:
 			if !player or Prefs.hold_splash == 'cover': return queue_free()
-			#if Prefs.hitsound_volume > 0: Audio.play_sound('hitsoundTail') # maybe make a seperate pref
+			#if Prefs.hitsound_volume > 0: Audio.play_sound('hitsounds/tail') # maybe make a seperate pref
 			play(col[strum.dir] +'_splash')
 
 func _on_animation_finished():

@@ -50,7 +50,7 @@ func _ready():
 
 var test_pic:AnimateSymbol
 func post_ready() -> void:
-	if SONG.song.to_lower().contains('blammed') or Game.format_str(SONG.song) == 'pico-erect':
+	if SONG.song.to_lower().contains('blammed') or Util.format_str(SONG.song) == 'pico-erect':
 		can_blam = true
 		blammed_shader = ShaderMaterial.new()
 		blammed_shader.shader = load('res://game/resources/shaders/blammed.gdshader')
@@ -73,8 +73,8 @@ func post_ready() -> void:
 		add_child(test_pic)
 		test_pic.material = new
 		dad.visible = false
-		Conductor.mult_vocals = false
-		Conductor.audio_volume(2, 0)
+		#Conductor.mult_vocals = false
+		#Conductor.audio_volume(2, 0)
 		
 func countdown_start():
 	pass
@@ -172,7 +172,7 @@ class Train extends Sprite2D:
 		if !active:
 			cooldown += 1
 
-		if beat % 8 == 4 && Game.rand_bool(30) && !active && cooldown > 8: # 30
+		if beat % 8 == 4 && Util.rand_bool(30) && !active && cooldown > 8: # 30
 			cooldown = randi_range(-4, 0)
 			active = true
 			sound.play(0)

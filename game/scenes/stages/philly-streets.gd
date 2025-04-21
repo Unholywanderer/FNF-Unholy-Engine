@@ -10,7 +10,7 @@ var car2_interruptable:bool = true
 var papr_interruptable:bool = true
 const car_offsets = [[0, 0], [20, -15], [30, 50], [10, 60]]
 
-var cur_can:AnimateSymbol = AnimateSymbol.new()
+@onready var cur_can:AnimateSymbol = $SprayCan
 var CAN = load('res://assets/images/stages/philly-streets/effects/spraycanFULL.res')
 func _ready() -> void:
 	$Car1/Sprite.position = Vector2(1200, 818)
@@ -18,18 +18,11 @@ func _ready() -> void:
 	
 	if SONG.player1.contains('pico'):
 		THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
-	if !Game.persist.loaded_already:
-		Game.persist.loaded_already = true
-		ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
-		ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
-
-	default_zoom = 0.77
-	bf_pos = Vector2(1800, 450)
-	dad_pos = Vector2(700, 445)
-	gf_pos = Vector2(1200, 430)
+	#if !Game.persist.loaded_already:
+	#	Game.persist.loaded_already = true
+	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
+	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
 	
-	bf_cam_offset.x = -200
-	dad_cam_offset.x = 200
 	THIS.cam.position = Vector2(400, 490)
 	
 func _process(delta:float) -> void:
@@ -40,13 +33,13 @@ func _process(delta:float) -> void:
 func beat_hit(beat:int) -> void:
 	var can_change:bool = (beat == (prev_change + change_interval))
 		
-	if Game.rand_bool(10) && !can_change && car1_interruptable:
+	if Util.rand_bool(10) && !can_change && car1_interruptable:
 		if !light_stop:
 			pass #drive_car($Car1/Sprite)
 		else:
 			pass #drive_car_lights($Car1/Sprite)
 
-	if (Game.rand_bool(10) && !can_change && car2_interruptable && !light_stop):pass
+	if (Util.rand_bool(10) && !can_change && car2_interruptable && !light_stop):pass
 		#drive_car_back($Cars2)
 
 	if can_change:
@@ -66,24 +59,27 @@ func change_lights(b:int) -> void:
 		if car_waiting:
 			pass #finish_car_lights($Car1/Sprite)
 	
-func countdown_start():
-	if cur_can.get_parent() == null:
-		#cur_can.atlas = 'res://assets/images/stages/philly-streets/effects/spraycan'
-		#cur_can.playing = true
-		#cur_can.symbol = 'can bounce off head'
-		#$CharGroup.add_child(cur_can)
-		#cur_can.animation_changed.connect(func():
-		#	if cur_can.animation == 'hit':
-		#		cur_can.offset = Vector2(-450, -70)
-		#	else:
-		#		cur_can.offset = Vector2(0, 0)
-		#)
-		#cur_can.sprite_frames = CAN
-		cur_can.position = $SprayCanPile.position + Vector2(920, -150)
-		#cur_can.animation_finished.connect(func(): cur_can.visible = cur_can.animation != 'fly')
+func post_ready() -> void:
+	cur_can.atlas = 'res://assets/images/stages/philly-streets/effects/spraycan'
+	#cur_can.playing = true
+	#$CharGroup.add_child(cur_can)
+	cur_can.add_anim_by_frames('kick_up', [0, 7])
+	cur_can.add_anim_by_frames('kick_at', [8, 18])
+	cur_can.add_anim_by_frames('bonk', [19, 24])
+	cur_can.add_anim_by_frames('shot', [26, 44])
+	#cur_can.animation_changed.connect(func():
+	#	if cur_can.animation == 'hit':
+	#		cur_can.offset = Vector2(-450, -70)
+	#	else:
+	#		cur_can.offset = Vector2(0, 0)
+	#)
+	#cur_can.sprite_frames = CAN
+	#cur_can.position = $SprayCanPile.position + Vector2(650, -170)
+	#cur_can.animation_finished.connect(func(): cur_can.visible = cur_can.animation != 'fly')
 	#cur_can.visible = false
+	
 	if Game.scene.story_mode:
-		if Game.format_str(SONG.song) == 'darnell':
+		if Util.format_str(SONG.song) == 'darnell':
 			UI.visible = false
 			UI.pause_countdown = true
 			boyfriend.play_anim('intro')
@@ -104,19 +100,19 @@ func good_note_hit(note:Note):
 				note_miss(note)
 				return
 			cocked = false
-			if Game.rand_bool(90) and boyfriend.cur_char == 'pico':
+			if Util.rand_bool(90) and boyfriend.cur_char == 'pico':
 				boyfriend.play_anim('intro')
 				boyfriend.frame = 34
 				boyfriend.pause()
 		
-				cur_can.play('hit')
+				cur_can.play_anim('bonk')
 				Audio.play_sound('weekend/bonk')
 			else:
 				boyfriend.play_anim('shoot' if boyfriend.cur_char == 'pico' else 'attack', true)
 				boyfriend.special_anim = true
 				
 				Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
-				cur_can.play('shoot')
+				cur_can.play_anim('shot')
 
 var died_by_can:bool = false
 func note_miss(note:Note):
@@ -124,7 +120,7 @@ func note_miss(note:Note):
 	note.no_anim = true
 	if note.type.replace('weekend-1-', '') == 'firegun':
 		Audio.play_sound('weekend/bonk')
-		cur_can.play('hit')
+		cur_can.play_anim('bonk')
 		boyfriend.play_anim('shootMISS', true)
 		boyfriend.special_anim = true
 		await get_tree().create_timer(0.3).timeout
@@ -143,11 +139,12 @@ func opponent_note_hit(note:Note):
 			dad.play_anim('kick', true)
 			dad.special_anim = true
 			cur_can.visible = true
-			cur_can.play('fly')
+			cur_can.play_anim('kick_up')
 			Audio.play_sound('weekend/kickUp')
 		'kneecan' : 
 			dad.play_anim('knee', true)
 			dad.special_anim = true
+			cur_can.play_anim('kick_at')
 			Audio.play_sound('weekend/kickForward')
 
 func game_over_start(scene):

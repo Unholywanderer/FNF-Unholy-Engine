@@ -5,6 +5,8 @@
 
 [node name="Spooky" type="Node2D"]
 script = ExtResource("1_bsdxv")
+default_zoom = 1.05
+gf_pos = Vector2(575, 100)
 
 [node name="BG" type="AnimatedSprite2D" parent="."]
 position = Vector2(-200, -95)

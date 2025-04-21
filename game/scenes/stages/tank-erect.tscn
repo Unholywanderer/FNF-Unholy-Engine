@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://m8bowq7b2ae6" path="res://assets/images/stages/tank/erect/bg.png" id="2_7kr0n"]
 [ext_resource type="SpriteFrames" uid="uid://cflu6471p1qyn" path="res://assets/images/stages/tank/erect/sniper.res" id="3_p4x6o"]
 [ext_resource type="SpriteFrames" uid="uid://bnp73bk1mudhm" path="res://assets/images/stages/tank/erect/guy.res" id="4_opmbn"]
-[ext_resource type="Shader" uid="uid://ve6d3kyfqk5a" path="res://game/resources/shaders/dropshadow.gdshader" id="5_p4x6o"]
+[ext_resource type="Shader" uid="uid://bvxkploxdr5rq" path="res://game/resources/shaders/dropshadow.gdshader" id="5_p4x6o"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_opmbn"]
 shader = ExtResource("5_p4x6o")
@@ -21,6 +21,8 @@ shader_parameter/hue = -38.0
 shader_parameter/saturation = -25.0
 shader_parameter/brightness = -46.0
 shader_parameter/contrast = -20.0
+shader_parameter/ShowMask = false
+shader_parameter/pixelPerfectFix = false
 
 [node name="Tank Erect" type="Node2D"]
 script = ExtResource("1_7kr0n")

@@ -23,7 +23,7 @@ func beat_hit(_beat:int) -> void:
 	for dancer in dancers:
 		dancer.dance()
 	
-	if can_drive and Game.rand_bool(10):
+	if can_drive and Util.rand_bool(10):
 		move_child($Car, get_child_count())
 		Audio.play_sound('carPass'+ str(randi_range(0, 1)), 0.7)
 		$Car.velocity.x = (randi_range(170, 220) / 0.05) * 3

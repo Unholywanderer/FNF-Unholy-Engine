@@ -39,13 +39,13 @@ func _process(delta:float) -> void:
 func beat_hit(beat:int) -> void:
 	var can_change:bool = (beat == (prev_change + change_interval))
 		
-	if Game.rand_bool(10) && !can_change && car1_interruptable:
+	if Util.rand_bool(10) && !can_change && car1_interruptable:
 		if !light_stop:
 			pass #drive_car($Car1/Sprite)
 		else:
 			pass #drive_car_lights($Car1/Sprite)
 
-	if (Game.rand_bool(10) && !can_change && car2_interruptable && !light_stop):pass
+	if (Util.rand_bool(10) && !can_change && car2_interruptable && !light_stop):pass
 		#drive_car_back($Cars2)
 
 	if can_change:
@@ -82,7 +82,7 @@ func countdown_start():
 		#cur_can.animation_finished.connect(func(): cur_can.visible = cur_can.animation != 'fly')
 	#cur_can.visible = false
 	if Game.scene.story_mode:
-		if Game.format_str(SONG.song) == 'darnell':
+		if Util.format_str(SONG.song) == 'darnell':
 			UI.visible = false
 			UI.pause_countdown = true
 			boyfriend.play_anim('intro')
@@ -103,7 +103,7 @@ func good_note_hit(note:Note):
 				note_miss(note)
 				return
 			cocked = false
-			if Game.rand_bool(90) and boyfriend.cur_char == 'pico':
+			if Util.rand_bool(90) and boyfriend.cur_char == 'pico':
 				boyfriend.play_anim('intro')
 				boyfriend.frame = 34
 				boyfriend.pause()

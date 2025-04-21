@@ -7,7 +7,7 @@ var all_alerts:Array = []
 var alert_count:int = 0
 
 func make_alert(text:String = '', type:int = CHECK) -> void:
-	Game.remove_all([all_alerts], self)
+	Util.remove_all([all_alerts], self)
 	var new_alert = ALERT.instantiate()
 	var type_str = 'ERROR'
 	match type:

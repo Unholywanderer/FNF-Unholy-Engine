@@ -27,7 +27,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			variant = ''
 	
 	# TODO figure out a better way to get chart types, this a lil dookie
-	song = Game.format_str(song)
+	song = Util.format_str(song)
 	song_variant = variant
 	song_root = song
 
@@ -140,6 +140,7 @@ func you_WILL_get_a_json(song:String) -> FileAccess:
 
 	#ResourceLoader.load_threaded_request(path)
 	print('Got json: '+ returned)
+	#var le_file = ResourceLoader.load_threaded_request(returned, '', true)
 	return FileAccess.open(returned, FileAccess.READ)
 
 func stage_to(stage:String) -> String:

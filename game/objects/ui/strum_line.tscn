@@ -8,28 +8,28 @@
 script = ExtResource("1_6qhpl")
 
 [node name="Left" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, 55)
+position = Vector2(54, 55)
 scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_surtv")
 animation = &"left_static"
 script = ExtResource("3_h255v")
 
 [node name="Down" type="AnimatedSprite2D" parent="."]
-position = Vector2(112, 55)
+position = Vector2(166, 55)
 scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_surtv")
 animation = &"down_static"
 script = ExtResource("3_h255v")
 
 [node name="Up" type="AnimatedSprite2D" parent="."]
-position = Vector2(224, 55)
+position = Vector2(278, 55)
 scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_surtv")
 animation = &"up_static"
 script = ExtResource("3_h255v")
 
 [node name="Right" type="AnimatedSprite2D" parent="."]
-position = Vector2(336, 55)
+position = Vector2(390, 55)
 scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("2_surtv")
 animation = &"right_static"

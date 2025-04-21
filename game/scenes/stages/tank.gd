@@ -3,11 +3,6 @@ extends StageBase
 var tank_notes:Array = [] # for the fucks that run in and get shot
 var runnin_boys:Array = []
 func _ready():
-	default_zoom = 0.9
-	bf_pos = Vector2(810, 100)
-	dad_pos = Vector2(20, 100)
-	gf_pos = Vector2(500, 65)
-	
 	$Clouds/Sprite.moving = true
 	$Clouds/Sprite.position = Vector2(randi_range(-700, -100), randi_range(-20, -20))
 	$Clouds/Sprite.velocity.x = randf_range(5, 15)
@@ -20,7 +15,7 @@ func init_tankmen():
 	tank_notes = gf.chart.duplicate()
 
 	for note in tank_notes:
-		if Game.rand_bool(16):
+		if Util.rand_bool(16):
 			var tankyboy = Tankmen.new(Vector2(500, 240 + randi_range(10, 50)), note[1] < 2)
 			tankyboy.strum_time = note[0]
 			$RunMen.add_child(tankyboy)

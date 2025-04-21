@@ -11,6 +11,8 @@ func post_ready() -> void:
 	rimming.set_shader_parameter('contrast', -23)
 	rimming.set_shader_parameter('dist', 5)
 	rimming.set_shader_parameter('ang', 90)
+	rimming.set_shader_parameter('pixelPerfectFix', true)
+	
 	
 	for i in [boyfriend, dad, gf]:
 		i.material = rimming

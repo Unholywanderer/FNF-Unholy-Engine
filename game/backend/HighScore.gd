@@ -28,7 +28,7 @@ func init_save():
 	pass
 
 func get_data(song:String, diff:String = ''):
-	var data = song_scores.get_value(get_section(), Game.format_str(song), DEFAULT_LAYOUT)
+	var data = song_scores.get_value(get_section(), Util.format_str(song), DEFAULT_LAYOUT)
 	if !diff.is_empty():
 		diff = diff.to_lower()
 		data = data[diff] if data.has(diff) else DEFAULT_DATA
@@ -57,7 +57,7 @@ func compile_data(song_list:Array[String], diff:String = 'hard') -> Array[int]: 
 	
 func set_score(song:String, diff:String = 'hard', data:Array = DEFAULT_DATA) -> void:
 	var sec = get_section()
-	song = Game.format_str(song)
+	song = Util.format_str(song)
 	diff = diff.to_lower()
 	if !song_scores.has_section_key(sec, song):
 		add_key(song, [diff])
@@ -70,7 +70,7 @@ func set_score(song:String, diff:String = 'hard', data:Array = DEFAULT_DATA) -> 
 	
 func set_data(song:String, data:Dictionary = DEFAULT_LAYOUT):
 	var sec = get_section()
-	song = Game.format_str(song)
+	song = Util.format_str(song)
 	if !song_scores.has_section_key(sec, song):
 		add_key(song)
 	song_scores.set_value(sec, song, data)
@@ -78,7 +78,7 @@ func set_data(song:String, data:Dictionary = DEFAULT_LAYOUT):
 func clear_score(song:String, diff:String = 'hard', clear_all:bool = false,) -> void:
 	song_scores.load_encrypted_pass('user://highscores.cfg', PASSWORD)
 	var sec = get_section()
-	song = Game.format_str(song)
+	song = Util.format_str(song)
 	if !song_scores.has_section_key(sec, song):
 		print('HighScore: No data exists for "'+ song +'"')
 		return
@@ -110,7 +110,7 @@ func add_key(key:String, diffs:Array = ['easy', 'normal', 'hard']) -> void:
 		printerr('HighScore: add_key() | Value is empty')
 		return
 	
-	key = Game.format_str(key)
+	key = Util.format_str(key)
 	var layout = {}
 	for i:String in diffs:
 		if get_data(key, i.to_lower()) != DEFAULT_DATA:

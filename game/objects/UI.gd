@@ -138,8 +138,8 @@ var hp:float = 50.0:
 func _process(delta):
 	if finished_countdown:
 		time_bar.value = (abs(Conductor.song_pos / Conductor.song_length) * 100.0)
-		#$Elasped.text = str(Game.to_time(floor(Conductor.song_pos / Conductor.playback_rate)))
-		$Left.text = str(Game.to_time(abs(floor((Conductor.song_length - Conductor.song_pos) / Conductor.playback_rate))))
+		#$Elasped.text = str(Util.to_time(floor(Conductor.song_pos / Conductor.playback_rate)))
+		$Left.text = str(Util.to_time(abs(floor((Conductor.song_length - Conductor.song_pos) / Conductor.playback_rate))))
 
 	#$Elasped.position = time_bar.position - Vector2($Elasped.size.x / 2, 30)
 	$Left.position = (time_bar.position + (time_bar.size / 2.0)) - Vector2($Left.size.x / 2, $Left.size.y / 2)
@@ -163,7 +163,7 @@ func update_score_txt() -> void:
 func get_acc() -> String:
 	var new_acc = clampf(note_percent / total_hit, 0, 1)
 	if is_nan(new_acc): return '?'
-	accuracy = Game.round_d(new_acc * 100, 2)
+	accuracy = Util.round_d(new_acc * 100, 2)
 	grade = get_grade(accuracy)
 	return str(accuracy).pad_decimals(2) +'% - '+ grade 
 	
@@ -236,7 +236,7 @@ func change_skin(new_skin:String = 'default') -> void: # change style of whole h
 		note.load_skin(new_skin)
 		
 	mark.texture = load('res://assets/images/ui/skins/'+ cur_skin +'/auto.png')
-	mark.texture_filter = Game.get_alias(SKIN.antialiased)
+	mark.texture_filter = Util.get_alias(SKIN.antialiased)
 	def_mark_scale = (SKIN.strum_scale if SKIN.strum_scale.x <= 0.7 else SKIN.strum_scale / 1.5)
 	mark.scale = def_mark_scale
 
@@ -270,8 +270,8 @@ func start_countdown(from_beginning:bool = false) -> void:
 			spr.texture = load('res://assets/images/ui/skins/'+ cur_skin +'/'+ countdown_spr[times_looped - 1] +'.png')
 			add_child(spr)
 			spr.scale = SKIN.countdown_scale
-			spr.texture_filter = Game.get_alias(SKIN.antialiased)
-			Game.center_obj(spr)
+			spr.texture_filter = Util.get_alias(SKIN.antialiased)
+			Util.center_obj(spr)
 			
 			var tween = create_tween().tween_property(spr, 'modulate:a', 0, Conductor.crochet / 1000.0)
 			tween.finished.connect(spr.queue_free)

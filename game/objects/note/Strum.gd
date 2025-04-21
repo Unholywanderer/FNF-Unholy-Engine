@@ -32,7 +32,7 @@ var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR
 	set(alias):
 		antialiasing = alias
-		texture_filter = Game.get_alias(alias)
+		texture_filter = Util.get_alias(alias)
 
 func _ready():
 	if !is_event:

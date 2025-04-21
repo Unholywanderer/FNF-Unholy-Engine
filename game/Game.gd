@@ -43,12 +43,11 @@ func _ready():
 	set_mouse_visibility(false)
 
 var just_pressed:bool = false
-func _process(_delta):
-	if Input.is_key_pressed(KEY_F6):
+func  _unhandled_input(event:InputEvent) -> void:
+	if Input.is_key_pressed(KEY_F6): # i kinda like how janky this is when you hold the key
+		just_pressed = event.is_released()
 		if !just_pressed:
 			fullscreen = !fullscreen
-		just_pressed = true
-	else: just_pressed = false
 
 var is_paused:bool = false:
 	set(paus): 
@@ -66,13 +65,6 @@ func _focus_out():
 	if !Prefs.auto_pause: return
 	Audio.process_mode = Node.PROCESS_MODE_DISABLED
 	if !get_tree().paused: is_paused = true
-
-func center_obj(obj = null, axis:String = 'xy') -> void:
-	if obj == null: return
-	match axis:
-		'x': obj.position.x = (screen[0] / 2) #- (obj_size.x / 2)
-		'y': obj.position.y = (screen[1] / 2) #- (obj_size.y / 2)
-		_: obj.position = Vector2(screen[0] / 2, screen[1] / 2)
 
 func reset_scene() -> void:
 	LuaHandler.remove_all()
@@ -130,61 +122,6 @@ func call_func(to_call:String, args:Array[Variant] = []) -> void:
 	if to_call.is_empty() or scene == null: return
 	if scene.has_method(to_call):
 		scene.callv(to_call, args)
-
-func format_str(string:String = '') -> String:
-	return string.to_lower().strip_edges().replace(' ', '-').replace('\'', '').replace(':', '')
-
-func round_d(num:float, digit:int) -> float: # bowomp
-	return round(num * pow(10.0, digit)) / pow(10.0, digit)
-	
-func rand_bool(chance:float = 50.0) -> bool:
-	return (randi() % 100) < chance
-
-func remove_all(array:Array[Array], node) -> void:
-	if node == null: node = scene
-	for sub in array:
-		for i in sub:
-			node.remove_child(i)
-			i.queue_free()
-		sub.clear()
-			
-func get_key_from_byte(btye:int) -> String:
-	var key:String = OS.get_keycode_string(btye)
-	match key.to_lower():
-		'space': key = ' '
-		'period': key = '.'
-		'bracketleft': key = '['
-		'bracketright': key = ']'
-		'colon': key = ':'
-		'comma': key = ','
-		'minus': key = '-'
-		'parenleft': key = '('
-		'parenright': key = ')'
-		'slash': key = '/'
-		'quote': key = '\''
-		'quotedbl': key = '"'
-	return key
-
-func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
-	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST
-	
-func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:
-	if is_milli: secs = secs / 1000.0
-	var time_part1:String = str(int(secs / 60)) + ":"
-	var time_part2:int = int(secs) % 60
-	if time_part2 < 10:
-		time_part1 += "0"
-
-	time_part1 += str(time_part2)
-	if show_ms:
-		time_part1 += "."
-		time_part2 = int((secs - int(secs)) * 100);
-		if time_part2 < 10:
-			time_part1 += "0"
-	
-		time_part1 += str(time_part2)
-	
-	return time_part1
 
 func set_mouse_visibility(visiblilty:bool = true) -> void:
 	var vis = Input.MOUSE_MODE_VISIBLE if visiblilty else Input.MOUSE_MODE_HIDDEN

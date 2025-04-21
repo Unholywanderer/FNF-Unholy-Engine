@@ -26,9 +26,9 @@ func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Ar
 	
 ## For loading a chart that isn't specifically named a difficulty
 static func load_named_chart(song:String, chart_name:String, format:String = 'legacy'):
-	var path:String = 'res://assets/songs/%s/charts/%s.json' % [Game.format_str(song), chart_name]
+	var path:String = 'res://assets/songs/%s/charts/%s.json' % [Util.format_str(song), chart_name]
 	if format == 'v_slice': 
-		path = 'res://assets/songs/%s/chart%s.json' % [Game.format_str(song), JsonHandler.song_variant]
+		path = 'res://assets/songs/%s/chart%s.json' % [Util.format_str(song), JsonHandler.song_variant]
 	var le_parse = get_parse(get_format(format), chart_name)
 	print(path)
 	if ResourceLoader.exists(path):
@@ -40,7 +40,8 @@ static func load_named_chart(song:String, chart_name:String, format:String = 'le
 static func get_must_hits(chart_notes:Array, player_hit:bool = true) -> Array:
 	var notes:Array = []
 	for i in chart_notes:
-		if i[4] == player_hit: notes.append(i)
+		if i[4] != player_hit: continue
+		notes.append(i)
 	return notes
 
 func add_note(note_data:Array) -> void:
@@ -48,7 +49,7 @@ func add_note(note_data:Array) -> void:
 		return_notes.append(note_data)
 
 func get_events(SONG:Dictionary) -> Array[EventData]:
-	var path_to_check = 'res://assets/songs/%s/events.json' % Game.format_str(SONG.song)
+	var path_to_check = 'res://assets/songs/%s/events.json' % Util.format_str(SONG.song)
 
 	var events_found:Array = []
 	var events:Array[EventData] = []

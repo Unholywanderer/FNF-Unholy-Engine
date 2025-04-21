@@ -2,9 +2,6 @@ extends StageBase
 
 var flash:ColorRect
 func _ready():
-	default_zoom = 1.05
-	gf_pos.y += 25
-	
 	flash = ColorRect.new()
 	flash.modulate.a = 0
 	add_child(flash)
@@ -15,7 +12,7 @@ func song_start():
 	lightning_beat = 0
 
 func beat_hit(beat):
-	if Game.rand_bool(10) and beat > lightning_beat + lighting_offset:
+	if Util.rand_bool(10) and beat > lightning_beat + lighting_offset:
 		strike()
 
 func strike():

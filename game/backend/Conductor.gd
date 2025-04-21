@@ -43,7 +43,8 @@ var song_started:bool = false # song has begun to/is playing
 var paused:bool = false:
 	set(pause): 
 		paused = pause
-		pause()
+		audio.stream_paused = pause
+		set_process(!pause)
 
 var mult_vocals:bool = false
 var total_streams:int:
@@ -71,7 +72,7 @@ func _ready():
 func load_song(song:String = '') -> void:
 	if song.is_empty(): song = 'tutorial'
 
-	song = Game.format_str(song)
+	song = Util.format_str(song)
 	mult_vocals = false
 	total_streams = 0
 
@@ -112,26 +113,24 @@ func load_song(song:String = '') -> void:
 var _resync_timer:float = 0.0
 var _last_time:float = 0.0
 var raw_time:float
-func _process(delta):
-	if paused: return
-	
+func _process(delta) -> void:
 	if song_loaded:
-		song_pos += (1000 * delta) * playback_rate
-	
-	if song_pos > 0:
-		if !song_started: 
-			start()
-			return
-		
-		'if inst: # later
-			if audio.get_playback_position() == _last_time:
+		if audio and audio.playing:
+			var aud_pos:float = audio.get_playback_position() * 1000
+			if aud_pos == _last_time:
 				_resync_timer += delta * 1000
 			else:
 				_resync_timer = 0
-			_last_time = audio.get_playback_position();
-			raw_time = audio.get_playback_position() #- songOffset;
-			song_pos = raw_time + _resync_timer;
-		'
+			_last_time = aud_pos
+
+			song_pos = aud_pos + _resync_timer
+		else:
+			song_pos += delta * 1000 * playback_rate
+	
+	if song_pos > 0:
+		if !song_started: 
+			return start()
+		
 		if song_pos > beat_time + crochet:
 			beat_time += crochet
 			cur_beat += 1
@@ -155,15 +154,16 @@ func _process(delta):
 		if song_pos >= song_length:
 			print('Song Finished')
 			song_end.emit()
-		
-		if audio.playing:
-			if absf((audio.get_playback_position() * 1000) - (song_pos + Prefs.offset)) > 20: 
-				resync_audio()
+
+		# moved to line 118
+		#if audio.playing:
+			#if absf((audio.get_playback_position() * 1000) - (song_pos + Prefs.offset)) > 20: 
+				#resync_audio()
 			
 func connect_signals(scene = null) -> void: # connect all signals
 	var this_scene = scene if scene != null else Game.scene
 	for i in ['beat_hit', 'step_hit', 'section_hit', 'song_end']:
-		if Game.scene.has_method(i):
+		if this_scene.has_method(i):
 			get(i).connect(Callable(this_scene, i))
 
 func add_audio(new_id:int = -1, file_name:String = '', vol:float = 0.7, song_name:String = '') -> void:
@@ -200,15 +200,20 @@ func stop() -> void:
 	audio.stream = null
 	reset_beats()
 
-# NOTE: you shouldn't call this function, you should set Conductor.paused instead
-func pause() -> void: audio.stream_paused = paused
-
+## Start the song and play the audio tracks at the designated point
 func start(at_point:float = -1) -> void:
 	song_started = true # lol
 	if at_point > -1:
 		song_pos = at_point
-	audio.play(song_pos)
-
+	audio.play(0) # seek is actually stupid i hate it grrr
+	#audio.seek(song_pos)
+	
+func seek(point:float, auto_pause:bool = true) -> void:
+	audio.play(point / 1000.0)
+	if auto_pause: paused = true
+	_last_time = point
+	song_pos = point
+	
 func reset() -> void:
 	song_started = false
 	song_loaded = false

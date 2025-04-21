@@ -6,7 +6,7 @@ var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR
 	set(alias):
 		antialiasing = alias
-		texture_filter = Game.get_alias(alias)
+		texture_filter = Util.get_alias(alias)
 
 var width:float = 0.0:
 	get:
@@ -21,7 +21,8 @@ var height:float = 0.0:
 	
 const COLORS:PackedStringArray = ['purple', 'blue', 'green', 'red']
 
-var chart_note:bool = false
+var chart_note:bool = false:
+	set(c): set_process(!c); chart_note = c;
 var spawned:bool = false
 var strum_time:float
 var dir:int = 0
@@ -46,8 +47,9 @@ var type:String = "":
 		match type:
 			'Hey': pass
 			'Alt': alt = '-alt'
+			'Censor': alt = '-censor'
 			'No Anim': no_anim = true
-			'GF', 'Third Strumline', 'Second Dad Sing': gf = true
+			'GF': gf = true
 			'Hurt':
 				should_hit = false
 				early_mod = 0.5
@@ -61,15 +63,18 @@ var type:String = "":
 				modulate = Color.GRAY
 
 var should_hit:bool = true
-var can_hit:bool = false#:
-#	get: return (must_press and strum_time >= Conductor.song_pos - (Conductor.safe_zone * 0.8)\
-#	and strum_time <= Conductor.song_pos + (Conductor.safe_zone * 1))
+var can_hit:bool:
+	get: 
+		if !must_press: return false
+		if is_sustain: return strum_time <= Conductor.song_pos #and !dropped
+		return (strum_time > Conductor.song_pos - (Conductor.safe_zone * late_mod) and \
+		 strum_time < Conductor.song_pos + (Conductor.safe_zone * early_mod))
 
 var early_mod:float = 0.8
 var late_mod:float = 1.0
 var rating:String = ''
-var was_good_hit:bool = false#:
-#	get: return not must_press and strum_time <= Conductor.song_pos
+var was_good_hit:bool = false:
+	get: return not must_press and strum_time <= Conductor.song_pos
 var too_late:bool = false:
 	get: return strum_time < Conductor.song_pos - Conductor.safe_zone and !was_good_hit
 
@@ -96,15 +101,15 @@ var alpha:float = 1.0:
 	get: return modulate.a
 	set(alpha): modulate.a = alpha
 
-func _init(data = null, sustain_:bool = false, in_chart:bool = false):
-	if data != null:
-		is_sustain = (sustain_ and data is Note)
-		copy_from(data)
-		chart_note = in_chart
-		if is_sustain:
-			temp_len = length
+func _init(data = null, sustain_:bool = false, in_chart:bool = false) -> void:
+	if data == null: data = NoteData.new()
+	is_sustain = (sustain_ and data is Note)
+	copy_from(data)
+	chart_note = in_chart
+	if is_sustain:
+		temp_len = length
 
-func _ready():
+func _ready() -> void:
 	spawned = true
 	tex_path = tex_path % [skin.cur_skin]
 	antialiasing = skin.antialiased
@@ -140,7 +145,6 @@ func _ready():
 		
 		if !chart_note:
 			resize_hold(true)
-			#if Prefs.scroll_type == 'down': hold_group.scale.y = -1
 			if Prefs.behind_strums: hold_group.z_index = -1
 	else:
 		if ResourceLoader.exists(tex_path +'.res'):
@@ -156,43 +160,30 @@ func _ready():
 		if unknown:
 			var lol = Alphabet.new('?')
 			var diff:Vector2 = Vector2.ONE
-			if Game.round_d(scale.x, 1) > 0.7: 
+			if Util.round_d(scale.x, 1) > 0.7: 
 				diff = lol.scale / scale
 				lol.scale = diff
 			lol.position.x -= 22 * diff.x
 			lol.position.y -= 30 * diff.y
 			add_child(lol)
 			lol.z_index = 3
-		
 
-func _process(delta):
-	var safe_zone:float = Conductor.safe_zone
-	if chart_note: return
-	if is_sustain:
-		if strum_time <= Conductor.song_pos:
-			can_hit = true #!dropped
-			#if dropped: return
-			# strum_time <= Conductor.song_pos and strum_time + length > Conductor.song_pos:
-			temp_len -= (1000 * delta) * Conductor.playback_rate
-			#offset_y -= 1000 * delta
-			if !must_press: holding = true
+func _process(delta:float) -> void:
+	if is_sustain and strum_time <= Conductor.song_pos:
+		can_hit = true #!dropped
+		#if dropped: return
+		temp_len -= (1000 * delta) * Conductor.playback_rate
+		
+		if (holding or !must_press) and length != temp_len: #end piece kinda fucks off a bit every now and then
+			holding = true
+			length = temp_len
+			resize_hold()
 			
-			if holding and length != temp_len: #end piece kinda fucks off a bit every now and then
-				length = temp_len
-				resize_hold()
-				
-				was_good_hit = roundi(length) <= min_len
-	else:
-		if must_press:
-			can_hit = (strum_time > Conductor.song_pos - (safe_zone * late_mod) && \
-				strum_time < Conductor.song_pos + (safe_zone * early_mod))
-		else:
-			can_hit = false
-			was_good_hit = strum_time <= Conductor.song_pos
+		was_good_hit = roundi(length) <= min_len
 
 func follow_song_pos(strum:Strum) -> void:
 	var pos:float = -(0.45 * ((Conductor.song_pos - strum_time) * velocity) * speed) #/ Conductor.playback_rate# + offset_y
-	
+
 	position.x = strum.position.x + (pos * cos(strum.scroll * PI / 180))
 	position.y = strum.position.y + (pos * sin(strum.scroll * PI / 180))
 	rotation = (deg_to_rad(strum.scroll - 90.0) if sustain else 0.0) + strum.rotation
@@ -218,7 +209,7 @@ func load_skin(new_skin:String) -> void:
 func resize_hold(update_control:bool = false) -> void:
 	if !spawned: return
 	hold_group.size.y = ((length * 0.63) * speed)
-	var rounded_scale:float = Game.round_d(skin.note_scale.y, 1)
+	var rounded_scale:float = Util.round_d(skin.note_scale.y, 1)
 	if rounded_scale > 0.7: 
 		hold_group.size.y /= (rounded_scale + (rounded_scale / 2.0))
 	
@@ -238,9 +229,10 @@ func copy_from(item) -> void:
 func convert_type(t:String) -> String:
 	match t.to_lower().strip_edges():
 		'alt animation', 'true', 'mom': return 'Alt'
+		'censor': return 'Censor'
 		'no animation': return 'No Anim'
 		'gf sing': return 'GF'
-		'hurt note', '3.0', 'markov note', 'ebola', 'burger note': return 'Hurt'
+		'hurt note', '3.0', 'markov note', 'ebola', 'burger note', 'fart note': return 'Hurt'
 		'hey!': return 'Hey'
 		_: return t
 

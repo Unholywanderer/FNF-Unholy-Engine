@@ -218,7 +218,7 @@ func change_char(new_char:String = 'bf') -> void:
 	shadow_anim_change(0)
 	
 func reload_list(anims:Array) -> void:
-	Game.remove_all([anim_list], $UILayer/Animations)
+	Util.remove_all([anim_list], $UILayer/Animations)
 	offsets.clear()
 	MAIN('Shadow/AnimSelect').get_popup().clear()
 	

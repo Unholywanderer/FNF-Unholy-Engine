@@ -48,7 +48,7 @@ func _ready():
 		add_song(FreeplaySong.new([song, 'bf', [100, 100, 100]]))
 	
 	if JsonHandler._SONG.has('song'):
-		last_loaded.song = Game.format_str(JsonHandler._SONG.song)
+		last_loaded.song = Util.format_str(JsonHandler._SONG.song)
 		if JsonHandler.song_root != '':
 			last_loaded.song = JsonHandler.song_root
 			last_loaded.variant = JsonHandler.song_variant.substr(1)
@@ -62,7 +62,7 @@ func _ready():
 	update_list()
 	
 func add_song(song:FreeplaySong) -> void:
-	var song_name:String = Game.format_str(song.song)
+	var song_name:String = Util.format_str(song.song)
 	if added_songs.has(song_name):
 		#print_rich("[color=yellow]"+ song.song +"[/color] already added, skipping")
 		song.queue_free()

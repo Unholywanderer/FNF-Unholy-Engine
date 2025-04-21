@@ -9,7 +9,7 @@ var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR
 	set(alias):
 		antialiasing = alias
-		texture_filter = Game.get_alias(alias)
+		texture_filter = Util.get_alias(alias)
 		
 var width:float = 0.0:
 	get:
@@ -151,7 +151,7 @@ func load_skin(skin) -> void:
 func resize_hold(_update_control:bool = false, to_size:float = 0.0) -> void:
 	if !spawned: return
 	hold_group.size.y = to_size
-	#var rounded_scale = Game.round_d(skin.note_scale.y, 1)
+	#var rounded_scale = Util.round_d(skin.note_scale.y, 1)
 	#if rounded_scale > 0.7: 
 	#	hold_group.size.y /= (rounded_scale + (rounded_scale / 2))
 	

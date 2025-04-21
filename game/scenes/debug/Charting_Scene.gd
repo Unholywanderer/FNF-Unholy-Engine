@@ -220,7 +220,7 @@ func _ready():
 	$ChartLine/IconL.change_icon(chars[0].icon if chars[0] else 'face')
 	$ChartLine/IconR.change_icon(chars[1].icon if chars[1] else 'face', true)
 	
-	$ChartUI/SongProgress/Length.text = Game.to_time(Conductor.song_length)
+	$ChartUI/SongProgress/Length.text = Util.to_time(Conductor.song_length)
 	
 	var vec_size = Vector2(GRID_SIZE, GRID_SIZE)
 	
@@ -306,7 +306,7 @@ func _process(delta):
 	$ChartLine.position.x = (grid_1.position.x / 7.0) - 0.5
 	$ChartLine.position.y = round(get_y_from_time(fmod(Conductor.song_pos - get_section_time(), Conductor.step_crochet * 16.0)))
 	
-	$ChartUI/SongProgress/Time.text = Game.to_time(Conductor.song_pos)
+	$ChartUI/SongProgress/Time.text = Util.to_time(Conductor.song_pos)
 	$ChartUI/SongProgress.value = abs(Conductor.song_pos / Conductor.song_length) * 100.0
 	
 	if Input.is_key_pressed(KEY_F): z -= 0.1 * delta
@@ -576,7 +576,7 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 		Conductor.step_time = temp.step_t
 		
 		Conductor.cur_section = section
-		Conductor.song_pos = get_section_time(section)
+		Conductor.seek(get_section_time(section))
 		#Conductor.resync_audio()
 		update_text()
 		
@@ -683,7 +683,7 @@ func _unhandled_input(event:InputEvent): # this is better | no you fucking idiot
 var last_updated_sec:int = -1
 var last_got_bpm:float
 func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
-	Game.remove_all([notes_loaded], $Notes)
+	Util.remove_all([notes_loaded], $Notes)
 	
 	if section_based:
 		$ChartLine/Highlight.position = ($ChartLine/IconR.position if SONG.notes[cur_section].mustHitSection else $ChartLine/IconL.position) - Vector2(37.5, 37.5)

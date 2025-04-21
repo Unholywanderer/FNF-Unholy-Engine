@@ -24,7 +24,14 @@ blend_mode = 1
 blend_mode = 1
 
 [node name="Philly Streets" type="Node2D"]
+position = Vector2(0, -3)
 script = ExtResource("1_gj0t7")
+default_zoom = 0.77
+bf_pos = Vector2(1800, 450)
+dad_pos = Vector2(700, 445)
+gf_pos = Vector2(1200, 430)
+bf_cam_offset = Vector2(-200, 0)
+dad_cam_offset = Vector2(200, 0)
 
 [node name="Skybox" type="Node2D" parent="."]
 script = ExtResource("2_oc14b")
@@ -140,14 +147,14 @@ centered = false
 
 [node name="CharGroup" type="Node2D" parent="."]
 
-[node name="SprayCanPile" type="Sprite2D" parent="."]
-position = Vector2(920, 1045)
-texture = ExtResource("11_j4p15")
-centered = false
-
-[node name="AnimateSymbol" type="Node2D" parent="."]
-visible = false
+[node name="SprayCan" type="Node2D" parent="."]
+position = Vector2(1575, 915)
 script = ExtResource("12_hmg21")
 atlas = "res://assets/images/stages/philly-streets/effects/spraycan"
 loop_mode = "Play Once"
 metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+
+[node name="SprayCanPile" type="Sprite2D" parent="."]
+position = Vector2(920, 1045)
+texture = ExtResource("11_j4p15")
+centered = false

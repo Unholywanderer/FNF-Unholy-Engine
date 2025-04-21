@@ -6,7 +6,7 @@ var finished_intro:bool = false
 var added_text:Array = []
 
 var flash = ColorRect.new()
-var show_cow:bool = Game.rand_bool(5)
+var show_cow:bool = Util.rand_bool(5)
 var blurb:Array = []
 func _ready():
 	Discord.change_presence('Title Screen', 'Welcome to the Funkin')
@@ -21,7 +21,7 @@ func _ready():
 		blurb = get_funny().pick_random()
 	print(blurb)
 	
-	Game.center_obj($GodotLogo)
+	Util.center_obj($GodotLogo)
 	$GodotLogo.position.y += 75
 	Audio.volume = 0
 	Conductor.bpm = 102
@@ -144,7 +144,7 @@ func add_funny(text:String, offset:int = 0) -> void:
 	added_text.append(new_text)
 	
 func remove_funny() -> void:
-	Game.remove_all([added_text], self)
+	Util.remove_all([added_text], self)
 		
 func get_funny() -> Array[Array]:
 	var intro_txt = FileAccess.get_file_as_string('res://assets/data/introText.txt')

@@ -37,7 +37,7 @@ func beat_hit(beat:int) -> void:
 	for dancer in dancers:
 		dancer.dance()
 	
-	if can_drive and Game.rand_bool(10):
+	if can_drive and Util.rand_bool(10):
 		move_child($Car, get_child_count())
 		Audio.play_sound('carPass'+ str(randi_range(0, 1)), 0.7)
 		$Car.velocity.x = (randi_range(170, 220) / 0.05) * 3
@@ -47,11 +47,11 @@ func beat_hit(beat:int) -> void:
 		$Car.position = Vector2(-12600, randi_range(220, 250))
 		can_drive = true
 	
-	if Game.rand_bool(10) and beat > star_beat + star_offset:
+	if Util.rand_bool(10) and beat > star_beat + star_offset:
 		var le_star:AnimatedSprite2D = $Star/Sprite
 		le_star.position.x = randi_range(50,900)
 		le_star.position.y = randi_range(-10,20)
-		le_star.flip_h = Game.rand_bool(50)
+		le_star.flip_h = Util.rand_bool(50)
 		le_star.play()
 
 		star_beat = beat

@@ -61,8 +61,8 @@ func load_file(song:String) -> Dictionary:
 	#	sections.append(newSec)
 	
 	funny_data.song = get_data('Title')
-	funny_data.speed = Game.round_d(speed / 2.5, 1)
-	funny_data.bpm = Game.round_d(60000.0 / time_points[1], 1)
+	funny_data.speed = Util.round_d(speed / 2.5, 1)
+	funny_data.bpm = Util.round_d(60000.0 / time_points[1], 1)
 	#funny_data.notes = parse_chart(osu_file)
 	funny_data.player1 = 'bf'
 	funny_data.player2 = 'dad'

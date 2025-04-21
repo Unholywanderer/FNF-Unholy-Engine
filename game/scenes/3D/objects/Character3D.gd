@@ -53,7 +53,7 @@ var height:float = 0.0:
 
 var antialiasing:bool = true:
 	get: return texture_filter == BaseMaterial3D.TEXTURE_FILTER_NEAREST
-	#set(anti): texture_filter = Game.get_alias(anti)
+	#set(anti): texture_filter = Util.get_alias(anti)
 
 var sing_anims:PackedStringArray = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 

@@ -60,7 +60,7 @@ func ghost_tap(_dir):
 		darnell_anim('punchlow', true)
 	else:
 		pico_anim('punchhigh')
-		dad.play_anim(('block' if Game.rand_bool(50) else 'dodge'), true)
+		dad.play_anim(('block' if Util.rand_bool(50) else 'dodge'), true)
 
 var alt:bool = false
 var alt_dad:bool = false

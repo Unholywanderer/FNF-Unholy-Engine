@@ -136,7 +136,7 @@ class Train extends Sprite2D:
 		if !active:
 			cooldown += 1
 
-		if beat % 8 == 4 && Game.rand_bool(30) && !active && cooldown > 8: # 30
+		if beat % 8 == 4 && Util.rand_bool(30) && !active && cooldown > 8: # 30
 			cooldown = randi_range(-4, 0)
 			active = true
 			sound.play(0)

@@ -47,7 +47,7 @@ func trans_out(speed:float = 0.7, call_func:bool = false) -> void:
 func start() -> void:
 	in_progress = true
 	
-	var chance = _out and Game.rand_bool(5)
+	var chance = _out and Util.rand_bool(5)
 	var new_tex:String = RARE_IMAGES.pick_random() if chance else HOLE_IMAGES.pick_random()
 	cur_tex = new_tex
 	if new_tex == 'bowser':
@@ -59,7 +59,7 @@ func start() -> void:
 	if tween: tween.kill()
 	tween = create_tween()
 
-	Game.center_obj(hole)
+	Util.center_obj(hole)
 	black.scale = Vector2(1300, 730)
 	black.position = Vector2(Game.screen[0] / 2, Game.screen[1] / 2)
 

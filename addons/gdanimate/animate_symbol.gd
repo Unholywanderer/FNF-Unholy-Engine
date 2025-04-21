@@ -26,8 +26,6 @@ class_name AnimateSymbol extends Node2D
 		queue_redraw()
 
 var loop_frame:int = -1
-var _animations:Dictionary[String, Array] = {}
-
 ## The current symbol used by the animation. Empty uses the timeline symbol.
 ## [br][br][b]Note[/b]: This automatically sets [member frame] to 0 when
 ## changed. (Resetting the current animation)
@@ -65,11 +63,28 @@ signal finished
 signal symbol_changed(symbol: String)
 signal frame_changed(frame_int: int)
 
-func add_anim_by_frames(alias:String, frames:Array[int] = []):
+var _added_anims:Dictionary[String, Array] = {}
+var frame_index:int = -1
+var cur_anim:String
+func add_anim_by_frames(alias:String, frames:Array = []):
 	if frames.size() == 2:
-		var lol = frames
+		var le_arr:Array[int] = []
 		for i in range(frames[0], frames[1]):
-			pass 
+			le_arr.append(i)
+		frames = le_arr
+
+	_added_anims.set(alias, frames)
+	
+func play_anim(anim:String, force:bool = false) -> void:
+	if !_added_anims.has(anim): return
+	if !force and cur_anim == anim and frame_index < _added_anims[cur_anim].size() - 1: return
+	frame = _added_anims[anim][0]
+	playing = true
+	frame_index = 0
+	cur_anim = anim
+	
+
+func add_anim_by_symbols(array:Array[String]) -> void:
 	pass
 
 func _process(delta: float) -> void:
@@ -84,17 +99,31 @@ func _process(delta: float) -> void:
 	_timer += delta
 	if _timer >= 1.0 / _animation.framerate:
 		#var frame_diff := _timer / (1.0 / _animation.framerate)
-		frame += 1 #floori(frame_diff)
 		_timer -= (1.0 / _animation.framerate) #* frame_diff
-		if frame > _timeline.length - 1:
-			match loop_mode:
-				'Loop':
-					frame = 0
-				_:
-					if playing:
-						playing = false
-						finished.emit()
-					frame = _timeline.length - 1
+		if cur_anim.is_empty():
+			frame += 1 #floori(frame_diff)
+			#_timer -= (1.0 / _animation.framerate) #* frame_diff
+			if frame > _timeline.length - 1:
+				match loop_mode:
+					'Loop':
+						frame = 0
+					_:
+						if playing:
+							playing = false
+							finished.emit()
+						frame = _timeline.length - 1
+		else:
+			if !_added_anims.has(cur_anim): 
+				cur_anim = ''
+				return
+				
+			if _added_anims[cur_anim].size() - 1 > frame_index:
+				frame_index += 1
+				frame = _added_anims[cur_anim][frame_index]
+			else:
+				playing = false
+				finished.emit()
+				frame = _added_anims[cur_anim][-1]
 
 func _cache_atlas() -> void:
 	var parsed := ParsedAtlas.new()
@@ -184,7 +213,9 @@ func _draw_sprite(element: Element) -> void:
 					mini(_canvas_items.size() - 1, RenderingServer.CANVAS_ITEM_Z_MAX))
 			RenderingServer.canvas_item_set_parent(item, get_canvas_item())
 			RenderingServer.canvas_item_set_transform(item, _current_transform)
-			
+			if material:
+				RenderingServer.canvas_item_set_material(item, material.get_rid())
+
 			#if not _filters.is_empty():
 				#var filter_material: ShaderMaterial = _filter_material.duplicate()
 				#RenderingServer.canvas_item_set_material(item, filter_material.get_rid())

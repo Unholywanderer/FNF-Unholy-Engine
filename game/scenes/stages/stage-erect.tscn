@@ -27,6 +27,11 @@ blend_mode = 1
 
 [node name="Stage Erect" type="Node2D"]
 script = ExtResource("1_7l83x")
+default_zoom = 0.85
+dad_pos = Vector2(-150, 100)
+gf_pos = Vector2(360, 150)
+bf_cam_offset = Vector2(-80, -70)
+dad_cam_offset = Vector2(125, -10)
 
 [node name="Back" type="Sprite2D" parent="."]
 position = Vector2(729, -170)
