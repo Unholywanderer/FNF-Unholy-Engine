@@ -2,6 +2,7 @@ class_name Character; extends AnimatedSprite2D;
 
 var json
 var chart:Array = []
+var char_cache:Dictionary = {}
 var offsets:Dictionary = {}
 var flippers:Dictionary = {}
 var speaker_data:Dictionary = {}
@@ -17,6 +18,7 @@ var is_player:bool = false
 var idle_suffix:String = ''
 var forced_suffix:String = '' # if set, every anim will use it
 var can_dance:bool = true
+var can_sing:bool = true
 var looping:bool = false
 
 var dance_idle:bool = false
@@ -41,6 +43,7 @@ var anim_timer:float = -1.0: # play an anim for a certain amount of time
 var on_anim_finished:Callable = func():
 	special_anim = false
 	can_dance = true
+	can_sing = true
 	dance()
 	animation_finished.disconnect(on_anim_finished)
 
@@ -84,12 +87,16 @@ func load_char(new_char:String = 'bf') -> void:
 		printerr('No .res file found: '+ path)
 		path = 'characters/bf/char.res'
 		
-	sprite_frames = ResourceLoader.load('res://assets/images/'+ path)
-	
+	if !char_cache.has(cur_char):
+		sprite_frames = ResourceLoader.load('res://assets/images/'+ path)
+		char_cache[cur_char] = sprite_frames.duplicate(true)
+	else:
+		sprite_frames = char_cache.get(cur_char, ResourceLoader.load('res://assets/images/'+ path))
+			
 	offsets.clear()
 	for anim in json.animations:
 		offsets[anim.name] = anim.offsets
-		flippers[anim.name] = anim.get('flipX')
+		flippers[anim.name] = anim.get('flipX', false)
 	
 	icon = json.icon
 	scale = Vector2(json.scale, json.scale)
@@ -98,6 +105,7 @@ func load_char(new_char:String = 'bf') -> void:
 	position.y += json.pos_offset[1]
 	focus_offsets.x = json.cam_offset[0]
 	focus_offsets.y = json.cam_offset[1]
+	death_char = json.get('death_char', 'bf-dead')
 	
 	speaker_data.clear()
 	if json.has('speaker'):
@@ -105,6 +113,7 @@ func load_char(new_char:String = 'bf') -> void:
 	
 	dance_idle = offsets.has('danceLeft') and offsets.has('danceRight')
 	dance_beat = 1 if dance_idle else 2
+	sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 	
 	match(cur_char):
 		'senpai':
@@ -122,7 +131,7 @@ func load_char(new_char:String = 'bf') -> void:
 	dance()
 	set_stuff()
 	
-	if !is_player == json.facing_left:
+	if is_player != json.facing_left:
 		flip_char()
 		
 	print('loaded '+ cur_char)
@@ -187,6 +196,7 @@ func dance(forced:bool = false) -> void:
 	sing_timer = 0
 
 func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
+	if !can_sing: return
 	hold_timer = 0
 	var to_sing:String = sing_anims[dir] + suffix
 	if !has_anim(to_sing): 
@@ -201,7 +211,6 @@ func flip_char() -> void:
 	scale.x *= -1
 	position.x += width
 	focus_offsets.x -= width / 1.5
-	#if (!is_player and sing_anims[0] == 'singLEFT') or (is_player and sing_anims[0] == 'singRIGHT'):
 	swap_sing('singLEFT', 'singRIGHT')
 
 func swap_sing(anim1:String, anim2:String) -> void:
@@ -231,7 +240,7 @@ func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	var anim_offset:Vector2 = Vector2.ZERO
 	if offsets.has(anim):
 		anim_offset = Vector2(offsets[anim][0], offsets[anim][1])
-		flip_h = flippers[anim] if flippers[anim] else false
+		flip_h = flippers[anim]
 	offset = anim_offset
 
 func get_cam_pos() -> Vector2:
@@ -260,8 +269,23 @@ static func get_closest(char_name:String = 'bf') -> String: # if theres no chara
 		for file in char_list:
 			file = file.replace('.json', '')
 			if i.to_lower().contains(file): return file
-		
 	return 'bf'
+	
+func cache_char(char:String) -> void:
+	if char_cache.has(char): return
+	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % char):
+		char = get_closest(char)
+	
+	json = JsonHandler.get_character(char)
+	if json.has('no_antialiasing'):
+		json = Legacy.fix_json(json)
+		
+	var path = json.path +'.res'
+	if !ResourceLoader.exists('res://assets/images/'+ path):
+		return printerr('No .res file to cache: '+ path)
+	
+	char_cache[char] = ResourceLoader.load('res://assets/images/'+ path)
+	print('cached '+ char)
 
 func copy(from:Character) -> void:
 	for i in from.get_script().get_script_property_list():

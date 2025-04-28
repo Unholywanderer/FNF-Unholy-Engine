@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="resultGirlfriendGOOD.png" width="2136" height="292" spritePadding="3" borderPadding="1">
+	<SubTexture name="Girlfriend Good Anim0000" x="1" y="1" width="222" height="226" frameX="-42" frameY="-128" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0001" x="226" y="1" width="210" height="290" frameX="-18" frameY="-45" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0002" x="226" y="1" width="210" height="290" frameX="-18" frameY="-45" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0003" x="439" y="1" width="210" height="290" frameX="0" frameY="0" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0004" x="439" y="1" width="210" height="290" frameX="0" frameY="0" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0005" x="652" y="1" width="209" height="290" frameX="-1" frameY="-3" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0006" x="652" y="1" width="209" height="290" frameX="-1" frameY="-3" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0007" x="864" y="1" width="210" height="290" frameX="-6" frameY="-15" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0008" x="1077" y="1" width="210" height="290" frameX="-6" frameY="-15" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0009" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0010" x="1502" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0011" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0012" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0013" x="1926" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0014" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0015" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0016" x="1502" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0017" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0018" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0019" x="1926" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0020" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0021" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0022" x="1502" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0023" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0024" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0025" x="1926" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0026" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0027" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0028" x="1502" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0029" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0030" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0031" x="1926" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0032" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0033" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0034" x="1502" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0035" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0036" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0037" x="1926" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0038" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0039" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0040" x="1502" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0041" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0042" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0043" x="1926" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0044" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0045" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0046" x="1502" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0047" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0048" x="1714" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0049" x="1926" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0050" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+	<SubTexture name="Girlfriend Good Anim0051" x="1290" y="1" width="209" height="290" frameX="-6" frameY="-12" frameWidth="222" frameHeight="290"/>
+</TextureAtlas>

@@ -10,19 +10,19 @@ var gameplay = [
 	['auto_play',        'bool'],
 	['legacy_score',     'bool'],
 	['ghost_tapping',    'array', ['on', 'off', 'insta-kill']],
-	['scroll_speed',     'float', [0, 10]],
+	['scroll_speed',     'float', [0, 10], 0.01],
 	['scroll_type',      'array', ['up', 'down', 'left', 'right', 'middle', 'split']],
 	['center_strums',    'bool'],
 	['hitsound',        'array', []],
-	['hitsound_volume',   'int', [0, 200]],
+	['hitsound_volume',   'int', [0, 200], 5],
 	['offset',            'int', [-500, 500]], 
-	['epic_window',     'float', [15, 22.5]], 
-	['sick_window',     'float', [15, 45]], 
-	['good_window',     'float', [15, 90]], 
-	['bad_window' ,     'float', [15, 135]]
+	['epic_window',     'float', [15, 22.5], 0.1], 
+	['sick_window',     'float', [15, 45], 0.1], 
+	['good_window',     'float', [15, 90], 0.1], 
+	['bad_window' ,     'float', [15, 135], 0.1]
 ]
 var visuals = [
-	['fps',             'int', [0, 240]],
+	['fps',             'int', [0, 240], 10],
 	['skip_transitions', 'bool'],
 	['allow_rpc',      'bool'],
 	['basic_play',     'bool'],
@@ -80,10 +80,10 @@ func _unhandled_key_input(_event:InputEvent) -> void:
 		
 		var da_pref = pref_list[sub_option]
 		if ['array', 'int', 'float'].has(da_pref.type):
-			var update = 1
+			var update = da_pref.step
 			if da_pref.type == 'float' and Input.is_key_pressed(KEY_CTRL): update *= 0.5
-			if Input.is_action_just_pressed('menu_left'): da_pref.update_option(-update)
-			if Input.is_action_just_pressed('menu_right'): da_pref.update_option(update)
+			if Input.is_action_pressed('menu_left'): da_pref.update_option(-update)
+			if Input.is_action_pressed('menu_right'): da_pref.update_option(update)
 		if da_pref.type == 'bool' and Input.is_action_just_pressed('accept'): 
 			da_pref.update_option()
 		if Input.is_action_just_pressed('back'): show_main()
@@ -138,6 +138,7 @@ func update_scroll(diff:int = 0) -> void:
 	$Options/SelectBox.visible = in_sub
 	if in_sub:
 		$Description/Alert.visible = pref_list[sub_option].type == 'float'
+		$Description/AlertShift.visible = ['float', 'int'].has(pref_list[sub_option].type)
 		
 		if sub_option - 3 >= 0 and sub_option + 3 <= pref_list.size() - 1:
 			for i in pref_list.size():
@@ -178,6 +179,7 @@ class Option extends Alphabet:
 	var check:Checkbox  # for bools
 	var vis:Alphabet   # for not bools
 	
+	var step:float = 1.0
 	var cur_op:int = 0
 	var choices:Array = [] # if the option is an array, will hold all possible options
 	var audio:AudioStreamPlayer
@@ -208,6 +210,7 @@ class Option extends Alphabet:
 			'int', 'float':
 				min_val = option_array[2][0]
 				max_val = option_array[2][1]
+				if option_array.size() == 4: step = option_array[3]
 				cur_val = Prefs.get(option)
 				vis.text = str(cur_val)
 			_:
@@ -230,7 +233,7 @@ class Option extends Alphabet:
 					audio.play()
 			'int', 'float':
 				if Input.is_key_pressed(KEY_SHIFT): diff *= 10
-				cur_val = clamp(cur_val + diff, min_val, max_val)
+				cur_val = snapped(clamp(cur_val + diff, min_val, max_val), 0.001)
 				Prefs.set(option, cur_val)
 			'bool': 
 				var a_bool = Prefs.get(option)

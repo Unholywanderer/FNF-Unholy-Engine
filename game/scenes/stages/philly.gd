@@ -2,6 +2,7 @@ extends StageBase
 
 # Blammed Shit #
 var blammed_shader:ShaderMaterial
+var can_blam:bool = false
 var blammin:bool = false:
 	set(blam):
 		for i in get_children():
@@ -39,6 +40,7 @@ var windows:Array = ['31A2FD', '31FD8C', 'FB33F5', 'FD4531', 'FBA633'] # window 
 var train:Train = Train.new(Vector2(2000, 360))
 func _ready():
 	if SONG.song.to_lower().contains('blammed'):
+		can_blam = true
 		blammed_shader = ShaderMaterial.new()
 		blammed_shader.shader = load('res://game/resources/shaders/blammed.gdshader')
 		
@@ -79,7 +81,7 @@ func _process(delta):
 var last_color:String
 func beat_hit(beat:int):
 	train.beat_hit(beat)
-	if SONG.song.to_lower().contains('blammed'):
+	if can_blam:
 		if beat == 128: blammin = true
 		if beat == 192: blammin = false
 	

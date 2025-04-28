@@ -5,6 +5,7 @@ signal on_game_over_idle(s) # after the timer is done and the deathLoop starts
 signal on_game_over_confirm(is_retry:bool, s) # once you choose to either leave or retry the song
 
 var dead
+var _char_name:String
 var this = Game.scene
 var last_cam_pos:Vector2
 var last_zoom:Vector2
@@ -33,18 +34,20 @@ var on_death_confirm:Callable = func(): # once the player chooses to retry
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
 			i.process_mode = Node.PROCESS_MODE_INHERIT
-			
-	dead.visible = false
+	
+	dead.position = this.stage.bf_pos
+	dead.load_char(_char_name)
+	dead.top_level = false
 	
 	this.cam.position_smoothing_speed = 4
 	this.gf.danced = true
-	this.boyfriend.visible = true
-	this.dad.visible = true
+	#this.boyfriend.visible = true
+	#this.dad.visible = true
 	this.ui.visible = true
 	get_tree().paused = false
 	this.refresh()
 	queue_free()
-	this.boyfriend.dance()
+	#this.boyfriend.dance()
 
 var death_sound:AudioStreamPlayer
 var retry:AnimatedSprite2D = AnimatedSprite2D.new()
@@ -69,11 +72,10 @@ func _ready():
 	on_game_over_idle.connect(this.stage.game_over_idle)
 	on_game_over_confirm.connect(this.stage.game_over_confirm)
 	
-	
 	on_game_over.emit(self)
 
 	this.ui.visible = false
-	this.boyfriend.visible = false # hide his ass!!!
+	#this.boyfriend.visible = false # hide his ass!!!
 	Conductor.paused = true
 	
 	$BG.modulate.a = 0
@@ -93,12 +95,14 @@ func _ready():
 		#dead.atlas = 'res://assets/images/characters/pico/ex_death/explosion'
 		#dead.playing = false
 	#else:
-	dead = Character.new(this.boyfriend.position, da_boy, true)
+	dead = this.boyfriend #Character.new(this.boyfriend.position, da_boy, true)
+	_char_name = dead.cur_char
+	dead.load_char(da_boy)
 	
 	dead.play_anim('deathStart', true) # apply the offsets
 	#dead.stop()
-	add_child(dead)
-	move_child(dead, 1)
+	#add_child(dead)
+	#move_child(dead, 1)
 	
 	var sound_suff:String = '-pico'
 	
@@ -155,7 +159,8 @@ func _ready():
 			retry.position = dead.position + Vector2((dead.width / 3.2) + 10, -20)
 			retry.visible = false
 			add_child(retry)
-	
+
+	retry.top_level = true
 	death_sound = Audio.return_sound('fnf_loss_sfx'+ sound_suff, true)
 
 	last_cam_pos = this.cam.position

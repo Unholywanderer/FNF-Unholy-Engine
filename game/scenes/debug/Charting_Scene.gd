@@ -819,9 +819,9 @@ func update_text() -> void:
 func _toggle_grid(toggled:bool) -> void:
 	#Conductor.paused = true
 	for i in [grid_0, grid_1, grid_2]:
-		if i != null:
-			for sqr in i.grid: sqr.visible = toggled
-			for mrk in i.markers: mrk.visible = !toggled
+		if i == null: continue
+		for sqr in i.grid: sqr.visible = toggled
+		for mrk in i.markers: mrk.visible = !toggled
 	regen_notes()
 	
 func focus_changed(is_focused:bool) -> void:

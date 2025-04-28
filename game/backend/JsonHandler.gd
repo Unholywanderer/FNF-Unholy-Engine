@@ -54,7 +54,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	match parse_type:
 		'v_slice':
 			meta = JSON.parse_string(FileAccess.get_file_as_string(meta_path % ['metadata'+ song_variant]))
-			_SONG.speed = _SONG.scrollSpeed[diff] if _SONG.scrollSpeed.has(diff) else _SONG.scrollSpeed.default
+			_SONG.speed = _SONG.scrollSpeed.get(diff, _SONG.scrollSpeed.get('default', 1)) 
 			_SONG.player1 = meta.playData['characters'].player
 			_SONG.gfVersion = meta.playData['characters'].girlfriend
 			_SONG.player2 = meta.playData['characters'].opponent

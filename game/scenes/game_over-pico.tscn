@@ -22,7 +22,9 @@ one_shot = true
 
 [node name="AnimateSymbol" type="Node2D" parent="."]
 visible = false
+position = Vector2(720, 360)
 script = ExtResource("2_sgi3l")
 atlas = "res://assets/images/characters/pico/ex_death/explosion"
-frame = 75
+frame = 171
+playing = true
 metadata/_custom_type_script = "uid://bvq0ling1c7sm"

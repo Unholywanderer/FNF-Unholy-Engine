@@ -4,8 +4,8 @@
 			"name": "idle",
 			"prefix": "Pico Idle Dance",
 			"offsets": [
-				-3,
-				0
+				-3.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -15,8 +15,8 @@
 			"name": "singUP",
 			"prefix": "pico Up note0",
 			"offsets": [
-				-21,
-				-27
+				-21.0,
+				-27.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +26,8 @@
 			"name": "singDOWN",
 			"prefix": "Pico Down Note0",
 			"offsets": [
-				-84,
-				80
+				-84.0,
+				80.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -37,8 +37,8 @@
 			"name": "singDOWNmiss",
 			"prefix": "Pico Down Note MISS",
 			"offsets": [
-				-80,
-				38
+				-80.0,
+				38.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -48,8 +48,8 @@
 			"name": "singUPmiss",
 			"prefix": "pico Up note miss",
 			"offsets": [
-				-28,
-				-67
+				-28.0,
+				-67.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -59,8 +59,8 @@
 			"name": "singRIGHT",
 			"prefix": "Pico Note Right0",
 			"offsets": [
-				48,
-				-2
+				48.0,
+				-2.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -70,8 +70,8 @@
 			"name": "singLEFT",
 			"prefix": "Pico NOTE LEFT0",
 			"offsets": [
-				-85,
-				10
+				-85.0,
+				10.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -81,8 +81,8 @@
 			"name": "singRIGHTmiss",
 			"prefix": "Pico Note Right Miss",
 			"offsets": [
-				45,
-				-50
+				45.0,
+				-50.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -92,8 +92,63 @@
 			"name": "singLEFTmiss",
 			"prefix": "Pico NOTE LEFT miss",
 			"offsets": [
-				-83,
-				-28
+				-83.0,
+				-28.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "hey",
+			"prefix": "Pico Idle Dance",
+			"offsets": [
+				-39.0,
+				-1.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "cheer",
+			"prefix": "Pico Idle Dance",
+			"offsets": [
+				-61.0,
+				-10.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "burpShit",
+			"prefix": "Pico Idle Dance",
+			"offsets": [
+				-41.0,
+				1.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "burpSmile",
+			"prefix": "Pico Idle Dance",
+			"offsets": [
+				-39.0,
+				1.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "shit",
+			"prefix": "Pico Idle Dance",
+			"offsets": [
+				-3.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -103,8 +158,8 @@
 			"name": "shoot",
 			"prefix": "Pico Shoot Hip Full0",
 			"offsets": [
-				-256,
-				-232
+				-255.0,
+				-231.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -114,8 +169,8 @@
 			"name": "shootMISS",
 			"prefix": "Pico Hit Can0",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -125,8 +180,8 @@
 			"name": "cock",
 			"prefix": "Pico Reload0",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -136,8 +191,8 @@
 			"name": "intro",
 			"prefix": "Pico Gets Pissed0",
 			"offsets": [
-				-60,
-				0
+				-60.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -147,8 +202,8 @@
 			"name": "intro-cock",
 			"prefix": "cutscene cock0",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -158,8 +213,8 @@
 			"name": "intro-return",
 			"prefix": "shoot and return0",
 			"offsets": [
-				-255,
-				-231
+				-255.0,
+				-231.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -167,17 +222,18 @@
 		}
 	],
 	"path": "characters/pico/char",
+	"death_char": "pico-dead",
 	"icon": "pico",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		0,
-		0
+		0.0,
+		0.0
 	],
 	"pos_offset": [
-		0,
-		300
+		0.0,
+		300.0
 	],
 	"sing_dur": 4,
-	"scale": 1
+	"scale": 1.0
 }

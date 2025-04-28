@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="clearPercentNumberSmall.png" width="378" height="48" spritePadding="3" borderPadding="1">
+	<SubTexture name="number 0 0001" x="105" y="1" width="35" height="44" frameX="-2" frameY="-1" frameWidth="35" frameHeight="44"/>
+	<SubTexture name="number 1 0001" x="1" y="1" width="25" height="42" frameX="-11" frameY="-1" frameWidth="25" frameHeight="42"/>
+	<SubTexture name="number 2 0001" x="259" y="1" width="38" height="45" frameX="0" frameY="0" frameWidth="38" frameHeight="45"/>
+	<SubTexture name="number 3 0001" x="339" y="1" width="38" height="46" frameX="0" frameY="0" frameWidth="38" frameHeight="46"/>
+	<SubTexture name="number 4 0001" x="66" y="1" width="36" height="43" frameX="-2" frameY="0" frameWidth="36" frameHeight="43"/>
+	<SubTexture name="number 5 0001" x="143" y="1" width="37" height="44" frameX="0" frameY="-1" frameWidth="37" frameHeight="44"/>
+	<SubTexture name="number 6 0001" x="29" y="1" width="34" height="42" frameX="0" frameY="-3" frameWidth="34" frameHeight="42"/>
+	<SubTexture name="number 7 0001" x="183" y="1" width="35" height="44" frameX="-4" frameY="0" frameWidth="35" frameHeight="44"/>
+	<SubTexture name="number 8 0001" x="300" y="1" width="36" height="45" frameX="-1" frameY="0" frameWidth="36" frameHeight="45"/>
+	<SubTexture name="number 9 0001" x="221" y="1" width="35" height="44" frameX="-3" frameY="0" frameWidth="35" frameHeight="44"/>
+</TextureAtlas>

@@ -12,6 +12,7 @@ const CHAR_ANIM = {
 const CHAR_JSON = {
 	'animations': [],
 	'path': '',
+	'death_char': 'bf-dead',
 	'icon': 'bf',
 	'facing_left': false,
 	'antialiasing': true,

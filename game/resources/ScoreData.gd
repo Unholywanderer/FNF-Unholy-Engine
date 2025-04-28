@@ -10,11 +10,7 @@ var max_combo:int = 0
 var score:int = 0
 
 var hits:Dictionary = { # technically epics and sicks will be added together so they dont matter sperately
-	'epic': 0, 'sick': 0, 
-	'good': 0, 
-	'bad': 0, 
-	'shit': 0,
-	'miss': 0
+	'epic': 0, 'sick': 0, 'good': 0, 'bad': 0, 'shit': 0, 'miss': 0
 }
 
 func is_highscore(songs:Array, is_week:bool = false) -> bool:

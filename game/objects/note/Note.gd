@@ -25,8 +25,7 @@ var chart_note:bool = false:
 	set(c): set_process(!c); chart_note = c;
 var spawned:bool = false
 var strum_time:float:
-	get(): 
-		return raw_time + Prefs.offset
+	get: return raw_time + Prefs.offset
 
 var raw_time:float
 var dir:int = 0

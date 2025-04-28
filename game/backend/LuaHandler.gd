@@ -53,18 +53,12 @@ func add_script(script:String) -> void:
 	# Shaders #
 	lua.push_variant("load_shader", load_shader)
 	lua.push_variant("set_shader", set_shader)
+	lua.push_variant("set_param", set_param)
 	
 	#lua.push_variant("import", add_variant)
 	
 	if !load_lua(lua, script): return
 	print(lua.script_path +' is loaded')
-	#var err = lua.do_file('res://assets/'+ script)
-	#if err is LuaError:
-	#	printerr(err.message)
-	#	var er_type = err.message.split(']')[0].replace('[', '').strip_edges()
-	#	var er_path = err.message.split('assets/')[1].strip_edges()
-	#	OS.alert('../'+ er_path, er_type +'!')
-	#	return
 		
 	if !active_lua.has(lua):
 		active_lua.append(lua)
@@ -73,6 +67,7 @@ func remove_all():
 	for lua in active_lua:
 		lua.unreference()
 	active_lua.clear()
+	cached_items.clear()
 
 func reload_scripts():
 	for lua in active_lua:
@@ -91,12 +86,12 @@ func load_lua(lua:LuaEx, path:String) -> bool:
 	return true
 			
 func call_func(_func:String, args:Array = []):
-	if _func.length() == 0: return
-	var ret_val = null
+	if _func.length() == 0: return 1
+	var ret_val = RET_TYPES.CONTINUE
 	for i in active_lua:
 		if !i.function_exists(_func): continue
 		ret_val = i.call_function(_func, args)
-	return ret_val
+	return ret_val 
 	
 ## FUNCTIONS FO LUA CRIPTS 😎😎
 func pain(x):
@@ -148,7 +143,12 @@ func set_shader(obj:Variant, shader_name:String):
 	var new_shader = ShaderMaterial.new() 
 	new_shader.shader = load_shader(shader_name)
 	obj.material = new_shader
+
+func set_param(obj:Variant, param:String, new_value:Variant):
+	obj.material.set_shader_parameter(param, new_value)
 	
+func get_param(obj:Variant, param:String):
+	return obj.material.get_shader_parameter(param)
 #func add_variant(variant:String):
 #	if !variant.is_empty():
 #		for lua in active_lua:

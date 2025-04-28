@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="highscoreNew.png" width="1511" height="183" spritePadding="3" borderPadding="1">
+	<SubTexture name="highscoreAnim0000" x="1" y="103" width="592" height="29" frameX="0" frameY="-25" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0001" x="958" y="1" width="432" height="85" frameX="-383" frameY="-2" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0002" x="1" y="1" width="479" height="99" frameX="-365" frameY="0" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0003" x="483" y="1" width="472" height="99" frameX="-372" frameY="0" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0004" x="596" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0005" x="596" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0006" x="974" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0007" x="974" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0008" x="1" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0009" x="1" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0010" x="379" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0011" x="379" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0012" x="757" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0013" x="757" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0014" x="1135" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0015" x="1135" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0016" x="1135" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0017" x="596" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0018" x="596" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0019" x="974" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0020" x="974" y="103" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0021" x="1" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0022" x="1" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0023" x="379" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0024" x="379" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0025" x="757" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0026" x="757" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0027" x="1135" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+	<SubTexture name="highscoreAnim0028" x="1135" y="144" width="375" height="38" frameX="-372" frameY="-24" frameWidth="592" frameHeight="99"/>
+</TextureAtlas>

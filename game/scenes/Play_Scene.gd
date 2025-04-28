@@ -93,10 +93,9 @@ func _ready():
 	cur_speed = SONG.speed
 	if Prefs.scroll_speed > 0: cur_speed = Prefs.scroll_speed
 	
-	if SONG.has('stage'):
-		cur_stage = SONG.stage.to_lower().replace(' ', '-')
-		if !ResourceLoader.exists('res://game/scenes/stages/'+ cur_stage +'.tscn'):
-			cur_stage = 'stage'
+	cur_stage = SONG.get('stage', 'stage').to_lower().replace(' ', '-')
+	if !ResourceLoader.exists('res://game/scenes/stages/'+ cur_stage +'.tscn'):
+		cur_stage = 'stage'
 		
 	stage = load('res://game/scenes/stages/%s.tscn' % [cur_stage]).instantiate() # im sick of grey bg FUCK
 	add_child(stage)
@@ -109,21 +108,15 @@ func _ready():
 
 	default_zoom = stage.default_zoom
 	
-	var gf_ver
-	if SONG.has('gfVersion'):
-		gf_ver = SONG.gfVersion
-	elif SONG.has('player3'):
-		gf_ver = SONG.player3
-			
-	if gf_ver == null or gf_ver.is_empty(): gf_ver = 'gf'
+	var gf_ver:String = SONG.get('gfVersion', SONG.get('player3', 'gf'))
 
-	var has_group = stage.has_node('CharGroup')
+	var has_group:bool = stage.has_node('CharGroup')
 	var add:Callable = stage.get_node('CharGroup').add_child if has_group else add_child
 	
 	gf = Character.new(stage.gf_pos, gf_ver)
 	add.call(gf)
 	
-	if gf.speaker_data.keys().size() > 0:
+	if !gf.speaker_data.keys().is_empty():
 		var _data = gf.speaker_data
 		match _data.sprite:
 			'ABot': speaker = load('res://game/objects/a_bot.tscn').instantiate()
@@ -165,6 +158,7 @@ func _ready():
 	
 	boyfriend = Character.new(stage.bf_pos, SONG.player1, true)
 	add.call(boyfriend)
+	boyfriend.cache_char(boyfriend.death_char)
 	
 	ui.icon_p1.change_icon(boyfriend.icon, true)
 	ui.icon_p2.change_icon(dad.icon)
@@ -195,6 +189,10 @@ func _ready():
 	
 	chart_notes = JsonHandler.chart_notes.duplicate(true)
 	events = JsonHandler.song_events.duplicate(true)
+	for i in events:
+		if i.event != 'Change Character': continue
+		var peep = char_from_string(i.values[0])
+		peep.cache_char(i.values[1])
 	
 	print(SONG.song +' '+ JsonHandler.get_diff.to_upper())
 	print('TOTAL EVENTS: '+ str(events.size()))
@@ -251,7 +249,6 @@ func _process(delta):
 	if Input.is_action_just_pressed("back"):
 		auto_play = !auto_play
 	if Input.is_action_just_pressed("accept"):
-		Conductor.resync_audio()
 		get_tree().paused = true
 		other.add_child(load('res://game/scenes/pause_screen.tscn').instantiate())
 	
@@ -344,6 +341,7 @@ func beat_hit(beat) -> void:
 	ui.icon_p1.bump()
 	ui.icon_p2.bump()
 	
+	if zoom_beat == 0: return
 	if beat % zoom_beat == 0 and !Prefs.deaf:
 		ui.zoom += zoom_add.ui
 		if !_cam_tween:
@@ -361,14 +359,13 @@ func section_hit(section) -> void:
 		if !section_data.has('mustHitSection'): section_data.mustHitSection = true
 		
 		var point_at:String = 'boyfriend' if section_data.mustHitSection else 'dad'
-		if section_data.has('gfSection') and section_data.gfSection:
+		if section_data.get('gfSection', false):
 			point_at = 'gf'
 			
 		move_cam(point_at)
-		if section_data.has('changeBPM') and section_data.has('bpm'):
-			if section_data.changeBPM and Conductor.bpm != section_data.bpm:
-				Conductor.bpm = section_data.bpm
-				print('Changed BPM: ' + str(section_data.bpm))
+		if section_data.get('changeBPM') and Conductor.bpm != section_data.get('bpm', Conductor.bpm):
+			Conductor.bpm = section_data.bpm
+			print('Changed BPM: ' + str(section_data.bpm))
 
 var focus_offset:Vector2 = Vector2.ZERO
 func move_cam(to_char:Variant) -> void:
@@ -384,7 +381,8 @@ func move_cam(to_char:Variant) -> void:
 		_:
 			peep = boyfriend if to_char else dad
 			cam_off = stage.bf_cam_offset if to_char else stage.dad_cam_offset
-	if speaker != null and peep != gf and speaker.has_method('look'): speaker.look(peep == boyfriend)
+	if speaker and peep != gf and speaker.has_method('look'): 
+		speaker.look(peep == boyfriend)
 	var new_pos:Vector2 = peep.get_cam_pos()
 	cam.position = new_pos + cam_off + focus_offset
 	focus_offset = Vector2.ZERO
@@ -425,7 +423,8 @@ func try_death() -> void:
 	if LuaHandler.call_func('onDeathBegin') == LuaHandler.RET_TYPES.STOP: return
 	Game.persist['deaths'] += 1
 	kill_all_notes()
-	#boyfriend.process_mode = Node.PROCESS_MODE_ALWAYS
+	boyfriend.process_mode = Node.PROCESS_MODE_ALWAYS
+	boyfriend.top_level = true
 	gf.play_anim('sad')
 	get_tree().paused = true
 	var death = DIE.instantiate()
@@ -444,8 +443,8 @@ func song_end() -> void:
 			HighScore.set_score(SONG.song, JsonHandler.get_diff, save_data)
 	
 	Conductor.reset()
-	if playlist.is_empty() or song_idx >= playlist.size() - 1:
-		#Game.persist.song_list = []
+	if song_idx + 1 > playlist.size():
+		Game.persist.song_list = []
 		#Game.persist.scoring = ScoreData.new()
 		#Game.persist.scoring.hits = ui.hit_count.duplicate()
 		#Game.persist.scoring.total_notes = JsonHandler.note_count
@@ -596,6 +595,7 @@ func event_hit(event:EventData) -> void:
 			if peep.has_anim(data.anim):
 				peep.play_anim(data.anim, data.force)
 				peep.special_anim = true
+				#peep.can_sing = !data.force
 		'SetCameraBop':
 			zoom_beat = event.values[0].rate
 			zoom_add.game = event.values[0].intensity / 25.0
@@ -799,13 +799,14 @@ func ghost_tap(dir:int) -> void:
 		ui.hp = 0
 		return try_death()
 		
-	misses += 1
-	ui.hit_count['miss'] = misses
+	#misses += 1
+	#ui.hit_count['miss'] = misses
 	boyfriend.sing(dir, 'miss')
-	var away = int(30 + (15 * floor(misses / 3.0)))
+	var away = int(30 + (15 * 100
+	))
 	score -= 10 if Prefs.legacy_score else away
 	
-	ui.total_hit += 1
+	#ui.total_hit += 1
 	
 	ui.hp -= 2.5 
 	

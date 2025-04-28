@@ -116,6 +116,19 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
+[node name="AlertShift" type="Label" parent="Description"]
+visible = false
+offset_left = 1010.0
+offset_top = 644.0
+offset_right = 1252.0
+offset_bottom = 681.0
+theme_override_fonts/font = ExtResource("3_cu7cg")
+theme_override_font_sizes/font_size = 16
+text = "Hold SHIFT for bigger steps"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
 [node name="TextBG" type="ColorRect" parent="."]
 visible = false
 offset_left = 40.0

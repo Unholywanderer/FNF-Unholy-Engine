@@ -35,14 +35,12 @@ func _ready():
 	
 	for file in added_weeks: 
 		var week_file = JsonHandler.parse_week(file)
-		var d_list = week_file.difficulties if week_file.has('difficulties') else []
+		if week_file.is_empty(): continue
+		var d_list = week_file.get('difficulties', [])
 		if d_list is String: d_list = d_list.split(',')
-		var v_list = {}
-		if 'variants' in week_file:
-			v_list = week_file.variants
 			
 		for song in week_file.songs:
-			add_song(FreeplaySong.new(song, d_list, v_list))
+			add_song(FreeplaySong.new(song, d_list, week_file.get('variants', {})))
 	
 	for song in songs_in_folder: # then add any other fuckass songs without a json
 		add_song(FreeplaySong.new([song, 'bf', [100, 100, 100]]))

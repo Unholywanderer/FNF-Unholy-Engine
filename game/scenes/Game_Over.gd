@@ -4,6 +4,7 @@ signal on_game_over(scene) # when you first die, with the deathStart anim and so
 signal on_game_over_idle(scene) # after the timer is done and the deathLoop starts
 signal on_game_over_confirm(is_retry:bool, scene) # once you choose to either leave or retry the song
 
+var _char_name:String = ''
 var dead:Character
 var this = Game.scene
 var last_cam_pos:Vector2
@@ -26,25 +27,27 @@ var on_death_confirm:Callable = func(): # once the player chooses to retry
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
 			i.process_mode = Node.PROCESS_MODE_INHERIT
-			
-	dead.visible = false
 	
-	this.cam.position_smoothing_speed = 4
+	dead.position = this.stage.bf_pos
+	dead.top_level = false
+	dead.load_char(_char_name)
+	
 	this.gf.danced = true
-	this.boyfriend.visible = true
 	this.ui.visible = true
 	get_tree().paused = false
 	this.refresh()
 	queue_free()
-	this.boyfriend.dance()
+	dead.dance()
 	this.gf.play_anim('cheer', true)
+	this.cam.position_smoothing_speed = 4
+	
 
 var death_sound:AudioStreamPlayer
 @onready var timer:Timer = $Timer
 func _ready():
 	Audio.stop_all_sounds()
 	Game.focus_change.connect(focus_change)
-	Discord.change_presence('Game Over on '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'I\'ll get it next time maybe')
+	Discord.change_presence('Game Over on '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'MOTHER FUCK')
 	
 	#await RenderingServer.frame_post_draw
 	for i in [this.ui, this.cam, this.stage]:
@@ -62,7 +65,7 @@ func _ready():
 	on_game_over.emit(self)
 
 	this.ui.visible = false
-	this.boyfriend.visible = false # hide his ass!!!
+	#this.boyfriend.visible = false # hide his ass!!!
 	Conductor.paused = true
 	
 	$BG.modulate.a = 0
@@ -72,12 +75,11 @@ func _ready():
 	if da_boy == 'bf-dead' and ResourceLoader.exists('res://assets/data/characters/'+ this.boyfriend.cur_char +'-dead.json'):
 		da_boy = this.boyfriend.cur_char +'-dead'
 		
-	dead = Character.new(this.boyfriend.position, da_boy, true)
-	
+	dead = this.boyfriend #Character.new(this.boyfriend.position, da_boy, true)
+	_char_name = dead.cur_char
+	dead.position = this.stage.bf_pos
+	dead.load_char(da_boy)
 	dead.play_anim('deathStart', true) # apply the offsets
-	#dead.stop()
-	add_child(dead)
-	move_child(dead, 1)
 	
 	death_sound = Audio.return_sound('fnf_loss_sfx', true)
 	death_sound.play()
@@ -89,7 +91,7 @@ func _ready():
 	timer.start(2.5)
 	timer.timeout.connect(on_death_start)
 	
-	await get_tree().create_timer(0.05).timeout
+	#await get_tree().create_timer(0.05).timeout
 	dead.play_anim('deathStart', true)
 
 var retried:bool = false
@@ -112,7 +114,7 @@ func _process(delta):
 		if Input.is_action_just_pressed('accept'):
 			on_game_over_confirm.emit(true, self)
 			
-			if death_sound != null and death_sound.get_playback_position() < 1.0: # skip to mic drop
+			if death_sound and death_sound.get_playback_position() < 1.0: # skip to mic drop
 				death_sound.play(1)
 			timer.paused = false
 			timer.start(2)

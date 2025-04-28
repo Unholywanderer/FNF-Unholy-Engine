@@ -24,7 +24,7 @@ func _ready() -> void:
 	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
 	
 	THIS.cam.position = Vector2(400, 490)
-	
+		
 func _process(delta:float) -> void:
 	$Skybox/Sprite.region_rect.position.x -= delta * 22
 	$Smog/Sprite.region_rect.position.x += delta * 22
@@ -60,6 +60,8 @@ func change_lights(b:int) -> void:
 			pass #finish_car_lights($Car1/Sprite)
 	
 func post_ready() -> void:
+	if boyfriend.cur_char.contains('pico'):
+		boyfriend.cache_char('pico-explode')
 	cur_can.atlas = 'res://assets/images/stages/philly-streets/effects/spraycan'
 	#cur_can.playing = true
 	#$CharGroup.add_child(cur_can)

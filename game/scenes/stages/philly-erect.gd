@@ -75,6 +75,7 @@ func post_ready() -> void:
 		dad.visible = false
 		#Conductor.mult_vocals = false
 		#Conductor.audio_volume(2, 0)
+	blammin = true
 		
 func countdown_start():
 	pass
@@ -99,13 +100,14 @@ func _process(delta):
 			var magnitude = spec.get_magnitude_for_frequency_range(prev_hz, hz).length()
 			#var energy := clampf((6.0 + linear_to_db(magnitude)) / 6.0, 0.0, 1.0)
 			#var silly := remap(energy, 0.0, 1.0, 0.0, 5.0)
-			$Windows/Line.set_point_position(i, Vector2(0 + (30 * i), 300 - (magnitude * (300 + prev_hz))))
+			var lin:Vector2 = $Windows/Line.get_point_position(i)
+			$Windows/Line.set_point_position(i, Vector2(30 * i, 300 - (magnitude * (300 + prev_hz))).lerp(lin, exp(-delta * 50)))
 			prev_hz = hz
 	else:
 		for i in initial_points.size():
-			var lin = $Windows/Line.get_point_position(i)
-			var ini = initial_points[i]
-			$Windows/Line.set_point_position(i, Vector2(lerpf(lin.x, ini.x, delta * 2), lerpf(lin.y, ini.y, delta * 2)))
+			var lin:Vector2 = $Windows/Line.get_point_position(i)
+			var ini:Vector2 = initial_points[i]
+			$Windows/Line.set_point_position(i, lin.lerp(ini, delta * 2))
 
 var last_color:String
 func beat_hit(beat:int):

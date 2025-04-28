@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b33qw4hmqyv67"
-path="res://.godot/imported/burp.png-7fa5521ddc67a0a87465e25389d07c5f.ctex"
+uid="uid://btu3u46207xdp"
+path="res://.godot/imported/spritemap1.png-3f10592011942672b8599a78bd3d4f84.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/characters/pico/extra_anims/burp.png"
-dest_files=["res://.godot/imported/burp.png-7fa5521ddc67a0a87465e25389d07c5f.ctex"]
+source_file="res://assets/images/results_screen/results-pico/resultsPERFECT/spritemap1.png"
+dest_files=["res://.godot/imported/spritemap1.png-3f10592011942672b8599a78bd3d4f84.ctex"]
 
 [params]
 
