@@ -18,7 +18,7 @@ var height:float = 0.0:
 		if is_sustain:
 			return sustain.texture.get_height() * abs(hold_group.scale.y)
 		return note.texture.get_height() * abs(scale.y)
-	
+
 const COLORS:PackedStringArray = ['purple', 'blue', 'green', 'red']
 
 var chart_note:bool = false:
@@ -32,11 +32,11 @@ var dir:int = 0
 
 var must_press:bool = false
 var speed:float = 1.0:
-	set(new_speed): 
+	set(new_speed):
 		speed = new_speed
 		if is_sustain: resize_hold()
 var velocity:float = 1.0
-		
+
 var alt:String = ""
 var gf:bool = false
 var no_anim:bool = false
@@ -44,7 +44,7 @@ var unknown:bool = false
 var type:String = "":
 	set(new_type):
 		if (new_type.is_empty() or new_type[0] == '0') and type.is_empty(): return
-	
+
 		type = convert_type(new_type)
 		if type.begins_with('weekend-1'): return
 		match type:
@@ -67,7 +67,7 @@ var type:String = "":
 
 var should_hit:bool = true
 var can_hit:bool:
-	get: 
+	get:
 		if !must_press: return false
 		if is_sustain: return strum_time <= Conductor.song_pos #and !dropped
 		return (strum_time > Conductor.song_pos - (Conductor.safe_zone * late_mod) and \
@@ -90,9 +90,9 @@ var holding:bool = false
 var min_len:float = 10.0 # before a sustain is counted as "hit"
 var drop_time:float = 0.0
 var dropped:bool = false:
-	set(drop): 
+	set(drop):
 		dropped = drop
-		if dropped: 
+		if dropped:
 			modulate = Color(0.75, 0.75, 0.75, 0.4)
 
 var note
@@ -118,7 +118,7 @@ func _ready() -> void:
 	antialiasing = skin.antialiased
 	position = Vector2(INF, -INF) #you can see it spawn in for a frame or two
 	scale = skin.note_scale
-	
+
 	if is_sustain:
 		alpha = 0.6
 		# stole from fnf raven because i didnt know how "Control"s worked
@@ -127,14 +127,14 @@ func _ready() -> void:
 
 		add_child(hold_group)
 		move_child(hold_group, 0)
-		
+
 		end = TextureRect.new()
-		end.texture = load(tex_path + COLORS[dir] +'_end.png') 
+		end.texture = load(tex_path + COLORS[dir] +'_end.png')
 		end.stretch_mode = TextureRect.STRETCH_TILE
 		end.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 		end.grow_horizontal = Control.GROW_DIRECTION_BOTH
 		end.grow_vertical = Control.GROW_DIRECTION_BEGIN
-		
+
 		sustain = TextureRect.new()
 		sustain.texture = load(tex_path + COLORS[dir] +'_hold.png')
 		sustain.stretch_mode = TextureRect.STRETCH_TILE
@@ -142,10 +142,10 @@ func _ready() -> void:
 		sustain.set_anchor_and_offset(SIDE_BOTTOM, 1.0, -end.texture.get_height() + 1.0)
 		sustain.grow_horizontal = Control.GROW_DIRECTION_BOTH
 		sustain.grow_vertical = Control.GROW_DIRECTION_BOTH
-		
+
 		hold_group.add_child(sustain)
 		hold_group.add_child(end)
-		
+
 		if !chart_note:
 			resize_hold(true)
 			if Prefs.behind_strums: hold_group.z_index = -1
@@ -157,13 +157,13 @@ func _ready() -> void:
 		else:
 			note = Sprite2D.new()
 			note.texture = load(tex_path + COLORS[dir] +'.png')
-			
+
 		add_child(note)
-		
+
 		if unknown:
 			var lol = Alphabet.new('?')
 			var diff:Vector2 = Vector2.ONE
-			if Util.round_d(scale.x, 1) > 0.7: 
+			if Util.round_d(scale.x, 1) > 0.7:
 				diff = lol.scale / scale
 				lol.scale = diff
 			lol.position.x -= 22 * diff.x
@@ -176,12 +176,12 @@ func _process(delta:float) -> void:
 		can_hit = true #!dropped
 		#if dropped: return
 		temp_len -= (1000 * delta) * Conductor.playback_rate
-		
+
 		if (holding or !must_press) and length != temp_len: #end piece kinda fucks off a bit every now and then
 			holding = true
 			length = temp_len
 			resize_hold()
-			
+
 		was_good_hit = roundi(length) <= min_len
 
 func follow_song_pos(strum:Strum) -> void:
@@ -190,7 +190,7 @@ func follow_song_pos(strum:Strum) -> void:
 	position.x = strum.position.x + (pos * cos(strum.scroll * PI / 180))
 	position.y = strum.position.y + (pos * sin(strum.scroll * PI / 180))
 	rotation = (deg_to_rad(strum.scroll - 90.0) if sustain else 0.0) + strum.rotation
-	if is_sustain and holding: 
+	if is_sustain and holding:
 		position = strum.position
 
 func load_skin(new_skin:String) -> void:
@@ -200,7 +200,7 @@ func load_skin(new_skin:String) -> void:
 
 	antialiasing = skin.antialiased
 	scale = skin.note_scale
-	
+
 	if is_sustain:
 		#scale.y = 0.7
 		sustain.texture = load('res://'+ tex_path + COLORS[dir] +'_hold.png')
@@ -213,9 +213,9 @@ func resize_hold(update_control:bool = false) -> void:
 	if !spawned: return
 	hold_group.size.y = ((length * 0.63) * speed)
 	var rounded_scale:float = Util.round_d(skin.note_scale.y, 1)
-	if rounded_scale > 0.7: 
+	if rounded_scale > 0.7:
 		hold_group.size.y /= (rounded_scale + (rounded_scale / 2.0))
-	
+
 	if update_control:
 		sustain.set_anchor_and_offset(SIDE_BOTTOM, 1.0, -end.texture.get_height() + 1.0)
 		hold_group.size.x = maxf(end.texture.get_width(), sustain.texture.get_width())
@@ -225,7 +225,7 @@ func copy_from(item) -> void:
 	if item != null and (item is Note or item is NoteData):
 		if (item is Note): raw_time = item.raw_time
 		else: raw_time = item.strum_time
-		
+
 		dir = item.dir
 		length = item.length
 		must_press = item.must_press

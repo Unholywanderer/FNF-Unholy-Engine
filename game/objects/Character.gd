@@ -31,7 +31,7 @@ var sing_timer:float = 0.0 # for anim looping with sustains
 
 var last_anim:StringName = ''
 var special_anim:bool = false:
-	set(spec): 
+	set(spec):
 		if spec: last_anim = animation
 		special_anim = spec
 var anim_timer:float = -1.0: # play an anim for a certain amount of time
@@ -49,7 +49,7 @@ var on_anim_finished:Callable = func():
 
 var anim_finished:bool:
 	get: return frame == sprite_frames.get_frame_count(animation) - 1
-	
+
 var width:float = 0.0:
 	get: return width * abs(scale.x)
 var height:float = 0.0:
@@ -66,38 +66,38 @@ func _init(pos:Vector2 = Vector2.ZERO, char:String = 'bf', player:bool = false):
 	is_player = player
 	position = pos
 	load_char(char)
-	
+
 func load_char(new_char:String = 'bf') -> void:
 	if new_char == cur_char or new_char.is_empty():
 		print(new_char +' already loaded')
 		return
-		
+
 	cur_char = new_char
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % cur_char):
 		var replace_char = get_closest(cur_char)
 		print_rich('No JSON found for: '+ cur_char +'\n', '[color=red]'+ cur_char +' [color=yellow]-> [color=green]'+ replace_char)
 		cur_char = replace_char
-	
+
 	json = JsonHandler.get_character(cur_char) # get offsets and anim names...
 	if json.has('no_antialiasing'):
 		json = Legacy.fix_json(json)
-		
+
 	var path = json.path +'.res'
 	if !ResourceLoader.exists('res://assets/images/'+ path): # json exists, but theres no res file
 		printerr('No .res file found: '+ path)
 		path = 'characters/bf/char.res'
-		
+
 	if !char_cache.has(cur_char):
 		sprite_frames = ResourceLoader.load('res://assets/images/'+ path)
 		char_cache[cur_char] = sprite_frames.duplicate(true)
 	else:
 		sprite_frames = char_cache.get(cur_char, ResourceLoader.load('res://assets/images/'+ path))
-			
+
 	offsets.clear()
 	for anim in json.animations:
 		offsets[anim.name] = anim.offsets
 		flippers[anim.name] = anim.get('flipX', false)
-	
+
 	icon = json.icon
 	scale = Vector2(json.scale, json.scale)
 	antialiasing = json.antialiasing
@@ -106,15 +106,15 @@ func load_char(new_char:String = 'bf') -> void:
 	focus_offsets.x = json.cam_offset[0]
 	focus_offsets.y = json.cam_offset[1]
 	death_char = json.get('death_char', 'bf-dead')
-	
+
 	speaker_data.clear()
 	if json.has('speaker'):
 		speaker_data = json.speaker
-	
+
 	dance_idle = offsets.has('danceLeft') and offsets.has('danceRight')
 	dance_beat = 1 if dance_idle else 2
 	sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
-	
+
 	match(cur_char):
 		'senpai':
 			dance_beat = 2
@@ -127,13 +127,13 @@ func load_char(new_char:String = 'bf') -> void:
 			sing_anims = ['shootLeft', 'shootLeft', 'shootRight', 'shootRight']
 			play_anim('idle')
 			#frame = sprite_frames.get_frame_count('shootRight1') - 4
-	
+
 	dance()
 	set_stuff()
-	
+
 	if is_player != json.facing_left:
 		flip_char()
-		
+
 	print('loaded '+ cur_char)
 
 func _process(delta):
@@ -152,19 +152,19 @@ func _process(delta):
 		if animation.begins_with('sing'):
 			hold_timer += delta
 			sing_timer += delta
-			
+
 			var holding = Input.is_action_pressed('note_left') or Input.is_action_pressed('note_down')\
 				or Input.is_action_pressed('note_up') or Input.is_action_pressed('note_right')
-			
-			var boogie = (!is_player or (is_player and !holding)) and can_dance 
+
+			var boogie = (!is_player or (is_player and !holding)) and can_dance
 			if hold_timer >= Conductor.step_crochet * (0.0011 * sing_duration) and boogie:
 				dance()
-	
+
 	if cur_char.contains('-car') and offsets.has(animation +'-loop') and \
 	  frame >= sprite_frames.get_frame_count(animation) - 1:
 		looping = true
 		frame = sprite_frames.get_frame_count(animation) - 5
-		
+
 	if !chart.is_empty():
 		for i in chart: # [0] = strum time, [1] = direction, [2] = is sustain, [3] = length
 			var dir = int(i[1]) % 4
@@ -183,10 +183,10 @@ func dance(forced:bool = false) -> void:
 	if special_anim or !can_dance: return
 	if looping: forced = true
 	var idle:String = 'idle'
-	if cur_char.contains('-dead'): 
+	if cur_char.contains('-dead'):
 		idle = 'deathLoop'
 		forced = true
-		
+
 	if dance_idle:
 		danced = !danced
 		idle = 'dance'+ ('Right' if danced else 'Left')
@@ -199,10 +199,10 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 	if !can_sing: return
 	hold_timer = 0
 	var to_sing:String = sing_anims[dir] + suffix
-	if !has_anim(to_sing): 
+	if !has_anim(to_sing):
 		if suffix == 'miss': return
 		to_sing = sing_anims[dir]
-		
+
 	if sing_timer >= Conductor.step_crochet / 1000.0 or reset:
 		sing_timer = 0.0 #if reset else Conductor.step_crochet / 1000.0
 		play_anim(to_sing, true)
@@ -221,21 +221,21 @@ func swap_sing(anim1:String, anim2:String) -> void:
 	sing_anims[index2] = anim1
 
 func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
-	if forced_suffix.length() > 0: 
+	if forced_suffix.length() > 0:
 		anim += forced_suffix
-	if !has_anim(anim): 
+	if !has_anim(anim):
 		return printerr(anim +' doesnt exist on '+ cur_char)
-	
+
 	looping = false
 	special_anim = false
 	anim_timer = -1.0
-	
+
 	if reversed:
 		play_backwards(anim)
 	else:
 		play(anim)
-	if forced: 
-		frame = sprite_frames.get_frame_count(anim) - 1 if reversed else 0 
+	if forced:
+		frame = sprite_frames.get_frame_count(anim) - 1 if reversed else 0
 
 	var anim_offset:Vector2 = Vector2.ZERO
 	if offsets.has(anim):
@@ -247,7 +247,7 @@ func get_cam_pos() -> Vector2:
 	var midpoint = Vector2(position.x + width / 2.0, position.y + height / 2.0)
 	var pos:= Vector2(midpoint.x + (-100 if is_player else 150), midpoint.y - 100)
 	return (pos + focus_offsets)
-	
+
 func set_stuff() -> void:
 	var anim:String = 'danceLeft' if dance_idle else 'idle'
 	if has_anim('deathStart') and !has_anim(anim): anim = 'deathStart' # if its a death char
@@ -263,27 +263,27 @@ static func get_closest(char_name:String = 'bf') -> String: # if theres no chara
 	var char_list = DirAccess.get_files_at('res://assets/data/characters')
 	for file in char_list:
 		file = file.replace('.json', '')
-		if char_name.to_lower().contains(file): return file # i might be stupid 
-	
+		if char_name.to_lower().contains(file): return file # i might be stupid
+
 	for i in char_name.split('-'): # get more specific and stop caring
 		for file in char_list:
 			file = file.replace('.json', '')
 			if i.to_lower().contains(file): return file
 	return 'bf'
-	
+
 func cache_char(char:String) -> void:
 	if char_cache.has(char): return
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % char):
 		char = get_closest(char)
-	
+
 	json = JsonHandler.get_character(char)
 	if json.has('no_antialiasing'):
 		json = Legacy.fix_json(json)
-		
+
 	var path = json.path +'.res'
 	if !ResourceLoader.exists('res://assets/images/'+ path):
 		return printerr('No .res file to cache: '+ path)
-	
+
 	char_cache[char] = ResourceLoader.load('res://assets/images/'+ path)
 	print('cached '+ char)
 

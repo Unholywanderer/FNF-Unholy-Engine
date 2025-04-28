@@ -11,7 +11,7 @@ var volume:int = 10:
 		vol_visible = true
 		if pressed_key:
 			pressed_key = false
-			if vol > volume: 
+			if vol > volume:
 				Audio.play_sound('vol/up')
 			elif vol < volume:
 				Audio.play_sound('vol/down')
@@ -44,23 +44,23 @@ func _process(delta):
 		for i:int in 10:
 			var bar = get_node('Volume/BarsBG/VolBar'+ str(i + 1))
 			bar.scale.y = clampf(lerp(0.0 if round(volume) <= i else 1.0, bar.scale.y, exp(-delta * 15)), 0, 1)
-			
+
 		time_existed += delta
 		vol_visible = time_existed < 1
 		if time_existed >= 1.0:
 			vol_tween = create_tween()
 			vol_tween.tween_property($Volume, 'position:y', -100, 0.12)
-	
+
 	$FPS.text = 'FPS: '+ str(int(Engine.get_frames_per_second()))
 	if OS.is_debug_build():
 		var mem:String = String.humanize_size(OS.get_static_memory_usage())
 		var mem_peak:String = String.humanize_size(OS.get_static_memory_peak_usage())
 		#if tex_mem > texture_memory_peak:
 		#	texture_memory_peak = tex_mem
-		
+
 		if Input.is_action_just_pressed('debug_2'):
 			debug_data = !debug_data
-			
+
 		var txt_add:String = 'Press (Debug 2) for more info'
 		$Other.text = 'Mem: %s / %s\n' % [mem, mem_peak]
 		if debug_data:
@@ -68,10 +68,10 @@ func _process(delta):
 			var tex_mem:String = String.humanize_size(Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED))
 			var other_data:Array = [
 				vid_mem, tex_mem,
-				get_tree().get_node_count(), 
-				'???', 
-				Performance.get_monitor(Performance.OBJECT_COUNT), 
-				Performance.get_monitor(Performance.TIME_PROCESS), 
+				get_tree().get_node_count(),
+				'???',
+				Performance.get_monitor(Performance.OBJECT_COUNT),
+				Performance.get_monitor(Performance.TIME_PROCESS),
 				Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
 				]
 			if get_tree().current_scene != null:
@@ -81,7 +81,7 @@ func _process(delta):
 
 
 func _unhandled_key_input(event:InputEvent):
-	if event.is_action_pressed('vol_up') or event.is_action_pressed('vol_down'): 
+	if event.is_action_pressed('vol_up') or event.is_action_pressed('vol_down'):
 		pressed_key = true
 		volume = min(volume + (1 * Input.get_axis('vol_down', 'vol_up')), 10)
 

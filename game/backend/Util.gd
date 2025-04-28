@@ -13,7 +13,7 @@ func format_str(string:String = '') -> String:
 
 func round_d(num:float, digit:int) -> float: # bowomp
 	return round(num * pow(10.0, digit)) / pow(10.0, digit)
-	
+
 func rand_bool(chance:float = 50.0) -> bool:
 	return (randi() % 100) < chance
 
@@ -24,7 +24,7 @@ func remove_all(array:Array[Array], node:Node) -> void:
 			node.remove_child(i)
 			i.queue_free()
 		sub.clear()
-			
+
 func get_key_from_byte(btye:int) -> String:
 	var key:String = OS.get_keycode_string(btye)
 	match key.to_lower():
@@ -47,7 +47,7 @@ func flash_screen(color:Color = Color.WHITE) -> void:
 
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST
-	
+
 func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:
 	if is_milli: secs = secs / 1000.0
 	var time_part1:String = str(int(secs / 60)) + ":"
@@ -61,7 +61,7 @@ func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:
 		time_part2 = int((secs - int(secs)) * 100);
 		if time_part2 < 10:
 			time_part1 += "0"
-	
+
 		time_part1 += str(time_part2)
-	
+
 	return time_part1

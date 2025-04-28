@@ -26,14 +26,14 @@ var blammin:bool = false:
 			boyfriend.material.set_shader_parameter('outline_color', Color.CYAN)
 			gf.material.set_shader_parameter('outline_color', Color.MAROON)
 			dad.material.set_shader_parameter('outline_color', Color.GREEN_YELLOW)
-			
+
 			#UI.icon_p1.material = boyfriend.material
 			#UI.icon_p2.material = dad.material
 		else:
 			for i in [boyfriend, gf, dad]:
 				if i == null: continue
 				i.material = last_mat
-		
+
 @onready var initial_points:Array = $Windows/Line.points
 var spec = AudioServer.get_bus_effect_instance(1, 0)
 
@@ -54,7 +54,7 @@ func post_ready() -> void:
 		can_blam = true
 		blammed_shader = ShaderMaterial.new()
 		blammed_shader.shader = load('res://game/resources/shaders/blammed.gdshader')
-		
+
 	var new = ShaderMaterial.new()
 	new.shader = load('res://game/resources/shaders/adjust_color.gdshader')
 	new.set_shader_parameter('hue', -26)
@@ -63,20 +63,20 @@ func post_ready() -> void:
 	new.set_shader_parameter('brightness', -5)
 	for i in [boyfriend, gf, dad, train]:
 		i.material = new
-		
-	if SONG.player1.contains('pico') and SONG.player2.contains('pico'):
-		test_pic = AnimateSymbol.new()
-		test_pic.position = dad.position + Vector2(-368, 400)
-		test_pic.z_index = dad.z_index + 1
-		test_pic.atlas = 'res://assets/images/stages/philly/erect/pico_doppleganger'
-		test_pic.playing = true
-		add_child(test_pic)
-		test_pic.material = new
-		dad.visible = false
+
+	#if SONG.player1.contains('pico') and SONG.player2.contains('pico'):
+	#	test_pic = AnimateSymbol.new()
+	#	test_pic.position = dad.position + Vector2(-368, 400)
+	#	test_pic.z_index = dad.z_index + 1
+	#	test_pic.atlas = 'res://assets/images/stages/philly/erect/pico_doppleganger'
+	#	test_pic.playing = true
+	#	add_child(test_pic)
+	#	test_pic.material = new
+	#	dad.visible = false
 		#Conductor.mult_vocals = false
 		#Conductor.audio_volume(2, 0)
-	blammin = true
-		
+	#blammin = true
+
 func countdown_start():
 	pass
 	#gf.load_char('gf-car')
@@ -92,7 +92,7 @@ func _process(delta):
 	#	pla = true
 	#	Audio.play_sound('picoExplode')
 	$Windows/Sprite.self_modulate.a -= (Conductor.crochet / 1000.0) * delta * 1.5
-	
+
 	if blammin:
 		var prev_hz:float = 0.0
 		for i in initial_points.size():
@@ -119,31 +119,31 @@ func beat_hit(beat:int):
 		if SONG.song.to_lower().contains('pico'):
 			if beat == 160: blammin = true
 			if beat == 224: blammin = false
-		
+
 	if beat % 4 == 0:
 		var can_cols = windows.duplicate()
 		if last_color:
 			can_cols.remove_at(windows.find(last_color))
 		last_color = can_cols[randi_range(0, can_cols.size() - 1)]
 		$Windows/Sprite.self_modulate = Color(last_color)
-	
+
 class Train extends Sprite2D:
 	var active:bool = false
 	var started:bool = false
 	var stopping:bool = false
-	
+
 	var frame_limit:float = 0.0
 	var sound := AudioStreamPlayer.new()
 	var cars:int = 8
 	var cooldown:int = 0
-	
+
 	func _init(pos:Vector2):
 		centered = false
 		position = pos
 		texture = load('res://assets/images/stages/philly/train.png')
 		sound.stream = load('res://assets/sounds/train_passes.ogg')
 		add_child(sound)
-		
+
 	func _process(delta):
 		if active:
 			frame_limit += delta
@@ -157,7 +157,7 @@ class Train extends Sprite2D:
 					#var last_frame:int = Game.scene.gf.frame
 					#Game.scene.gf.play_anim(Game.scene.gf.animation +'-hair')
 					#Game.scene.gf.frame = last_frame
-					
+
 				if started:
 					position.x -= 400
 					if position.x < -2000 && !stopping:
@@ -165,10 +165,10 @@ class Train extends Sprite2D:
 						cars -= 1
 						if cars < 1:
 							stopping = true
-					
+
 					if position.x < -4000 && stopping:
 						restart()
-						
+
 	var dance_gf:bool = false
 	func beat_hit(beat:int):
 		if !active:
@@ -178,7 +178,7 @@ class Train extends Sprite2D:
 			cooldown = randi_range(-4, 0)
 			active = true
 			sound.play(0)
-				
+
 	func restart() -> void:
 		var geef:Character = Game.scene.gf
 		if geef.has_anim('hairFall'):
@@ -186,7 +186,7 @@ class Train extends Sprite2D:
 			geef.special_anim = true
 			geef.danced = false
 			geef.can_dance = true
-		
+
 		position.x = Game.screen[0] + 300
 		active = false
 		cars = 8

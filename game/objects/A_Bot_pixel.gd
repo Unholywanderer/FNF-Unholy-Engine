@@ -15,7 +15,7 @@ var offset:Vector2 = Vector2.ZERO:
 		unedited_pos = position - offset
 		offset = off
 		position = unedited_pos + offset
-		
+
 func  _ready() -> void:
 	$Head.animation_finished.connect(func():
 		if $Head.animation.begins_with('to'):
@@ -37,11 +37,11 @@ func _process(delta):
 	if timer >= 1.0 / updates_per_second:
 		_update()
 		timer = 0.0
-	
+
 func bump():
 	$Frame.play('bump')
 	$Frame.frame = 0
-	
+
 var looking_right:bool = false
 func look(right:bool = false):
 	if looking_right != right:

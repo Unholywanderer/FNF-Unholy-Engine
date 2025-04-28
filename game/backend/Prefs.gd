@@ -27,12 +27,12 @@ var auto_pause:bool = true
 var skip_transitions:bool = false
 var basic_play:bool = false
 var allow_rpc:bool = true:
-	set(allow): 
+	set(allow):
 		allow_rpc = allow
 		Discord.update(false, !allow)
-		
+
 var judgement_pos:Dictionary = {'game': [0, -40, -150, 70], 'hud': [580, 300, 420, 420]}
-	
+
 var note_splashes:String = 'both'
 var splash_sprite:String = 'vis'
 var hold_splash:String = 'cover/splash'
@@ -43,11 +43,11 @@ var chart_grid:bool = true
 var femboy:bool = false
 
 var deaf:bool = false:
-	set(d): 
-		if d: Audio.volume = 0 
+	set(d):
+		if d: Audio.volume = 0
 		deaf = d
 var daniel:bool = false: # if you switch too much, it'll break lol
-	set(dani): 
+	set(dani):
 		daniel = dani
 		Discord.update(true)
 
@@ -69,42 +69,42 @@ func _ready():
 
 func set_keybinds() -> void:
 	var key_names:Array[String] = ['note_left', 'note_down', 'note_up', 'note_right']
-	
+
 	for i in key_names.size():
 		var key = key_names[i]
 		if !InputMap.has_action(key):
 			InputMap.add_action(key)
 		else:
 			InputMap.action_erase_events(key)
-			
+
 		var new_bind:Array[InputEventKey] = [InputEventKey.new(), InputEventKey.new()]
-		for k in 2: 
+		for k in 2:
 			new_bind[k].set_keycode(OS.find_keycode_from_string(note_keys[k][i]))
 		InputMap.action_add_event(key, new_bind[0])
 		InputMap.action_add_event(key, new_bind[1])
 
 	print('updated keybinds')
-	
+
 func get_list() -> Array:
 	var list = get_script().get_script_property_list()
 	list.remove_at(0); list.remove_at(0)
 
 	#for i in list: print(i.name)
 	return list
-	
+
 func save_prefs() -> void:
-	if saved_prefs == null: 
+	if saved_prefs == null:
 		printerr('CONFIG FILE is NOT loaded, couldn\'t save')
 		return
-		
+
 	#fps = DisplayServer.screen_get_refresh_rate()
 	for i in get_list():
 		saved_prefs.set_value('Preferences', i.name, get(i.name))
-		
+
 	saved_prefs.save('user://data.cfg')
 	#set_keybinds()
 	print('Saved Preferences')
-	
+
 func load_prefs() -> ConfigFile:
 	var saved_cfg = ConfigFile.new()
 	saved_cfg.load('user://data.cfg')
@@ -117,7 +117,7 @@ func check_prefs():
 	var list = get_list()
 	var config_exists = FileAccess.file_exists('user://data.cfg')
 
-	if config_exists: 
+	if config_exists:
 		var prefs_changed:bool = false
 		saved_prefs.load('user://data.cfg')
 		for pref in list:
@@ -127,7 +127,7 @@ func check_prefs():
 		if prefs_changed: # if a pref was added, resave the cfg file
 			print('prefs changed, updating')
 			saved_prefs.save('user://data.cfg')
-			
+
 		saved_prefs = load_prefs()
 	else:
 		save_prefs()

@@ -5,12 +5,12 @@ var credits:Array[Array] = [
 	['Unholywanderer04', 'unholy', 'Wahoo programming', \
 		Color.REBECCA_PURPLE, func(): get_tree().quit()],
 	['TheConcealedCow', 'cow', 'Main artist fr fr trust me on god', \
-		Color('E0E0E0'), func(): 
+		Color('E0E0E0'), func():
 			$cow.visible = true
 			$cow.play()],
 	['Ashley', 'puta', 'Other main artist fr fr fr', \
 		Color.CYAN, func(): pass],
-		
+
 	['People I Stole From', 'i love stealing code'],
 	['Shadow Mario', 'shadow', 'Stole plenty of psych code and sprites', \
 		Color.DIM_GRAY, func(): OS.shell_open('https://github.com/ShadowMario')],
@@ -18,19 +18,19 @@ var credits:Array[Array] = [
 		Color('75471f'), func(): OS.shell_open('https://bsky.app/profile/rudyrue.bsky.social')],
 	['Zyflx', 'zyflx', 'Stole note handling and other shit', \
 		Color('3DC74A'), func(): OS.shell_open('https://www.youtube.com/@Zyflx')],
-		
+
 	['Crowplexus', 'crow', 'Stole funny godot code and ideas', \
 		Color.DARK_RED, func(): OS.shell_open('https://github.com/crowplexus')],
-		
+
 	['Mae', 'mae', 'Funny godot ports of haxe shaders', \
 		Color('FF3B3B'), func(): OS.shell_open('https://bsky.app/profile/mableyea.bsky.social')],
-		
+
 	['Maru', 'maru',  'Stole spritesheets and also code i think', \
 		Color('368AC2'), func(): OS.shell_open('https://www.youtube.com/watch?v=BLqqWorGGz0')],
-		
+
 	['Daniel', 'daniel', 'who the FUCK', \
 		Color('383657'), func(): Prefs.daniel = true],
-		
+
 	['drew me fnf bfs', 'yeaha babye!!'],
 	['Ashley', 'puta', 'drew a bf i think idk', \
 		Color.CYAN, func(): Prefs.femboy = !Prefs.femboy],
@@ -44,7 +44,7 @@ var credits:Array[Array] = [
 	['this person did nothing', 'planky'],
 	['plank', 'faggot',  'made 4 commits', \
 		Color('943DD6'), func(): OS.shell_open('https://plankdev.gay')],
-	
+
 	['Funkin\' Crew', 'those people, you know them cmon'],
 	['NinjaMuffin99', 'empty', 'You know him'],
 	['Phantom Arcade', 'empty', 'That art guy with the animation'],
@@ -78,21 +78,21 @@ func _ready():
 		tes.is_menu = true
 		tes.screen_offset = 450
 		tes.spacing = Vector2(100, 200)
-		
+
 		tes.scroll_dir = Alphabet.Scroll.RIGHT_TO_LEFT
 		tes.alignment = Alphabet.CENTER
 		add_child(tes)
 		move_child(tes, 4)
 		tes.target_y = credits.find(i)
 		cred_group.append(tes)
-		
+
 		if !tes.is_header:
 			var icon = Icon.new()
 			icon.change_icon(tes.icon, false, true)
 			tes.add_child(icon)
 			icon.position = Vector2(tes.width / 2.0, -(icon.texture.get_height() / 2.0))
 			#icon.follow_spr = tes
-	
+
 	cred_desc = Alphabet.new('Empty Empty', false)
 	cred_desc.scale = Vector2(0.5, 0.5)
 	cred_desc.color = Color.WHITE
@@ -106,7 +106,7 @@ func _unhandled_key_input(_event:InputEvent) -> void:
 		cred_group[cur_select].on_press.call()
 	if Input.is_action_just_pressed("back"):
 		Game.switch_scene('menus/main_menu')
-		
+
 	if Input.is_action_just_pressed('menu_up'): update_selection(-1)
 	if Input.is_action_just_pressed('menu_down'): update_selection(1)
 
@@ -115,14 +115,14 @@ func update_selection(amount:int = 0) -> void:
 	if amount != 0: Audio.play_sound('scrollMenu')
 	cur_select = wrapi(cur_select + amount, 0, credits.size())
 	var cur_cred:Credit = cred_group[cur_select]
-	
+
 	$CreditImage.visible = ResourceLoader.exists('res://assets/images/credits/'+ cur_cred.icon +'_img')
 	if $CreditImage.visible:
 		$CreditImage.texture = load('res://assets/images/credits/'+ cur_cred.icon +'_img')
-		
+
 	cred_desc.text = cur_cred.description
 	cred_desc.color = Color.WHITE
-	
+
 	$Quote.text = '"Thank You!"'
 	if quotes.has(cur_cred.creditee.to_lower()):
 		$Quote.text = '"'+ quotes[cur_cred.creditee.to_lower()].pick_random() +'"'
@@ -130,7 +130,7 @@ func update_selection(amount:int = 0) -> void:
 	if col_tween: col_tween.kill()
 	col_tween = create_tween()
 	col_tween.tween_property($BG, 'modulate', cur_cred.bg_color, 0.5)
-	
+
 	for i in credits.size():
 		var item = cred_group[i]
 		item.target_y = i - cur_select
@@ -142,24 +142,24 @@ class Credit extends Alphabet:
 	var description:String = ''
 	var bg_color:Color = Color.WHITE
 	var on_press:Callable = func(): pass
-	
+
 	var is_header:bool = false
-	
+
 	func _init(cred_info:Array = ['nope'], header:bool = false):
 		creditee = cred_info[0]
 		is_header = header
 		var da_size:int = cred_info.size()
 		if da_size > 1: description = cred_info[1]
 			# fuck me
-		if da_size > 1: 
-			if header: 
+		if da_size > 1:
+			if header:
 				description = cred_info[1]
 				super(creditee)
 				return
-			else: 
+			else:
 				icon = cred_info[1]
 		if da_size > 2: description = cred_info[2]
 		if da_size > 3: bg_color = cred_info[3]
 		if da_size > 4: on_press = cred_info[4]
-		
+
 		super(creditee)

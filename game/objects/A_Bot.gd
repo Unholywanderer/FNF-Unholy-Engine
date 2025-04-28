@@ -17,7 +17,7 @@ var offset:Vector2 = Vector2.ZERO:
 		position = unedited_pos + offset
 
 func _ready() -> void:
-	$Eyes.frame_changed.connect(func(frame:int): 
+	$Eyes.frame_changed.connect(func(frame:int):
 		if !looking_right and frame >= 23: $Eyes.playing = false
 	)
 
@@ -36,11 +36,11 @@ func _process(delta):
 	if timer >= 1.0 / updates_per_second:
 		_update()
 		timer = 0.0
-	
+
 func bump():
 	$Frame.play('bump')
 	$Frame.frame = 0
-	
+
 var looking_right:bool = false
 func look(right:bool = false):
 	if looking_right != right:

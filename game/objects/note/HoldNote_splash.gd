@@ -11,7 +11,7 @@ func _ready():
 	#modulate.a = 0.8 #0.6
 	play('start')
 	position = strum.position + Vector2(-8, 35)
-	
+
 func _process(delta:float) -> void:
 	if animation == col[strum.dir]:
 		anim_time -= delta

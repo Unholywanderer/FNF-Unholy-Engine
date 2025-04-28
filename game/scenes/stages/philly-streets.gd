@@ -15,24 +15,24 @@ var CAN = load('res://assets/images/stages/philly-streets/effects/spraycanFULL.r
 func _ready() -> void:
 	$Car1/Sprite.position = Vector2(1200, 818)
 	$Car2/Sprite.position = Vector2(1200, 818)
-	
+
 	if SONG.player1.contains('pico'):
 		THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
 	#if !Game.persist.loaded_already:
 	#	Game.persist.loaded_already = true
 	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
 	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
-	
+
 	THIS.cam.position = Vector2(400, 490)
-		
+
 func _process(delta:float) -> void:
 	$Skybox/Sprite.region_rect.position.x -= delta * 22
 	$Smog/Sprite.region_rect.position.x += delta * 22
 
-	
+
 func beat_hit(beat:int) -> void:
 	var can_change:bool = (beat == (prev_change + change_interval))
-		
+
 	if Util.rand_bool(10) && !can_change && car1_interruptable:
 		if !light_stop:
 			pass #drive_car($Car1/Sprite)
@@ -58,7 +58,7 @@ func change_lights(b:int) -> void:
 
 		if car_waiting:
 			pass #finish_car_lights($Car1/Sprite)
-	
+
 func post_ready() -> void:
 	if boyfriend.cur_char.contains('pico'):
 		boyfriend.cache_char('pico-explode')
@@ -79,7 +79,7 @@ func post_ready() -> void:
 	#cur_can.position = $SprayCanPile.position + Vector2(650, -170)
 	#cur_can.animation_finished.connect(func(): cur_can.visible = cur_can.animation != 'fly')
 	#cur_can.visible = false
-	
+
 	if Game.scene.story_mode:
 		if Util.format_str(SONG.song) == 'darnell':
 			UI.visible = false
@@ -92,13 +92,13 @@ func good_note_hit(note:Note):
 	if !note.type.begins_with('weekend-1'): return
 	note.no_anim = true
 	match note.type.replace('weekend-1-', ''):
-		&'cockgun': 
+		&'cockgun':
 			cocked = true
 			boyfriend.play_anim('cock' if boyfriend.cur_char == 'pico' else 'pre-attack', true)
 			boyfriend.special_anim = true
 			Audio.play_sound('weekend/gun_prep')
-		&'firegun': 
-			if !cocked: 
+		&'firegun':
+			if !cocked:
 				note_miss(note)
 				return
 			cocked = false
@@ -106,13 +106,13 @@ func good_note_hit(note:Note):
 				boyfriend.play_anim('intro')
 				boyfriend.frame = 34
 				boyfriend.pause()
-		
+
 				cur_can.play_anim('bonk')
 				Audio.play_sound('weekend/bonk')
 			else:
 				boyfriend.play_anim('shoot' if boyfriend.cur_char == 'pico' else 'attack', true)
 				boyfriend.special_anim = true
-				
+
 				Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
 				cur_can.play_anim('shot')
 
@@ -133,17 +133,17 @@ func opponent_note_hit(note:Note):
 	if !note.type.begins_with('weekend-1'): return
 	note.no_anim = true
 	match note.type.replace('weekend-1-', ''):
-		'lightcan': 
+		'lightcan':
 			dad.play_anim('light', true)
 			dad.special_anim = true
 			Audio.play_sound('weekend/lighter')
-		'kickcan' : 
+		'kickcan' :
 			dad.play_anim('kick', true)
 			dad.special_anim = true
 			cur_can.visible = true
 			cur_can.play_anim('kick_up')
 			Audio.play_sound('weekend/kickUp')
-		'kneecan' : 
+		'kneecan' :
 			dad.play_anim('knee', true)
 			dad.special_anim = true
 			cur_can.play_anim('kick_at')
@@ -153,7 +153,7 @@ func game_over_start(scene):
 	if died_by_can:
 		died_by_can = false
 		scene.we_dyin = scene.DEATH_TYPE.EXPLODE
-		
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
 #	pass

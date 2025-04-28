@@ -27,11 +27,11 @@ var on_death_confirm:Callable = func(): # once the player chooses to retry
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
 			i.process_mode = Node.PROCESS_MODE_INHERIT
-	
+
 	dead.position = this.stage.bf_pos
 	dead.top_level = false
 	dead.load_char(_char_name)
-	
+
 	this.gf.danced = true
 	this.ui.visible = true
 	get_tree().paused = false
@@ -40,7 +40,7 @@ var on_death_confirm:Callable = func(): # once the player chooses to retry
 	dead.dance()
 	this.gf.play_anim('cheer', true)
 	this.cam.position_smoothing_speed = 4
-	
+
 
 var death_sound:AudioStreamPlayer
 @onready var timer:Timer = $Timer
@@ -48,39 +48,39 @@ func _ready():
 	Audio.stop_all_sounds()
 	Game.focus_change.connect(focus_change)
 	Discord.change_presence('Game Over on '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'MOTHER FUCK')
-	
+
 	#await RenderingServer.frame_post_draw
 	for i in [this.ui, this.cam, this.stage]:
 		i.process_mode = Node.PROCESS_MODE_ALWAYS
-	
+
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
 			i.process_mode = Node.PROCESS_MODE_DISABLED
-		
+
 	this.ui.stop_countdown()
 	on_game_over.connect(this.stage.game_over_start)
 	on_game_over_idle.connect(this.stage.game_over_idle)
 	on_game_over_confirm.connect(this.stage.game_over_confirm)
-	
+
 	on_game_over.emit(self)
 
 	this.ui.visible = false
 	#this.boyfriend.visible = false # hide his ass!!!
 	Conductor.paused = true
-	
+
 	$BG.modulate.a = 0
 	$Fade.modulate.a = 0
-	
+
 	var da_boy = this.boyfriend.death_char
 	if da_boy == 'bf-dead' and ResourceLoader.exists('res://assets/data/characters/'+ this.boyfriend.cur_char +'-dead.json'):
 		da_boy = this.boyfriend.cur_char +'-dead'
-		
+
 	dead = this.boyfriend #Character.new(this.boyfriend.position, da_boy, true)
 	_char_name = dead.cur_char
 	dead.position = this.stage.bf_pos
 	dead.load_char(da_boy)
 	dead.play_anim('deathStart', true) # apply the offsets
-	
+
 	death_sound = Audio.return_sound('fnf_loss_sfx', true)
 	death_sound.play()
 
@@ -90,7 +90,7 @@ func _ready():
 	create_tween().tween_property($BG, 'modulate:a', 0.7, 0.7).set_trans(Tween.TRANS_SINE)
 	timer.start(2.5)
 	timer.timeout.connect(on_death_start)
-	
+
 	#await get_tree().create_timer(0.05).timeout
 	dead.play_anim('deathStart', true)
 
@@ -101,7 +101,7 @@ func _process(delta):
 	$BG.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / this.cam.zoom)
 	$BG.position -= Vector2(5, 5) # you could see the stage bg leak out
 	$Fade.position = $BG.position
-	
+
 	if (dead.frame >= 14 or dead.anim_finished) and !focused:
 		focused = true
 		this.cam.position_smoothing_speed = 2
@@ -110,10 +110,10 @@ func _process(delta):
 	if !retried:
 		this.cam.zoom.x = lerpf(this.cam.zoom.x, 1.05, delta * 4)
 		this.cam.zoom.y = this.cam.zoom.x
-		
+
 		if Input.is_action_just_pressed('accept'):
 			on_game_over_confirm.emit(true, self)
-			
+
 			if death_sound and death_sound.get_playback_position() < 1.0: # skip to mic drop
 				death_sound.play(1)
 			timer.paused = false
@@ -124,7 +124,7 @@ func _process(delta):
 			retried = true
 			Audio.play_music('skins/'+ this.cur_skin +'/gameOverEnd', false)
 			dead.play_anim('deathConfirm', true)
-		
+
 		if Input.is_action_just_pressed('back'):
 			on_game_over_confirm.emit(false, self)
 

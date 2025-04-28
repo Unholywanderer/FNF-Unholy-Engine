@@ -15,7 +15,7 @@ var hits:Dictionary = { # technically epics and sicks will be added together so 
 
 func is_highscore(songs:Array, is_week:bool = false) -> bool:
 	return true
-	
+
 func get_rank() -> String:
 	var temp = roundi((hits.epic + hits.sick + hits.good) / float(total_notes) * 100.0)
 	#var is_gold = (hits.epic + hits.sick) == total_notes

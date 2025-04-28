@@ -34,11 +34,11 @@ var on_death_confirm:Callable = func(): # once the player chooses to retry
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
 			i.process_mode = Node.PROCESS_MODE_INHERIT
-	
+
 	dead.position = this.stage.bf_pos
 	dead.load_char(_char_name)
 	dead.top_level = false
-	
+
 	this.cam.position_smoothing_speed = 4
 	this.gf.danced = true
 	#this.boyfriend.visible = true
@@ -58,37 +58,37 @@ func _ready():
 	Audio.stop_all_sounds()
 	Game.focus_change.connect(focus_change)
 	Discord.change_presence('Game Over on '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'I\'ll get it next time maybe')
-	
+
 	#await RenderingServer.frame_post_draw
 	for i in [this.ui, this.cam, this.stage]:
 		i.process_mode = Node.PROCESS_MODE_ALWAYS
-	
+
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
 			i.process_mode = Node.PROCESS_MODE_DISABLED
-		
+
 	this.ui.stop_countdown()
 	on_game_over.connect(this.stage.game_over_start)
 	on_game_over_idle.connect(this.stage.game_over_idle)
 	on_game_over_confirm.connect(this.stage.game_over_confirm)
-	
+
 	on_game_over.emit(self)
 
 	this.ui.visible = false
 	#this.boyfriend.visible = false # hide his ass!!!
 	Conductor.paused = true
-	
+
 	$BG.modulate.a = 0
 	$BG.scale = (Vector2.ONE / this.cam.zoom) + Vector2(0.05, 0.05)
 	$BG.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / this.cam.zoom)
 	$BG.position -= Vector2(5, 5) # you could see the stage bg leak out
 	$Fade.modulate.a = 0
-	
+
 	var da_boy = this.boyfriend.death_char
 	if we_dyin == DEATH_TYPE.EXPLODE: da_boy = 'pico-explode'
 	if da_boy == 'bf-dead' and ResourceLoader.exists('res://assets/data/characters/'+ this.boyfriend.cur_char +'-dead.json'):
 		da_boy = this.boyfriend.cur_char +'-dead'
-	
+
 	#if we_dyin == DEATH_TYPE.EXPLODE:
 		#dead = AnimateSymbol.new()
 		#dead.position = this.boyfriend.position - Vector2(100, 200)
@@ -98,14 +98,14 @@ func _ready():
 	dead = this.boyfriend #Character.new(this.boyfriend.position, da_boy, true)
 	_char_name = dead.cur_char
 	dead.load_char(da_boy)
-	
+
 	dead.play_anim('deathStart', true) # apply the offsets
 	#dead.stop()
 	#add_child(dead)
 	#move_child(dead, 1)
-	
+
 	var sound_suff:String = '-pico'
-	
+
 	match we_dyin:
 		DEATH_TYPE.EXPLODE:
 			death_delay = 2
@@ -115,13 +115,13 @@ func _ready():
 				if Audio.music.ends_with('-explode'):
 					Audio.play_music('gameOver-pico')
 			)
-			
+
 			var other = AnimatedSprite2D.new()
 			other.sprite_frames = ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
 			other.position = dead.position + Vector2(320, 100)
 			add_child(other)
 			other.play('start')
-			
+
 			retry = AnimatedSprite2D.new()
 			retry.sprite_frames = ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
 			retry.position = dead.position + Vector2(320, 100)
@@ -132,12 +132,12 @@ func _ready():
 				if other.frame == 35:
 					create_tween().tween_property(other, 'modulate:a', 0, 0.5).finished.connect(other.queue_free)
 			)
-			
-			retry.animation_finished.connect(func(): 
+
+			retry.animation_finished.connect(func():
 				if retry.animation == 'start': retry.play('loop')
 				if retry.animation == 'confirm': retry.queue_free()
 			)
-			
+
 		DEATH_TYPE.PUNCH:
 			sound_suff += '-gutpunch'
 			death_delay = -1
@@ -154,7 +154,7 @@ func _ready():
 			move_child(al_la_nene, dead.get_index())
 			al_la_nene.play('toss')
 			al_la_nene.animation_finished.connect(al_la_nene.queue_free)
-	
+
 			retry.sprite_frames = load('res://assets/images/characters/pico/ex_death/retry.res')
 			retry.position = dead.position + Vector2((dead.width / 3.2) + 10, -20)
 			retry.visible = false
@@ -186,7 +186,7 @@ func _ready():
 		add_child(dead2)
 
 		dead2.play_anim('deathStart', true)
-		
+
 		Audio.play_sound('fnf_loss_sfx-pico', 1, true)
 		await get_tree().create_timer(1).timeout
 		dead2.play_anim('deathLoop')
@@ -204,13 +204,13 @@ func _process(delta):
 	$BG.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / this.cam.zoom)
 	$BG.position -= Vector2(5, 5) # you could see the stage bg leak out
 	$Fade.position = $BG.position
-	
+
 	if (dead.frame >= 14 or dead.anim_finished) and !focused:
 		focused = true
 		this.cam.position_smoothing_speed = 2
 		this.cam.position = dead.position
 		match we_dyin:
-			DEATH_TYPE.EXPLODE: 
+			DEATH_TYPE.EXPLODE:
 				this.cam.position += Vector2(dead.width / 3.5, (dead.height / 2))
 			DEATH_TYPE.PUNCH:
 				this.cam.position += Vector2(dead.width / 6.0, -(dead.height / 2.5))
@@ -220,19 +220,19 @@ func _process(delta):
 		var zoo = 1.05 if we_dyin == DEATH_TYPE.NORMAL else 0.9
 		this.cam.zoom.x = lerpf(this.cam.zoom.x, zoo, delta * 4)
 		this.cam.zoom.y = this.cam.zoom.x
-		
+
 		if we_dyin == DEATH_TYPE.NORMAL:
 			if retry != null and dead.frame >= 35 and !retry.visible:
 				retry.visible = true
 				retry.play('loop')
-				
+
 		if we_dyin == DEATH_TYPE.PUNCH and !stop_sync:
 			stop_sync = dead.frame >= retry.sprite_frames.get_frame_count('start')
-			
+
 		if Input.is_action_just_pressed('accept'):
 			stop_sync = true
 			on_game_over_confirm.emit(true, self)
-			
+
 			#if death_sound != null and death_sound.get_playback_position() < 1.0: # skip to mic drop
 			#	death_sound.play(1)
 			timer.paused = false
@@ -243,17 +243,17 @@ func _process(delta):
 			retried = true
 			Audio.play_music('skins/'+ this.cur_skin +'/gameOverEnd-pico', false)
 			dead.play_anim('deathConfirm', true)
-			if retry != null: 
+			if retry != null:
 				retry.play('confirm')
 				if we_dyin == DEATH_TYPE.NORMAL:
 					create_tween().tween_property(retry, "position:y", retry.position.y - 400, 2.0)\
 					 .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN).set_delay(0.5)
 					create_tween().tween_property(retry, 'modulate:a', 0, 1.2).set_delay(0.5)
-				
+
 			await get_tree().create_timer(0.5).timeout
 			dead.play_anim('deathStart', true, true)
 			dead.speed_scale = 1.05
-		
+
 		if Input.is_action_just_pressed('back'):
 			on_game_over_confirm.emit(false, self)
 

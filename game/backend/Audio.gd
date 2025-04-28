@@ -8,7 +8,7 @@ var pos:float = 0.0 # in case you need the position for something or whatever
 var Player := AudioStreamPlayer.new()
 var playing_music:bool:
 	get: return Player.stream != null
-	
+
 var volume:float = 1.0:
 	set(vol):
 		volume = vol
@@ -39,20 +39,20 @@ func set_music(new_music:String, vol:float = 1, looped:bool = true) -> void:
 	var path:String = 'assets/music/'+ new_music +'.ogg'
 	if !ResourceLoader.exists('res://'+ path):
 		return printerr('MUSIC PLAYER | SET MUSIC: CAN\'T FIND FILE "'+ path +'"')
-	
+
 	Player.stream = load('res://'+ path)
 	music = new_music
 	volume = vol
 	loop_music = looped
-	
+
 ## Play the stated music. If called empty, will replay current track, if one exists
 func play_music(to_play:String = '', looped:bool = true, vol:float = 1.0) -> void:
 	if to_play.is_empty() and Player.stream == null: # why not, fuck errors
 		return printerr('MUSIC PLAYER | PLAY_MUSIC: MUSIC IS NULL')
-	
+
 	if !to_play.is_empty(): #and to_play != music:
 		set_music(to_play, vol, looped)
-	
+
 	if !music.is_empty():
 		pos = 0
 		Player.seek(0)
@@ -74,7 +74,7 @@ func finished() -> void:
 
 ## Get a sound from the sound folder, without actually playing it
 func return_sound(sound:String, use_skin:bool = false) -> AutoSound:
-	if use_skin and !sound.begins_with('skins/'): 
+	if use_skin and !sound.begins_with('skins/'):
 		sound = 'skins/'+ Game.scene.cur_skin +'/'+ sound
 	var to_return = AutoSound.new('res://assets/sounds/%s.ogg' % sound)
 	add_child(to_return)
@@ -82,7 +82,7 @@ func return_sound(sound:String, use_skin:bool = false) -> AutoSound:
 
 ## Play a specified sound in the sound folder
 func play_sound(sound:String, vol:float = 1.0, use_skin:bool = false, ext:String = 'ogg') -> void:
-	if use_skin and !sound.begins_with('skins/'): 
+	if use_skin and !sound.begins_with('skins/'):
 		sound = 'skins/'+ Game.scene.cur_skin +'/'+ sound
 
 	var path = 'res://assets/sounds/%s.%s' % [sound, ext]
@@ -101,7 +101,7 @@ class AutoSound extends AudioStreamPlayer:
 		stream = load(sound_path)
 		volume_db = linear_to_db(vol)
 		finished.connect(finish)
-		
+
 	func finish() -> void:
 		Audio.sound_list.remove_at(Audio.sound_list.find(self))
 		Audio.remove_child(self)

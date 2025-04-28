@@ -3,7 +3,7 @@ class_name Chart; extends Resource;
 
 enum {
 	LEGACY, # old base game, old psych
-	V_SLICE, 
+	V_SLICE,
 	PSYCH_V1,
 	FPS_PLUS,
 	CODENAME,
@@ -17,17 +17,17 @@ func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Ar
 	if data == null: return []
 	return_notes.clear()
 	format = get_format(chart_type)
-	
+
 	var le_parse = get_parse(format, diff)
 	if le_parse is Osu:
 		le_parse.load_file(data.song)
-	
+
 	return le_parse.parse_chart(data)
-	
+
 ## For loading a chart that isn't specifically named a difficulty
 static func load_named_chart(song:String, chart_name:String, format:String = 'legacy'):
 	var path:String = 'res://assets/songs/%s/charts/%s.json' % [Util.format_str(song), chart_name]
-	if format == 'v_slice': 
+	if format == 'v_slice':
 		path = 'res://assets/songs/%s/chart%s.json' % [Util.format_str(song), JsonHandler.song_variant]
 	var le_parse = get_parse(get_format(format), chart_name)
 	print(path)
@@ -36,7 +36,7 @@ static func load_named_chart(song:String, chart_name:String, format:String = 'le
 		if json.get('song') is Dictionary: json = json.song
 		return le_parse.parse_chart(json)
 	return []
-	
+
 static func get_must_hits(chart_notes:Array, player_hit:bool = true) -> Array:
 	var notes:Array = []
 	for i in chart_notes:
@@ -55,23 +55,23 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 	var events:Array[EventData] = []
 	if SONG.has('events'): # check current song json for any events
 		events_found.append_array(SONG.events)
-	
+
 	if format != V_SLICE and ResourceLoader.exists(path_to_check): # then check if there is a event json
 		print(path_to_check)
-		
+
 		var json = JSON.parse_string(FileAccess.open(path_to_check, FileAccess.READ).get_as_text())
 		if json.has('song'): json = json.song
 		if format == FPS_PLUS:
 			json = json.events
-		
+
 		if json.has('notes') and json.notes.size() > 0: # if events are a -1 note
 			for sec in json.notes:
 				for note in sec.sectionNotes:
-					if note[1] == -1: 
+					if note[1] == -1:
 						events_found.append([note[0], [[note[2], note[3], note[4]]]])
 		elif json.has('events'):
 			events_found.append_array(json.events)
-	
+
 	for event in events_found:
 		match format:
 			V_SLICE: events.append(EventData.new(event, 'v_slice'))
@@ -81,7 +81,7 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 			_:
 				for i in event[1]:
 					events.append(EventData.new([event[0], i]))
-	
+
 	events.sort_custom(func(a, b): return a.strum_time < b.strum_time)
 	return events
 
@@ -100,7 +100,7 @@ static func get_parse(f:int, d:String):
 	match f:
 		LEGACY, PSYCH_V1, FPS_PLUS:
 			return Legacy.new(f == PSYCH_V1)
-		V_SLICE: 
+		V_SLICE:
 			return VSlice.new(d)
 		CODENAME:
 			return Codename.new()
@@ -108,6 +108,6 @@ static func get_parse(f:int, d:String):
 			return Maru.new()
 		OSU:
 			return Osu.new()
-		_: 
+		_:
 			printerr('Couldn\'t get chart type')
 			return Legacy.new()

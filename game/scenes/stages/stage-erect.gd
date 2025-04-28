@@ -1,5 +1,5 @@
 extends StageBase
-	
+
 func post_ready():
 	var le_cols = [[12, 0, 7, -23], [-9, 0, -4, -30], [-32, 0, -23, -33]] # hue, sat, contrast, brightness
 	var heh = [boyfriend, gf, dad]

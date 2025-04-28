@@ -20,12 +20,12 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	parse_type = 'legacy'
 	note_count = 0
 
-	if !variant.is_empty(): 
+	if !variant.is_empty():
 		if variant != 'normal' and !variant.begins_with('-'):
 			variant = '-'+ variant
 		else:
 			variant = ''
-	
+
 	# TODO figure out a better way to get chart types, this a lil dookie
 	song = Util.format_str(song)
 	song_variant = variant
@@ -33,17 +33,17 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 
 	if ResourceLoader.exists('res://assets/songs/'+ song +'/chart'+ song_variant +'.json'):
 		parse_type = 'v_slice'
-		
+
 	if FileAccess.file_exists('res://assets/songs/'+ song +'/charts/'+ diff +'.osu'):
 		parse_type = 'osu'
-	
+
 	get_diff = diff.to_lower()
 	if parse_type != 'osu':
 		_SONG = get_song_data(song)
 	else:
 		var grossu = Osu.new()
 		_SONG = grossu.load_file(song)
-	
+
 	if _SONG.has('scrollSpeed'): parse_type = 'v_slice'
 	if _SONG.has('codenameChart'): parse_type = 'codename'
 	#if _SONG.has('gf'): parse_type = 'fps_plus'
@@ -54,7 +54,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	match parse_type:
 		'v_slice':
 			meta = JSON.parse_string(FileAccess.get_file_as_string(meta_path % ['metadata'+ song_variant]))
-			_SONG.speed = _SONG.scrollSpeed.get(diff, _SONG.scrollSpeed.get('default', 1)) 
+			_SONG.speed = _SONG.scrollSpeed.get(diff, _SONG.scrollSpeed.get('default', 1))
 			_SONG.player1 = meta.playData['characters'].player
 			_SONG.gfVersion = meta.playData['characters'].girlfriend
 			_SONG.player2 = meta.playData['characters'].opponent
@@ -82,7 +82,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 					'dad': _SONG.player2 = i.characters[0]
 			if !_SONG.has('player2') and _SONG.has('gfVersion'):
 				_SONG.player2 = _SONG.gfVersion
-	
+
 	print('Got "'+ parse_type +'" Chart')
 	if auto_create:
 		generate_chart(_SONG)
@@ -95,8 +95,8 @@ func get_song_data(song:String) -> Dictionary:
 			parse_type = 'psych_v1'
 		if parsed.song is Dictionary:
 			parsed = parsed.song # i dont want to have to do no SONG.song.bpm or something
-		
-	return parsed 
+
+	return parsed
 
 func reform_parts(song:String) -> void:
 	parse_type = 'psych'
@@ -105,7 +105,7 @@ func reform_parts(song:String) -> void:
 	for i:String in in_folder:
 		if i.begins_with('part'):
 			to_parse.append(i)
-			
+
 	var chart = Chart.new()
 	var temp_SONG = {}
 	var added_first:bool = false
@@ -119,19 +119,19 @@ func reform_parts(song:String) -> void:
 		else:
 			temp_SONG.notes.append(parsed.song.notes)
 		chart_notes.append(chart.load_common(parsed.song))
-		
+
 	_SONG = temp_SONG
 
 func you_WILL_get_a_json(song:String) -> FileAccess:
 	var path:String = 'res://assets/songs/%s/charts/' % song
 	var returned:String
-	
+
 	if parse_type == 'v_slice':
 		returned = path.replace('charts/', '') +'chart'+ song_variant
 	else:
 		returned = path + get_diff
 	returned += '.json'
-	
+
 	if !ResourceLoader.exists(returned):
 		var err_path = returned.replace('res://assets/songs/', '../')
 		Alert.make_alert('"%s" has no %s\n%s' % [song, get_diff.to_upper(), err_path], Alert.ERROR) #printerr(song +' has no '+ get_diff +' | '+ returned)
@@ -156,21 +156,21 @@ func stage_to(stage:String) -> String:
 		'school'       : le_stage = 'school'
 		'schoolEvil'   : le_stage = 'school-evil'
 		'tankmanBattlefield': le_stage = 'tank'
-	if stage.ends_with('Erect') or stage.ends_with('Pico'): 
+	if stage.ends_with('Erect') or stage.ends_with('Pico'):
 		le_stage += '-erect'
 	return le_stage
 
 func generate_chart(data, keep_loaded:bool = true) -> Array:
-	if data == null: 
+	if data == null:
 		return parse_song('tutorial', get_diff)
-	
+
 	var chart = Chart.new()
 	var _notes := chart.load_chart(data, parse_type, get_diff) # get diff here only matters for base game as of now
 	song_events = chart.get_events(data) # load events whenever chart is made
 	#note_count = chart.get_must_hits(_notes).size() # change this later future me
 	if keep_loaded:
 		chart_notes = _notes.duplicate()
-		
+
 	return _notes
 
 func get_character(character:String = 'bf'):

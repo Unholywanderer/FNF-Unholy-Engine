@@ -7,10 +7,10 @@ var follow_spr = null
 var center_offset:float = 12.0
 
 @export var default_scale:float = 1.0:
-	set(new): 
+	set(new):
 		default_scale = new
 		scale = Vector2(new, new)
-@export var icon_speed:float = 15.0  
+@export var icon_speed:float = 15.0
 const MIN_WIDTH:int = 150 # if icon width is less or equal, theres no lose anim
 var has_lose:bool = false
 
@@ -21,14 +21,17 @@ var antialiasing:bool = true:
 
 func change_icon(new_image:String = 'face', player:bool = false, credit:bool = false) -> void:
 	if new_image.begins_with('icon-'): new_image = new_image.replace('icon-', '')
-	
+
 	is_player = player
 	image = new_image
+
 	var icon_path:String = 'res://assets/images/icons/icon-%s.png'
 	if credit: icon_path = icon_path.replace('icons/', 'credits/').replace('icon-', '')
-	if !ResourceLoader.exists(icon_path % image): image = 'face'
+	if !ResourceLoader.exists(icon_path % image):
+		icon_path = 'res://assets/images/icons/icon-%s.png'
+		image = 'face'
 	texture = load(icon_path % image)
-		
+
 	antialiasing = !image.ends_with('-pixel')
 	has_lose = texture.get_width() > MIN_WIDTH
 	if image.ends_with('-pixel'): # shhhh
@@ -37,10 +40,10 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 
 	hframes = 2 if has_lose else 1
 	if is_player: flip_h = true
-	
+
 func bump(to_scale:float = 1.2) -> void:
 	scale = Vector2(default_scale * to_scale, default_scale * to_scale)
-	
+
 func _process(delta):
 	var scale_ratio:float = icon_speed / Conductor.step_crochet * 100.0
 
@@ -55,7 +58,7 @@ func _process(delta):
 				position.x = cen + (150 * (scale.x / default_scale) - 150) / 2 - 26
 			else:
 				position.x = cen - (150 * (scale.x / default_scale)) / 2 - 26 * 2
-		
+
 			position.y = -75 + (75 * (scale.y / default_scale)) # goofy..
 			rotation = -follow_spr.rotation
 			if has_lose:

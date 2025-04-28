@@ -24,7 +24,7 @@ func _ready():
 	if !Audio.playing_music:
 		Audio.play_music('freakyMenu', true, 0.7)
 	Discord.change_presence('Maining some Menus', 'In Freeplay')
-		
+
 	added_weeks.append_array(Game.persist.week_list) # base stuff first~
 	var other_weeks = []
 	for i in DirAccess.get_files_at('res://assets/data/weeks'): # then go through the weeks folder for any others
@@ -32,19 +32,19 @@ func _ready():
 		other_weeks.append(i.replace('.json', ''))
 
 	added_weeks.append_array(other_weeks)
-	
-	for file in added_weeks: 
+
+	for file in added_weeks:
 		var week_file = JsonHandler.parse_week(file)
 		if week_file.is_empty(): continue
 		var d_list = week_file.get('difficulties', [])
 		if d_list is String: d_list = d_list.split(',')
-			
+
 		for song in week_file.songs:
 			add_song(FreeplaySong.new(song, d_list, week_file.get('variants', {})))
-	
+
 	for song in songs_in_folder: # then add any other fuckass songs without a json
 		add_song(FreeplaySong.new([song, 'bf', [100, 100, 100]]))
-	
+
 	if JsonHandler._SONG.has('song'):
 		last_loaded.song = Util.format_str(JsonHandler._SONG.song)
 		if JsonHandler.song_root != '':
@@ -55,17 +55,17 @@ func _ready():
 		diff_int = songs[cur_song].diff_list.find(last_loaded.diff)
 		if last_loaded.variant != '':
 			vari_int = songs[cur_song].variants.keys().find(last_loaded.variant)
-			
-	
+
+
 	update_list()
-	
+
 func add_song(song:FreeplaySong) -> void:
 	var song_name:String = Util.format_str(song.song)
 	if added_songs.has(song_name):
 		#print_rich("[color=yellow]"+ song.song +"[/color] already added, skipping")
 		song.queue_free()
 		return
-	
+
 	added_songs.append(song_name)
 	add_child(song)
 	songs.append(song)
@@ -76,7 +76,7 @@ func add_song(song:FreeplaySong) -> void:
 	icon.is_menu = true
 	icon.follow_spr = song
 	icons.append(icon)
-	
+
 	if !songs_in_folder.has(song_name):
 		song.modulate = Color.RED
 		icon.hframes = 1
@@ -92,12 +92,12 @@ func _process(delta):
 	lerp_score = floor(lerp(actual_score, lerp_score, exp(-delta * 24)))
 	if abs(lerp_score - actual_score) <= 10:
 		lerp_score = actual_score
-		
+
 	$SongInfo/Score.text = 'Best Score: '+ str(lerp_score)
 	$SongInfo/Score.position.x = Game.screen[0] - $SongInfo/Score.size[0] - 6
 	$SongInfo/ScoreBG.scale.x = Game.screen[0] - $SongInfo/Score.position.x + 6
 	$SongInfo/ScoreBG.position.x = Game.screen[0] - ($SongInfo/ScoreBG.scale.x / 2)
-	
+
 	$SongInfo/Difficulty.position.x = int($SongInfo/ScoreBG.position.x + ($SongInfo/ScoreBG.size[0] / 2))
 	$SongInfo/Difficulty.position.x -= ($SongInfo/Difficulty.size[0] / 2) + 150
 	$SongInfo/ScoreBG.position.x -= 215
@@ -106,16 +106,16 @@ var col_tween
 func update_list(amount:int = 0) -> void:
 	if amount != 0: Audio.play_sound('scrollMenu')
 	cur_song = wrapi(cur_song + amount, 0, songs.size())
-	
+
 	if col_tween: col_tween.kill()
 	col_tween = create_tween()
 	col_tween.tween_property($MenuBG, 'modulate', songs[cur_song].bg_color, 0.3)
-	
+
 	diff_list = songs[cur_song].diff_list
 	variant_list = songs[cur_song].variants.keys()
 	change_variant()
 	change_diff()
-	
+
 	for i in songs.size():
 		var item = songs[i]
 		item.target_y = i - cur_song
@@ -126,7 +126,7 @@ func update_list(amount:int = 0) -> void:
 
 func change_diff(amount:int = 0) -> void:
 	var use_list = songs[cur_song].variants[variant_str] if songs[cur_song].variants.size() > 1 else diff_list
-	
+
 	diff_int = wrapi(diff_int + amount, 0, use_list.size())
 	diff_str = use_list[diff_int]
 	var text = '< '+ diff_str.to_upper() +' >'
@@ -140,7 +140,7 @@ func change_variant(amount:int = 0) -> void:
 	$SongInfo/VariantTxt/Notice.visible = has_variants
 	if !has_variants:
 		vari_int = 0 # just in case
-	
+
 	vari_int = wrapi(vari_int + amount, 0, variant_list.size())
 	variant_str = variant_list[vari_int]
 	$SongInfo/VariantTxt.text = EFFECTS + variant_str.to_upper()
@@ -159,25 +159,25 @@ func _unhandled_key_input(_event):
 		print('Erasing '+ ('all' if shifty else diff_str) +' | '+ songs[cur_song].text)
 		HighScore.clear_score(songs[cur_song].text, diff_str, shifty)
 		update_list()
-		
+
 	if just_pressed.call('menu_down'): update_list(diff)
 	if just_pressed.call('menu_up')  : update_list(-diff)
-	
+
 	if is_held.call('menu_down') or is_held.call('menu_up'):
 		hold_time += get_process_delta_time()
 		if hold_time >= (1.5 * get_process_delta_time()):
 			hold_time = 0
 			update_list(diff * Input.get_axis('menu_up', 'menu_down'))
-			
+
 	if just_pressed.call('menu_left') : change_diff(-1)
 	if just_pressed.call('menu_right'): change_diff(1)
 	if Input.is_key_pressed(KEY_CTRL):
 		change_variant(1)
-	
+
 	if just_pressed.call('back'):
 		Audio.play_sound('cancelMenu')
 		Game.switch_scene('menus/main_menu')
-		
+
 	if Input.is_key_pressed(KEY_ENTER) and in_time >= 0.15:
 		Audio.stop_music()
 		Conductor.reset()
@@ -186,7 +186,7 @@ func _unhandled_key_input(_event):
 			JsonHandler.parse_song(songs[cur_song].text, diff_str, variant_str)
 		JsonHandler.song_diffs = songs[cur_song].diff_list
 		Game.switch_scene('Play_Scene')
-	
+
 class FreeplaySong extends Alphabet:
 	var song:String = 'Tutorial'
 	var diff_list:Array = JsonHandler.base_diffs
@@ -196,14 +196,14 @@ class FreeplaySong extends Alphabet:
 
 	func _init(info, diffs:Array = [], vars:Dictionary = {}):
 		if diffs.size() > 0: diff_list = diffs
-		if vars.size() > 0: 
+		if vars.size() > 0:
 			for i:String in vars.keys():
 				var var_diffs:Array = vars[i]
 				variants[i] = var_diffs if !var_diffs.is_empty() else diff_list
-		
+
 		self.song = info[0]
 		self.icon = info[1]
 		self.bg_color = Color(info[2][0] / 255.0, info[2][1] / 255.0, info[2][2] / 255.0)
-		
+
 		is_menu = true
 		super(song, true)

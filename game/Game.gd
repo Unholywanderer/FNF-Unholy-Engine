@@ -29,7 +29,7 @@ var screen = [
 	ProjectSettings.get_setting("display/window/size/viewport_height")
 ]
 var fullscreen = false:
-	set(f): 
+	set(f):
 		fullscreen = f
 		var window_mode = Window.MODE_EXCLUSIVE_FULLSCREEN if f else Window.MODE_WINDOWED
 		main_window.mode = window_mode
@@ -50,10 +50,10 @@ func  _unhandled_input(event:InputEvent) -> void:
 			fullscreen = !fullscreen
 
 var is_paused:bool = false:
-	set(paus): 
+	set(paus):
 		is_paused = paus
 		get_tree().paused = is_paused
-		
+
 func _focus_in():
 	focus_change.emit(true)
 	if !Prefs.auto_pause: return
@@ -79,10 +79,10 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 	if ((to_scene is not String) and (to_scene is not PackedScene)) or to_scene == null:
 		printerr('Switch Scene: new scene is invalid')
 		return
-	
+
 	set_mouse_visibility(false)
 	if Prefs.skip_transitions: skip_trans = true
-	
+
 	persist.deaths = 0
 	print('LEAVING '+ scene.name)
 	if to_scene is String: # scene is a string, make it into a packed scene
@@ -93,14 +93,14 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 		else:
 			printerr('Switch Scene: "'+ to_scene +'" doesn\'t exist, reloading')
 			return reset_scene()
-	
+
 	var new_scene:PackedScene = to_scene
 
 	if cur_trans != null and cur_trans.in_progress: # cancel previous trans, if exists
 		remove_child(cur_trans)
 		cur_trans.cancel()
 		get_tree().paused = false
-		
+
 	if skip_trans:
 		get_tree().change_scene_to_packed(new_scene)
 	else:
@@ -111,7 +111,7 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 
 		get_tree().change_scene_to_packed(new_scene)
 		get_tree().paused = is_paused
-		
+
 		cur_trans.on_finish = func():
 			remove_child(cur_trans)
 			cur_trans.queue_free()
