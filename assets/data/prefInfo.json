@@ -6,7 +6,7 @@
     "scroll_type"     : "Choose the direction you want the notes to travel",
     "center_strums"   : "Centers player strums\n(May or may not apply depending on scroll type!)",
     "hitsound_volume" : "How loud should the hitsounds be?\n(0 to disable)",
-    "offset"          : "How early/late the music is\n(for headsets/speakers with audio delay)",
+    "offset"          : "How early/late the notes will be\n(for headsets/speakers with audio delay)\nHigher number = earlier",
     "epic_window"     : "How tight the \n\"Epic\"\nwindow is to hit",
     "sick_window"     : "How tight the \n\"Sick\"\nwindow is to hit",
     "good_window"     : "How tight the \n\"Good\"\nwindow is to hit",

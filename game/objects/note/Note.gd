@@ -24,7 +24,11 @@ const COLORS:PackedStringArray = ['purple', 'blue', 'green', 'red']
 var chart_note:bool = false:
 	set(c): set_process(!c); chart_note = c;
 var spawned:bool = false
-var strum_time:float
+var strum_time:float:
+	get(): 
+		return raw_time + Prefs.offset
+
+var raw_time:float
 var dir:int = 0
 
 var must_press:bool = false
@@ -220,7 +224,9 @@ func resize_hold(update_control:bool = false) -> void:
 
 func copy_from(item) -> void:
 	if item != null and (item is Note or item is NoteData):
-		strum_time = item.strum_time
+		if (item is Note): raw_time = item.raw_time
+		else: raw_time = item.strum_time
+		
 		dir = item.dir
 		length = item.length
 		must_press = item.must_press

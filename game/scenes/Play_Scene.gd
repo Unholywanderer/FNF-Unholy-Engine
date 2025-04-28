@@ -409,6 +409,8 @@ func key_press(key:int = 0) -> void:
 		return
 	
 	var note:Note = hittable_notes[0]
+
+	# side note you should throw this in note parsing instead :3 -rudy
 	if hittable_notes.size() > 1: # mmm idk anymore
 		for funny in hittable_notes: # temp dupe note thing killer bwargh i hate it
 			if note == funny: continue 
