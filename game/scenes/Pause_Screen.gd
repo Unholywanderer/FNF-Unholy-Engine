@@ -25,7 +25,7 @@ func _ready():
 	$Diff.modulate.a = 0
 	create_tween().tween_property($Diff, 'modulate:a', 1, 0.3).set_delay(0.15)
 	
-	$Time.text = Game.to_time(max(Conductor.song_pos, 0)) +' / '+ Game.to_time(Conductor.song_length)
+	$Time.text = Util.to_time(max(Conductor.song_pos, 0)) +' / '+ Util.to_time(Conductor.song_length)
 	$Time.modulate.a = 0
 	create_tween().tween_property($Time, 'modulate:a', 1, 0.3).set_delay(0.4)
 	
@@ -57,7 +57,7 @@ func _process(_delta):
 		if in_diff:
 			var choice = options[cur_option].text
 			if diffs.has(choice.to_lower()):
-				var path = 'res://assets/songs/'+ Game.format_str(this.SONG.song) +'/charts/' 
+				var path = 'res://assets/songs/'+ Util.format_str(this.SONG.song) +'/charts/' 
 				if ResourceLoader.exists(path + choice +'.json') or JsonHandler._SONG.notes.has(choice.to_lower()):
 					JsonHandler.parse_song(this.SONG.song, choice)
 					close()
@@ -112,7 +112,7 @@ var hold_this = []
 func toggle_diff_select(make_visible:bool = true):
 	if diffs.size() == 1: return # this shouldnt happen
 	cur_option = 0 if make_visible else 2
-	Game.remove_all([options], self)
+	Util.remove_all([options], self)
 	
 	var list_to_use:Array = diffs if make_visible else option_list
 
