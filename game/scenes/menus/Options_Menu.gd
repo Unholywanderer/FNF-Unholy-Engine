@@ -199,7 +199,8 @@ class Option extends Alphabet:
 			add_child(vis)
 			vis.position.x += 750
 
-		add_child(audio)
+		if audio:
+			add_child(audio)
 		#color = Color.WHITE
 
 		match type:

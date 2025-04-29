@@ -56,7 +56,6 @@ func _ready():
 		if last_loaded.variant != '':
 			vari_int = songs[cur_song].variants.keys().find(last_loaded.variant)
 
-
 	update_list()
 
 func add_song(song:FreeplaySong) -> void:
@@ -114,7 +113,7 @@ func update_list(amount:int = 0) -> void:
 	diff_list = songs[cur_song].diff_list
 	variant_list = songs[cur_song].variants.keys()
 	change_variant()
-	change_diff()
+	#change_diff()
 
 	for i in songs.size():
 		var item = songs[i]
@@ -131,7 +130,9 @@ func change_diff(amount:int = 0) -> void:
 	diff_str = use_list[diff_int]
 	var text = '< '+ diff_str.to_upper() +' >'
 	if use_list.size() == 1: text = text.replace('<', ' ').replace('>', ' ')
-	actual_score = HighScore.get_score(added_songs[cur_song], diff_str)
+	var score_to_get:String = added_songs[cur_song] + ('-'+ variant_str if variant_str != 'normal' else '')
+	print(score_to_get)
+	actual_score = HighScore.get_score(score_to_get, diff_str)
 	$SongInfo/Difficulty.text = text
 
 func change_variant(amount:int = 0) -> void:

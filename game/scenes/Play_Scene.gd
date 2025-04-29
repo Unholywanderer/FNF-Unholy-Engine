@@ -444,12 +444,13 @@ func _exit_tree() -> void:
 	Audio.stop_all_sounds()
 
 func song_end() -> void:
-	if should_save and JsonHandler.song_variant == '':
+	if should_save:
 		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
-		var saved_score = HighScore.get_score(SONG.song, JsonHandler.get_diff)
+		var song_name:String = JsonHandler.song_root + JsonHandler.song_variant
+		var saved_score = HighScore.get_score(song_name, JsonHandler.get_diff)
 
 		if save_data[0] > saved_score:
-			HighScore.set_score(SONG.song, JsonHandler.get_diff, save_data)
+			HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
 
 	Conductor.reset()
 	if song_idx + 1 > playlist.size():

@@ -62,6 +62,10 @@ func _ready():
 	audio = AudioStreamPlayer.new()
 	add_child(audio)
 	audio.bus = 'Instrumental'
+	audio.finished.connect(func(): # need this so it ends the song consistently
+		print('Song Finished')
+		song_end.emit()
+	)
 	#add_child(inst)
 	#add_child(vocals)
 	#add_child(vocals_opp)
@@ -106,10 +110,6 @@ func load_song(song:String = '') -> void:
 
 	if inst:
 		song_length = roundf(inst.get_length() * 1000.0)
-		audio.finished.connect(func(): # need this so it ends the song consistently
-			print('Song Finished')
-			song_end.emit()
-		)
 
 	audio.stream_paused = true
 	song_loaded = true
