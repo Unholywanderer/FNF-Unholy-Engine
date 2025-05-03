@@ -10,7 +10,6 @@
 		"bf",
 		"gf"
 	],
-	"variants": {"erect": ["erect", "nightmare"], "pico": []},
 	"weekBackground": "stage",
 
 	"storyName": "Daddy Dearest",

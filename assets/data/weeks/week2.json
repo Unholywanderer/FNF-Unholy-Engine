@@ -12,7 +12,6 @@
 	],
 	"weekBackground": "halloween",
 
-	"variants": {"erect": ["erect", "nightmare"], "pico": []},
 	"storyName": "Spooky Month",
 	"weekBefore": "week1",
 	"weekName": "Week 2",

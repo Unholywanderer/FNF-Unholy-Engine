@@ -12,7 +12,6 @@
 	],
 	"weekBackground": "philly",
 
-	"variants": {"erect": ["erect", "nightmare"], "pico": []},
 	"storyName": "PICO",
 	"weekBefore": "week2",
 	"weekName": "Week 3",
