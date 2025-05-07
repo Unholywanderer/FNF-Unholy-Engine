@@ -520,6 +520,7 @@
 	],
 	"path": "characters/pico/blazin/char",
 	"icon": "pico",
+	"death_char": "pico-blazin-dead",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [

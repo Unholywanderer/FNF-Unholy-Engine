@@ -4,7 +4,7 @@ var strum_time:float = 0.0
 var event:String = ''
 var values:Array[Variant] = []
 
-# new event should be [strum_time, [eventname, value1, value2,...] and so on 
+# new event should be [strum_time, [eventname, value1, value2,...] and so on
 # but since its psych theres only likely gonna be 2
 func _init(new_event, type:String = 'psych'):
 	if new_event != null:

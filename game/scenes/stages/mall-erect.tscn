@@ -13,6 +13,9 @@
 
 [node name="Mall Erect" type="Node2D"]
 script = ExtResource("1_uctkg")
+bf_pos = Vector2(970, 100)
+gf_pos = Vector2(650, 100)
+bf_cam_offset = Vector2(-50, -100)
 
 [node name="BGWall" type="Node2D" parent="."]
 script = ExtResource("1_fgt6k")

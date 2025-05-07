@@ -113,12 +113,14 @@ func convert_xml() -> void:
 			print(path_string+" loading failed.")
 
 func _ready() -> void:
+	Prefs.auto_pause = false
 	Game.set_mouse_visibility(true)
 	Audio.play_music('artisticExpression')
 
 func _process(_delta :float) -> void:
 	if Input.is_action_just_pressed("back") and not fps_box.has_focus():
 		Game.switch_scene("menus/main_menu")
+		Prefs.auto_pause = true
 
 # funny signal shits
 func set_path(new_path :String) -> void:

@@ -5,6 +5,7 @@ class_name Strum_Line; extends Node2D;
 var SPARK = preload('res://game/objects/note/holdnote_splash.tscn')
 
 var INIT_POS:PackedVector2Array = [Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO]
+@onready var strums:Array[Strum] = [$Left, $Down, $Up, $Right]
 @export var is_cpu:bool = true:
 	set(cpu):
 		is_cpu = cpu
@@ -33,7 +34,7 @@ func get_strums() -> Array[Strum]:
 	return [$Left, $Down, $Up, $Right]
 
 func set_all_skins(skin:String = '') -> void:
-	for i in get_strums():
+	for i in strums:
 		i.load_skin(skin)
 
 func note_hit(note:Note) -> void:
@@ -48,12 +49,12 @@ func note_hit(note:Note) -> void:
 				singer.sing(note.dir, note.alt, !note.is_sustain)
 
 	if note.is_sustain and Prefs.hold_splash != 'disabled' and !Prefs.behind_strums:
-		spawn_hold_splash(get_strums()[note.dir], note)
+		spawn_hold_splash(strums[note.dir], note)
 
 	var can_splash = note.rating == 'sick' or note.rating == 'epic'
 	if (Prefs.note_splashes == 'epics' and note.rating == 'epic') or \
 	   (Prefs.note_splashes == 'both' and can_splash):
-		spawn_splash(get_strums()[note.dir])
+		spawn_splash(strums[note.dir])
 
 func note_miss(note:Note) -> void:
 	if singer != null:
@@ -100,11 +101,12 @@ func spawn_hold_splash(strum:Strum, note:Note) -> void:
 		spark.anim_time += get_process_delta_time()
 		add_child(spark)
 		cur_sparks[strum.dir] = spark
+
 func add_strum() -> void:
 	pass
 
 func strum_anim(dir:int = 0, player:bool = false, force:bool = true) -> void:
-	var strum:Strum = get_strums()[dir]
+	var strum:Strum = strums[dir]
 
 	if force or strum.anim_timer <= 0:
 		strum.play_anim('confirm', true)

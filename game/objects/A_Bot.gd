@@ -8,7 +8,15 @@ var timer:float = 0.0
 @onready var spectrum = AudioServer.get_bus_effect_instance(1, 0)
 @export var updates_per_second: float = 24.0
 
-var parent = null
+var active:bool = true:
+	set(act):
+		active = act
+		for i:AnimatedSprite2D in $VIZ.get_children():
+			i.modulate = Color.WHITE if act else Color.DIM_GRAY
+			i.modulate.a = 0.6 if act else 1.0
+			create_tween().tween_property(i, 'modulate:a', 1.0 if act else 0.6, 0.2)
+		set_process(act)
+
 var unedited_pos:Vector2 = Vector2.ZERO
 var offset:Vector2 = Vector2.ZERO:
 	set(off):

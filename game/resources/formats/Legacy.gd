@@ -28,20 +28,20 @@ func parse_chart(data) -> Array:
 		for note in sec.sectionNotes:
 			if note[1] < 0: continue
 			var time:float = maxf(0, note[0])
-			
+
 			if note[2] is String: continue
 			var sustain_len:float = maxf(0, note[2])
 			var is_sustain:bool = sustain_len > 0
-			
+
 			var n_data:int = int(note[1])
 			var must_hit:bool = sec.mustHitSection if note[1] <= 3 else not sec.mustHitSection
 			if p_v1: must_hit = n_data < 4
-			
+
 			var n_type:String = str(note[3]) if note.size() > 3 else ''
 			if n_type == 'true': n_type = 'Alt'
-			
-			add_note([round(time), n_data, is_sustain, sustain_len, must_hit, n_type])
-	
+
+			add_note([time, n_data, is_sustain, sustain_len, must_hit, n_type])
+
 	return_notes.sort_custom(func(a, b): return a[0] < b[0])
 	return return_notes
 
@@ -66,7 +66,7 @@ static func fix_json(data:Dictionary) -> Dictionary:
 		"scale": "scale",
 		"speaker": "speaker"
 	}
-	
+
 	var new_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
 	for anim:Dictionary in data.animations:
 		var anis:Dictionary = UnholyFormat.CHAR_ANIM.duplicate()
@@ -79,9 +79,9 @@ static func fix_json(data:Dictionary) -> Dictionary:
 			else:
 				anis[psych_anim[key]] = anim[key] if anim.has(key) else UnholyFormat.CHAR_ANIM[psych_anim[key]]
 		new_json.animations.append(anis)
-		
+
 	for i in data.keys():
 		if i == 'animations' or !psych_data.has(i): continue
 		new_json[psych_data[i]] = data[i] if i != 'no_antialiasing' else !data[i]
-	
+
 	return new_json

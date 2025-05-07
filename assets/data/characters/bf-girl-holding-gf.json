@@ -113,6 +113,7 @@
 	],
 	"path": "characters/bf/trans/gf/char",
 	"icon": "bf-g",
+	"death_char": "bf-girl-holding-gf-dead",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [

@@ -7,7 +7,7 @@ func _ready() -> void:
 	bf_pos = Vector2(850, -550)
 	dad_pos = Vector2(-450, -550)
 	gf_pos = Vector2(350, 100)
-		
+
 	dad_cam_offset = Vector2(350, 250)
 	UI.health_bar.rotation = deg_to_rad(90)
 	UI.health_bar.scale = Vector2(0.90, 0.90)
@@ -18,8 +18,8 @@ func _ready() -> void:
 	UI.icon_p2.flip_h = true
 	UI.get_group('opponent').visible = false
 	UI.get_group('player').position.x = Game.screen[0] / 2.0 - 180
-	
-func countdown_start(): 
+
+func countdown_start():
 	def_index = boyfriend.get_index()
 	if Prefs.rating_cam == 'game':
 		THIS.Judge.rating_pos = boyfriend.position + Vector2(650, 250)
@@ -37,7 +37,7 @@ func _process(delta):
 	#boyfriend.play_anim('hit'+ an.replace('punch', '').replace('1', '').replace('2', ''), true)
 	#Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.1)
 	#UI.hp -= 10 * delta
-	
+
 func good_note_hit(note:Note):
 	if !note.type.begins_with('weekend-1'): return
 	note.no_anim = true
@@ -49,7 +49,7 @@ func opponent_note_hit(note:Note):
 	note.no_anim = true
 	pico_anim(note.type.replace('weekend-1-', ''), true)
 	darnell_anim(note.type.replace('weekend-1-', ''), true)
-	
+
 func note_miss(note:Note):
 	if !note.type.begins_with('weekend-1'): return
 	pico_anim(note.type.replace('weekend-1-', ''), true)
@@ -76,7 +76,7 @@ func pico_anim(note:String, missed:bool = false):
 			'picouppercutprep': boyfriend.play_anim('uppercutPrep', true)
 			'picouppercut': boyfriend.play_anim('uppercut', true)
 			'darnelluppercutprep': boyfriend.play_anim('idle', true)
-			'darnelluppercut': 
+			'darnelluppercut':
 				boyfriend.play_anim('uppercutHit', true)
 				boyfriend.flip_h = true
 			'idle': boyfriend.play_anim('idle', true)
@@ -100,7 +100,7 @@ func pico_anim(note:String, missed:bool = false):
 			'picouppercutprep': boyfriend.play_anim('uppercutPrep', true)
 			'picouppercut': boyfriend.play_anim('uppercut', true)
 			'darnelluppercutprep': boyfriend.play_anim('idle', true)
-			'darnelluppercut': 
+			'darnelluppercut':
 				boyfriend.play_anim('uppercutHit', true)
 				boyfriend.flip_h = true
 			'idle': boyfriend.play_anim('idle', true)
@@ -110,31 +110,31 @@ func pico_anim(note:String, missed:bool = false):
 			'reversefakeout': boyfriend.play_anim('idle', true)
 	boyfriend.flip_h = (boyfriend.animation == 'uppercutHit') # i cant be assed
 	if front_anims.has(boyfriend.animation):
-		THIS.move_child(boyfriend, def_index + 1)
+		$CharGroup.move_child(boyfriend, 2)
 	else:
-		THIS.move_child(boyfriend, def_index)
-		
+		$CharGroup.move_child(boyfriend, 1)
+
 func darnell_anim(note, missed:bool = false):
 	dad.can_dance = false
-	
+
 	if missed:
 		if UI.hp <= 5:
 			dad.play_anim('punchLow'+ alter('alt_dad'))
 			return
-			
+
 		if note.contains('high') or note.contains('low'):
 			dad.play_anim('punch'+ ('High' if note.contains('high') else 'Low') + alter('alt_dad'), true)
 		match note:
 			'picouppercutprep': dad.play_anim('hitHigh', true)
 			'picouppercut': dad.play_anim('dodge', true)
-			
+
 			'darnelluppercutprep': dad.play_anim('uppercutPrep', true)
 			'darnelluppercut': dad.play_anim('uppercut', true)
 			'idle': dad.play_anim('idle', true)
 			'fakeout': dad.play_anim('cringe', true)
 			'taunt': dad.play_anim('pissed', true)
 			'tauntforce': dad.play_anim('pissed', true)
-			
+
 			#case "weekend-1-picouppercutprep":
 			#	playHitHighAnim();
 			#	cantUppercut = true;
@@ -146,46 +146,46 @@ func darnell_anim(note, missed:bool = false):
 			'punchlowblocked': dad.play_anim('block', true)
 			'punchlowdodged': dad.play_anim('dodge', true)
 			'punchlowspin': dad.play_anim('spinOut', true)
-			
+
 			'punchhigh': dad.play_anim('hitHigh', true)
 			'punchhighblocked': dad.play_anim('block', true)
 			'punchhighdodged': dad.play_anim('dodge', true)
 			'punchhighspin': dad.play_anim('spinOut', true)
-			
+
 			'blockhigh': dad.play_anim('punchHigh'+ alter('alt_dad'), true)
 			'blocklow': dad.play_anim('punchLow'+ alter('alt_dad'), true)
 			'blockspin': dad.play_anim('punchHigh'+ alter('alt_dad'), true)
-			
+
 			'dodgehigh': dad.play_anim('punchHigh'+ alter('alt_dad'), true)
 			'dodgelow': dad.play_anim('punchLow'+ alter('alt_dad'), true)
 			'dodgespin': dad.play_anim('punchHigh'+ alter('alt_dad'), true)
-			
+
 			'hithigh': dad.play_anim('punchHigh'+ alter('alt_dad'), true)
 			'hitlow': dad.play_anim('punchLow'+ alter('alt_dad'), true)
 			'hitspin': dad.play_anim('punchHigh'+ alter('alt_dad'), true)
-			
+
 			'picouppercutprep': pass
 			'picouppercut': dad.play_anim('uppercutHit', true)
-			
+
 			'darnelluppercutprep': dad.play_anim('uppercutPrep', true)
 			'darnelluppercut': dad.play_anim('uppercut', true)
-			
+
 			'idle': dad.play_anim('idle')
 			'fakeout': dad.play_anim('cringe', true)
 			'taunt': dad.play_anim('pissed', true)
 			'tauntforce': dad.play_anim('pissed', true)
 			'reversefakeout': dad.play_anim('fakeout', true)
 	if front_anims.has(dad.animation):
-		THIS.move_child(dad, def_index + 1)
+		$CharGroup.move_child(dad, 2)
 	else:
-		THIS.move_child(dad, def_index)
+		$CharGroup.move_child(dad, 1)
 
 
 
 func alter(a:String):
 	set(a, !get(a))
 	return '1' if get(a) else '2'
-	
+
 func game_over_start(scene):
 	scene.we_dyin = scene.DEATH_TYPE.PUNCH
 # Called every frame. 'delta' is the elapsed time since the previous frame.

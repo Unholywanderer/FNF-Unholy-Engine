@@ -4,9 +4,11 @@
 [ext_resource type="Script" uid="uid://c2mel7lugequw" path="res://game/objects/note/HoldNote_splash.gd" id="2_sfdvs"]
 
 [node name="HoldNote_Splash" type="AnimatedSprite2D"]
+scale = Vector2(0.7, 0.7)
 sprite_frames = ExtResource("1_ijov6")
-animation = &"blue"
+animation = &"start"
 autoplay = "start"
+offset = Vector2(-12, 45)
 script = ExtResource("2_sfdvs")
 
 [connection signal="animation_finished" from="." to="." method="_on_animation_finished"]

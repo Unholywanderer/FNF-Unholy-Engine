@@ -1,7 +1,7 @@
 extends Node2D;
 
 const base_diffs:PackedStringArray = ['easy', 'normal', 'hard']
-var song_diffs:Array = []
+var song_diffs:PackedStringArray = []
 var get_diff:String
 
 var _SONG:Dictionary = {} # change name of this to like SONG_DATA or something
@@ -184,9 +184,15 @@ func get_character(character:String = 'bf'):
 	return return_json
 
 func parse_week(week:String = 'week1') -> Dictionary: # in week folder
-	week = week.strip_edges().replace('.json', '')
-	var week_json = FileAccess.open('res://assets/data/weeks/'+ week +'.json', FileAccess.READ)
-	if week_json == null: return {}
-	var json = JSON.parse_string(week_json.get_as_text())
-	json.file_name = week
-	return json
+	var week_json:Dictionary = parse('data/weeks/'+ week.strip_edges())
+	week_json.file_name = week
+	return week_json
+
+func parse(path:String) -> Dictionary:
+	path = path.strip_edges()
+	if !path.ends_with('.json'): path += '.json'
+	var file:String = FileAccess.get_file_as_string('res://assets/'+ path)
+	if file.is_empty(): return {}
+	var le_json = JSON.parse_string(file)
+	if le_json == null: le_json = {}
+	return le_json

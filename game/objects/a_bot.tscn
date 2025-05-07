@@ -27,7 +27,7 @@ loop_mode = "Play Once"
 metadata/_custom_type_script = "uid://bvq0ling1c7sm"
 
 [node name="VizBG" type="Sprite2D" parent="."]
-position = Vector2(171, 23)
+position = Vector2(163, 23)
 texture = ExtResource("2_k3joh")
 centered = false
 

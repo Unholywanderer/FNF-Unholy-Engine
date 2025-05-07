@@ -49,7 +49,7 @@ var pref_list:Array[Alphabet]
 func _ready():
 	Discord.change_presence('Maining some Menus', 'Checkin some options')
 
-	for shit in DirAccess.get_files_at('res://assets/sounds/hitsounds'):
+	for shit in ResourceLoader.list_directory('res://assets/sounds/hitsounds'):
 		if !shit.ends_with('.ogg'): continue
 		gameplay[6][2].append(shit.replace('.ogg', ''))
 

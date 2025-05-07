@@ -6,7 +6,7 @@ signal section_hit(section:int)
 signal song_end
 
 var bpm:float = 100.0
-
+# 128 practice
 var crochet:float:
 	get: return ((60.0 / bpm) * 1000.0)
 var step_crochet:float:
@@ -20,13 +20,14 @@ var song_pos:float = 0.0:
 			audio.stop()
 
 var playback_rate:float = 1.0:
-	get: return AudioServer.playback_speed_scale
+	get: return audio.pitch_scale
 	set(rate):
 		playback_rate = rate
-		AudioServer.playback_speed_scale = rate
-		for i in Game.scene.get_child_count():
-			if Game.scene.get_child(i) is AnimatedSprite2D:
-				Game.scene.get_child(i).speed_scale = rate
+		audio.pitch_scale = rate
+		#AudioServer.playback_speed_scale = rate
+		for i in Game.scene.get_children(true):
+			if i is AnimatedSprite2D:
+				i.speed_scale = rate
 
 var safe_zone:float = 166.0
 var song_length:float = INF
@@ -38,8 +39,11 @@ var cur_beat:int = 0
 var cur_step:int = 0
 var cur_section:int = 0
 
-var song_loaded:bool = false # song audio files have been added
-var song_started:bool = false # song has begun to/is playing
+## If the song audio files are actually loaded/added
+var song_loaded:bool = false
+## If the song has begun/song position is greater than 0
+var song_started:bool = false
+## To pause the Conductor
 var paused:bool = false:
 	set(pause):
 		paused = pause
@@ -108,8 +112,7 @@ func load_song(song:String = '') -> void:
 		audio.stream.set_sync_stream(i, grabbed_audios[i])
 		set(['inst', 'vocals', 'vocals_opp'][i], audio.stream.get_sync_stream(i))
 
-	if inst:
-		song_length = roundf(inst.get_length() * 1000.0)
+	if inst: song_length = roundf(inst.get_length() * 1000.0)
 
 	audio.stream_paused = true
 	song_loaded = true
@@ -127,7 +130,7 @@ func _process(delta) -> void:
 				_resync_timer = 0
 			_last_time = aud_pos
 
-			song_pos = aud_pos + _resync_timer
+			song_pos = aud_pos + _resync_timer * playback_rate
 		else:
 			song_pos += delta * 1000 * playback_rate
 

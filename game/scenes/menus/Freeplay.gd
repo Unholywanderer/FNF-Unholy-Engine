@@ -38,12 +38,11 @@ func _ready():
 		if week_file.is_empty(): continue
 		var d_list = week_file.get('difficulties', [])
 		if d_list is String: d_list = d_list.split(',')
-
 		for song in week_file.songs:
-			add_song(FreeplaySong.new(song, d_list, week_file.get('variants', {})))
+			add_song(FreeplaySong.new(song, d_list, check_variants(song[0])))
 
 	for song in songs_in_folder: # then add any other fuckass songs without a json
-		add_song(FreeplaySong.new([song, 'bf', [100, 100, 100]]))
+		add_song(FreeplaySong.new([song, 'bf', [100, 100, 100]], [], check_variants(song)))
 
 	if JsonHandler._SONG.has('song'):
 		last_loaded.song = Util.format_str(JsonHandler._SONG.song)
@@ -61,7 +60,6 @@ func _ready():
 func add_song(song:FreeplaySong) -> void:
 	var song_name:String = Util.format_str(song.song)
 	if added_songs.has(song_name):
-		#print_rich("[color=yellow]"+ song.song +"[/color] already added, skipping")
 		song.queue_free()
 		return
 
@@ -124,7 +122,7 @@ func update_list(amount:int = 0) -> void:
 			item.modulate.a = (1.0 if i == cur_song else 0.6)
 
 func change_diff(amount:int = 0) -> void:
-	var use_list = songs[cur_song].variants[variant_str] if songs[cur_song].variants.size() > 1 else diff_list
+	var use_list = songs[cur_song].variants[variant_str] if songs[cur_song].has_variants else diff_list
 
 	diff_int = wrapi(diff_int + amount, 0, use_list.size())
 	diff_str = use_list[diff_int]
@@ -188,16 +186,31 @@ func _unhandled_key_input(_event):
 		JsonHandler.song_diffs = songs[cur_song].diff_list
 		Game.switch_scene('Play_Scene')
 
+func check_variants(song:String) -> Dictionary:
+	var path:String = 'songs/'+ Util.format_str(song) +'/metadata'
+	var got_variants:Dictionary = {}
+	var meta:Dictionary = JsonHandler.parse(path)
+	if !meta.has('playData'): # isnt vslice
+		return {}
+	for i in ResourceLoader.list_directory('res://assets/songs/'+ Util.format_str(song)): #meta.playData.get('songVariations', []):
+		if !i.begins_with('metadata-'): continue
+		i = i.replace('metadata-', '').left(-5)
+		var var_meta = JsonHandler.parse(path +'-'+ i).get('playData', {})
+		got_variants.set(i, var_meta.get('difficulties', JsonHandler.base_diffs))
+	return got_variants
+
 class FreeplaySong extends Alphabet:
 	var song:String = 'Tutorial'
 	var diff_list:Array = JsonHandler.base_diffs
 	var variants:Dictionary = {'normal': diff_list}
+	var has_variants:bool:
+		get: return variants.size() > 1
 	var bg_color:Color = Color.WHITE
 	var icon:String = 'face'
 
 	func _init(info, diffs:Array = [], vars:Dictionary = {}):
-		if diffs.size() > 0: diff_list = diffs
-		if vars.size() > 0:
+		if !diffs.is_empty(): diff_list = diffs
+		if !vars.is_empty():
 			for i:String in vars.keys():
 				var var_diffs:Array = vars[i]
 				variants[i] = var_diffs if !var_diffs.is_empty() else diff_list

@@ -87,7 +87,7 @@ func beat_hit(beat:int):
 
 	if beat % 4 == 0:
 		var can_cols = windows.duplicate()
-		can_cols.remove_at(windows.find(last_color))
+		if last_color: can_cols.remove_at(windows.find(last_color))
 		last_color = can_cols[randi_range(0, can_cols.size() - 1)]
 		$Windows/Sprite.self_modulate = Color(last_color)
 

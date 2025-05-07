@@ -7,7 +7,7 @@ var options = []
 var cur_option:int = 0
 var in_diff:bool = false
 
-var diffs = JsonHandler.song_diffs
+var diffs:PackedStringArray = JsonHandler.song_diffs
 var break_text = [
 	'Havin a snack break', 'Stop fucking pinging me', 'Oop I fell down the stairs',
 	'Damn, I can\'t funk like this', 'Time to touch some grass', 'Shittin rn keep it down',
@@ -114,7 +114,7 @@ func toggle_diff_select(make_visible:bool = true):
 	cur_option = 0 if make_visible else 2
 	Util.remove_all([options], self)
 
-	var list_to_use:Array = diffs if make_visible else option_list
+	var list_to_use:PackedStringArray = diffs if make_visible else option_list
 
 	for i in list_to_use.size():
 		make_option(list_to_use[i], i)

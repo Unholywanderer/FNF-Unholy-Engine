@@ -11,13 +11,12 @@ var center_offset:float = 12.0
 		default_scale = new
 		scale = Vector2(new, new)
 @export var icon_speed:float = 15.0
-const MIN_WIDTH:int = 150 # if icon width is less or equal, theres no lose anim
+const MIN_WIDTH:float = 150.0 # if icon width is less or equal, theres no lose anim
 var has_lose:bool = false
 
 var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR
-	set(anti):
-		texture_filter = Util.get_alias(anti)
+	set(anti): texture_filter = Util.get_alias(anti)
 
 func change_icon(new_image:String = 'face', player:bool = false, credit:bool = false) -> void:
 	if new_image.begins_with('icon-'): new_image = new_image.replace('icon-', '')
@@ -39,14 +38,14 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 		has_lose = texture.get_width() > MIN_WIDTH / default_scale
 
 	hframes = 2 if has_lose else 1
-	if is_player: flip_h = true
+	flip_h = is_player
 
 func bump(to_scale:float = 1.2) -> void:
+	await RenderingServer.frame_post_draw # lol
 	scale = Vector2(default_scale * to_scale, default_scale * to_scale)
 
 func _process(delta):
 	var scale_ratio:float = icon_speed / Conductor.step_crochet * 100.0
-
 	scale.x = lerpf(default_scale, scale.x, exp(-delta * scale_ratio))
 	scale.y = lerpf(default_scale, scale.y, exp(-delta * scale_ratio))
 	if follow_spr != null:

@@ -44,7 +44,8 @@ animation = &"idle"
 centered = false
 
 [node name="Guy" type="AnimatedSprite2D" parent="."]
-position = Vector2(1185, 414)
+position = Vector2(1175, 386)
+scale = Vector2(1.1, 1.1)
 sprite_frames = ExtResource("4_opmbn")
 animation = &"idle"
 frame = 14

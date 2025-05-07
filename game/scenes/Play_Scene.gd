@@ -9,7 +9,7 @@ extends Node2D
 var DIE
 
 var story_mode:bool = false
-var SONG
+var SONG:Dictionary
 var default_zoom:float = 0.8
 var cur_skin:String = 'default': # yes
 	set(new_skin):
@@ -46,6 +46,9 @@ var cached_chars:Dictionary = {'bf' = [], 'gf' = [], 'dad' = []}
 var key_names = ['note_left', 'note_down', 'note_up', 'note_right']
 
 var should_save:bool = !Prefs.auto_play
+var can_pause:bool = true
+var lerp_zoom:bool = true
+var can_end:bool = true
 @onready var auto_play:bool:
 	set(auto):
 		if auto: should_save = false
@@ -99,12 +102,6 @@ func _ready():
 
 	stage = load('res://game/scenes/stages/%s.tscn' % [cur_stage]).instantiate() # im sick of grey bg FUCK
 	add_child(stage)
-	#for i in stage.get_children(true):
-		#if i is Sprite2D: i.texture = load('res://assets/images/characters/darnell.png')
-		#if i is AnimatedSprite2D: i.sprite_frames = load('res://assets/images/characters/darnell.res')
-		#for j in i.get_children():
-			#if j is Sprite2D: j.texture = load('res://assets/images/characters/darnell.png')
-			#if j is AnimatedSprite2D: i.sprite_frames = load('res://assets/images/characters/darnell.res')
 
 	default_zoom = stage.default_zoom
 
@@ -213,10 +210,11 @@ func _ready():
 		dad.hide()
 		ui.get_group('opponent').hide()
 		ui.icon_p2.hide()
-	for i in DirAccess.get_files_at('res://assets/data/scripts'):
+
+	for i in ResourceLoader.list_directory('res://assets/data/scripts'):
 		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
 
-	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
+	for i in ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
 		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
 
 	#for i in DirAccess.get_files_at('../'):
@@ -237,15 +235,6 @@ func _ready():
 var section_data
 var chunk:int = 0
 func _process(delta):
-	#var fucks = DirAccess.get_files_at('res://assets/images/credits')
-	#for i in fucks:
-	#	if !i.ends_with('.png'): fucks.remove_at(fucks.find(i))
-	#	else: i = i.replace('.png', '')
-	#var fuck = Icon.new()
-	#fuck.change_icon(Array(fucks).pick_random(), Util.rand_bool(50), true)
-	#fuck.position = Vector2(randf_range(-1200, 2000), randf_range(-75, Game.screen[1] + 1000))
-	#add_child(fuck)
-
 	if LuaHandler.call_func('update') == LuaHandler.RET_TYPES.STOP: return
 
 	if Input.is_key_pressed(KEY_R): ui.hp = 0
@@ -257,7 +246,7 @@ func _process(delta):
 
 	if Input.is_action_just_pressed("back"):
 		auto_play = !auto_play
-	if Input.is_action_just_pressed("accept"):
+	if Input.is_action_just_pressed("accept") and can_pause:
 		get_tree().paused = true
 		other.add_child(load('res://game/scenes/pause_screen.tscn').instantiate())
 
@@ -268,8 +257,9 @@ func _process(delta):
 
 	var scale_ratio = 5.0 / Conductor.step_crochet * 100.0
 	ui.zoom = lerpf(1.0, ui.zoom, exp(-delta * scale_ratio))
-	cam.zoom.x = lerpf(default_zoom, cam.zoom.x, exp(-delta * scale_ratio))
-	cam.zoom.y = cam.zoom.x
+	if lerp_zoom:
+		cam.zoom.x = lerpf(default_zoom, cam.zoom.x, exp(-delta * scale_ratio))
+		cam.zoom.y = cam.zoom.x
 
 	if chart_notes != null:
 		while chart_notes.size() > 0 and chunk != chart_notes.size() and chart_notes[chunk][0] - Conductor.song_pos < spawn_time / cur_speed:
@@ -326,29 +316,25 @@ func _process(delta):
 				event_hit(event)
 				events.pop_front()
 
+func beat_dance(b:int) -> void:
+	for i in characters:
+		if !i.animation.begins_with('sing') and b % i.dance_beat == 0:
+			i.dance()
+	if speaker: speaker.bump()
+	ui.icon_p1.bump()
+	ui.icon_p2.bump()
+
 func countdown_start() -> void: pass
 
 func countdown_tick(tick) -> void:
-	for i in characters:
-		if tick % i.dance_beat == 0 and !i.animation.begins_with('sing'):
-			i.dance()
-	if speaker != null: speaker.bump()
-	ui.icon_p1.bump()
-	ui.icon_p2.bump()
+	beat_dance(tick)
 
 func song_start() -> void:
 	Game.persist.seen_cutscene = true
 
-func beat_hit(beat) -> void:
+func beat_hit(beat:int) -> void:
 	if LuaHandler.call_func('beatHit', [beat]) == LuaHandler.RET_TYPES.STOP: return
-
-	for i in characters:
-		if !i.animation.begins_with('sing') and beat % i.dance_beat == 0:
-			i.dance()
-
-	if speaker != null: speaker.bump()
-	ui.icon_p1.bump()
-	ui.icon_p2.bump()
+	beat_dance(beat)
 
 	if zoom_beat == 0: return
 	if beat % zoom_beat == 0 and !Prefs.deaf:
@@ -444,6 +430,8 @@ func _exit_tree() -> void:
 	Audio.stop_all_sounds()
 
 func song_end() -> void:
+	stage.song_end()
+	if !can_end: return
 	if should_save:
 		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
 		var song_name:String = JsonHandler.song_root + JsonHandler.song_variant
@@ -453,8 +441,8 @@ func song_end() -> void:
 			HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
 
 	Conductor.reset()
-	if song_idx + 1 > playlist.size():
-		Game.persist.song_list = []
+	if song_idx + 1 >= playlist.size():
+		#Game.persist.song_list = []
 		#Game.persist.scoring = ScoreData.new()
 		#Game.persist.scoring.hits = ui.hit_count.duplicate()
 		#Game.persist.scoring.total_notes = JsonHandler.note_count
@@ -534,7 +522,6 @@ func event_hit(event:EventData) -> void:
 					gf.anim_timer = time
 		'Play Animation':
 			if event.values[1] == '1': event.values[1] = '0'
-
 			var peep := char_from_string(event.values[1])
 			if peep.has_anim(str(event.values[0])):
 				peep.play_anim(event.values[0], true)

@@ -7,14 +7,14 @@ func _ready():
 	bf_pos = Vector2(1030, -120)
 	bf_cam_offset.x = -200
 	gf_pos.y = 120
-	
+
 	$Car.position.y = randi_range(220, 250)
 	for i in 5: # fuck positioning things by hand
 		var limo = $BGLimo/Sprite.position
 		var new_dancer = LimoDancer.new(Vector2((370 * i) + 440 + limo.x, limo.y - 870))
 		$BGLimo/LimoDancers.add_child(new_dancer)
 		dancers.append(new_dancer)
-		
+
 func post_ready() -> void:
 	gf.reparent($FGLimo)
 	gf.show_behind_parent = true
@@ -22,7 +22,7 @@ func post_ready() -> void:
 func beat_hit(_beat:int) -> void:
 	for dancer in dancers:
 		dancer.dance()
-	
+
 	if can_drive and Util.rand_bool(10):
 		move_child($Car, get_child_count())
 		Audio.play_sound('carPass'+ str(randi_range(0, 1)), 0.7)
@@ -40,7 +40,7 @@ class LimoDancer extends AnimatedSprite2D:
 		position = pos
 		sprite_frames = load('res://assets/images/stages/limo/limoDancer.res')
 		frame = sprite_frames.get_frame_count('danceLeft') - 1
-	
+
 	func dance() -> void:
 		danced = !danced
 		play('dance'+ ('Right' if danced else 'Left'))

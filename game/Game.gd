@@ -55,14 +55,14 @@ var is_paused:bool = false:
 		get_tree().paused = is_paused
 
 func _focus_in():
-	focus_change.emit(true)
 	if !Prefs.auto_pause: return
+	focus_change.emit(true)
 	Audio.process_mode = Node.PROCESS_MODE_ALWAYS
 	if is_paused: is_paused = false
 
 func _focus_out():
-	focus_change.emit(false)
 	if !Prefs.auto_pause: return
+	focus_change.emit(false)
 	Audio.process_mode = Node.PROCESS_MODE_DISABLED
 	if !get_tree().paused: is_paused = true
 

@@ -104,6 +104,17 @@
 			"loop": false
 		},
 		{
+			"name": "laugh",
+			"prefix": "laugh",
+			"offsets": [
+				-25,
+				-90
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
 			"name": "pissed",
 			"prefix": "Gets Pissed",
 			"offsets": [

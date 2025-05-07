@@ -12,11 +12,11 @@
 			"loop": false
 		},
 		{
-			"name": "singUP",
-			"prefix": "pico Up note0",
+			"name": "singLEFT",
+			"prefix": "Pico NOTE LEFT0",
 			"offsets": [
-				-21.0,
-				-27.0
+				-85.0,
+				10.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -28,6 +28,72 @@
 			"offsets": [
 				-84.0,
 				80.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP",
+			"prefix": "pico Up note0",
+			"offsets": [
+				-21.0,
+				-27.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT",
+			"prefix": "Pico Note Right0",
+			"offsets": [
+				48.0,
+				-2.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singLEFT-censor",
+			"prefix": "Pico NOTE LEFT0",
+			"offsets": [
+				-85.0,
+				10.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singDOWN-censor",
+			"prefix": "Pico Down Note0",
+			"offsets": [
+				-84.0,
+				80.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singUP-censor",
+			"prefix": "pico Up note0",
+			"offsets": [
+				-21.0,
+				-27.0
+			],
+			"framerate": 24,
+			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "singRIGHT-censor",
+			"prefix": "Pico Note Right0",
+			"offsets": [
+				48.0,
+				-2.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -50,28 +116,6 @@
 			"offsets": [
 				-28.0,
 				-67.0
-			],
-			"framerate": 24,
-			"frames": [],
-			"loop": false
-		},
-		{
-			"name": "singRIGHT",
-			"prefix": "Pico Note Right0",
-			"offsets": [
-				48.0,
-				-2.0
-			],
-			"framerate": 24,
-			"frames": [],
-			"loop": false
-		},
-		{
-			"name": "singLEFT",
-			"prefix": "Pico NOTE LEFT0",
-			"offsets": [
-				-85.0,
-				10.0
 			],
 			"framerate": 24,
 			"frames": [],

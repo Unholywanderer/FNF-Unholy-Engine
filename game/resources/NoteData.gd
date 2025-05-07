@@ -11,7 +11,7 @@ var length:float = 0.0
 
 func _init(data:Array = []):
 	if data.is_empty(): data = [0, 0, null, 0.0, true, ""]
-	strum_time = floor(data[0])
+	strum_time = data[0]
 	dir = int(data[1]) % 4
 	if data[3] is not float: data[3] = 0.0
 	length = data[3]

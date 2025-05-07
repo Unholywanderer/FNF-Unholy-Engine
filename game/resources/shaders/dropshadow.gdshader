@@ -68,21 +68,12 @@ vec3 applyContrast(vec3 aColor, float value){
 }
 
 vec3 applyHSBCEffect(vec3 color){
-	//Brightness
-	color = color + ((brightness) / 255.0);
-
-	//Hue
-	color = applyHueRotate(color, hue);
-
-	//Contrast
-	color = applyContrast(color, contrast);
-
-	//Saturation
-	color = applySaturation(color, saturation);
-
+	color = color + ((brightness) / 255.0);      //Brightness
+	color = applyHueRotate(color, hue); 	     //Hue
+	color = applyContrast(color, contrast);      //Contrast
+	color = applySaturation(color, saturation);  //Saturation
 	return color;
 }
-
 
 float intensityPass(vec2 fragCoord, sampler2D iChannel0) {
 	vec4 col = texture(iChannel0, fragCoord);
@@ -112,12 +103,10 @@ vec3 createDropShadow(vec3 color,in vec2 uv,sampler2D tex,vec2 SCR) {
 	// essentially a mask so that areas under the threshold dont show the rimlight (mainly the outlines)
 	float intensity = intensityPass(uv,tex);
 
-
 	// check the pixel in the direction and distance specified
 	vec2 checkedPixel = vec2(uv.x + (dist * cos(ang/100. + angOffset) * SCR.x), uv.y - (dist * sin(ang/100. + angOffset) * SCR.y));
 
-	if (pixelPerfectFix)
-	{
+	if (pixelPerfectFix){
 		// chat, am i cooking?? - mae
 		vec2 offset = round(vec2(cos(radians(ang + angOffset)), -sin(radians(ang + angOffset))) * dist);
 		checkedPixel = uv + offset * SCR;

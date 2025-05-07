@@ -42,6 +42,32 @@ func get_key_from_byte(btye:int) -> String:
 		'quotedbl': key = '"'
 	return key
 
+func set_dropdown(dropdown:OptionButton, to_val:String = '') -> void:
+	if dropdown == null: return print_debug('No dropdown to set!')
+	var items:Array[String] = []
+	for i in dropdown.item_count:
+		items.append(dropdown.get_item_text(i))
+
+	if items.has(to_val):
+		dropdown.select(items.find(to_val))
+	else:
+		dropdown.modulate = Color.RED
+		dropdown.add_item(to_val)
+		dropdown.select(items.size())
+
+func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans:int = 0, ease:int = 0) -> Tween:
+	var new_tween:Tween = create_tween()
+	new_tween.tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease)
+	return new_tween
+
+func quick_label(t:String, s:int, ol_s:int = s / 3, f:String = 'vcr.ttf') -> Label:
+	var new_label:Label = Label.new()
+	new_label.text = t
+	new_label.add_theme_font_override('font', ResourceLoader.load('res://assets/fonts/'+ f))
+	new_label.add_theme_font_size_override('font_size', s)
+	new_label.add_theme_constant_override('outline_size', ol_s)
+	return new_label
+
 func flash_screen(color:Color = Color.WHITE) -> void:
 	pass
 

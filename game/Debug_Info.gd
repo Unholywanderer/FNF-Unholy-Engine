@@ -49,7 +49,7 @@ func _process(delta):
 		vol_visible = time_existed < 1
 		if time_existed >= 1.0:
 			vol_tween = create_tween()
-			vol_tween.tween_property($Volume, 'position:y', -100, 0.12)
+			vol_tween.tween_property($Volume, 'position:y', -100, 0.22)
 
 	$FPS.text = 'FPS: '+ str(int(Engine.get_frames_per_second()))
 	if OS.is_debug_build():
