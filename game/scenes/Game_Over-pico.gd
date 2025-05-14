@@ -65,6 +65,7 @@ func _ready():
 
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
+			if i == this.boyfriend: continue
 			i.process_mode = Node.PROCESS_MODE_DISABLED
 
 	this.ui.stop_countdown()

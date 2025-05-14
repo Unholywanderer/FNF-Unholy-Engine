@@ -72,12 +72,12 @@ static func fix_json(data:Dictionary) -> Dictionary:
 		var anis:Dictionary = UnholyFormat.CHAR_ANIM.duplicate()
 		for key in psych_anim:
 			if key == 'offsets':
-				var off = [-anim[key][0], -anim[key][1]]
+				var off:Array[int] = [-anim[key][0], -anim[key][1]]
 				if off[0] == -0: off[0] = 0
 				if off[1] == -0: off[1] = 0
 				anis[psych_anim[key]] = off
 			else:
-				anis[psych_anim[key]] = anim[key] if anim.has(key) else UnholyFormat.CHAR_ANIM[psych_anim[key]]
+				anis[psych_anim[key]] = anim.get(key, UnholyFormat.CHAR_ANIM[psych_anim[key]])
 		new_json.animations.append(anis)
 
 	for i in data.keys():

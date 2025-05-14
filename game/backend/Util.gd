@@ -55,10 +55,8 @@ func set_dropdown(dropdown:OptionButton, to_val:String = '') -> void:
 		dropdown.add_item(to_val)
 		dropdown.select(items.size())
 
-func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans:int = 0, ease:int = 0) -> Tween:
-	var new_tween:Tween = create_tween()
-	new_tween.tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease)
-	return new_tween
+func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans:int = 0, ease:int = 0) -> Tweener:
+	return create_tween().tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease)
 
 func quick_label(t:String, s:int, ol_s:int = s / 3, f:String = 'vcr.ttf') -> Label:
 	var new_label:Label = Label.new()

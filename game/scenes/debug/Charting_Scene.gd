@@ -452,6 +452,8 @@ func on_char_change(c:String):
 	var new_json = JsonHandler.get_character(new_char)
 	if c.begins_with('Player'):
 		icons[abs(int(c[-1]) - 2)].change_icon(new_json.icon if new_json else 'face', c == 'Player1')
+		if icons[abs(int(c[-1]) - 2)].default_scale >= 1:
+			icons[abs(int(c[-1]) - 2)].default_scale *= 0.5
 
 var bg_tween:Tween
 func beat_hit(beat:int) -> void:
@@ -893,16 +895,6 @@ class NoteGrid extends Control:
 
 		width = x
 		height = y
-		#var left_bord = ColorRect.new()
-		#left_bord.color = Color.LIGHT_SLATE_GRAY
-		#left_bord.custom_minimum_size = Vector2(3, height)
-		#add_child(left_bord)
-
-		#var right_bord = ColorRect.new()
-		#right_bord.position.x = width
-		#right_bord.color = Color.LIGHT_SLATE_GRAY
-		#right_bord.custom_minimum_size = Vector2(3, height)
-		#add_child(right_bord)
 
 		if cell_size.x != grid_size.x: # if the grid is 1 cell wide, no need for the center mark
 			var center = ColorRect.new()

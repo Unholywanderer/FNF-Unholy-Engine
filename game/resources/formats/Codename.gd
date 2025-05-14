@@ -1,7 +1,7 @@
 class_name Codename; extends Chart;
 
 func parse_chart(data):
-	var possible_types:Array = data.get('noteTypes')
+	var possible_types:Array = data.get('noteTypes', [])
 	for line in data.strumLines:
 		var init_type:String = 'gf' if line.position == 'girlfriend' else ''
 		for note in line.notes:

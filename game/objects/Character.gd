@@ -18,7 +18,7 @@ var is_player:bool = false
 var idle_suffix:String = ''
 var forced_suffix:String = '' # if set, every anim will use it
 var can_dance:bool = true
-var can_sing:bool = true
+var ignore_anims:bool = false
 var looping:bool = false
 
 var dance_idle:bool = false
@@ -43,7 +43,7 @@ var anim_timer:float = -1.0: # play an anim for a certain amount of time
 var on_anim_finished:Callable = func():
 	special_anim = false
 	can_dance = true
-	can_sing = true
+	ignore_anims = false
 	dance()
 	animation_finished.disconnect(on_anim_finished)
 
@@ -123,7 +123,7 @@ func load_char(new_char:String = 'bf') -> void:
 		'pico-speaker', 'otis-speaker':
 			animation_changed.connect(func(): can_dance = animation == 'idle')
 			animation_finished.connect(func(): if animation != 'idle': play_anim('idle'))
-			can_dance = false
+			can_dance = cur_char == 'otis-speaker'
 			sing_anims = ['shootLeft', 'shootLeft', 'shootRight', 'shootRight']
 			play_anim('idle')
 			#frame = sprite_frames.get_frame_count('shootRight1') - 4
@@ -196,7 +196,6 @@ func dance(forced:bool = false) -> void:
 	sing_timer = 0
 
 func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
-	if !can_sing: return
 	hold_timer = 0
 	var to_sing:String = sing_anims[dir] + suffix
 	if !has_anim(to_sing):
@@ -221,6 +220,7 @@ func swap_sing(anim1:String, anim2:String) -> void:
 	sing_anims[index2] = anim1
 
 func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
+	if ignore_anims: return
 	if forced_suffix.length() > 0:
 		anim += forced_suffix
 	if !has_anim(anim):
@@ -240,8 +240,9 @@ func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	var anim_offset:Vector2 = Vector2.ZERO
 	if offsets.has(anim):
 		anim_offset = Vector2(offsets[anim][0], offsets[anim][1])
-		flip_h = flippers[anim]
 	offset = anim_offset
+	flip_h = flippers.get(anim, true)
+
 
 func get_cam_pos() -> Vector2:
 	var midpoint = Vector2(position.x + width / 2.0, position.y + height / 2.0)
@@ -275,6 +276,7 @@ func cache_char(char:String) -> void:
 	if char_cache.has(char): return
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % char):
 		char = get_closest(char)
+	if char_cache.has(char): return
 
 	json = JsonHandler.get_character(char)
 	if json.has('no_antialiasing'):

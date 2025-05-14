@@ -18,6 +18,7 @@ var on_death_start:Callable = func(): # once the death sound and deathStart fini
 	on_game_over_idle.emit(self)
 
 var on_death_confirm:Callable = func(): # once the player chooses to retry
+	Audio.sync_conductor = false
 	var cam_twen = create_tween().tween_property(this.cam, 'position', last_cam_pos, 1).set_trans(Tween.TRANS_SINE)
 	create_tween().tween_property($BG, 'modulate:a', 0, 0.7).set_trans(Tween.TRANS_SINE)
 	create_tween().tween_property(this.cam, 'zoom', last_zoom, 1).set_trans(Tween.TRANS_SINE)
@@ -41,20 +42,30 @@ var on_death_confirm:Callable = func(): # once the player chooses to retry
 	this.gf.play_anim('cheer', true)
 	this.cam.position_smoothing_speed = 4
 
-
 var death_sound:AudioStreamPlayer
 @onready var timer:Timer = $Timer
 func _ready():
 	Audio.stop_all_sounds()
+	#Conductor.bpm = 102
+	#Conductor.beat_hit.connect(beat_hit)
+	#Audio.sync_conductor = true
 	Game.focus_change.connect(focus_change)
 	Discord.change_presence('Game Over on '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'MOTHER FUCK')
 
-	#await RenderingServer.frame_post_draw
+	$BG.modulate.a = 0
+	$Fade.modulate.a = 0
+	$BG.scale = (Vector2.ONE / this.cam.zoom) + Vector2(0.05, 0.05)
+	$BG.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / this.cam.zoom)
+	$BG.position -= Vector2(5, 5) # you could see the stage bg leak out
+	$Fade.position = $BG.position
+
+	await RenderingServer.frame_pre_draw
 	for i in [this.ui, this.cam, this.stage]:
 		i.process_mode = Node.PROCESS_MODE_ALWAYS
 
 	if this.stage.has_node('CharGroup'):
 		for i in this.stage.get_node('CharGroup').get_children():
+			if i == this.boyfriend: continue
 			i.process_mode = Node.PROCESS_MODE_DISABLED
 
 	this.ui.stop_countdown()
@@ -67,9 +78,6 @@ func _ready():
 	this.ui.visible = false
 	#this.boyfriend.visible = false # hide his ass!!!
 	Conductor.paused = true
-
-	$BG.modulate.a = 0
-	$Fade.modulate.a = 0
 
 	var da_boy = this.boyfriend.death_char
 	if da_boy == 'bf-dead' and ResourceLoader.exists('res://assets/data/characters/'+ this.boyfriend.cur_char +'-dead.json'):
@@ -135,9 +143,12 @@ func _process(delta):
 			get_tree().paused = false
 			Game.switch_scene('menus/freeplay', true)
 
+func beat_hit(b) -> void:
+	Audio.play_sound('tick')
+
 func focus_change(is_focused):
 	timer.paused = !is_focused
-	if death_sound != null: death_sound.stream_paused = !is_focused
+	if death_sound: death_sound.stream_paused = !is_focused
 	if !is_focused:
 		dead.pause()
 	else:

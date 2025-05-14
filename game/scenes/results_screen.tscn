@@ -1,0 +1,106 @@
+[gd_scene load_steps=14 format=3 uid="uid://cwpelmfo0vk4d"]
+
+[ext_resource type="Script" uid="uid://bvxkvsl3cggff" path="res://game/scenes/Results_Screen.gd" id="1_mltb3"]
+[ext_resource type="SpriteFrames" uid="uid://b77hdl4sq74g4" path="res://assets/images/results_screen/soundSystem.res" id="1_mxpky"]
+[ext_resource type="SpriteFrames" uid="uid://drx0metjp341r" path="res://assets/images/results_screen/ratingsPopin.res" id="2_axxd8"]
+[ext_resource type="SpriteFrames" uid="uid://dy78x10asgt7n" path="res://assets/images/results_screen/results.res" id="4_40bh0"]
+[ext_resource type="Texture2D" uid="uid://dj81lt6i2p7kb" path="res://assets/images/results_screen/topBarBlack.png" id="4_mltb3"]
+[ext_resource type="Shader" uid="uid://bh2xopks8xxis" path="res://game/resources/shaders/scroll.gdshader" id="5_ixs6y"]
+[ext_resource type="Texture2D" uid="uid://boxpr5u12o8kg" path="res://assets/images/results_screen/diff_hard.png" id="5_sqcco"]
+[ext_resource type="SpriteFrames" uid="uid://b2h4da1dv2tvp" path="res://assets/images/results_screen/scorePopin.res" id="5_vuk7b"]
+[ext_resource type="Texture2D" uid="uid://d1au0jjaao1vs" path="res://assets/images/results_screen/rankText/rankTextPERFECT.png" id="6_6vagp"]
+[ext_resource type="SpriteFrames" uid="uid://dkvej485jd2yg" path="res://assets/images/results_screen/highscoreNew.res" id="10_6vagp"]
+
+[sub_resource type="Gradient" id="Gradient_mltb3"]
+colors = PackedColorArray(0.996078, 0.8, 0.360784, 1, 0.992157, 0.752941, 0.360784, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rtt37"]
+gradient = SubResource("Gradient_mltb3")
+width = 1280
+height = 720
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ix0x5"]
+shader = ExtResource("5_ixs6y")
+shader_parameter/direction = Vector2(0, 1)
+shader_parameter/speed_scale = 0.0
+
+[node name="ResultsScreen" type="Node2D"]
+script = ExtResource("1_mltb3")
+
+[node name="BG" type="Sprite2D" parent="."]
+z_index = -101
+texture = SubResource("GradientTexture2D_rtt37")
+centered = false
+
+[node name="Flash" type="ColorRect" parent="."]
+z_index = -100
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(1, 1, 1, 0)
+
+[node name="TxtGroup" type="Node2D" parent="."]
+z_index = -101
+rotation = -0.0593412
+
+[node name="CharGroup" type="Node2D" parent="."]
+z_index = -25
+
+[node name="Difficulty" type="Sprite2D" parent="."]
+position = Vector2(555, -53)
+texture = ExtResource("5_sqcco")
+centered = false
+
+[node name="SoundSystem" type="AnimatedSprite2D" parent="."]
+position = Vector2(-15, -180)
+sprite_frames = ExtResource("1_mxpky")
+animation = &"intro"
+frame = 64
+frame_progress = 1.0
+centered = false
+
+[node name="RatingsPopin" type="AnimatedSprite2D" parent="."]
+position = Vector2(-135, 135)
+sprite_frames = ExtResource("2_axxd8")
+animation = &"Categories"
+frame = 15
+frame_progress = 1.0
+centered = false
+
+[node name="RatingCounters" type="Node2D" parent="."]
+
+[node name="Score" type="AnimatedSprite2D" parent="."]
+position = Vector2(-180, 515)
+sprite_frames = ExtResource("5_vuk7b")
+animation = &"intro"
+frame = 29
+frame_progress = 1.0
+centered = false
+
+[node name="SideText" type="Sprite2D" parent="."]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_ix0x5")
+position = Vector2(1280, 0)
+texture = ExtResource("6_6vagp")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, -100, 41, 720)
+
+[node name="TopBar" type="Sprite2D" parent="."]
+z_index = 5
+position = Vector2(0, -148)
+texture = ExtResource("4_mltb3")
+centered = false
+
+[node name="Results" type="AnimatedSprite2D" parent="."]
+z_index = 20
+position = Vector2(-200, -10)
+sprite_frames = ExtResource("4_40bh0")
+animation = &"intro"
+centered = false
+
+[node name="Highscore" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(44, 557)
+sprite_frames = ExtResource("10_6vagp")
+animation = &"loop"
+centered = false

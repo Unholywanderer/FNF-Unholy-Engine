@@ -32,7 +32,7 @@ static func load_named_chart(song:String, chart_name:String, format:String = 'le
 	var le_parse = get_parse(get_format(format), chart_name)
 	print(path)
 	if ResourceLoader.exists(path):
-		var json = JSON.parse_string(FileAccess.open(path, FileAccess.READ).get_as_text())
+		var json = JsonHandler.parse(path)
 		if json.get('song') is Dictionary: json = json.song
 		return le_parse.parse_chart(json)
 	return []
@@ -49,22 +49,22 @@ func add_note(note_data:Array) -> void:
 		return_notes.append(note_data)
 
 func get_events(SONG:Dictionary) -> Array[EventData]:
-	var path_to_check = 'res://assets/songs/%s/events.json' % Util.format_str(SONG.song)
+	var path_to_check:String = 'songs/%s/events.json' % Util.format_str(SONG.song)
 
 	var events_found:Array = []
 	var events:Array[EventData] = []
 	if SONG.has('events'): # check current song json for any events
 		events_found.append_array(SONG.events)
 
-	if format != V_SLICE and ResourceLoader.exists(path_to_check): # then check if there is a event json
-		print(path_to_check)
+	if format != V_SLICE and ResourceLoader.exists('res://assets/'+ path_to_check): # then check if there is a event json
+		print('res://assets/'+ path_to_check)
 
-		var json = JSON.parse_string(FileAccess.open(path_to_check, FileAccess.READ).get_as_text())
+		var json = JsonHandler.parse(path_to_check)
 		if json.has('song'): json = json.song
 		if format == FPS_PLUS:
 			json = json.events
 
-		if json.has('notes') and json.notes.size() > 0: # if events are a -1 note
+		if json.get('notes', []).size() > 0: # if events are a -1 note
 			for sec in json.notes:
 				for note in sec.sectionNotes:
 					if note[1] == -1:

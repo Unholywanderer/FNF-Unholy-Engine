@@ -81,7 +81,6 @@ func _ready():
 	#SONG.player2 = 'darnell'
 	#SONG.gfVersion = 'darnell'
 
-
 	#if Prefs.femboy: SONG.player1 = 'bf-femboy'
 	if Prefs.daniel and !SONG.player1.contains('bf-girl'):
 		var try = SONG.player1.replace('bf', 'bf-girl')
@@ -106,6 +105,7 @@ func _ready():
 	default_zoom = stage.default_zoom
 
 	var gf_ver = SONG.get('gfVersion', SONG.get('player3', 'gf'))
+	if gf_ver == null: gf_ver = 'gf'
 
 	var has_group:bool = stage.has_node('CharGroup')
 	var add:Callable = stage.get_node('CharGroup').add_child if has_group else add_child
@@ -211,14 +211,11 @@ func _ready():
 		ui.get_group('opponent').hide()
 		ui.icon_p2.hide()
 
-	for i in ResourceLoader.list_directory('res://assets/data/scripts'):
+	for i in DirAccess.get_files_at('res://assets/data/scripts'):
 		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
 
-	for i in ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
+	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
 		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
-
-	#for i in DirAccess.get_files_at('../'):
-	#	print(i)
 
 	if DIE == null:
 		var char_suff = '-pico' if boyfriend.cur_char.contains('pico') else ''
@@ -232,6 +229,7 @@ func _ready():
 	if JsonHandler.parse_type == 'v_slice': move_cam('dad')
 	section_hit(0) #just for 1st section stuff
 
+var note_count:int = 0
 var section_data
 var chunk:int = 0
 func _process(delta):
@@ -255,7 +253,7 @@ func _process(delta):
 		 Util.to_time(Conductor.song_pos) +' / '+ Util.to_time(Conductor.song_length) +' | '+ \
 		  str(round(abs(Conductor.song_pos / Conductor.song_length) * 100.0)) +'% Complete')
 
-	var scale_ratio = 5.0 / Conductor.step_crochet * 100.0
+	var scale_ratio:float = 5.0 / Conductor.step_crochet * 100.0
 	ui.zoom = lerpf(1.0, ui.zoom, exp(-delta * scale_ratio))
 	if lerp_zoom:
 		cam.zoom.x = lerpf(default_zoom, cam.zoom.x, exp(-delta * scale_ratio))
@@ -269,7 +267,7 @@ func _process(delta):
 			var new_note:Note = Note.new(NoteData.new(chart_notes[chunk]))
 			new_note.speed = cur_speed
 			notes.append(new_note)
-			if new_note.must_press and new_note.should_hit: JsonHandler.note_count += 1
+			if new_note.must_press and new_note.should_hit: note_count += 1
 
 			var to_add:String = 'player' if new_note.must_press else 'opponent'
 			#if new_note.gf: to_add = 'gf'
@@ -427,6 +425,7 @@ func try_death() -> void:
 	add_child(death)
 
 func _exit_tree() -> void:
+	Game.persist.set('seen_cutscene', false)
 	Audio.stop_all_sounds()
 
 func song_end() -> void:
@@ -441,18 +440,24 @@ func song_end() -> void:
 			HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
 
 	Conductor.reset()
+
+	if Game.persist.get('scoring') == null:
+		Game.persist.scoring = ScoreData.new()
+	Game.persist.scoring.add_hits(ui.hit_count)
+	Game.persist.scoring.total_notes += note_count
+	Game.persist.scoring.song_name = SONG.song
+	Game.persist.scoring.score += roundi(score)
+	if misses == 0:
+		Game.persist.scoring.max_combo += note_count
+	else:
+		Game.persist.scoring.max_combo = max_combo
+
 	if song_idx + 1 >= playlist.size():
-		#Game.persist.song_list = []
-		#Game.persist.scoring = ScoreData.new()
-		#Game.persist.scoring.hits = ui.hit_count.duplicate()
-		#Game.persist.scoring.total_notes = JsonHandler.note_count
-		#Game.persist.scoring.song_name = SONG.song
-		#Game.persist.scoring.score = score
-		#Game.persist.scoring.max_combo = max_combo
-		#Game.persist.scoring.difficulty = JsonHandler.get_diff
-		#Game.switch_scene('results_screen')
-		var back_to = 'story_mode' if story_mode else 'freeplay'
-		Game.switch_scene("menus/"+ back_to)
+		Game.persist.song_list = []
+		Game.persist.scoring.difficulty = JsonHandler.get_diff
+		Game.switch_scene('results_screen')
+		#var back_to = 'story_mode' if story_mode else 'freeplay'
+		#Game.switch_scene("menus/"+ back_to)
 	else:
 		song_idx += 1
 		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
@@ -464,7 +469,7 @@ func song_end() -> void:
 func refresh(restart:bool = true) -> void: # start song from beginning with no restarts
 	Conductor.reset_beats()
 	Conductor.bpm = SONG.bpm # reset bpm to init whoops
-
+	note_count = 0
 	if !notes.is_empty(): kill_all_notes()
 	events.clear()
 

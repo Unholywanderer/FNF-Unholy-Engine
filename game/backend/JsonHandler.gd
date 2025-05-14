@@ -7,7 +7,6 @@ var get_diff:String
 var _SONG:Dictionary = {} # change name of this to like SONG_DATA or something
 var song_variant:String = '' # (erect, pico mix and whatnot)
 var song_root:String = ''
-var note_count:int = 0
 
 var chart_notes:Array = [] # keep loaded chart and events for restarting songs
 var song_events:Array[EventData] = []
@@ -18,7 +17,6 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	song_root = ''
 	song_variant = ''
 	parse_type = 'legacy'
-	note_count = 0
 
 	if !variant.is_empty():
 		if variant != 'normal' and !variant.begins_with('-'):
@@ -56,7 +54,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			meta = JSON.parse_string(FileAccess.get_file_as_string(meta_path % ['metadata'+ song_variant]))
 			_SONG.speed = _SONG.scrollSpeed.get(diff, _SONG.scrollSpeed.get('default', 1))
 			_SONG.player1 = meta.playData['characters'].player
-			_SONG.gfVersion = meta.playData['characters'].girlfriend
+			_SONG.gfVersion = meta.playData['characters'].get('girlfriend')
 			_SONG.player2 = meta.playData['characters'].opponent
 			_SONG.stage = stage_to(meta.playData.stage)
 			_SONG.song = meta.songName
@@ -88,8 +86,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 		generate_chart(_SONG)
 
 func get_song_data(song:String) -> Dictionary:
-	var json = you_WILL_get_a_json(song)
-	var parsed = JSON.parse_string(json.get_as_text())
+	var parsed:Dictionary = JSON.parse_string(you_WILL_get_a_json(song))
 	if parsed.has('song'):
 		if parsed.has('format') and parsed.format.contains('psych_v1'):
 			parse_type = 'psych_v1'
@@ -122,7 +119,7 @@ func reform_parts(song:String) -> void:
 
 	_SONG = temp_SONG
 
-func you_WILL_get_a_json(song:String) -> FileAccess:
+func you_WILL_get_a_json(song:String) -> String:
 	var path:String = 'res://assets/songs/%s/charts/' % song
 	var returned:String
 
@@ -134,14 +131,14 @@ func you_WILL_get_a_json(song:String) -> FileAccess:
 
 	if !ResourceLoader.exists(returned):
 		var err_path = returned.replace('res://assets/songs/', '../')
-		Alert.make_alert('"%s" has no %s\n%s' % [song, get_diff.to_upper(), err_path], Alert.ERROR) #printerr(song +' has no '+ get_diff +' | '+ returned)
-		get_diff = 'hard'
-		return you_WILL_get_a_json('tutorial')
+		Alert.make_alert('"%s" has no %s\n%s' % [song, get_diff.to_upper(), err_path], Alert.ERROR)
+		parse_song('tutorial', 'hard')
+		return ''
 
 	#ResourceLoader.load_threaded_request(path)
 	print('Got json: '+ returned)
 	#var le_file = ResourceLoader.load_threaded_request(returned, '', true)
-	return FileAccess.open(returned, FileAccess.READ)
+	return FileAccess.get_file_as_string(returned)
 
 func stage_to(stage:String) -> String:
 	var le_stage:String = 'stage'
@@ -191,7 +188,8 @@ func parse_week(week:String = 'week1') -> Dictionary: # in week folder
 func parse(path:String) -> Dictionary:
 	path = path.strip_edges()
 	if !path.ends_with('.json'): path += '.json'
-	var file:String = FileAccess.get_file_as_string('res://assets/'+ path)
+	if !path.begins_with('res://'): path = 'res://assets/'+ path
+	var file:String = FileAccess.get_file_as_string(path)
 	if file.is_empty(): return {}
 	var le_json = JSON.parse_string(file)
 	if le_json == null: le_json = {}

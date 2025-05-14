@@ -32,17 +32,18 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 	texture = load(icon_path % image)
 
 	antialiasing = !image.ends_with('-pixel')
+	#has_lose = texture.get_width() > MIN_WIDTH
 	has_lose = texture.get_width() > MIN_WIDTH
-	if image.ends_with('-pixel'): # shhhh
-		default_scale = 5
+	default_scale = default_scale if !image.ends_with('-pixel') else 5 # shhhh
+	if default_scale > 1:
 		has_lose = texture.get_width() > MIN_WIDTH / default_scale
 
 	hframes = 2 if has_lose else 1
 	flip_h = is_player
 
 func bump(to_scale:float = 1.2) -> void:
-	await RenderingServer.frame_post_draw # lol
 	scale = Vector2(default_scale * to_scale, default_scale * to_scale)
+	await RenderingServer.frame_post_draw
 
 func _process(delta):
 	var scale_ratio:float = icon_speed / Conductor.step_crochet * 100.0
