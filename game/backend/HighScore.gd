@@ -34,7 +34,7 @@ func get_data(song:String, diff:String = ''):
 		data = data[diff] if data.has(diff) else DEFAULT_DATA
 	return data
 
-func get_score(song:String, diff:String = 'hard'): # just need the score, for readability
+func get_score(song:String, diff:String = JsonHandler.get_diff): # just need the score, for readability
 	return get_data(song, diff)[0]
 
 func add_week(week_name:String, diffs:Array = ['easy', 'normal', 'hard']):

@@ -431,22 +431,26 @@ func _exit_tree() -> void:
 func song_end() -> void:
 	stage.song_end()
 	if !can_end: return
-	if should_save:
-		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
-		var song_name:String = JsonHandler.song_root + JsonHandler.song_variant
-		var saved_score = HighScore.get_score(song_name, JsonHandler.get_diff)
 
-		if save_data[0] > saved_score:
-			HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
+	#TODO: clean this up later and change it, rather sloppy fix
+	if should_save: pass
+		#var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
+		#var song_name:String = JsonHandler.song_root + JsonHandler.song_variant
+		#var saved_score = HighScore.get_score(song_name, JsonHandler.get_diff)
+
+		#if save_data[0] > saved_score:
+		#	HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
 
 	Conductor.reset()
-
 	if Game.persist.get('scoring') == null:
 		Game.persist.scoring = ScoreData.new()
 	Game.persist.scoring.add_hits(ui.hit_count)
 	Game.persist.scoring.total_notes += note_count
 	Game.persist.scoring.song_name = SONG.song
 	Game.persist.scoring.score += roundi(score)
+	Game.persist.scoring.is_valid = should_save
+	Game.persist.scoring.save_format = [roundi(score), ui.accuracy, misses, ui.grade, combo]
+
 	if misses == 0:
 		Game.persist.scoring.max_combo += note_count
 	else:
@@ -455,7 +459,7 @@ func song_end() -> void:
 	if song_idx + 1 >= playlist.size():
 		Game.persist.song_list = []
 		Game.persist.scoring.difficulty = JsonHandler.get_diff
-		Game.switch_scene('results_screen')
+		Game.switch_scene('results_screen' if !story_mode else 'story_mode')
 		#var back_to = 'story_mode' if story_mode else 'freeplay'
 		#Game.switch_scene("menus/"+ back_to)
 	else:

@@ -27,6 +27,11 @@ func _ready() -> void:
 	# set signals shit
 	$Highscore.animation_finished.connect(func(): $Highscore.play('loop'))
 
+	var sco_chk = JsonHandler.song_root + JsonHandler.song_variant
+	var is_high:bool =  score_data.is_highscore([sco_chk])
+	if is_high:
+		HighScore.set_score(JsonHandler.song_root + JsonHandler.song_variant, JsonHandler.get_diff, score_data.save_format)
+
 	var player_data = JSON.parse_string(FileAccess.get_file_as_string('res://assets/data/players/'+ player +'.json'))
 	var item_list:Array = player_data.results[rank]
 
@@ -52,10 +57,6 @@ func _ready() -> void:
 		items.append(new_item)
 		new_item.visible = false
 		new_item.position = Vector2(item.offsets[0], item.offsets[1])
-		var b = ShaderMaterial.new()
-		b.shader = load('res://game/resources/shaders/blammed.gdshader')
-		b.set_shader_parameter('outline_color', Color.CYAN)
-		new_item.material = b
 		$CharGroup.add_child(new_item)
 
 	for i in [$SoundSystem, $RatingsPopin, $Score, $Results]: i.visible = false
@@ -147,9 +148,9 @@ func _ready() -> void:
 	)
 
 	get_tree().create_timer(delays.score, false).timeout.connect(func():
-		var score_to_check:String = JsonHandler.song_root + JsonHandler.song_variant
-		$Highscore.visible = HighScore.get_score(score_to_check) < score_data.score
-		$Highscore.play('new')
+		if is_high:
+			$Highscore.visible = true
+			$Highscore.play('new')
 	)
 
 	get_tree().create_timer(delays.flash, false).timeout.connect(display_rank_shit)
