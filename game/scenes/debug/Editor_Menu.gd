@@ -18,23 +18,25 @@ func _ready() -> void:
 		items.append(new_item)
 	update_scroll()
 
+var changing:bool = false
 func _input(event:InputEvent) -> void:
 	update_scroll(Input.get_axis("menu_up", "menu_down"))
-	
+
 	if Input.is_action_just_pressed('back'):
 		queue_free()
 		Game.scene.in_time = 0
 		get_tree().paused = false
-	if Input.is_action_just_pressed("accept"):
+	if Input.is_action_just_pressed("accept") and not changing:
 		var le_scene = PATHS[cur_item]
 		if le_scene == null: return Alert.make_alert('Whoops no scene', Alert.ERROR)
 		if le_scene.begins_with('tools'): le_scene = '../'+ le_scene
+		changing = true
 		Game.switch_scene(le_scene)
 
 func update_scroll(amount:int = 0) -> void:
 	if amount != 0: Audio.play_sound('scrollMenu')
 	cur_item = wrap(cur_item + amount, 0, items.size())
-	
+
 	for i in items.size():
 		var it = items[i]
 		it.modulate.a = 0.6 if i != cur_item else 1.0

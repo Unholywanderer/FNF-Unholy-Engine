@@ -97,6 +97,7 @@ func spawn_hold_splash(strum:Strum, note:Note) -> void:
 	else:
 		var spark:AnimatedSprite2D = SPARK.instantiate()
 		spark.strum = strum
+
 		spark.player = note.must_press
 		spark.anim_time += get_process_delta_time()
 		add_child(spark)

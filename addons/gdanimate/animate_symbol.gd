@@ -74,7 +74,7 @@ func add_anim_by_frames(alias:String, frames:Array = []):
 		frames = le_arr
 
 	_added_anims.set(alias, frames)
-	
+
 func play_anim(anim:String, force:bool = false) -> void:
 	if !_added_anims.has(anim): return
 	if !force and cur_anim == anim and frame_index < _added_anims[cur_anim].size() - 1: return
@@ -82,7 +82,7 @@ func play_anim(anim:String, force:bool = false) -> void:
 	playing = true
 	frame_index = 0
 	cur_anim = anim
-	
+
 
 func add_anim_by_symbols(array:Array[String]) -> void:
 	pass
@@ -92,10 +92,10 @@ func _process(delta: float) -> void:
 		if frame > 0:
 			frame = 0
 		return
-	
+
 	if not playing:
 		return
-	
+
 	_timer += delta
 	if _timer >= 1.0 / _animation.framerate:
 		#var frame_diff := _timer / (1.0 / _animation.framerate)
@@ -113,10 +113,10 @@ func _process(delta: float) -> void:
 							finished.emit()
 						frame = _timeline.length - 1
 		else:
-			if !_added_anims.has(cur_anim): 
+			if !_added_anims.has(cur_anim):
 				cur_anim = ''
 				return
-				
+
 			if _added_anims[cur_anim].size() - 1 > frame_index:
 				frame_index += 1
 				frame = _added_anims[cur_anim][frame_index]
@@ -129,11 +129,11 @@ func _cache_atlas() -> void:
 	var parsed := ParsedAtlas.new()
 	parsed.collections = _collections
 	parsed.animation = _animation
-	
+
 	var atlas_directory := atlas
 	if not atlas_directory.get_extension().is_empty():
 		atlas_directory = atlas_directory.get_base_dir()
-	
+
 	var err := ResourceSaver.save(parsed, \
 			'%s/Animation.res' % [atlas_directory], ResourceSaver.FLAG_COMPRESS)
 	if err != OK:
@@ -151,11 +151,11 @@ func _reload_atlas() -> void:
 func load_atlas(path: String, use_cache: bool = true) -> void:
 	_collections.clear()
 	_animation = null
-	
+
 	var atlas_directory := path
 	if not atlas_directory.get_extension().is_empty():
 		atlas_directory = atlas_directory.get_base_dir()
-	
+
 	var parsed_path := '%s/Animation.res' % atlas_directory
 	if ResourceLoader.exists(parsed_path) and use_cache:
 		var parsed: ParsedAtlas = load(parsed_path)
@@ -164,7 +164,7 @@ func load_atlas(path: String, use_cache: bool = true) -> void:
 		_clear_items()
 		frame = 0
 		return
-	
+
 	var files := ResourceLoader.list_directory(atlas_directory)
 	for file in files:
 		if file.begins_with('spritemap') and file.ends_with('.json'):
@@ -178,11 +178,11 @@ func load_atlas(path: String, use_cache: bool = true) -> void:
 				load('%s/%s.png' % [atlas_directory, file.get_basename()])
 			)
 			_collections.push_back(sprite_collection)
-	
+
 	var animation_string := FileAccess.get_file_as_string('%s/Animation.json' % [atlas_directory])
 	if animation_string.is_empty():
 		return
-	
+
 	var animation_json: Variant = JSON.parse_string(animation_string)
 	if animation_json == null:
 		return
@@ -194,7 +194,7 @@ func _draw_symbol(element: Element) -> void:
 	if not _animation.symbol_dictionary.has(element.name):
 		printerr('Tried to draw invalid symbol "%s"' % [element.name])
 		return
-	
+
 	_filters = element.filters
 	_draw_timeline(_animation.symbol_dictionary.get(element.name), element.frame)
 
@@ -209,7 +209,7 @@ func _draw_sprite(element: Element) -> void:
 		if use_item:
 			item = RenderingServer.canvas_item_create()
 			_canvas_items.push_back(item)
-			RenderingServer.canvas_item_set_z_index(item, 
+			RenderingServer.canvas_item_set_z_index(item,
 					mini(_canvas_items.size() - 1, RenderingServer.CANVAS_ITEM_Z_MAX))
 			RenderingServer.canvas_item_set_parent(item, get_canvas_item())
 			RenderingServer.canvas_item_set_transform(item, _current_transform)
@@ -226,7 +226,7 @@ func _draw_sprite(element: Element) -> void:
 							#filter_material.set_shader_parameter('test', 4.0)
 		else:
 			draw_set_transform_matrix(_current_transform)
-		
+
 		if is_instance_valid(sprite.custom_texture):
 			if use_item:
 				RenderingServer.canvas_item_add_texture_rect(
@@ -298,7 +298,7 @@ func _exit_tree() -> void:
 
 func _draw() -> void:
 	_clear_items()
-	
+
 	if not is_instance_valid(_timeline):
 		return
 	_current_transform = Transform2D.IDENTITY

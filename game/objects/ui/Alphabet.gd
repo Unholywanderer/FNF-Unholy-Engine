@@ -80,7 +80,7 @@ func make_text(tx:String) -> void:
 			offsets.y += y_diff * rows
 		rows = 0
 
-		var anim = get_anim(i)
+		var anim:String = get_anim(i)
 		var letter = Letter.new(offsets, i, cur_loop, rows)
 		if anim != '' and is_instance_valid(sheet):
 			var e := sheet.get_frame_texture(anim, 0)
@@ -91,7 +91,8 @@ func make_text(tx:String) -> void:
 			letter.centered = false
 			letter.play(let)
 			letter.offset = offset_letter(i) #Vector2.ZERO #true_offsets
-			#if !bold: letter.offset.y -= letter._height / 1.05
+			if !bold:
+				letter.offset.y += 0 - letter._height
 			offsets.x += letter._width
 
 		letters_made.append(letter)

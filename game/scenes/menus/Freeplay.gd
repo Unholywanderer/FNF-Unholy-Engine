@@ -129,7 +129,6 @@ func change_diff(amount:int = 0) -> void:
 	var text = '< '+ diff_str.to_upper() +' >'
 	if use_list.size() == 1: text = text.replace('<', ' ').replace('>', ' ')
 	var score_to_get:String = added_songs[cur_song] + ('-'+ variant_str if variant_str != 'normal' else '')
-	print(score_to_get)
 	actual_score = HighScore.get_score(score_to_get, diff_str)
 	$SongInfo/Difficulty.text = text
 

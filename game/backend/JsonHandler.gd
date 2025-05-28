@@ -12,7 +12,7 @@ var chart_notes:Array = [] # keep loaded chart and events for restarting songs
 var song_events:Array[EventData] = []
 
 var parse_type:String = ''
-func parse_song(song:String, diff:String, variant:String = '', auto_create:bool = true):
+func parse_song(song:String, diff:String, variant:String = '', auto_create:bool = true) -> void:
 	_SONG.clear()
 	song_root = ''
 	song_variant = ''
@@ -41,6 +41,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	else:
 		var grossu = Osu.new()
 		_SONG = grossu.load_file(song)
+	if _SONG.is_empty(): return
 
 	if _SONG.has('scrollSpeed'): parse_type = 'v_slice'
 	if _SONG.has('codenameChart'): parse_type = 'codename'
@@ -86,7 +87,10 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 		generate_chart(_SONG)
 
 func get_song_data(song:String) -> Dictionary:
-	var parsed:Dictionary = JSON.parse_string(you_WILL_get_a_json(song))
+	var parsed = JSON.parse_string(you_WILL_get_a_json(song))
+	if parsed == null:
+		parsed = {song = song_root, bpm = 100, speed = 1, notes = [], player1 = 'bf', player2 = 'dad'}
+
 	if parsed.has('song'):
 		if parsed.has('format') and parsed.format.contains('psych_v1'):
 			parse_type = 'psych_v1'
@@ -94,30 +98,6 @@ func get_song_data(song:String) -> Dictionary:
 			parsed = parsed.song # i dont want to have to do no SONG.song.bpm or something
 
 	return parsed
-
-func reform_parts(song:String) -> void:
-	parse_type = 'psych'
-	var in_folder := DirAccess.get_files_at('res://assets/songs/'+ song +'/charts/')
-	var to_parse:Array = []
-	for i:String in in_folder:
-		if i.begins_with('part'):
-			to_parse.append(i)
-
-	var chart = Chart.new()
-	var temp_SONG = {}
-	var added_first:bool = false
-	for i in to_parse:
-		print(i)
-		var le_file = FileAccess.open('res://assets/songs/'+ song +'/charts/'+ i, FileAccess.READ).get_as_text()
-		var parsed = JSON.parse_string(le_file)
-		if !added_first:
-			added_first = true
-			temp_SONG = parsed.song
-		else:
-			temp_SONG.notes.append(parsed.song.notes)
-		chart_notes.append(chart.load_common(parsed.song))
-
-	_SONG = temp_SONG
 
 func you_WILL_get_a_json(song:String) -> String:
 	var path:String = 'res://assets/songs/%s/charts/' % song
@@ -132,7 +112,6 @@ func you_WILL_get_a_json(song:String) -> String:
 	if !ResourceLoader.exists(returned):
 		var err_path = returned.replace('res://assets/songs/', '../')
 		Alert.make_alert('"%s" has no %s\n%s' % [song, get_diff.to_upper(), err_path], Alert.ERROR)
-		parse_song('tutorial', 'hard')
 		return ''
 
 	#ResourceLoader.load_threaded_request(path)
@@ -158,13 +137,12 @@ func stage_to(stage:String) -> String:
 	return le_stage
 
 func generate_chart(data, keep_loaded:bool = true) -> Array:
-	if data == null:
-		return parse_song('tutorial', get_diff)
+	if data == null: return []
 
 	var chart = Chart.new()
 	var _notes := chart.load_chart(data, parse_type, get_diff) # get diff here only matters for base game as of now
 	song_events = chart.get_events(data) # load events whenever chart is made
-	#note_count = chart.get_must_hits(_notes).size() # change this later future me
+
 	if keep_loaded:
 		chart_notes = _notes.duplicate()
 

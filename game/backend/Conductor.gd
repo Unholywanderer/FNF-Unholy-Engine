@@ -36,6 +36,7 @@ var beat_time:float = 0.0
 var step_time:float = 0.0
 
 var cur_beat:int = 0
+var beat_dec:float = 0.0
 var cur_step:int = 0
 var cur_section:int = 0
 
@@ -144,9 +145,9 @@ func _process(delta) -> void:
 			beat_hit.emit(cur_beat)
 
 			var beats:int = 4
-			if JsonHandler.parse_type == 'legacy' and Game.scene and Game.scene.get('SONG'):
-				var son = Game.scene.SONG
-				if son.notes.size() > cur_section and son.has('notes'):
+			if JsonHandler.parse_type == 'legacy' and Game.scene:
+				var son = Game.scene.get('SONG')
+				if son and son.get('notes', []).size() > cur_section:
 					beats = son.notes[cur_section].get('sectionBeats', 4)
 
 			if cur_beat % beats == 0:
@@ -168,10 +169,10 @@ func _process(delta) -> void:
 				#resync_audio()
 
 func connect_signals(scene = null) -> void: # connect all signals
-	var this_scene = scene if scene != null else Game.scene
+	var this:Node = scene if scene else Game.scene
 	for i in ['beat_hit', 'step_hit', 'section_hit', 'song_end']:
-		if this_scene.has_method(i):
-			get(i).connect(Callable(this_scene, i))
+		if this.has_method(i):
+			get(i).connect(Callable(this, i))
 
 func add_audio(new_id:int = -1, file_name:String = '', vol:float = 0.7, song_name:String = '') -> void:
 	if song_name.is_empty(): song_name = JsonHandler.song_root
