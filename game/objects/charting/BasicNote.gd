@@ -124,7 +124,7 @@ func _ready():
 		label.scale *= 5
 		add_child(label)
 
-		text = type.replace('Note', '') # purely visual
+		text = (type.left(4) +'.' if type.length() > 4 else type)#.replace('Note', '') # purely visual
 		label.position -= Vector2(label.size.x * (30 * label.get_total_character_count()), -label.size.y * 1.5)
 
 func load_skin(skin) -> void:

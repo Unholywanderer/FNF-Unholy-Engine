@@ -65,12 +65,16 @@ func _init(pos:Vector2 = Vector2.ZERO, char:String = 'bf', player:bool = false):
 	centered = false
 	is_player = player
 	position = pos
+	animation_finished.connect(func():
+		if has_anim(animation +'-loop'):
+			looping = true
+			play_anim(animation +'-loop')
+	)
 	load_char(char)
 
 func load_char(new_char:String = 'bf') -> void:
 	if new_char == cur_char or new_char.is_empty():
-		print(new_char +' already loaded')
-		return
+		return print(new_char +' already loaded')
 
 	cur_char = new_char
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % cur_char):
@@ -79,24 +83,36 @@ func load_char(new_char:String = 'bf') -> void:
 		cur_char = replace_char
 
 	json = JsonHandler.get_character(cur_char) # get offsets and anim names...
-	if json.has('no_antialiasing'):
-		json = Legacy.fix_json(json)
+	if json.has('no_antialiasing'): json = Legacy.fix_json(json)
+	if json.has('assetPath'): json = VSlice.fix_json(json)
 
 	var path = json.path +'.res'
 	if !ResourceLoader.exists('res://assets/images/'+ path): # json exists, but theres no res file
 		printerr('No .res file found: '+ path)
 		path = 'characters/bf/char.res'
 
-	if !char_cache.has(cur_char):
+	if char_cache.has(cur_char):
+		sprite_frames = char_cache[cur_char]
+	else:
 		sprite_frames = ResourceLoader.load('res://assets/images/'+ path)
 		char_cache[cur_char] = sprite_frames.duplicate(true)
-	else:
-		sprite_frames = char_cache.get(cur_char, ResourceLoader.load('res://assets/images/'+ path))
 
 	offsets.clear()
 	for anim in json.animations:
+		var got_prefix:String = Util.get_closest_anim(sprite_frames, anim.prefix.left(-1))
+		if !got_prefix.is_empty() and !has_anim(anim.name):
+			if !anim.frames.is_empty():
+				#print(anim.name)
+				sprite_frames.add_animation(anim.name)
+				for frm in anim.frames:
+					var tex:Texture2D = sprite_frames.get_frame_texture(got_prefix, frm)
+					sprite_frames.add_frame(anim.name, tex)
+			else:
+				sprite_frames.rename_animation(got_prefix, anim.name)
 		offsets[anim.name] = anim.offsets
-		flippers[anim.name] = anim.get('flipX', false)
+		flippers[anim.name] = anim.get('flip_x', false)
+		if has_anim(anim.name):
+			sprite_frames.set_animation_speed(anim.name, anim.get('framerate', 24))
 
 	icon = json.icon
 	scale = Vector2(json.scale, json.scale)
@@ -106,14 +122,13 @@ func load_char(new_char:String = 'bf') -> void:
 	focus_offsets.x = json.cam_offset[0]
 	focus_offsets.y = json.cam_offset[1]
 	death_char = json.get('death_char', 'bf-dead')
+	sing_duration = json.get('sing_dur', 4)
 
 	speaker_data.clear()
 	if json.has('speaker'):
 		speaker_data = json.speaker
 
 	dance_idle = offsets.has('danceLeft') and offsets.has('danceRight')
-	dance_beat = 1 if dance_idle else 2
-	sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 
 	match(cur_char):
 		'senpai':
@@ -126,11 +141,13 @@ func load_char(new_char:String = 'bf') -> void:
 			can_dance = cur_char == 'otis-speaker'
 			sing_anims = ['shootLeft', 'shootLeft', 'shootRight', 'shootRight']
 			play_anim('idle')
+		_:
+			dance_beat = 1 if dance_idle else 2
+			sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 			#frame = sprite_frames.get_frame_count('shootRight1') - 4
 
 	dance()
 	set_stuff()
-
 	if is_player != json.facing_left:
 		flip_char()
 
@@ -160,8 +177,7 @@ func _process(delta):
 			if hold_timer >= Conductor.step_crochet * (0.0011 * sing_duration) and boogie:
 				dance()
 
-	if cur_char.contains('-car') and offsets.has(animation +'-loop') and \
-	  frame >= sprite_frames.get_frame_count(animation) - 1:
+	if cur_char.contains('-car') and frame >= sprite_frames.get_frame_count(animation) - 1:
 		looping = true
 		frame = sprite_frames.get_frame_count(animation) - 5
 
@@ -203,7 +219,7 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 		to_sing = sing_anims[dir]
 
 	if sing_timer >= Conductor.step_crochet / 1000.0 or reset:
-		sing_timer = 0.0 #if reset else Conductor.step_crochet / 1000.0
+		sing_timer = 0.0 if reset else (Conductor.step_crochet / 1000.0) * get_process_delta_time()
 		play_anim(to_sing, true)
 
 func flip_char() -> void:
@@ -272,22 +288,22 @@ static func get_closest(char_name:String = 'bf') -> String: # if theres no chara
 			if i.to_lower().contains(file): return file
 	return 'bf'
 
-func cache_char(char:String) -> void:
-	if char_cache.has(char): return
-	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % char):
-		char = get_closest(char)
-	if char_cache.has(char): return
+func cache_char(to_cache:String) -> void:
+	if char_cache.has(to_cache): return
+	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % to_cache):
+		to_cache = get_closest(to_cache)
+	if char_cache.has(to_cache): return
 
-	json = JsonHandler.get_character(char)
-	if json.has('no_antialiasing'):
-		json = Legacy.fix_json(json)
+	json = JsonHandler.get_character(to_cache)
+	if json.has('no_antialiasing'): json = Legacy.fix_json(json)
+	if json.has('assetPath'): json = VSlice.fix_json(json)
 
 	var path = json.path +'.res'
 	if !ResourceLoader.exists('res://assets/images/'+ path):
 		return printerr('No .res file to cache: '+ path)
 
-	char_cache[char] = ResourceLoader.load('res://assets/images/'+ path)
-	print('cached '+ char)
+	char_cache[to_cache] = ResourceLoader.load('res://assets/images/'+ path)
+	print('cached '+ to_cache)
 
 func copy(from:Character) -> void:
 	for i in from.get_script().get_script_property_list():

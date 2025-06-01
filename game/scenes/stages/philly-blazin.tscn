@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b1aps5umea8ha"]
+[gd_scene load_steps=11 format=3 uid="uid://b1aps5umea8ha"]
 
 [ext_resource type="Script" uid="uid://bel20qqcuybr1" path="res://game/scenes/stages/philly-blazin.gd" id="1_gj0t7"]
 [ext_resource type="Texture2D" uid="uid://b7yubq6h1uxtu" path="res://assets/images/stages/philly-blazin/skyBlur.png" id="2_dqmug"]
@@ -6,6 +6,7 @@
 [ext_resource type="Shader" uid="uid://bh2xopks8xxis" path="res://game/resources/shaders/scroll.gdshader" id="3_xixle"]
 [ext_resource type="SpriteFrames" path="res://assets/images/stages/philly-blazin/lightning.res" id="5_ekwuh"]
 [ext_resource type="Texture2D" uid="uid://devcm1mp4lvjf" path="res://assets/images/stages/philly-blazin/streetBlur.png" id="6_wciij"]
+[ext_resource type="Shader" uid="uid://kxrxkjkelq0r" path="res://game/resources/shaders/rain.gdshader" id="7_1apta"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fhk38"]
 shader = ExtResource("3_xixle")
@@ -15,11 +16,16 @@ shader_parameter/speed_scale = 0.01
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_e370x"]
 blend_mode = 3
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_at4qc"]
+shader = ExtResource("7_1apta")
+shader_parameter/Intensity = 0.4
+shader_parameter/Timescale = 0.0900005
+
 [node name="Philly Blazin" type="Node2D"]
 script = ExtResource("1_gj0t7")
+default_zoom = 0.75
 
 [node name="ScrollSprite" type="Node2D" parent="."]
-position = Vector2(-600, -175)
 scale = Vector2(1.1, 0.9)
 script = ExtResource("2_oc14b")
 scroll_factor = Vector2(0, 0)
@@ -27,7 +33,8 @@ scroll_factor = Vector2(0, 0)
 [node name="Sky" type="Sprite2D" parent="ScrollSprite"]
 texture_repeat = 2
 material = SubResource("ShaderMaterial_fhk38")
-position = Vector2(90.9091, 61.1111)
+position = Vector2(-600, -175)
+scale = Vector2(1.75, 1.75)
 texture = ExtResource("2_dqmug")
 centered = false
 region_enabled = true
@@ -36,6 +43,7 @@ region_rect = Rect2(0, 0, 1800, 395)
 [node name="SkyAdd" type="Sprite2D" parent="ScrollSprite"]
 visible = false
 texture_repeat = 2
+position = Vector2(-600, -175)
 scale = Vector2(1.75, 1.75)
 texture = ExtResource("2_dqmug")
 centered = false
@@ -62,3 +70,12 @@ position = Vector2(-600, -175)
 scale = Vector2(1.75, 1.75)
 texture = ExtResource("6_wciij")
 centered = false
+
+[node name="CharGroup" type="Node2D" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_at4qc")
+offset_left = -764.0
+offset_top = -407.0
+offset_right = 1962.0
+offset_bottom = 1177.0

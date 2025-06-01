@@ -436,7 +436,9 @@ func play_strum(note):
 		strums[dir].play_anim('confirm', true)
 		strums[dir].reset_timer = 0.15
 
-		funky_boys[0 if dir > 3 else 1].sing(note.dir, '', !note.is_sustain)
+		var funk:Character = funky_boys[0 if dir > 3 else 1]
+		if note.type == 'GF': funk = funky_boys[2]
+		funk.sing(note.dir, '', !note.is_sustain)
 
 func on_char_change(c:String):
 	var new_char:String

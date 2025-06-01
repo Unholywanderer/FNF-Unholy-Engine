@@ -54,6 +54,8 @@ func post_ready() -> void:
 		can_blam = true
 		blammed_shader = ShaderMaterial.new()
 		blammed_shader.shader = load('res://game/resources/shaders/blammed.gdshader')
+		blammed_shader.set_shader_parameter('outline_threshold', 0.03)
+		blammed_shader.set_shader_parameter('black_threshold', 0.25)
 
 	var new = ShaderMaterial.new()
 	new.shader = load('res://game/resources/shaders/adjust_color.gdshader')

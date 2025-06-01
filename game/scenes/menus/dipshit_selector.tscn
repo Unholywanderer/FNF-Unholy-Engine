@@ -1,0 +1,155 @@
+[gd_scene load_steps=16 format=3 uid="uid://rvpjyxremt2o"]
+
+[ext_resource type="Script" uid="uid://c4txr1bliaavn" path="res://game/scenes/menus/Char_Select.gd" id="1_vkavo"]
+[ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_gh45c"]
+[ext_resource type="Texture2D" uid="uid://daykmo1ebmic0" path="res://assets/images/char_select/charSelectBG.png" id="3_22ohf"]
+[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="4_a0js3"]
+[ext_resource type="SpriteFrames" path="res://assets/images/char_select/charSelectStage.res" id="5_ufjo1"]
+[ext_resource type="Texture2D" uid="uid://q023fholvsjt" path="res://assets/images/char_select/curtains.png" id="6_275j5"]
+[ext_resource type="Texture2D" uid="uid://iw5bmf4c505v" path="res://assets/images/char_select/charLight.png" id="7_tyu7u"]
+[ext_resource type="SpriteFrames" path="res://assets/images/char_select/dipshitBlur.res" id="8_o240r"]
+[ext_resource type="Texture2D" uid="uid://cth1g445u80ib" path="res://assets/images/char_select/foregroundBlur.png" id="8_tyu7u"]
+[ext_resource type="SpriteFrames" path="res://assets/images/char_select/dipshitBacking.res" id="9_nwa8f"]
+[ext_resource type="Texture2D" uid="uid://vhygvt34mvtf" path="res://assets/images/char_select/chooseDipshit.png" id="10_wrnv3"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_nwa8f"]
+blend_mode = 3
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_prsja"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_81nay"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_o240r"]
+blend_mode = 1
+
+[node name="Dipshit Selector" type="Node2D"]
+script = ExtResource("1_vkavo")
+
+[node name="BG" type="Node2D" parent="."]
+script = ExtResource("2_gh45c")
+scroll_factor = Vector2(0.1, 0.1)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="Sprite2D" parent="BG"]
+position = Vector2(-153, -140)
+texture = ExtResource("3_22ohf")
+centered = false
+
+[node name="Crowd" type="Node2D" parent="."]
+script = ExtResource("2_gh45c")
+scroll_factor = Vector2(0.3, 0.3)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="Node2D" parent="Crowd"]
+position = Vector2(-81, 254)
+script = ExtResource("4_a0js3")
+atlas = "res://assets/images/char_select/crowd"
+frame = 7
+playing = true
+metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+
+[node name="Stage" type="AnimatedSprite2D" parent="."]
+position = Vector2(-40, 391)
+sprite_frames = ExtResource("5_ufjo1")
+animation = &"stage full instance 1"
+autoplay = "stage full instance 1"
+frame_progress = 0.291778
+centered = false
+
+[node name="Curtains" type="Node2D" parent="."]
+script = ExtResource("2_gh45c")
+scroll_factor = Vector2(1.4, 1.4)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="Sprite2D" parent="Curtains"]
+position = Vector2(-47, -49)
+texture = ExtResource("6_275j5")
+centered = false
+
+[node name="Bar" type="Node2D" parent="."]
+script = ExtResource("2_gh45c")
+scroll_factor = Vector2(0, 0)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="Node2D" parent="Bar"]
+material = SubResource("CanvasItemMaterial_nwa8f")
+position = Vector2(-56, 72)
+script = ExtResource("4_a0js3")
+atlas = "res://assets/images/char_select/barThing"
+frame = 3
+playing = true
+metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+
+[node name="Light" type="Sprite2D" parent="."]
+position = Vector2(800, 250)
+texture = ExtResource("7_tyu7u")
+centered = false
+
+[node name="LightGF" type="Sprite2D" parent="."]
+position = Vector2(180, 240)
+texture = ExtResource("7_tyu7u")
+centered = false
+
+[node name="Peeps" type="Node2D" parent="."]
+
+[node name="AnimateSymbol" type="Node2D" parent="Peeps"]
+visible = false
+position = Vector2(715, 380)
+script = ExtResource("4_a0js3")
+atlas = "res://assets/images/char_select/dipshits/picoChill"
+metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+
+[node name="Speakers" type="Node2D" parent="."]
+script = ExtResource("2_gh45c")
+scroll_factor = Vector2(1.8, 1.8)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="Sprite" type="Node2D" parent="Speakers"]
+position = Vector2(-78, 432)
+script = ExtResource("4_a0js3")
+atlas = "res://assets/images/char_select/charSelectSpeakers"
+frame = 14
+loop_mode = "Play Once"
+metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+
+[node name="DipshitBlur" type="AnimatedSprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_prsja")
+position = Vector2(419, -65)
+sprite_frames = ExtResource("8_o240r")
+animation = &"CHOOSE vertical offset instance 1"
+autoplay = "CHOOSE vertical offset instance 1"
+frame_progress = 0.121903
+centered = false
+metadata/_edit_lock_ = true
+
+[node name="DipshitBacking" type="AnimatedSprite2D" parent="."]
+material = SubResource("CanvasItemMaterial_81nay")
+position = Vector2(423, -17)
+sprite_frames = ExtResource("9_nwa8f")
+animation = &"CHOOSE horizontal offset instance 1"
+autoplay = "CHOOSE horizontal offset instance 1"
+frame_progress = 0.451484
+centered = false
+metadata/_edit_lock_ = true
+
+[node name="Dipshit" type="Sprite2D" parent="."]
+position = Vector2(426, -13)
+texture = ExtResource("10_wrnv3")
+centered = false
+metadata/_edit_lock_ = true
+
+[node name="FGBlur" type="Sprite2D" parent="."]
+visible = false
+material = SubResource("CanvasItemMaterial_o240r")
+position = Vector2(-125, 170)
+texture = ExtResource("8_tyu7u")
+centered = false
+
+[node name="Icons" type="Node2D" parent="."]
+position = Vector2(450, 120)
+
+[node name="Cam" type="Camera2D" parent="."]
+anchor_mode = 0
+position_smoothing_enabled = true

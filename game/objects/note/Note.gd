@@ -21,8 +21,6 @@ var height:float = 0.0:
 
 const COLORS:PackedStringArray = ['purple', 'blue', 'green', 'red']
 
-var chart_note:bool = false:
-	set(c): set_process(!c); chart_note = c;
 var spawned:bool = false
 var strum_time:float:
 	get: return raw_time + Prefs.offset
@@ -87,7 +85,7 @@ var temp_len:float = 0.0 #if you dont immediately hold
 var offset_y:float = 0.0
 
 var holding:bool = false
-var min_len:float = 10.0 # before a sustain is counted as "hit"
+var min_len:float = 20.0 # before a sustain is counted as "hit"
 var drop_time:float = 0.0
 var dropped:bool = false:
 	set(drop):
@@ -104,11 +102,10 @@ var alpha:float = 1.0:
 	get: return modulate.a
 	set(alpha): modulate.a = alpha
 
-func _init(data = null, sustain_:bool = false, in_chart:bool = false) -> void:
+func _init(data = null, sustain_:bool = false) -> void:
 	if data == null: data = NoteData.new()
 	is_sustain = (sustain_ and data is Note)
 	copy_from(data)
-	chart_note = in_chart
 	if is_sustain:
 		temp_len = length
 
@@ -127,36 +124,41 @@ func _ready() -> void:
 
 		add_child(hold_group)
 		move_child(hold_group, 0)
+		var hold_path:String = tex_path + COLORS[dir] +'_'
+		if ResourceLoader.exists(tex_path +'hold.png'): # only a 'hold.png' instead of 4
+			hold_path = tex_path
 
 		end = TextureRect.new()
-		end.texture = load(tex_path + COLORS[dir] +'_end.png')
+		end.texture = load(hold_path +'end.png')
 		end.stretch_mode = TextureRect.STRETCH_TILE
 		end.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 		end.grow_horizontal = Control.GROW_DIRECTION_BOTH
 		end.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
 		sustain = TextureRect.new()
-		sustain.texture = load(tex_path + COLORS[dir] +'_hold.png')
+		sustain.texture = load(hold_path +'hold.png')
 		sustain.stretch_mode = TextureRect.STRETCH_TILE
 		sustain.set_anchors_preset(Control.PRESET_FULL_RECT)
 		sustain.set_anchor_and_offset(SIDE_BOTTOM, 1.0, -end.texture.get_height() + 1.0)
 		sustain.grow_horizontal = Control.GROW_DIRECTION_BOTH
-		sustain.grow_vertical = Control.GROW_DIRECTION_BOTH
+		sustain.grow_vertical = Control.GROW_DIRECTION_BEGIN
 
 		hold_group.add_child(sustain)
 		hold_group.add_child(end)
 
-		if !chart_note:
-			resize_hold(true)
-			if Prefs.behind_strums: hold_group.z_index = -1
+		resize_hold(true)
+		if Prefs.behind_strums: hold_group.z_index = -1
 	else:
 		if ResourceLoader.exists(tex_path +'.res'):
 			note = AnimatedSprite2D.new()
-			note.sprite_frames = skin.cached_note_types['hurt'] #ResourceLoader.load(tex_path +'.res')
+			note.sprite_frames = skin.cached_note_types['hurt']
 			note.play(COLORS[dir])
 		else:
 			note = Sprite2D.new()
-			note.texture = load(tex_path + COLORS[dir] +'.png')
+			var spr_path:String = tex_path + COLORS[dir] +'.png'
+			if ResourceLoader.exists(tex_path +'note.png'): # if theres only a 'note.png' instead of 4 colors
+				spr_path = tex_path +'note.png'
+			note.texture = load(spr_path)
 
 		add_child(note)
 

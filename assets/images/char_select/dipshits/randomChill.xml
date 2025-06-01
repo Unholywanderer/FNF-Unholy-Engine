@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="randomChill.png" width="3536" height="402" spritePadding="3" borderPadding="1">
+	<SubTexture name="LOCKED MAN instance 10000" x="1337" y="1" width="227" height="386" frameX="-66" frameY="-6" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10001" x="535" y="1" width="229" height="384" frameX="-65" frameY="-9" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10002" x="303" y="1" width="229" height="383" frameX="-65" frameY="-8" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10003" x="1795" y="1" width="248" height="388" frameX="-57" frameY="-7" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10004" x="2046" y="1" width="225" height="388" frameX="-66" frameY="-7" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10005" x="1567" y="1" width="225" height="387" frameX="-68" frameY="-6" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10006" x="3055" y="1" width="252" height="395" frameX="-54" frameY="-5" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10007" x="767" y="1" width="284" height="385" frameX="-21" frameY="-8" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10008" x="1054" y="1" width="280" height="385" frameX="-17" frameY="-7" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10009" x="1" y="1" width="299" height="366" frameX="-60" frameY="-27" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10010" x="2274" y="1" width="299" height="389" frameX="0" frameY="-11" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10011" x="2805" y="1" width="247" height="391" frameX="-37" frameY="-12" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10012" x="3310" y="1" width="225" height="400" frameX="-69" frameY="-1" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10013" x="2576" y="1" width="226" height="389" frameX="-67" frameY="-8" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10014" x="1337" y="1" width="227" height="386" frameX="-66" frameY="-6" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10015" x="1337" y="1" width="227" height="386" frameX="-66" frameY="-6" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10016" x="535" y="1" width="229" height="384" frameX="-65" frameY="-9" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10017" x="303" y="1" width="229" height="383" frameX="-65" frameY="-8" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10018" x="1795" y="1" width="248" height="388" frameX="-57" frameY="-7" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10019" x="2046" y="1" width="225" height="388" frameX="-66" frameY="-7" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10020" x="1567" y="1" width="225" height="387" frameX="-68" frameY="-6" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10021" x="3055" y="1" width="252" height="395" frameX="-54" frameY="-5" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10022" x="767" y="1" width="284" height="385" frameX="-21" frameY="-8" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10023" x="1337" y="1" width="227" height="386" frameX="-66" frameY="-6" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10024" x="535" y="1" width="229" height="384" frameX="-65" frameY="-9" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10025" x="303" y="1" width="229" height="383" frameX="-65" frameY="-8" frameWidth="299" frameHeight="401"/>
+	<SubTexture name="LOCKED MAN instance 10026" x="2805" y="1" width="247" height="391" frameX="-37" frameY="-12" frameWidth="299" frameHeight="401"/>
+</TextureAtlas>

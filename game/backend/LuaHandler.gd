@@ -44,6 +44,7 @@ func add_script(script:String) -> void:
 	lua.push_variant("get_layer", get_layer)
 
 	# Helpers n random shit #
+	lua.push_variant("tween", lua_tween)
 	lua.push_variant("parse_json", parse_json)
 	lua.push_variant("play_sound", Audio.play_sound)
 	lua.push_variant("play_music", Audio.play_music)
@@ -85,12 +86,13 @@ func load_lua(lua:LuaEx, path:String) -> bool:
 		return false
 	return true
 
-func call_func(_func:String, args:Array = []):
+func call_func(_func:String, args:Array = []) -> RET_TYPES:
 	if _func.length() == 0: return 1
-	var ret_val = RET_TYPES.CONTINUE
+	var ret_val:RET_TYPES = RET_TYPES.CONTINUE
 	for i in active_lua:
 		if !i.function_exists(_func): continue
-		ret_val = i.call_function(_func, args)
+		var new_val = i.call_function(_func, args)
+		if new_val is RET_TYPES: ret_val = new_val
 	return ret_val
 
 ## FUNCTIONS FO LUA CRIPTS 😎😎
@@ -149,6 +151,10 @@ func set_param(obj:Variant, param:String, new_value:Variant):
 
 func get_param(obj:Variant, param:String):
 	return obj.material.get_shader_parameter(param)
+
+func lua_tween(obj:Variant, prop:String, to_val:Variant, dur:float) -> void:
+	if obj == null: return printerr('obj null!!!')
+	Util.quick_tween(obj, prop, to_val, dur, Tween.TransitionType.TRANS_QUAD, Tween.EaseType.EASE_IN)
 #func add_variant(variant:String):
 #	if !variant.is_empty():
 #		for lua in active_lua:

@@ -2,16 +2,17 @@ extends Node2D
 
 var character:Character
 var shadow:Character
-var char_json = {}
+var char_json:Dictionary = {}
+
 var anim_list:Array[Label] = []
 var offsets:Dictionary[String, Array] = {}
-var flipped:Dictionary[String, Variant] = {}
-var cur_cam_offset:Array = [0, 0]
-var cur_pos_offset:Array = [0, 0]
+var flipped:Dictionary[String, bool] = {}
+var cur_cam_offset:Array[int] = [0, 0]
+var cur_pos_offset:Array[int] = [0, 0]
 
-var icon_list:Array = []
+var icon_list:PackedStringArray = []
 
-var char_list:Array = []
+var char_list:PackedStringArray = []
 var cur_char:String = ''
 var cur_anim:String = ''
 var selected_id:int = 0:
@@ -28,6 +29,7 @@ var selected_id:int = 0:
 		character.flip_h = flipped.get(cur_anim, false)
 
 func _ready() -> void:
+	Prefs.auto_pause = false
 	Game.set_mouse_visibility()
 	Audio.play_music('artisticExpression')
 
@@ -51,7 +53,8 @@ func _ready() -> void:
 	MAIN('IconSelect/Icon').scale = Vector2(0.7, 0.7)
 
 	var thing_change = func(_val, thing_name:String): # we dont use the '_val' for this
-		var new_vals = [MAIN(thing_name +'/X').value, MAIN(thing_name +'/Y').value]
+		var new_vals:Array[int]
+		new_vals.assign([MAIN(thing_name +'/X').value, MAIN(thing_name +'/Y').value])
 		match thing_name:
 			'Cam':
 				character.focus_offsets -= Vector2(cur_cam_offset[0], cur_cam_offset[1])
@@ -76,15 +79,15 @@ func _ready() -> void:
 	)
 	$Cam.position = get_viewport_rect().size / 2.0
 
-	var grab = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
-	grab.append_array(DirAccess.get_files_at('res://assets/data/characters'))
+	var grab:PackedStringArray = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
+	grab.append_array(ResourceLoader.list_directory('res://assets/data/characters'))
 	for i in grab:
 		i = i.replace('.json', '')
 		if !char_list.has(i):
 			char_list.append(i)
 			MAIN('CharacterSelect').get_popup().add_item(i)
 
-	for i in DirAccess.get_files_at('res://assets/images/icons'):
+	for i in ResourceLoader.list_directory('res://assets/images/icons'):
 		if !i.ends_with('.png'): continue
 		i = i.replace('.png', '')
 		if !icon_list.has(i):
@@ -98,53 +101,60 @@ func _process(delta:float) -> void:
 	$Backdrop.position = $Cam.position
 
 	character.speed_scale = $UILayer/Anim/AnimSpeed.value
-	var sc = MAIN('ScaleBox').value
+	var sc:float = MAIN('ScaleBox').value
 	character.scale = Vector2(sc, sc)
 	shadow.scale = character.scale
 
 	DATA('Anim').text = cur_anim
 	DATA('Offset').text = str(offsets[cur_anim])
-	DATA('Frame').text = 'Frame:\n'+ str(character.frame) +' / '+ str(character.sprite_frames.get_frame_count(character.animation) - 1)
+	DATA('Frame').text = 'Frame\n'+ str(character.frame) +' / '+ str(character.sprite_frames.get_frame_count(character.animation) - 1)
 
-
-func _unhandled_input(event: InputEvent) -> void:
+var press_time:float = 0.0
+func _unhandled_input(event:InputEvent) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and !event.is_released():
 		get_viewport().gui_release_focus()
+	if event is InputEventMouse: return
 
-	if Input.is_action_just_pressed('back'): Game.switch_scene('menus/Main_Menu')
+	if event.is_action_pressed('back'):
+		Prefs.auto_pause = true
+		Game.switch_scene('menus/Main_Menu')
 
-	var ctrl = Input.is_key_pressed(KEY_CTRL)
-	var shift = Input.is_key_pressed(KEY_SHIFT)
-	## CAMERA ZOOM
-	if Input.is_key_pressed(KEY_U): $Cam.zoom -= Vector2(0.01, 0.01)
-	if Input.is_key_pressed(KEY_O): $Cam.zoom += Vector2(0.01, 0.01)
-	## CAMERA MOVE
-	if Input.is_key_pressed(KEY_J): $Cam.position.x -= 5 * (5 if shift else 1)
-	if Input.is_key_pressed(KEY_L): $Cam.position.x += 5 * (5 if shift else 1)
-	if Input.is_key_pressed(KEY_I): $Cam.position.y -= 5 * (5 if shift else 1)
-	if Input.is_key_pressed(KEY_K): $Cam.position.y += 5 * (5 if shift else 1)
-	## CHARACTER OFFSETTING
-	var replay_anim = false
-	if Input.is_key_pressed(KEY_LEFT) : offsets[cur_anim][0] -= (1 if !shift else 10); replay_anim = true
-	if Input.is_key_pressed(KEY_RIGHT): offsets[cur_anim][0] += (1 if !shift else 10); replay_anim = true
-	if Input.is_key_pressed(KEY_UP)   : offsets[cur_anim][1] -= (1 if !shift else 10); replay_anim = true
-	if Input.is_key_pressed(KEY_DOWN) : offsets[cur_anim][1] += (1 if !shift else 10); replay_anim = true
-	if Input.is_key_pressed(KEY_SPACE): replay_anim = true
+	if event.is_pressed(): press_time += get_process_delta_time()
+	if event.is_released(): press_time = 0
+	if event is not InputEventKey or (event.is_pressed() and press_time < 0.01): return
+	var ctrl:bool = Input.is_key_pressed(KEY_CTRL)
+	var shift:bool = Input.is_key_pressed(KEY_SHIFT)
+
+	var replay_anim:bool = false
+	match event.keycode:
+		## CAMERA ZOOM
+		KEY_U: $Cam.zoom -= Vector2(0.01, 0.01)
+		KEY_O: $Cam.zoom += Vector2(0.01, 0.01)
+		## CAMERA MOVE
+		KEY_J: $Cam.position.x -= 5 * (5 if shift else 1)
+		KEY_L: $Cam.position.x += 5 * (5 if shift else 1)
+		KEY_I: $Cam.position.y -= 5 * (5 if shift else 1)
+		KEY_K: $Cam.position.y += 5 * (5 if shift else 1)
+
+		KEY_W: selected_id = wrapi(selected_id - 1, 0, anim_list.size())
+		KEY_S: selected_id = wrapi(selected_id + 1, 0, anim_list.size())
+		KEY_Q, KEY_E:
+			character.pause()
+			character.frame += 1 if event.keycode == KEY_E else -1
+
+		## CHARACTER OFFSETTING
+		KEY_LEFT : offsets[cur_anim][0] -= (1 if !shift else 10); replay_anim = true
+		KEY_RIGHT: offsets[cur_anim][0] += (1 if !shift else 10); replay_anim = true
+		KEY_UP   : offsets[cur_anim][1] -= (1 if !shift else 10); replay_anim = true
+		KEY_DOWN : offsets[cur_anim][1] += (1 if !shift else 10); replay_anim = true
+
+		KEY_SPACE: replay_anim = true
 
 	if replay_anim:
 		character.frame = 0
 		anim_list[selected_id].text = cur_anim +' '+ str(offsets[cur_anim])
 		character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
 		character.play()
-
-	if Input.is_key_pressed(KEY_W): selected_id = wrapi(selected_id - 1, 0, anim_list.size())
-	if Input.is_key_pressed(KEY_S): selected_id = wrapi(selected_id + 1, 0, anim_list.size())
-	if Input.is_key_pressed(KEY_Q):
-		character.pause()
-		character.frame -= 1
-	if Input.is_key_pressed(KEY_E):
-		character.pause()
-		character.frame += 1
 
 func change_icon(new_icon:String = 'bf') -> void:
 	var ic:Icon = MAIN('IconSelect/Icon')
@@ -177,6 +187,8 @@ func change_char(new_char:String = 'bf') -> void:
 	MAIN('CharacterSelect').text = cur_char
 	if char_json.has('no_antialiasing'):
 		char_json = Legacy.fix_json(char_json)
+	if char_json.has('assetPath'):
+		char_json = VSlice.fix_json(char_json)
 
 	DATA('Warn').visible = !ResourceLoader.exists('res://assets/images/'+ char_json.path +'.res')
 	MAIN('CharacterSelect/CurCharLabel').text = cur_char
@@ -195,16 +207,16 @@ func change_char(new_char:String = 'bf') -> void:
 	character.play(cur_anim) # play first loaded anim to fix offsets
 	character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
 
-	cur_cam_offset = char_json.cam_offset
-	cur_pos_offset = char_json.pos_offset
+	cur_cam_offset.assign(char_json.cam_offset)
+	cur_pos_offset.assign(char_json.pos_offset)
 
 	MAIN('Anti').button_pressed = char_json.antialiasing
 
-	MAIN('Pos/X').value = char_json.pos_offset[0]
-	MAIN('Pos/Y').value = char_json.pos_offset[1]
+	MAIN('Pos/X').value = int(char_json.pos_offset[0])
+	MAIN('Pos/Y').value = int(char_json.pos_offset[1])
 
-	MAIN('Cam/X').value = char_json.cam_offset[0]
-	MAIN('Cam/Y').value = char_json.cam_offset[1]
+	MAIN('Cam/X').value = int(char_json.cam_offset[0])
+	MAIN('Cam/Y').value = int(char_json.cam_offset[1])
 
 	if !MAIN('Cam/Lock').button_pressed:
 		$Cam.position = character.position + Vector2(character.width / 2.0, character.height / 2.5)
@@ -221,15 +233,18 @@ func reload_list(anims:Array) -> void:
 	offsets.clear()
 	MAIN('Shadow/AnimSelect').get_popup().clear()
 
+	#var temp_arr:Array[int] = [] # fix for the dumb floats
 	for i in anims.size():
-		var anim = anims[i]
-		offsets[anim.name] = anim.offsets
+		var anim:Dictionary = anims[i]
+		#temp_arr.clear()
+		#temp_arr.assign(anim.offsets) # make sure they are ints to remove the extra '.0'
+		offsets[anim.name] = anim.offsets #temp_arr
 		flipped[anim.name] = anim.get('flipX', false)
 
-		var lab = make_label()
+		var lab := make_label()
 		lab.position.x += 15
 		lab.position.y = 70 + (20 * i)
-		lab.text = anim.name +' '+ str(anim.offsets)
+		lab.text = anim.name +' '+ str(anim.offsets)#temp_arr)
 
 		$UILayer/Animations.add_child(lab)
 		MAIN('Shadow/AnimSelect').get_popup().add_item(anim.name)
@@ -248,10 +263,7 @@ func reload_list(anims:Array) -> void:
 		selected_id = 0
 		anim_list[0].modulate = Color.YELLOW
 
-func on_char_change(id:int) -> void:
-	var got_char = char_list[id]
-	if cur_char != got_char:
-		change_char(got_char)
+func on_char_change(id:int) -> void: change_char(char_list[id])
 
 func make_label() -> Label:
 	var lab = Label.new()
@@ -265,7 +277,7 @@ func DATA(to_get:String): return $UILayer.get_node('CurData/'+ to_get)
 
 func save_pressed() -> void:
 	var old_json = JsonHandler.get_character(cur_char) # should remove this once you can actually add prefixes
-	if old_json != null and old_json.has('no_antialiasing'):
+	if old_json and old_json.has('no_antialiasing'):
 		old_json = Legacy.fix_json(old_json)
 
 	var new_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
@@ -273,9 +285,11 @@ func save_pressed() -> void:
 		var new_anim = UnholyFormat.CHAR_ANIM.duplicate()
 		new_anim.offsets = offsets[i]
 		new_anim.name = i
-		if old_json != null:
+		if old_json:
 			for a in old_json.animations:
-				if a.name == i: new_anim.prefix = a.prefix
+				if a.name == i:
+					new_anim.prefix = a.prefix
+					new_anim.frames = a.frames
 		new_json.animations.append(new_anim)
 
 	new_json.path = old_json.path # and this
@@ -305,7 +319,9 @@ func shadow_anim_change(id:int) -> void:
 	shadow.offset = Vector2(offsets[new_anim][0], offsets[new_anim][1])
 	shadow.flip_h = flipped.get(new_anim, false)
 
-
 func shadow_frame_change(value:int) -> void:
 	shadow.frame = value
 	MAIN('Shadow/Frame/Txt').text = 'Frame: '+ str(value)
+
+func shadow_color_changed(color:Color) -> void:
+	shadow.modulate = color

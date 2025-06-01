@@ -21,7 +21,7 @@
 			"framerate": 24,
 			"frames": [],
 			"loop": false,
-			"flipX": true
+			"flip_x": true
 		},
 		{
 			"name": "beat it",
@@ -33,7 +33,7 @@
 			"framerate": 24,
 			"frames": [],
 			"loop": false,
-			"flipX": true
+			"flip_x": true
 		},
 		{
 			"name": "laugh",
@@ -45,7 +45,7 @@
 			"framerate": 24,
 			"frames": [],
 			"loop": false,
-			"flipX": true
+			"flip_x": true
 		},
 		{
 			"name": "singUP",

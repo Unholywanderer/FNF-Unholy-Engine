@@ -1,0 +1,104 @@
+[gd_scene load_steps=6 format=3 uid="uid://cpm7fcss8ly87"]
+
+[ext_resource type="SpriteFrames" uid="uid://o5efv6lrdamh" path="res://assets/images/ui/dialogue/default/speech_bubble.res" id="1_p70yx"]
+[ext_resource type="FontFile" uid="uid://dgbxo5q4vbi80" path="res://assets/fonts/PM Full.ttf" id="2_6yt8u"]
+[ext_resource type="Script" uid="uid://gmqs047c4qsd" path="res://game/objects/ui/TypedLabel.gd" id="3_6yt8u"]
+
+[sub_resource type="GDScript" id="GDScript_p70yx"]
+resource_name = "DialogueBox"
+script/source = "extends Control
+
+signal line_skipped(line:int)
+signal line_finished(line:int)
+signal dialogue_finished
+@onready var text:TypedLabel = $Box/Text
+
+var state:String = 'normal'
+var dialogue_lines:Array[Dictionary] = []
+var cur_line:int = -1
+
+func load_legacy(file:String) -> void:
+	dialogue_lines.clear()
+	var file_path:String = 'res://assets/songs/'+ JsonHandler.song_root +'/'+ file
+	var dialogue:PackedStringArray = FileAccess.get_file_as_string(file_path +'.txt').split('\\n', false)
+	if dialogue.is_empty(): return print('no text file')
+
+	for i in dialogue.size():
+		var line_data:Array = dialogue[i].substr(1).split(':')
+		dialogue_lines.append({'speaker': line_data[0], 'text': line_data[1].strip_edges()})
+
+func play_dialogue(txt_speed:float = 0.05) -> void:
+	cur_line += 1
+	if cur_line > dialogue_lines.size() - 1:
+		dialogue_finished.emit()
+		text.hide()
+		$Box.play_backwards(&\"normal-open\")
+		return #queue_free()
+	text.text = dialogue_lines[cur_line].get('text', 'Oops!')
+	text.start()
+	$Box.flip_h = dialogue_lines[cur_line].get('speaker', 'bf') == 'dad'
+	Game.scene.move_cam(!$Box.flip_h)
+
+func _ready() -> void:
+	text.finished.connect(func(): line_finished.emit(cur_line))
+	$Box.animation_finished.connect(func() -> void:
+		if $Box.animation.contains(&'open'):
+			if $Box.frame == 0: return queue_free()
+			$Box.play($Box.animation.replace('open', 'idle'))
+	)
+	$Box.frame = 0
+	$Box.play(&\"normal-open\")
+	Audio.play_sound('dia_Open', 1, true)
+
+func _unhandled_key_input(event:InputEvent) -> void:
+	if event.is_action_pressed(&'accept'):
+		if text.in_progress:
+			text.vis_chars = -1
+			line_skipped.emit(cur_line)
+		else:
+			Audio.play_sound('dia_Next', 1, true)
+			play_dialogue()
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_upp41"]
+font = ExtResource("2_6yt8u")
+font_size = 45
+font_color = Color(0, 0, 0, 1)
+
+[node name="DialogueUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_p70yx")
+
+[node name="FadeBG" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = -3.0
+offset_top = -3.0
+offset_right = 1287.0
+offset_bottom = 726.0
+color = Color(1, 1, 1, 0)
+
+[node name="TextTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+
+[node name="Box" type="AnimatedSprite2D" parent="."]
+position = Vector2(640, 523)
+sprite_frames = ExtResource("1_p70yx")
+animation = &"normal-idle"
+frame_progress = 0.0726442
+
+[node name="Text" type="Label" parent="Box"]
+offset_left = -533.0
+offset_top = -42.0
+offset_right = 540.0
+offset_bottom = 123.0
+text = "Lorem Ipsum or however the fuck that filler text goes i dont remember right now"
+label_settings = SubResource("LabelSettings_upp41")
+autowrap_mode = 3
+script = ExtResource("3_6yt8u")
+text_sound = "dia_Speak"
+metadata/_custom_type_script = "uid://gmqs047c4qsd"

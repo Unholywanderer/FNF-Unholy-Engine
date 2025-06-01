@@ -7,6 +7,8 @@ const CHAR_ANIM = {
 	'offsets': [0, 0],
 	'framerate': 24,
 	'frames': [], #idk maybe
+	'flip_x': false,
+	'flip_y': false,
 	'loop': false
 }
 const CHAR_JSON = {

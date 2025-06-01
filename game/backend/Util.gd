@@ -72,6 +72,11 @@ func flash_screen(color:Color = Color.WHITE) -> void:
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST
 
+func get_closest_anim(frames:SpriteFrames, anim:String) -> String:
+	for i in frames.get_animation_names():
+		if i.begins_with(anim): return i
+	return ''
+
 func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:
 	if is_milli: secs = secs / 1000.0
 	var time_part1:String = str(int(secs / 60)) + ":"

@@ -27,12 +27,12 @@ var antialiased:bool = true
 func _init(skinny:String = '') -> void:
 	if !skinny.is_empty():
 		load_skin(skinny)
-	
+
 func load_skin(new_skin:String = 'default'):
-	if new_skin == cur_skin: 
+	if new_skin == cur_skin:
 		print('SKIN: "'+ new_skin +'" already loaded, continuing')
 		return
-		
+
 	var skin_to_check:String = 'assets/images/ui/skins/%s/' % [new_skin]
 	if DirAccess.dir_exists_absolute('res://'+ skin_to_check):
 		cur_skin = new_skin

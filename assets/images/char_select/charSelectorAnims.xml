@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="charSelectorDenied.png" width="906" height="237" spritePadding="3" borderPadding="1">
+	<SubTexture name="cursor DENIED instance 10000" x="774" y="122" width="124" height="112" frameX="-1" frameY="-5" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10001" x="262" y="122" width="127" height="113" frameX="-1" frameY="-5" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10002" x="649" y="1" width="125" height="117" frameX="0" frameY="0" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10003" x="260" y="1" width="125" height="118" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10004" x="388" y="1" width="127" height="116" frameX="-1" frameY="-1" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10005" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10006" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10007" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10008" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10009" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10010" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10011" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10012" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10013" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor DENIED instance 10014" x="519" y="122" width="124" height="113" frameX="-1" frameY="-4" frameWidth="128" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10000" x="392" y="122" width="124" height="113" frameX="-4" frameY="-5" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10001" x="518" y="1" width="128" height="115" frameX="-1" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10002" x="777" y="1" width="128" height="114" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10003" x="1" y="122" width="129" height="113" frameX="0" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10004" x="1" y="1" width="126" height="118" frameX="-3" frameY="0" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10005" x="130" y="1" width="127" height="117" frameX="-2" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10006" x="133" y="122" width="126" height="114" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10007" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10008" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10009" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10010" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10011" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10012" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10013" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10014" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+	<SubTexture name="cursor ACCEPTED instance 10015" x="646" y="122" width="125" height="112" frameX="-4" frameY="-6" frameWidth="129" frameHeight="118"/>
+</TextureAtlas>

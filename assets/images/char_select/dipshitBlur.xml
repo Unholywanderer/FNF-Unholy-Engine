@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Created with Funkin Packer v0.1.3 DEV https://neeeoo.github.io/funkin-packer/
+-->
+<TextureAtlas imagePath="dipshitBlur.png" width="403" height="4832" spritePadding="3" borderPadding="1">
+	<SubTexture name="CHOOSE vertical offset instance 10000" x="1" y="1415" width="401" height="683" frameX="-3" frameY="-27" frameWidth="412" frameHeight="738"/>
+	<SubTexture name="CHOOSE vertical offset instance 10001" x="1" y="2788" width="394" height="681" frameX="-7" frameY="-26" frameWidth="412" frameHeight="738"/>
+	<SubTexture name="CHOOSE vertical offset instance 10002" x="1" y="715" width="396" height="697" frameX="-6" frameY="-19" frameWidth="412" frameHeight="738"/>
+	<SubTexture name="CHOOSE vertical offset instance 10003" x="1" y="3472" width="396" height="677" frameX="-6" frameY="-28" frameWidth="412" frameHeight="738"/>
+	<SubTexture name="CHOOSE vertical offset instance 10004" x="1" y="4152" width="394" height="679" frameX="-7" frameY="-27" frameWidth="412" frameHeight="738"/>
+	<SubTexture name="CHOOSE vertical offset instance 10005" x="1" y="2101" width="394" height="684" frameX="-7" frameY="-25" frameWidth="412" frameHeight="738"/>
+	<SubTexture name="CHOOSE vertical offset instance 10006" x="1" y="4152" width="394" height="679" frameX="-7" frameY="-27" frameWidth="412" frameHeight="738"/>
+	<SubTexture name="CHOOSE vertical offset instance 10007" x="1" y="1" width="394" height="711" frameX="-7" frameY="-11" frameWidth="412" frameHeight="738"/>
+</TextureAtlas>
