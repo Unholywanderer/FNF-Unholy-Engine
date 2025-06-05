@@ -153,6 +153,8 @@ func _process(delta):
 
 	offset.x = (scale.x - 1.0) * -(Game.screen[0] * 0.5)
 	offset.y = (scale.y - 1.0) * -(Game.screen[1] * 0.5)
+	await RenderingServer.frame_pre_draw
+	mark.position.x = max(613, (icon_p1.position.x) + 100)
 
 func update_score_txt() -> void:
 	if Game.scene.get('score') != null:

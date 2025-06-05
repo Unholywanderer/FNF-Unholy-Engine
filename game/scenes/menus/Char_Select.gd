@@ -63,6 +63,7 @@ func _ready() -> void:
 	#FlxTween.tween(dipshitBlur, {y: dipshitBlur.y - 220}, 1.2, {ease: FlxEase.expoOut})
 var lo:int = 0
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed(&"back"): Game.switch_scene('menus/freeplay')
 	if event.is_action_pressed("accept"):
 		bop_play = true
 		player.play_anim('slideOut')

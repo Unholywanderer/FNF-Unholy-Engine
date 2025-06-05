@@ -19,7 +19,6 @@ const chart_format = {
 	'gfVersion': 'gf'
 }
 
-
 var p_v1:bool = false
 func _init(s:bool = false): p_v1 = s
 
@@ -83,5 +82,7 @@ static func fix_json(data:Dictionary) -> Dictionary:
 	for i in data.keys():
 		if i == 'animations' or !psych_data.has(i): continue
 		new_json[psych_data[i]] = data[i] if i != 'no_antialiasing' else !data[i]
+
+	new_json['cam_offset'][0] *= -1 # the x goes in the opposite direction
 
 	return new_json

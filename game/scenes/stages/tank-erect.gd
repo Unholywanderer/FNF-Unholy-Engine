@@ -69,9 +69,10 @@ func init_tankmen():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func beat_hit(beat:int):
-	for tank in [$Sniper, $Guy]:
-		tank.frame = 0
-		tank.play('idle')
+	if beat % 2 == 0:
+		for tank in [$Sniper, $Guy]:
+			tank.frame = 0
+			tank.play('idle')
 
 func event_hit(event:EventData) -> void:
 	if event.event == 'SetHealthIcon' and dad.cur_char == 'tankman-bloody':
