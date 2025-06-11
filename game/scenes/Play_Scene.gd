@@ -721,7 +721,7 @@ func opponent_note_hit(note:Note) -> void:
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	if note.type.length() > 0: print(note.type, ' dad')
 
-	LuaHandler.call_func('opponentNoteHit', [note.dir])
+	# LuaHandler.call_func('opponentNoteHit', [note.dir]) # I NEED THIS GUY BURNT TO A CRISP ASAP
 	if section_data != null:
 		if section_data.has('altAnim') and section_data.altAnim:
 			note.alt = '-alt'
