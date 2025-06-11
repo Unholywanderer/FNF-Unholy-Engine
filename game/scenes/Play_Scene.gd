@@ -170,7 +170,6 @@ func _ready():
 		#Game.persist.note_splash = load('res://assets/images/ui/notesplashes/BASE-pixel.res')
 		#Prefs.splash_sprite = 'base-pixel'
 
-
 	Judge.skin = ui.SKIN
 	if Prefs.rating_cam == 'game':
 		Judge.rating_pos = boyfriend.position + Vector2(0, -40)
@@ -232,8 +231,9 @@ func _ready():
 var note_count:int = 0
 var section_data
 var chunk:int = 0
+
 func _process(delta):
-	if LuaHandler.call_func('update') == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('process', [delta]) == LuaHandler.RET_TYPES.STOP: return
 
 	if Input.is_key_pressed(KEY_R): ui.hp = 0
 	if ui.hp <= 0: try_death()
@@ -283,7 +283,7 @@ func _process(delta):
 			chunk += 1
 
 	if !notes.is_empty():
-		for note in notes:
+		for note:Note in notes:
 			if !note.spawned: continue
 			note.follow_song_pos(ui.player_strums[note.dir] if note.must_press else ui.opponent_strums[note.dir])
 			if note.strum_time <= Conductor.song_pos:
@@ -313,6 +313,8 @@ func _process(delta):
 			if event.strum_time <= Conductor.song_pos:
 				event_hit(event)
 				events.pop_front()
+
+	LuaHandler.call_func('post_process', [delta])
 
 func beat_dance(b:int) -> void:
 	for i in characters:
@@ -549,10 +551,10 @@ func event_hit(event:EventData) -> void:
 			else:
 				cur_speed = data.speed
 		'Add Camera Zoom':
-			var ev_zoom = [float(event.values[0]), float(event.values[1])]
+			var ev_zoom:Array[String] = [event.values[0], event.values[1]]
 
-			var zoom_ui = 0.03 if is_nan(ev_zoom[0]) else ev_zoom[0] / 2.2
-			var zoom_game = 0.06 if is_nan(ev_zoom[1]) else ev_zoom[1] / 2.2
+			var zoom_ui:float = float(ev_zoom[0]) / 2.0 if ev_zoom[0].is_valid_float() else 0.03
+			var zoom_game:float = float(ev_zoom[1]) / 2.0 if ev_zoom[1].is_valid_float() else 0.015
 
 			ui.zoom += zoom_ui
 			cam.zoom += Vector2(zoom_game, zoom_game)
