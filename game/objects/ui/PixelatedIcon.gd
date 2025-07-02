@@ -1,8 +1,11 @@
 class_name PixelatedIcon; extends Node2D;
 
-var sprite # since it can be both a normal and animated sprite
+var sprite:Node2D # since it can be both a normal and animated sprite
 var is_animated:bool = false
 var follow_spr = null
+
+var image:String = '':
+
 var width:float:
 	get:
 		if !sprite: return 0
@@ -12,11 +15,12 @@ var height:float:
 		if !sprite: return 0
 		return (sprite.sprite_frames.get_frame_texture('idle', 0).get_height() if is_animated else sprite.texture.get_height()) * scale.y
 
-@export var image:String = ''
-func _init() -> void:
+func _ready() -> void:
 	texture_filter = Util.get_alias(false)
+	add_child(sprite)
 
 func change_icon(new_image:String = 'bf') -> void:
+	if new_image.is_empty(): return
 	if new_image.contains('-'):
 		new_image = new_image.split('-', false)[0]
 	image = new_image +'pixel'
@@ -40,7 +44,6 @@ func change_icon(new_image:String = 'bf') -> void:
 		sprite = Sprite2D.new()
 		sprite.texture = load(icon_path % (image +'.png'))
 	#sprite.offset += Vector2(width / 2.0, height / 2.0)
-	add_child(sprite)
 
 func _process(_delta):
 	if follow_spr:

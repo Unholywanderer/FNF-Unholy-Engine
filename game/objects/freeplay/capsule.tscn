@@ -1,0 +1,82 @@
+[gd_scene load_steps=12 format=3 uid="uid://bnwhqsofwue6d"]
+
+[ext_resource type="SpriteFrames" uid="uid://dgnngpv3slgix" path="res://assets/images/freeplay/freeplayCapsule/capsule/freeplayCapsule.res" id="1_8lb3p"]
+[ext_resource type="Script" uid="uid://tenswdigsxdp" path="res://game/objects/freeplay/capsule.gd" id="2_ipiok"]
+[ext_resource type="FontFile" uid="uid://40x2imgxgo0j" path="res://assets/fonts/5by7.ttf" id="2_xc4nu"]
+[ext_resource type="SpriteFrames" uid="uid://b0abikfa5cmvx" path="res://assets/images/freeplay/rankbadges.res" id="3_i3wiy"]
+[ext_resource type="Script" uid="uid://or5jxqf6c3iu" path="res://game/objects/ui/PixelatedIcon.gd" id="4_iwk4y"]
+[ext_resource type="SpriteFrames" path="res://assets/images/icons/freeplay/bfpixel.res" id="5_iwk4y"]
+[ext_resource type="Texture2D" uid="uid://bxddna434reah" path="res://assets/images/freeplay/freeplayCapsule/bpmtext.png" id="7_7ejj3"]
+[ext_resource type="Texture2D" uid="uid://c6aqhm8dp1ys6" path="res://assets/images/freeplay/freeplayCapsule/weektypes.png" id="8_2p8yr"]
+[ext_resource type="Texture2D" uid="uid://gda5tj56inmi" path="res://assets/images/freeplay/freeplayCapsule/difficultytext.png" id="9_4b5pt"]
+[ext_resource type="Texture2D" uid="uid://oifct114c1b6" path="res://assets/images/freeplay/freeplayCapsule/bignumbers.png" id="10_bjeys"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_i3wiy"]
+font = ExtResource("2_xc4nu")
+font_size = 32
+
+[node name="Sprite" type="AnimatedSprite2D"]
+sprite_frames = ExtResource("1_8lb3p")
+animation = &"selected"
+frame_progress = 0.593296
+script = ExtResource("2_ipiok")
+
+[node name="NameBox" type="Control" parent="."]
+clip_contents = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -191.0
+offset_top = -29.0
+offset_right = 150.0
+offset_bottom = 17.0
+
+[node name="Song" type="Label" parent="NameBox"]
+layout_mode = 0
+offset_top = 1.0
+offset_right = 336.0
+offset_bottom = 46.0
+text = "Test!"
+label_settings = SubResource("LabelSettings_i3wiy")
+vertical_alignment = 1
+
+[node name="Badge" type="AnimatedSprite2D" parent="."]
+position = Vector2(171, -4)
+sprite_frames = ExtResource("3_i3wiy")
+animation = &"EXCELLENT"
+frame = 13
+
+[node name="PixelatedIcon" type="Node2D" parent="."]
+position = Vector2(-248, -40)
+script = ExtResource("4_iwk4y")
+metadata/_custom_type_script = "uid://or5jxqf6c3iu"
+
+[node name="Test" type="AnimatedSprite2D" parent="PixelatedIcon"]
+texture_filter = 1
+scale = Vector2(3, 3)
+sprite_frames = ExtResource("5_iwk4y")
+animation = &"confirm"
+
+[node name="BPM" type="Sprite2D" parent="."]
+position = Vector2(-181, 46)
+texture = ExtResource("7_7ejj3")
+
+[node name="WeekType" type="Sprite2D" parent="."]
+position = Vector2(46, 47)
+texture = ExtResource("8_2p8yr")
+hframes = 2
+
+[node name="Diff" type="Sprite2D" parent="."]
+position = Vector2(216, 47)
+texture = ExtResource("9_4b5pt")
+
+[node name="DiffNum1" type="Sprite2D" parent="."]
+position = Vector2(223, -6)
+texture = ExtResource("10_bjeys")
+hframes = 10
+frame = 8
+
+[node name="DiffNum2" type="Sprite2D" parent="."]
+position = Vector2(259, -6)
+texture = ExtResource("10_bjeys")
+hframes = 10
+frame = 8
