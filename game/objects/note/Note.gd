@@ -224,7 +224,7 @@ func resize_hold(update_control:bool = false) -> void:
 		hold_group.position.x = (width * 0.5) - hold_group.size.x
 
 func copy_from(item) -> void:
-	if item != null and (item is Note or item is NoteData):
+	if item and (item is Note or item is NoteData):
 		if (item is Note): raw_time = item.raw_time
 		else: raw_time = item.strum_time
 

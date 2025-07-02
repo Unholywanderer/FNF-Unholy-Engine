@@ -66,6 +66,30 @@ func quick_label(t:String, s:int, ol_s:int = s / 3, f:String = 'vcr.ttf') -> Lab
 	new_label.add_theme_constant_override('outline_size', ol_s)
 	return new_label
 
+# Welcome back Psych Engine
+func ease_from_string(ease:StringName = &'linear') -> Tween.EaseType:
+	match ease.to_lower().strip_edges().replace(' ', ''):
+		&'in'   : return Tween.EASE_IN
+		&'out'  : return Tween.EASE_OUT
+		&'outin': return Tween.EASE_OUT_IN
+		_: return Tween.EASE_IN_OUT
+
+func trans_from_string(trans:StringName = &'linear') -> Tween.TransitionType:
+	match trans.to_lower().strip_edges().replace(' ', ''):
+		&'back'   : return Tween.TRANS_BACK
+		&'bounce' : return Tween.TRANS_BOUNCE
+		&'circ'   : return Tween.TRANS_CIRC
+		&'cubic'  : return Tween.TRANS_CUBIC
+		&'elastic': return Tween.TRANS_ELASTIC
+		&'expo'   : return Tween.TRANS_EXPO
+		&'quad'   : return Tween.TRANS_QUAD
+		&'quart'  : return Tween.TRANS_QUART
+		&'quint'  : return Tween.TRANS_QUINT
+		&'sine'   : return Tween.TRANS_SINE
+		&'spring' : return Tween.TRANS_SPRING
+		_: return Tween.TRANS_LINEAR
+
+
 func flash_screen(color:Color = Color.WHITE) -> void:
 	pass
 

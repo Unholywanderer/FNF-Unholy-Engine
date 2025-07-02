@@ -196,7 +196,7 @@ func _process(delta):
 					chart.remove_at(chart.find(i))
 
 func dance(forced:bool = false) -> void:
-	if special_anim or !can_dance: return
+	if (special_anim and !forced) or !can_dance: return
 	if looping: forced = true
 	var idle:String = 'idle'
 	if cur_char.contains('-dead'):
@@ -219,7 +219,7 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 		to_sing = sing_anims[dir]
 
 	if sing_timer >= Conductor.step_crochet / 1000.0 or reset:
-		sing_timer = 0.0 if reset else (Conductor.step_crochet / 1000.0) * get_process_delta_time()
+		sing_timer = 0.0 if reset else (Conductor.step_crochet / 1000.0) * (1 * get_process_delta_time())
 		play_anim(to_sing, true)
 
 func flip_char() -> void:
@@ -274,7 +274,7 @@ func set_stuff() -> void:
 		height = sprite_frames.get_frame_texture(anim, 0).get_height()
 
 func has_anim(anim:String) -> bool:
-	return sprite_frames.has_animation(anim) if sprite_frames != null else false
+	return sprite_frames.has_animation(anim) if sprite_frames else false
 
 static func get_closest(char_name:String = 'bf') -> String: # if theres no character named "pico-but-devil" itll just use "pico"
 	var char_list = DirAccess.get_files_at('res://assets/data/characters')
@@ -312,8 +312,3 @@ func copy(from:Character) -> void:
 	position = from.position
 	scale = from.scale
 	antialiasing = from.antialiasing
-#func get_anim(anim:String): # get the animation from the json file
-#	if json == null: return anim
-#	for name in json.animations:
-#		if json.anim == anim: return json.name
-#	return anim

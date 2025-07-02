@@ -141,7 +141,7 @@ func _process(delta):
 			Audio.stop_all_sounds()
 			Conductor.reset()
 			get_tree().paused = false
-			Game.switch_scene('menus/freeplay', true)
+			Game.switch_scene('menus/freeplay_classic', true)
 
 func beat_hit(b) -> void:
 	Audio.play_sound('tick')

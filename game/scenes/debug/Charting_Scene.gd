@@ -473,7 +473,6 @@ func beat_hit(beat:int) -> void:
 		bg_tween.tween_property($BG, 'scale', Vector2.ONE, Conductor.crochet / 3500.0)
 
 func section_hit(sec:int):
-	if Conductor.cur_section == 0: Conductor.cur_section = 1 # cheap fix
 	load_section(Conductor.cur_section)
 
 func step_hit(step:int) -> void:

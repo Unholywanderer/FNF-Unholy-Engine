@@ -27,6 +27,7 @@ animation = &"right"
 
 [node name="Bar0" type="AnimatedSprite2D" parent="VIZ"]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(36, 14)
 sprite_frames = ExtResource("4_mxd34")
 animation = &"viz1"
@@ -35,6 +36,7 @@ centered = false
 
 [node name="Bar1" type="AnimatedSprite2D" parent="VIZ"]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(43, 11)
 sprite_frames = ExtResource("4_mxd34")
 animation = &"viz2"
@@ -43,6 +45,7 @@ centered = false
 
 [node name="Bar2" type="AnimatedSprite2D" parent="VIZ"]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(51, 9)
 sprite_frames = ExtResource("4_mxd34")
 animation = &"viz3"
@@ -51,6 +54,7 @@ centered = false
 
 [node name="Bar3" type="AnimatedSprite2D" parent="VIZ"]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(60, 9)
 sprite_frames = ExtResource("4_mxd34")
 animation = &"viz4"
@@ -59,6 +63,7 @@ centered = false
 
 [node name="Bar4" type="AnimatedSprite2D" parent="VIZ"]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(70, 9)
 sprite_frames = ExtResource("4_mxd34")
 animation = &"viz5"
@@ -67,6 +72,7 @@ centered = false
 
 [node name="Bar5" type="AnimatedSprite2D" parent="VIZ"]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(76, 11)
 sprite_frames = ExtResource("4_mxd34")
 animation = &"viz6"
@@ -75,6 +81,7 @@ centered = false
 
 [node name="Bar6" type="AnimatedSprite2D" parent="VIZ"]
 texture_filter = 1
+use_parent_material = true
 position = Vector2(83, 14)
 sprite_frames = ExtResource("4_mxd34")
 animation = &"viz7"

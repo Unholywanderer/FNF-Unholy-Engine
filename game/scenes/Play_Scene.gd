@@ -26,7 +26,7 @@ var stage:StageBase
 var zoom_beat:int = 4
 var zoom_add:Dictionary = {ui = 0.04, game = 0.045}
 
-var chart_notes
+var chart_notes:Array = []
 var notes:Array[Note] = []
 var events:Array[EventData] = []
 var start_time:float = 0 # when the first note is actually loaded
@@ -43,7 +43,7 @@ var speaker
 
 var cached_chars:Dictionary = {'bf' = [], 'gf' = [], 'dad' = []}
 
-var key_names = ['note_left', 'note_down', 'note_up', 'note_right']
+var key_names:PackedStringArray = ['note_left', 'note_down', 'note_up', 'note_right']
 
 var should_save:bool = !Prefs.auto_play
 var can_pause:bool = true
@@ -63,7 +63,6 @@ var misses:int = 0
 var max_combo:int = -1
 
 func _ready():
-	if LuaHandler.call_func('onReady') == LuaHandler.RET_TYPES.STOP: return # can't reach this wit lua lol
 	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
 	if Prefs.daniel: spl_path = 'res://assets/images/ui/notesplashes/FOREVER.res'
 	Game.persist.note_splash = load(spl_path)
@@ -77,9 +76,6 @@ func _ready():
 		LuaHandler.remove_all()
 
 	SONG = JsonHandler._SONG
-	#SONG.player1 = 'darnell'
-	#SONG.player2 = 'darnell'
-	#SONG.gfVersion = 'darnell'
 
 	#if Prefs.femboy: SONG.player1 = 'bf-femboy'
 	if Prefs.daniel and !SONG.player1.contains('bf-girl'):
@@ -199,22 +195,12 @@ func _ready():
 		ui.song_start.connect(Callable(i, 'song_start'))
 
 	Conductor.connect_signals(stage)
-	if Prefs.deaf:
-		RenderingServer.set_default_clear_color(Color.BLACK)
-		Conductor.audio_volume(0, 0)
-		Conductor.audio_volume(2, 0)
-		for i in stage.get_children(true):
-			if i.name != 'CharGroup': i.hide()
-		gf.hide()
-		dad.hide()
-		ui.get_group('opponent').hide()
-		ui.icon_p2.hide()
 
-	for i in DirAccess.get_files_at('res://assets/data/scripts'):
-		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
+	#for i in ResourceLoader.list_directory('res://assets/data/scripts'):
+	#	if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
 
-	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
-		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
+	#for i in ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
+	#	if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
 
 	if DIE == null:
 		var char_suff = '-pico' if boyfriend.cur_char.contains('pico') else ''
@@ -229,7 +215,7 @@ func _ready():
 	section_hit(0) #just for 1st section stuff
 
 var note_count:int = 0
-var section_data
+var section_data:Dictionary = {}
 var chunk:int = 0
 
 func _process(delta):
@@ -259,28 +245,27 @@ func _process(delta):
 		cam.zoom.x = lerpf(default_zoom, cam.zoom.x, exp(-delta * scale_ratio))
 		cam.zoom.y = cam.zoom.x
 
-	if chart_notes != null:
-		while chart_notes.size() > 0 and chunk != chart_notes.size() and chart_notes[chunk][0] - Conductor.song_pos < spawn_time / cur_speed:
-			if chart_notes[chunk][0] - Conductor.song_pos > (spawn_time / cur_speed):
-				break
+	var fixed_time:float = (spawn_time / cur_speed)
+	while chart_notes.size() > 0 and chunk != chart_notes.size() and chart_notes[chunk][0] - Conductor.song_pos < fixed_time:
+		if chart_notes[chunk][0] - Conductor.song_pos > fixed_time: break # no notes to find, fuck off for now
 
-			var new_note:Note = Note.new(NoteData.new(chart_notes[chunk]))
-			new_note.speed = cur_speed
-			notes.append(new_note)
-			if new_note.must_press and new_note.should_hit: note_count += 1
+		var new_note:Note = Note.new(NoteData.new(chart_notes[chunk]))
+		new_note.speed = cur_speed
+		notes.append(new_note)
+		if new_note.must_press and new_note.should_hit: note_count += 1
 
-			var to_add:String = 'player' if new_note.must_press else 'opponent'
-			#if new_note.gf: to_add = 'gf'
+		var to_add:String = 'player' if new_note.must_press else 'opponent'
+		#if new_note.gf: to_add = 'gf'
 
-			if chart_notes[chunk][2]: # if it has a sustain
-				var new_sustain:Note = Note.new(new_note, true)
-				new_sustain.speed = new_note.speed
+		if chart_notes[chunk][2]: # if it has a sustain
+			var new_sustain:Note = Note.new(new_note, true)
+			new_sustain.speed = new_note.speed
 
-				notes.append(new_sustain)
-				ui.add_to_strum_group(new_sustain, to_add)
+			notes.append(new_sustain)
+			ui.add_to_strum_group(new_sustain, to_add)
 
-			ui.add_to_strum_group(new_note, to_add)
-			chunk += 1
+		ui.add_to_strum_group(new_note, to_add)
+		chunk += 1
 
 	if !notes.is_empty():
 		for note:Note in notes:
@@ -308,7 +293,7 @@ func _process(delta):
 					else:
 						opponent_note_hit(note)
 
-	if events.size() != 0:
+	if !events.is_empty():
 		for event in events:
 			if event.strum_time <= Conductor.song_pos:
 				event_hit(event)
@@ -333,24 +318,25 @@ func song_start() -> void:
 	Game.persist.seen_cutscene = true
 
 func beat_hit(beat:int) -> void:
-	if LuaHandler.call_func('beatHit', [beat]) == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('beat_hit', [beat]) == LuaHandler.RET_TYPES.STOP: return
 	beat_dance(beat)
 
 	if zoom_beat == 0: return
-	if beat % zoom_beat == 0 and !Prefs.deaf:
+	if beat % zoom_beat == 0:
 		ui.zoom += zoom_add.ui
 		if !_cam_tween:
 			cam.zoom += Vector2(zoom_add.game, zoom_add.game)
 		ui.mark.scale += Vector2(0.1, 0.1)
 
 func step_hit(step) -> void:
-	if LuaHandler.call_func('stepHit', [step]) == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('step_hit', [step]) == LuaHandler.RET_TYPES.STOP: return
 
 func section_hit(section) -> void:
-	if LuaHandler.call_func('sectionHit', [section]) == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('section_hit', [section]) == LuaHandler.RET_TYPES.STOP: return
 
 	if !['v_slice', 'codename', 'osu'].has(JsonHandler.parse_type) and SONG.notes.size() > section:
 		section_data = SONG.notes[section]
+
 		if !section_data.has('mustHitSection'): section_data.mustHitSection = true
 
 		var point_at:String = 'boyfriend' if section_data.mustHitSection else 'dad'
@@ -415,7 +401,7 @@ func key_release(key:int = 0) -> void:
 	ui.player_strums[key].play_anim('static')
 
 func try_death() -> void:
-	if LuaHandler.call_func('onDeathBegin') == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('on_death_start') == LuaHandler.RET_TYPES.STOP: return
 	Game.persist['deaths'] += 1
 	kill_all_notes()
 	boyfriend.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -482,8 +468,8 @@ func refresh(restart:bool = true) -> void: # start song from beginning with no r
 	for strum in ui.player_strums:
 		strum.play_anim('static')
 
-	boyfriend.play_anim('idle', true)
-	dad.play_anim('idle', true)
+	boyfriend.dance(true)
+	dad.dance(true)
 
 	chart_notes = JsonHandler.chart_notes.duplicate(true)
 	events = JsonHandler.song_events.duplicate(true)
@@ -510,7 +496,7 @@ func char_from_string(peep:String) -> Character:
 
 var _cam_tween
 func event_hit(event:EventData) -> void:
-	var luad = LuaHandler.call_func('eventHit', [event.event, event.values])
+	var luad = LuaHandler.call_func('event_hit', [event.event, event.values])
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	stage.event_hit(event)
 	print(event.event, event.values)
@@ -574,14 +560,14 @@ func event_hit(event:EventData) -> void:
 				gf: last_pos = stage.gf_pos
 				_: last_pos = stage.bf_pos
 
-			if JsonHandler.get_character(new_char) != null and new_char != peep.cur_char:
+			if JsonHandler.get_character(new_char) and new_char != peep.cur_char:
 				peep.position = last_pos
 				peep.load_char(event.values[1])
-				if peep.speaker_data.is_empty():
-					pass
+				if peep.speaker_data.is_empty(): pass
 
-				peep.play_anim(last_anim, true)
-				peep.frame = last_frame
+				if peep.has_anim(last_anim):
+					peep.play_anim(last_anim, true)
+					peep.frame = last_frame
 				if peep == boyfriend: ui.icon_p1.change_icon(peep.icon, true)
 				if peep == dad: ui.icon_p2.change_icon(peep.icon)
 
@@ -634,11 +620,10 @@ func event_hit(event:EventData) -> void:
 
 func good_note_hit(note:Note) -> void:
 	if note.type.length() > 0: print(note.type, ' bf')
-	var luad = LuaHandler.call_func('goodNoteHit', [notes.find(note), note.dir, note.type]) # making it take the note itself would crash
+	var luad = LuaHandler.call_func('good_note_hit', [notes.find(note), note.dir, note.type]) # making it take the note itself would crash
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	if !note.should_hit:
-		note_miss(note)
-		return
+		return note_miss(note)
 
 	if Conductor.vocals:
 		Conductor.audio_volume(1, 1.0)
@@ -648,8 +633,9 @@ func good_note_hit(note:Note) -> void:
 	var time:float = Conductor.song_pos - note.strum_time if !auto_play else 0.0
 	note.rating = Rating.get_rating(time)
 
-	if section_data != null:
-		if section_data.has('gfSection') and section_data.gfSection and section_data.mustHitSection: note.gf = true
+	if section_data:
+		if section_data.get('gfSection', false) and section_data.mustHitSection:
+			note.gf = true
 
 	var judge_info = Rating.get_score(note.rating)
 
@@ -680,8 +666,8 @@ func good_note_hit(note:Note) -> void:
 		Audio.play_sound('hitsounds/'+ Prefs.hitsound, Prefs.hitsound_volume / 100.0)
 
 var time_dropped:float = 0
-func good_sustain_press(sustain:Note) -> void:
-	var luad = LuaHandler.call_func('goodSustainPress', [notes.find(sustain), sustain.dir, sustain.type])
+func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hit and sustain_press funcs
+	var luad = LuaHandler.call_func('good_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	if !auto_play and Input.is_action_just_released(key_names[sustain.dir]) and !sustain.was_good_hit:
 		#sustain.dropped = true
@@ -700,10 +686,10 @@ func good_sustain_press(sustain:Note) -> void:
 			if Conductor.vocals:
 				Conductor.audio_volume(1, 1.0)
 
-			LuaHandler.call_func('goodSustainPress', [sustain.dir])
 			stage.good_note_hit(sustain)
-			if section_data != null:
-				if section_data.has('gfSection') and section_data.gfSection and section_data.mustHitSection: sustain.gf = true
+			if section_data:
+				if section_data.get('gfSection', false) and section_data.mustHitSection:
+					sustain.gf = true
 
 			var group = ui.get_group('player')
 			#if sustain.gf: group = ui.get_group('gf')
@@ -717,19 +703,18 @@ func good_sustain_press(sustain:Note) -> void:
 			ui.update_score_txt()
 
 func opponent_note_hit(note:Note) -> void:
-	var luad = LuaHandler.call_func('opponentNoteHit', [notes.find(note), note.dir, note.type])
+	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(note), note.dir, note.type, false])
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	if note.type.length() > 0: print(note.type, ' dad')
 
-	# LuaHandler.call_func('opponentNoteHit', [note.dir]) # I NEED THIS GUY BURNT TO A CRISP ASAP
-	if section_data != null:
-		if section_data.has('altAnim') and section_data.altAnim:
+	if section_data:
+		if section_data.get('altAnim', false):
 			note.alt = '-alt'
 
-		if section_data.has('gfSection') and section_data.gfSection and !section_data.mustHitSection:
+		if section_data.get('gfSection', false) and !section_data.mustHitSection:
 			note.gf = true
 
-	if Conductor.vocals and !Prefs.deaf:
+	if Conductor.vocals:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 
 	stage.opponent_note_hit(note)
@@ -740,18 +725,17 @@ func opponent_note_hit(note:Note) -> void:
 	kill_note(note)
 
 func opponent_sustain_press(sustain:Note) -> void:
-	var luad = LuaHandler.call_func('opponentSustainPress', [notes.find(sustain), sustain.dir, sustain.type])
+	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
 	if luad == LuaHandler.RET_TYPES.STOP: return
-	if Conductor.vocals and !Prefs.deaf:
+	if Conductor.vocals:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 
-	LuaHandler.call_func('opponentSustainPress', [sustain.dir])
 	stage.opponent_note_hit(sustain)
 
 	if section_data != null:
-		if section_data.has('altAnim') and section_data.altAnim:
+		if section_data.get('altAnim', false):
 			sustain.alt = '-alt'
-		if section_data.has('gfSection') and section_data.gfSection and !section_data.mustHitSection:
+		if section_data.get('gfSection', false) and !section_data.mustHitSection:
 			sustain.gf = true
 
 	var group = ui.get_group('opponent')
@@ -762,7 +746,7 @@ func opponent_sustain_press(sustain:Note) -> void:
 var grace:bool = true
 func note_miss(note:Note) -> void:
 	var le_call = [] if note == null else [notes.find(note), note.dir, note.type]
-	var luad = LuaHandler.call_func('noteMiss', le_call)
+	var luad = LuaHandler.call_func('note_miss', le_call)
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
 	stage.note_miss(note)
@@ -799,7 +783,7 @@ func note_miss(note:Note) -> void:
 	ui.update_score_txt()
 
 func ghost_tap(dir:int) -> void:
-	var luad = LuaHandler.call_func('onGhostTap', [dir])
+	var luad = LuaHandler.call_func('on_ghost_tap', [dir])
 	if luad == LuaHandler.RET_TYPES.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
 	stage.ghost_tap(dir)

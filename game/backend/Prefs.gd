@@ -42,10 +42,6 @@ var rating_cam:String = 'game'
 var chart_grid:bool = true
 var femboy:bool = false
 
-var deaf:bool = false:
-	set(d):
-		if d: Audio.volume = 0
-		deaf = d
 var daniel:bool = false: # if you switch too much, it'll break lol
 	set(dani):
 		daniel = dani

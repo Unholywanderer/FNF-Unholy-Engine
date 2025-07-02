@@ -4,7 +4,7 @@ const EDITORS = [
 	'Charting Scene', 'Character Offsetter', 'Week Maker', 'Note Skin Editor', 'XML Converter', 'TXT Converter'
 ]
 const PATHS = [
-	'debug/charting_scene', 'debug/character_offsetter', null, null, 'tools/XML Converter', 'tools/TXT Converter'
+	'debug/charting_scene', 'debug/character_offsetter', null, null, 'tools/Sparrow Converter', 'tools/TXT Converter'
 ]
 var items:Array[Alphabet] = []
 var cur_item:int = 0

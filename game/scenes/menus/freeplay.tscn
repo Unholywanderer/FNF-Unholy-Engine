@@ -1,82 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://1ug712tid640"]
+[gd_scene load_steps=3 format=3 uid="uid://da716o2r8v6ai"]
 
-[ext_resource type="Script" uid="uid://ulnoidha3rn8" path="res://game/scenes/menus/Freeplay.gd" id="1_xub5q"]
-[ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="2_j3wpw"]
-[ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="3_vuq8a"]
-[ext_resource type="PackedScene" uid="uid://dcc3n6k7cac8y" path="res://game/objects/music_player.tscn" id="4_8m3d5"]
+[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="1_e2bit"]
+[ext_resource type="Script" uid="uid://ddnje3xnq0jvn" path="res://game/scenes/menus/Freeplay.gd" id="1_l4eik"]
 
 [node name="Freeplay" type="Node2D"]
-script = ExtResource("1_xub5q")
+script = ExtResource("1_l4eik")
 
-[node name="MenuBG" type="Sprite2D" parent="."]
-position = Vector2(640, 360)
-texture = ExtResource("2_j3wpw")
-
-[node name="SongInfo" type="CanvasLayer" parent="."]
-
-[node name="ScoreBG" type="ColorRect" parent="SongInfo"]
-self_modulate = Color(1, 1, 1, 0.6)
-offset_left = 937.0
-offset_right = 1280.0
-offset_bottom = 66.0
-color = Color(0, 0, 0, 1)
-
-[node name="Score" type="Label" parent="SongInfo"]
-layout_direction = 3
-offset_left = 34.0
-offset_top = 5.0
-offset_right = 338.0
-offset_bottom = 34.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("3_vuq8a")
-theme_override_font_sizes/font_size = 32
-text = "Best Score: 0"
-horizontal_alignment = 2
-
-[node name="Difficulty" type="Label" parent="SongInfo"]
-offset_left = 1039.0
-offset_top = 39.0
-offset_right = 1151.0
-offset_bottom = 61.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("3_vuq8a")
-theme_override_font_sizes/font_size = 24
-text = "< NORMAL >"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="VariantTxt" type="RichTextLabel" parent="SongInfo"]
-clip_contents = false
-offset_left = 938.0
-offset_top = 71.0
-offset_right = 1276.0
-offset_bottom = 171.0
-theme_override_constants/outline_size = 4
-theme_override_fonts/normal_font = ExtResource("3_vuq8a")
-theme_override_font_sizes/normal_font_size = 50
-bbcode_enabled = true
-text = "[center][wave]NORMAL"
-fit_content = true
-autowrap_mode = 0
-deselect_on_focus_loss_enabled = false
-drag_and_drop_selection_enabled = false
-
-[node name="Notice" type="Label" parent="SongInfo/VariantTxt"]
-layout_mode = 0
-offset_left = 50.0
-offset_top = 61.0
-offset_right = 285.0
-offset_bottom = 84.0
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("3_vuq8a")
-theme_override_font_sizes/font_size = 20
-text = "Press Ctrl to change"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="PlaybackInfo" type="CanvasLayer" parent="."]
-
-[node name="MusicPlayer" parent="." instance=ExtResource("4_8m3d5")]
-visible = false
+[node name="DJ" type="Node2D" parent="."]
+position = Vector2(720, 352)
+script = ExtResource("1_e2bit")
+atlas = "res://assets/images/freeplay/freeplay-boyfriend"
+frame = 97
+metadata/_custom_type_script = "uid://bvq0ling1c7sm"

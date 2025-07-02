@@ -177,14 +177,14 @@ var speed:Vector2 = Vector2(1, 1)
 func _process(delta:float) -> void:
 	if move_song_stuff:
 		for i in [song_name, diff, small_counter]:
-			i.position.x += speed.x
-			i.position.y += speed.y
+			i.position.x += ((speed.x * 100) * delta)
+			i.position.y += ((speed.y * 100) * delta)
 	if song_name.position.x + song_name.width < 100:
 		timer_and_song()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed('accept'):
-		Game.switch_scene('menus/'+ ('story_menu' if from_story else 'freeplay'))
+		Game.switch_scene('menus/'+ ('story_menu' if from_story else 'freeplay_classic'))
 
 var percent_target:int = 100
 var percent_lerp:int

@@ -34,6 +34,7 @@ centered = false
 [node name="VIZ" type="Node2D" parent="."]
 
 [node name="Bar0" type="AnimatedSprite2D" parent="VIZ"]
+use_parent_material = true
 position = Vector2(199, 85)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz1"
@@ -41,6 +42,7 @@ autoplay = "viz1"
 centered = false
 
 [node name="Bar1" type="AnimatedSprite2D" parent="VIZ"]
+use_parent_material = true
 position = Vector2(259, 78)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz2"
@@ -48,6 +50,7 @@ autoplay = "viz2"
 centered = false
 
 [node name="Bar2" type="AnimatedSprite2D" parent="VIZ"]
+use_parent_material = true
 position = Vector2(315, 74)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz3"
@@ -55,6 +58,7 @@ autoplay = "viz3"
 centered = false
 
 [node name="Bar3" type="AnimatedSprite2D" parent="VIZ"]
+use_parent_material = true
 position = Vector2(382, 72)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz4"
@@ -62,6 +66,7 @@ autoplay = "viz4"
 centered = false
 
 [node name="Bar4" type="AnimatedSprite2D" parent="VIZ"]
+use_parent_material = true
 position = Vector2(440, 73)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz5"
@@ -69,6 +74,7 @@ autoplay = "viz5"
 centered = false
 
 [node name="Bar5" type="AnimatedSprite2D" parent="VIZ"]
+use_parent_material = true
 position = Vector2(495, 77)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz6"
@@ -76,6 +82,7 @@ autoplay = "viz6"
 centered = false
 
 [node name="Bar6" type="AnimatedSprite2D" parent="VIZ"]
+use_parent_material = true
 position = Vector2(548, 85)
 sprite_frames = ExtResource("3_e6bxv")
 animation = &"viz7"

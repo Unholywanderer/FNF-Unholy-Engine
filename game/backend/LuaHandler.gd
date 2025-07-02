@@ -2,7 +2,7 @@ extends Node2D
 
 enum RET_TYPES {STOP, CONTINUE}
 var cached_items:Dictionary = {}
-var active_lua:Array = []
+var active_lua:Array[LuaEx] = []
 var active:bool = true
 
 func add_script(script:String) -> void:
@@ -73,6 +73,10 @@ func remove_all():
 func reload_scripts():
 	for lua in active_lua:
 		load_lua(lua, lua.script_path)
+
+func add_variant(vari_name:String, variant:Variant) -> void:
+	for i in active_lua:
+		i.push_variant(vari_name, variant)
 
 func load_lua(lua:LuaEx, path:String) -> bool:
 	var err = lua.do_file('res://assets/'+ path)

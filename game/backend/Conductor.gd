@@ -124,7 +124,8 @@ var raw_time:float
 func _process(delta) -> void:
 	if song_loaded:
 		if audio and audio.playing:
-			var aud_pos:float = audio.get_playback_position() * 1000
+			var aud_pos:float = (audio.get_playback_position() + AudioServer.get_time_since_last_mix()) * 1000
+			#AudioServer.get_output_latency()
 			if aud_pos == _last_time:
 				_resync_timer += delta * 1000
 			else:
