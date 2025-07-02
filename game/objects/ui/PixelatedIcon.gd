@@ -4,7 +4,7 @@ var sprite:Node2D # since it can be both a normal and animated sprite
 var is_animated:bool = false
 var follow_spr = null
 
-var image:String = '':
+var image:String = ''
 
 var width:float:
 	get:
