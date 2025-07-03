@@ -13,6 +13,7 @@ var gameplay = [
 	['scroll_speed',     'float', [0, 10], 0.01],
 	['scroll_type',      'array', ['up', 'down', 'left', 'right', 'middle', 'split']],
 	['center_strums',    'bool'],
+	['beyorp', 'bool'],
 	['hitsound',        'array', []],
 	['hitsound_volume',   'int', [0, 200], 5],
 	['offset',            'int', [-500, 500]],
@@ -33,7 +34,6 @@ var visuals = [
 	['rating_cam',    'array', ['game', 'hud', 'none']],
 	['auto_pause',     'bool'],
 	['chart_grid',     'bool'],
-	['deaf',           'bool'],
 	['daniel',         'bool']
 ]
 #var controls = []
@@ -49,9 +49,11 @@ var pref_list:Array[Alphabet]
 func _ready():
 	Discord.change_presence('Maining some Menus', 'Checkin some options')
 
-	for shit in ResourceLoader.list_directory('res://assets/sounds/hitsounds'):
-		if !shit.ends_with('.ogg'): continue
-		gameplay[6][2].append(shit.replace('.ogg', ''))
+	var idx:int = gameplay.find(['hitsound', 'array', []])
+	if idx > -1:
+		for shit in ResourceLoader.list_directory('res://assets/sounds/hitsounds'):
+			if !shit.ends_with('.ogg'): continue
+			gameplay[idx][2].append(shit.replace('.ogg', ''))
 
 	var b = JSON.new()
 	b.parse(FileAccess.open('res://assets/data/prefInfo.json', FileAccess.READ).get_as_text())
@@ -163,6 +165,7 @@ func update_scroll(diff:int = 0) -> void:
 			for pref in get(catagories[cur_option].to_lower()):
 				var desc = descriptions[pref[0]] if descriptions.has(pref[0]) else 'Missing Description'
 				var new_pref = Option.new(pref, desc)
+				if new_pref.option.is_empty(): continue
 				new_pref.is_menu = true
 				new_pref.lock.y = 60 + (75 * loops)
 				new_pref.target_y = loops
@@ -187,8 +190,12 @@ class Option extends Alphabet:
 	var min_val:float = 0.0;  var max_val:float = 0.0
 	var cur_val:float = 0.0
 
-	func _init(option_array, info:String = 'nothin'):
+	func _init(option_array:Array, info:String = 'nothin'):
 		option = option_array[0]
+		if Prefs.get(option) == null:
+			printerr('No preference named ('+ option +')')
+			option = ''
+			return
 		description = info
 		type = option_array[1]
 		text = option.capitalize()
