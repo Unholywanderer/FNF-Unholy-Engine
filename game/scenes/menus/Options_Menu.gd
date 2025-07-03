@@ -13,7 +13,6 @@ var gameplay = [
 	['scroll_speed',     'float', [0, 10], 0.01],
 	['scroll_type',      'array', ['up', 'down', 'left', 'right', 'middle', 'split']],
 	['center_strums',    'bool'],
-	['beyorp', 'bool'],
 	['hitsound',        'array', []],
 	['hitsound_volume',   'int', [0, 200], 5],
 	['offset',            'int', [-500, 500]],
