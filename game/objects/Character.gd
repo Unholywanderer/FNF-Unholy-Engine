@@ -66,7 +66,7 @@ func _init(pos:Vector2 = Vector2.ZERO, char:String = 'bf', player:bool = false):
 	is_player = player
 	position = pos
 	animation_finished.connect(func():
-		if has_anim(animation +'-loop'):
+		if has_anim(animation +'-loop') and offsets.has(animation +'-loop'):
 			looping = true
 			play_anim(animation +'-loop')
 	)
@@ -183,16 +183,12 @@ func _process(delta):
 
 	if !chart.is_empty():
 		for i in chart: # [0] = strum time, [1] = direction, [2] = is sustain, [3] = length
-			var dir = int(i[1]) % 4
-			if i[2]:
-				if i[0] <= Conductor.song_pos and i[0] + i[3] > Conductor.song_pos:
-					sing(dir, '', !animation.begins_with('sing'))
-				if Conductor.song_pos > i[0] + i[3]: # sustain should be finished
-					chart.remove_at(chart.find(i))
-			else:
-				if i[0] <= Conductor.song_pos:
-					var suff = str(randi_range(1, 2)) if cur_char.ends_with('-speaker') else ''
-					sing(dir, suff)
+			var dir:int = int(i[1]) % 4
+			if i[0] <= Conductor.song_pos:
+				var suff = str(randi_range(1, 2)) if cur_char.ends_with('-speaker') else ''
+				if !i[2] or i[0] + i[3] > Conductor.song_pos:
+					sing(dir, suff, (true if !i[2] else !animation.contains('sing')))
+				if !i[2] or i[0] + i[3] < Conductor.song_pos: #if not sustain or sustain is finished
 					chart.remove_at(chart.find(i))
 
 func dance(forced:bool = false) -> void:
@@ -257,7 +253,7 @@ func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	if offsets.has(anim):
 		anim_offset = Vector2(offsets[anim][0], offsets[anim][1])
 	offset = anim_offset
-	flip_h = flippers.get(anim, true)
+	flip_h = flippers.get(anim, false)
 
 
 func get_cam_pos() -> Vector2:
@@ -289,7 +285,6 @@ static func get_closest(char_name:String = 'bf') -> String: # if theres no chara
 	return 'bf'
 
 func cache_char(to_cache:String) -> void:
-	if char_cache.has(to_cache): return
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % to_cache):
 		to_cache = get_closest(to_cache)
 	if char_cache.has(to_cache): return

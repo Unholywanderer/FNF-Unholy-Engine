@@ -147,7 +147,8 @@ func _ready():
 		dad.position = gf.position
 		dad.focus_offsets.x -= dad.width / 4
 		gf.visible = false
-		speaker.reparent(dad)
+		if speaker:
+			speaker.reparent(dad)
 
 	boyfriend = Character.new(stage.bf_pos, SONG.player1, true)
 	add.call(boyfriend)
@@ -271,6 +272,7 @@ func _process(delta):
 		for note:Note in notes:
 			if !note.spawned: continue
 			note.follow_song_pos(ui.player_strums[note.dir] if note.must_press else ui.opponent_strums[note.dir])
+
 			if note.strum_time <= Conductor.song_pos:
 				var kill_zone = Conductor.song_pos - (300.0 / note.speed)
 				if note.is_sustain:
@@ -815,7 +817,6 @@ func pop_up_combo(_info:Array = ['sick', -1], is_miss:bool = false) -> void:
 		if _info[0].length() != 0:
 			var new_rating = Judge.make_rating(_info[0])
 			layer.call(new_rating)
-
 			if new_rating != null: # opening chart editor at the wrong time would fuck it
 				var fade = [new_rating]
 				if _info.size() == 3 and !['epic', 'sick'].has(_info[0]):

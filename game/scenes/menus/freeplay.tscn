@@ -10,5 +10,7 @@ script = ExtResource("1_l4eik")
 position = Vector2(720, 352)
 script = ExtResource("1_e2bit")
 atlas = "res://assets/images/freeplay/freeplay-boyfriend"
-frame = 97
+frame = 20
 metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+
+[node name="RightPiece" type="Sprite2D" parent="."]

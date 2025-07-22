@@ -46,7 +46,7 @@ metadata/_custom_type_script = "uid://cpk88phsyg88s"
 position = Vector2(-81, 254)
 script = ExtResource("4_a0js3")
 atlas = "res://assets/images/char_select/crowd"
-frame = 7
+frame = 11
 playing = true
 metadata/_custom_type_script = "uid://bvq0ling1c7sm"
 
@@ -78,7 +78,7 @@ material = SubResource("CanvasItemMaterial_nwa8f")
 position = Vector2(-56, 72)
 script = ExtResource("4_a0js3")
 atlas = "res://assets/images/char_select/barThing"
-frame = 3
+frame = 2
 playing = true
 metadata/_custom_type_script = "uid://bvq0ling1c7sm"
 

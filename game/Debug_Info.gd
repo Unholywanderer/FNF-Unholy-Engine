@@ -11,10 +11,8 @@ var volume:int = 10:
 		vol_visible = true
 		if pressed_key:
 			pressed_key = false
-			if vol > volume:
-				Audio.play_sound('vol/up')
-			elif vol < volume:
-				Audio.play_sound('vol/down')
+			if vol != 10 or volume != vol:
+				Audio.play_sound('vol/'+ ('up' if vol > volume else 'down'))
 			else:
 				$Volume/BarsBG/VolBar10.modulate = Color.RED
 				if max_tween: max_tween.kill()
@@ -86,7 +84,11 @@ func _unhandled_key_input(event:InputEvent):
 		volume = min(volume + (1 * Input.get_axis('vol_down', 'vol_up')), 10)
 
 	if Input.is_key_pressed(KEY_F4): LuaHandler.reload_scripts()
-	if Input.is_key_pressed(KEY_F5): Game.reset_scene()
+	if Input.is_key_pressed(KEY_F5):
+		Game.reset_scene()
+		if !Input.is_key_pressed(KEY_SHIFT):
+			Alert.make_alert('Reset Scene').max_time = 1
+
 	if Input.is_key_pressed(KEY_CTRL): # debuggin baby wahoo
 		if Input.is_key_pressed(KEY_L): Conductor.playback_rate += 0.05
 		if Input.is_key_pressed(KEY_J): Conductor.playback_rate -= 0.05

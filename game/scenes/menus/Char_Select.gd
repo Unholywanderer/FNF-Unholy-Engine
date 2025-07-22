@@ -3,7 +3,11 @@ extends Node2D
 var funny_test:PixelatedIcon
 var name_tag:NameTag
 var player:DipshitPlayer
+
+var stroke:ShaderMaterial = ShaderMaterial.new()
 func _ready() -> void:
+	stroke.shader = load('res://game/resources/shaders/stroke_shader.gdshader')
+	stroke.set_shader_parameter('size', 50)
 	#funny_test = PixelatedIcon.new()
 	#funny_test.position = Vector2(250, 300)
 	#funny_test.change_icon('bf')
@@ -33,10 +37,12 @@ func _ready() -> void:
 		player.show()
 		player.play_anim('slideIn')
 	)
+	#player.material = stroke
+
 
 	var ehh = [
-		'',  '', '',
-		'', 'bf', '',
+		'bf', '', '',
+		'', '', '',
 		'',  '', ''
 	]
 	for i in 9:
@@ -73,7 +79,7 @@ func _input(event: InputEvent) -> void:
 			player.change_char(['bf', 'pico', 'locked'][lo])
 		)
 
-func beat_hit(beat:int) -> void:
+func beat_hit(_beat:int) -> void:
 	if player.cur_anim == 'idle':
 		player.play_anim('idle')
 	$Speakers/Sprite.playing = true
@@ -92,7 +98,7 @@ func align_icons() -> void:
 		#item.position.y += grpIcons.y;
 
 func _process(delta:float) -> void:
-	if bop_play: bop_icon($Icons.get_child(4), delta)
+	if bop_play: bop_icon($Icons.get_child(0), delta)
 
 var bop_info:Array[Dictionary] = JSFParser.parse('images/char_select/_info/iconBop/iconBopInfo')
 var bop_timer:float = 0;

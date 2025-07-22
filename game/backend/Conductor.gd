@@ -49,6 +49,7 @@ var paused:bool = false:
 	set(pause):
 		paused = pause
 		audio.stream_paused = pause
+		audio.process_mode = Node.PROCESS_MODE_DISABLED if pause else Node.PROCESS_MODE_INHERIT
 		set_process(!pause)
 
 var mult_vocals:bool = false
@@ -143,6 +144,8 @@ func _process(delta) -> void:
 		if song_pos > beat_time + crochet:
 			beat_time += crochet
 			cur_beat += 1
+			#Audio.play_sound('BedSqueak'+ str(int(cur_beat % 2 == 0) + 1))
+
 			beat_hit.emit(cur_beat)
 
 			var beats:int = 4
@@ -190,7 +193,7 @@ func add_audio(new_id:int = -1, file_name:String = '', vol:float = 0.7, song_nam
 	audio_volume(new_id, vol)
 	ex_audio.append(new_aud)
 
-func audio_volume(id:int, vol:float = 1.0, can_wrap:bool = true) -> void:
+func audio_volume(id:int, vol:float = 1.0, _can_wrap:bool = true) -> void:
 	var stream_count = audio.stream.stream_count - 1
 	#if id > stream_count: printerr('ID '+ str(id) +' doesn\'t exist!')
 	if id > stream_count: return

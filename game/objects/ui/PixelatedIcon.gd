@@ -17,7 +17,6 @@ var height:float:
 
 func _ready() -> void:
 	texture_filter = Util.get_alias(false)
-	add_child(sprite)
 
 func change_icon(new_image:String = 'bf') -> void:
 	if new_image.is_empty(): return
@@ -44,6 +43,9 @@ func change_icon(new_image:String = 'bf') -> void:
 		sprite = Sprite2D.new()
 		sprite.texture = load(icon_path % (image +'.png'))
 	#sprite.offset += Vector2(width / 2.0, height / 2.0)
+
+	if !sprite.get_parent():
+		add_child(sprite)
 
 func _process(_delta):
 	if follow_spr:

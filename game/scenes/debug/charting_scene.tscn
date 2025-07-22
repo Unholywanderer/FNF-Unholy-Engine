@@ -68,6 +68,14 @@ position = Vector2(639, 360)
 
 [node name="ChartUI" type="CanvasLayer" parent="."]
 
+[node name="WaveformToggle" type="OptionButton" parent="ChartUI"]
+offset_left = 1009.0
+offset_top = 284.0
+offset_right = 1215.0
+offset_bottom = 315.0
+focus_mode = 0
+alignment = 1
+
 [node name="Info" type="Label" parent="ChartUI"]
 offset_left = 850.0
 offset_top = 20.0

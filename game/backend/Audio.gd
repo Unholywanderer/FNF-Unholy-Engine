@@ -30,7 +30,7 @@ func _ready() -> void:
 		play_music('freakyMenu')
 
 func _process(_delta) -> void:
-	if Player.stream != null and Player.playing:
+	if Player.stream and Player.playing:
 		pos = Player.get_playback_position() * 1000.0
 		if sync_conductor: Conductor.song_pos = pos
 

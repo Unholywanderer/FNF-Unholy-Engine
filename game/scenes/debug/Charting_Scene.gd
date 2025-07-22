@@ -78,6 +78,7 @@ var SONG
 
 @onready var prog_bar:ProgressBar = $ChartUI/SongProgress
 
+var waveform:WaveformRenderer
 func _ready():
 	Game.set_mouse_visibility(true)
 	Audio.stop_music() # just in case
@@ -99,8 +100,44 @@ func _ready():
 	Conductor.connect_signals()
 	Conductor.bpm = SONG.bpm
 	Conductor.paused = true
+
+	Conductor.section_hit.connect(load_section)
+
 	Game.focus_change.connect(focus_changed)
 
+	## WaveForm Shit
+	waveform = WaveformRenderer.new()
+	waveform.keepData = true
+	waveform.width = GRID_SIZE * 16
+
+	$Notes.add_child(waveform)
+	waveform.setOrientation('VERTICAL')
+
+	$ChartUI/WaveformToggle.add_item('None')
+	$ChartUI/WaveformToggle.add_item('Inst')
+	if Conductor.mult_vocals:
+		$ChartUI/WaveformToggle.add_item('Voices-Player')
+		$ChartUI/WaveformToggle.add_item('Voices-Opponent')
+	elif Conductor.vocals:
+		$ChartUI/WaveformToggle.add_item('Voices')
+
+	$ChartUI/WaveformToggle.item_selected.connect(func(id:int):
+		Conductor.paused = true
+		var audio_file:String = $ChartUI/WaveformToggle.get_item_text(id)
+		waveform.visible = (audio_file != 'None')
+		if !waveform.visible: return
+		var path:String = 'songs/'+ JsonHandler.song_root +'/audio/'+ (JsonHandler.song_variant.substr(1) +'/' if JsonHandler.song_variant != '' else '')
+		var diff:int = 4
+		match audio_file: # dont question my math ill kill you
+			'Voices-Opponent': diff = 2
+			'Voices-Player': diff = 6
+
+		waveform.position.x = 150 + (GRID_SIZE * diff)
+		waveform.create('res://assets/'+ path + audio_file +'.ogg', Color.LIGHT_CYAN, null, Conductor.crochet / 1.95)
+	)
+
+	if !JsonHandler.song_root.is_empty():
+		pass
 	var lil_box = ColorRect.new()
 	lil_box.color = Color.DARK_SLATE_GRAY
 	lil_box.position = Vector2(180, 591)
@@ -145,12 +182,12 @@ func _ready():
 	var list = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
 	list.append_array(ResourceLoader.list_directory('res://assets/data/characters'))
 	for i in list:
-		var char = i.replace('.json', '').strip_edges()
-		if !char_list.has(char):
-			char_list.append(char)
-			tab('Song', 'Player1').get_popup().add_item(char)
-			tab('Song', 'Player2').get_popup().add_item(char)
-			tab('Song', 'GF').get_popup().add_item(char)
+		var peep:String = i.replace('.json', '').strip_edges()
+		if !char_list.has(peep):
+			char_list.append(peep)
+			tab('Song', 'Player1').get_popup().add_item(peep)
+			tab('Song', 'Player2').get_popup().add_item(peep)
+			tab('Song', 'GF').get_popup().add_item(peep)
 
 	for i in [Game.persist.stage_list, DirAccess.get_files_at('res://game/scenes/stages')]:
 		for stage in i:
@@ -159,20 +196,20 @@ func _ready():
 			stage_list.append(stage)
 			tab('Song', 'Stage').get_popup().add_item(stage)
 
-	var realgf:String = 'gf'
+	var realgf = 'gf'
 	#print('love you maru..')
-	if SONG.has('gfVersion') or SONG.get('player3') != null:
+	if SONG.has('gfVersion') or SONG.has('player3'):
 		realgf = SONG.get('gfVersion', SONG.get('player3', 'gf'))
-	SONG.gfVersion = realgf # will make sure that gfVersion exists on the dictionary
+	SONG.gfVersion = (realgf if realgf else '') # will make sure that gfVersion exists on the dictionary
 
 	for i in [SONG.player1, SONG.player2, SONG.gfVersion]:
 		if !char_list.has(i):
 			char_list.append(i)
 			invalid_chars.append(i)
 
-	var update:Callable = func(id:int, char:String = 'Player1'):
-		SONG[char] = char_list[id]
-		on_char_change(char)
+	var update:Callable = func(id:int, character:String = 'Player1'):
+		SONG[character] = char_list[id]
+		on_char_change(character)
 
 	for i:String in ['player1', 'player2', 'gfVersion']:
 		var caps = i.capitalize().replace(' ', '') if i != 'gfVersion' else 'GF'
@@ -251,18 +288,18 @@ func _ready():
 	add_child(grid_2)
 	move_child(grid_2, note_group.get_index())
 	#region | event grids
-	event_grid_0 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	event_grid_0 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), true)
 	event_grid_0.position.x += OFF / 2.0
 	event_grid_0.position.y = grid_0.position.y
 	add_child(event_grid_0)
 	move_child(event_grid_0, note_group.get_index())
 
-	event_grid_1 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	event_grid_1 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), true)
 	event_grid_1.position.x += OFF / 2.0
 	add_child(event_grid_1)
 	move_child(event_grid_1, note_group.get_index())
 
-	event_grid_2 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), [], true)
+	event_grid_2 = NoteGrid.new(vec_size, Vector2(GRID_SIZE, GRID_SIZE * 16), true)
 	event_grid_2.position.x += OFF / 2.0
 	event_grid_2.position.y = grid_2.position.y
 	add_child(event_grid_2)
@@ -367,7 +404,6 @@ func _process(delta):
 		Conductor.reset_beats()
 		Game.reset_scene()
 
-var last_bpm:float
 func event_hit(event:EventNote):
 	var le_values = event.raw_data.values
 	match event.ev_name:
@@ -416,7 +452,7 @@ func make_note(info, must_hit:bool = true):
 	if sus_len > 0:
 		var sustain:BasicNote = BasicNote.new(new_note, true)
 		note_group.add_child(sustain)
-		note_group.move_child(sustain, 1)
+		note_group.move_child(sustain, 2)
 		update_note_pos(sustain, new_note.lane)
 
 		sustain.hold_group.size.x = 50 # close enough for now
@@ -472,10 +508,8 @@ func beat_hit(beat:int) -> void:
 		bg_tween = create_tween()
 		bg_tween.tween_property($BG, 'scale', Vector2.ONE, Conductor.crochet / 3500.0)
 
-func section_hit(sec:int):
-	load_section(Conductor.cur_section)
-
-func step_hit(step:int) -> void:
+func section_hit(_sec:int): pass
+func step_hit(_step:int) -> void:
 	update_text()
 
 func song_end():
@@ -507,8 +541,8 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 		var sec:Dictionary = SONG.notes[cur_section]
 		tab('Section', 'MustHit').button_pressed = sec.mustHitSection
 		tab('Section', 'AltAnim').button_pressed = sec.get('altAnim', false)
-		tab('Section', 'ChangeBPM').button_pressed = sec.get('changeBPM', false) #if sec.changeBPM != null else false
-		tab('Section', 'NewBPM').value = sec.get('bpm', Conductor.bpm) #if sec.bpm != null else Conductor.bpm
+		tab('Section', 'ChangeBPM').button_pressed = sec.get('changeBPM', false)
+		tab('Section', 'NewBPM').value = sec.get('bpm', Conductor.bpm)
 		#else:
 		#	tab('Section', 'ChangeBPM').button_pressed = false
 		#	tab('Section', 'NewBPM').value = 0
@@ -549,10 +583,28 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 		#Conductor.resync_audio()
 		update_text()
 
+	# (Conductor.crochet / 1.95) * section | this works but only for songs with no bpm changes
+	if waveform.visible:
+		waveform.time = ((get_step_time(cur_section)) / 7.8)
+		waveform.is_dirty = true
 	regen_notes(remake_notes)
 
+func get_step_time(sec:int) -> float:
+	var step_time:float = 0
+	var temp_croch = (60.0 / SONG.bpm) * 1000.0
+	for i in sec:
+		var bpm:float = SONG.bpm
+		var da_sec = SONG.notes[i] if section_based else {}
+		if da_sec.get('changeBPM', false):
+			bpm = max(da_sec.bpm, 1)
+			temp_croch = (60.0 / bpm) * 1000.0
+
+		for j in int(da_sec.get('sectionBeats', 4)) * 4:
+			step_time += (temp_croch / 4.0)
+	return step_time
+
 func _unhandled_input(event:InputEvent): # this is better | no you fucking idiot
-	if event is InputEventMouseButton:
+	if event is InputEventMouse:
 		#if event.is_pressed(): return
 		if event.is_pressed():
 			get_viewport().gui_release_focus()
@@ -650,7 +702,7 @@ func _unhandled_input(event:InputEvent): # this is better | no you fucking idiot
 
 var last_updated_sec:int = -1
 var last_got_bpm:float
-func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
+func regen_notes(_skip_remake:bool = false, _only_current:bool = false) -> void:
 	Util.remove_all([notes_loaded], note_group)
 
 	if section_based:
@@ -697,7 +749,7 @@ func regen_notes(skip_remake:bool = false, only_current:bool = false) -> void:
 	if events.size() > 0:
 		for evn in events:
 			if evn.strum_time >= min_time and evn.strum_time < max_time:
-				var new_event = EventNote.new(evn)
+				var new_event := EventNote.new(evn)
 				note_group.add_child(new_event)
 				new_event.strum_time = evn.strum_time
 				notes_loaded.append(new_event)
@@ -744,7 +796,7 @@ func add_note() -> void:
 	if !section_based: return
 	var time:float = get_time_from_y(selected.position.y) + get_section_time()
 	var dir_edit:int = 0 if JsonHandler.parse_type == 'psych_v1' else (-4 if SONG.notes[cur_section].mustHitSection else 0)
-	var direct:int = fmod(abs(floor(mouse_pos.x / GRID_SIZE) - (5 + dir_edit)), 8) # no need to go above 7
+	var direct:int = (abs(int(mouse_pos.x / GRID_SIZE)) - (5 + dir_edit)) % 8 # no need to go above 7
 
 	print('adding note ('+ str(direct) +' ['+ str(time) +'])')
 	var note_sec = SONG.notes[cur_section].sectionNotes
@@ -786,10 +838,12 @@ func update_text() -> void:
 
 func _toggle_grid(toggled:bool) -> void:
 	#Conductor.paused = true
-	for i in [grid_0, grid_1, grid_2]:
-		if i == null: continue
-		for sqr in i.grid: sqr.visible = toggled
-		for mrk in i.markers: mrk.visible = !toggled
+	for grid in [grid_0, grid_1, grid_2, event_grid_0, event_grid_1, event_grid_2]:
+		if grid == null: continue
+		grid.grid.visible = toggled
+		grid.markers.visible = !toggled
+		#for sqr in i.grid: sqr.visible = toggled
+		#for mrk in i.markers: mrk.visible = !toggled
 	regen_notes()
 
 func focus_changed(is_focused:bool) -> void:
@@ -811,8 +865,8 @@ func save_song(path:String = ''):
 	fil.close()
 	#pass
 
-func overlapping_grid(events:bool = false) -> bool:
-	var check:Array = [event_grid_0, event_grid_2] if events else [grid_0, grid_2]
+func overlapping_grid(ev_grid:bool = false) -> bool:
+	var check:Array = [event_grid_0, event_grid_2] if ev_grid else [grid_0, grid_2]
 	return mouse_pos.x > check[0].position.x + OFF and mouse_pos.x < check[0].position.x + check[0].width + OFF \
 		and mouse_pos.y > check[0].position.y and mouse_pos.y < check[1].position.y + (GRID_SIZE * 16)
 
@@ -827,10 +881,10 @@ func get_section_time(this_sec:int = -1):
 	var pos:float = 0
 	var bpm:float = SONG.bpm
 	for i in this_sec:
-		var da_sec = SONG.notes[i] if section_based else {}
+		var da_sec:Dictionary = SONG.notes[i] if section_based else {}
 		if da_sec.get('changeBPM', false):
 			bpm = max(da_sec.bpm, 1)
-		var le_beat = da_sec.get('sectionBeats', 4)
+		var le_beat:int = da_sec.get('sectionBeats', 4)
 		pos += le_beat * (1000.0 * 60.0 / bpm)
 	return pos
 
@@ -862,40 +916,23 @@ class EventNote extends BasicNote:
 			#ev_extra.substr(0, ev_extra.length() - 2)
 		label.text = ev_name +'\n'+ ev_extra
 
-class NoteGrid extends Control:
-	var width:int
-	var height:int
-	var grid:Array = []
-	var markers:Array[ColorRect] = []
+class NoteGrid extends Grid:
+	var grid:Sprite2D
+	var markers:Node2D # node holding all markers
 
-	func _init(cell_size:Vector2, grid_size:Vector2, colors:Array[Color] = [], _skip:bool = false):
-		if colors.is_empty(): colors = [Color(0.30, 0.30, 0.30), Color(0.20, 0.20, 0.20)]
+	func _init(cell_size:Vector2, grid_size:Vector2, events:bool = false, colors:Array[Color] = []):
+		if colors.is_empty():
+			colors = [Color(0.30, 0.30, 0.30), Color(0.20, 0.20, 0.20)]
+			if events: colors.reverse()
 
-		var prev_col:Color = colors[1]
-		var x:int = 0
-		var y:int = 0
-		while y < grid_size.y:
-			if y > 0:
-				colors.reverse()
-				prev_col = colors[1]
+		grid = Sprite2D.new()
+		grid.centered = false
+		grid.texture = create(cell_size, grid_size, true, colors[0], colors[1])
+		add_child(grid)
 
-			x = 0
-			while x < grid_size.x:
-				if !_skip:
-					var grid_square = ColorRect.new()
-					grid_square.modulate = prev_col
-					prev_col = colors[0] #if prev_col == colors[1] else colors[1]
-					colors.reverse()
-					grid_square.position = Vector2(x, y)
-					grid_square.custom_minimum_size = cell_size
-					add_child(grid_square)
-					grid.append(grid_square)
-				x += floor(cell_size.x)
-
-			y += floor(cell_size.y)
-
-		width = x
-		height = y
+		markers = Node2D.new()
+		add_child(markers)
+		if events: markers.hide()
 
 		if cell_size.x != grid_size.x: # if the grid is 1 cell wide, no need for the center mark
 			var center = ColorRect.new()
@@ -922,5 +959,5 @@ class NoteGrid extends Control:
 			step_mark.position = position
 			step_mark.position.x += int(width / 8.0)
 			step_mark.position.y += int(height / 16.0) * i
-			add_child(step_mark)
-			markers.append(step_mark)
+			markers.add_child(step_mark)
+			#markers.append(step_mark)

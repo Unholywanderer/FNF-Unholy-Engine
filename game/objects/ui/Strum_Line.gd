@@ -75,10 +75,9 @@ func _process(delta:float) -> void:
 
 var total_splash:Array[AnimatedSprite2D] = []
 func spawn_splash(strum:Strum) -> void:
-	if total_splash.size() > 10:
-		while total_splash.size() > 10:
-			total_splash[0].visible = false
-			total_splash[0].animation_finished.emit()
+	while total_splash.size() > 8:
+		total_splash[0].visible = false
+		total_splash[0].animation_finished.emit()
 
 	var new_splash:AnimatedSprite2D = NoteSplash.new(strum)
 	new_splash.animation_finished.connect(func():
@@ -92,14 +91,16 @@ func spawn_splash(strum:Strum) -> void:
 	total_splash.append(new_splash)
 
 func spawn_hold_splash(strum:Strum, note:Note) -> void:
-	if cur_sparks[strum.dir] != null and !cur_sparks[strum.dir].animation.contains('_splash'):
-		cur_sparks[strum.dir].anim_time += get_process_delta_time()
+	if cur_sparks[strum.dir] and !cur_sparks[strum.dir].animation.contains('_splash'):
+		pass
+		#cur_sparks[strum.dir].anim_time += get_process_delta_time()
 	else:
 		var spark:AnimatedSprite2D = SPARK.instantiate()
 		spark.strum = strum
+		spark.z_index = 1
 
 		spark.player = note.must_press
-		spark.anim_time += get_process_delta_time()
+		spark.anim_time = note.length / 1000 #+= get_process_delta_time()
 		add_child(spark)
 		cur_sparks[strum.dir] = spark
 

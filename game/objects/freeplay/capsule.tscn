@@ -1,21 +1,31 @@
-[gd_scene load_steps=12 format=3 uid="uid://bnwhqsofwue6d"]
+[gd_scene load_steps=15 format=3 uid="uid://bnwhqsofwue6d"]
 
+[ext_resource type="Shader" uid="uid://b0wt801m446p3" path="res://game/resources/shaders/gaussian_blur.gdshader" id="1_7ejj3"]
 [ext_resource type="SpriteFrames" uid="uid://dgnngpv3slgix" path="res://assets/images/freeplay/freeplayCapsule/capsule/freeplayCapsule.res" id="1_8lb3p"]
-[ext_resource type="Script" uid="uid://tenswdigsxdp" path="res://game/objects/freeplay/capsule.gd" id="2_ipiok"]
+[ext_resource type="Script" uid="uid://tenswdigsxdp" path="res://game/objects/freeplay/Capsule.gd" id="2_ipiok"]
 [ext_resource type="FontFile" uid="uid://40x2imgxgo0j" path="res://assets/fonts/5by7.ttf" id="2_xc4nu"]
-[ext_resource type="SpriteFrames" uid="uid://b0abikfa5cmvx" path="res://assets/images/freeplay/rankbadges.res" id="3_i3wiy"]
 [ext_resource type="Script" uid="uid://or5jxqf6c3iu" path="res://game/objects/ui/PixelatedIcon.gd" id="4_iwk4y"]
 [ext_resource type="SpriteFrames" path="res://assets/images/icons/freeplay/bfpixel.res" id="5_iwk4y"]
 [ext_resource type="Texture2D" uid="uid://bxddna434reah" path="res://assets/images/freeplay/freeplayCapsule/bpmtext.png" id="7_7ejj3"]
 [ext_resource type="Texture2D" uid="uid://c6aqhm8dp1ys6" path="res://assets/images/freeplay/freeplayCapsule/weektypes.png" id="8_2p8yr"]
+[ext_resource type="Texture2D" uid="uid://dp1iieykh5emq" path="res://assets/images/freeplay/freeplayCapsule/smallnumbers.png" id="8_7ejj3"]
 [ext_resource type="Texture2D" uid="uid://gda5tj56inmi" path="res://assets/images/freeplay/freeplayCapsule/difficultytext.png" id="9_4b5pt"]
 [ext_resource type="Texture2D" uid="uid://oifct114c1b6" path="res://assets/images/freeplay/freeplayCapsule/bignumbers.png" id="10_bjeys"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2p8yr"]
+shader = ExtResource("1_7ejj3")
+shader_parameter/strength = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4b5pt"]
+shader = ExtResource("1_7ejj3")
+shader_parameter/strength = 1
 
 [sub_resource type="LabelSettings" id="LabelSettings_i3wiy"]
 font = ExtResource("2_xc4nu")
 font_size = 32
 
-[node name="Sprite" type="AnimatedSprite2D"]
+[node name="Capsule" type="AnimatedSprite2D"]
+material = SubResource("ShaderMaterial_2p8yr")
 sprite_frames = ExtResource("1_8lb3p")
 animation = &"selected"
 frame_progress = 0.593296
@@ -27,30 +37,33 @@ layout_mode = 3
 anchors_preset = 0
 offset_left = -191.0
 offset_top = -29.0
-offset_right = 150.0
+offset_right = 149.0
 offset_bottom = 17.0
 
-[node name="Song" type="Label" parent="NameBox"]
+[node name="Blur" type="Label" parent="NameBox"]
+material = SubResource("ShaderMaterial_4b5pt")
 layout_mode = 0
-offset_top = 1.0
-offset_right = 336.0
-offset_bottom = 46.0
-text = "Test!"
+offset_right = 1285.0
+offset_bottom = 45.0
+text = "Test! Hi, Hello! This is a test! Scroll scroll, my text go as far as you can haha"
 label_settings = SubResource("LabelSettings_i3wiy")
 vertical_alignment = 1
 
-[node name="Badge" type="AnimatedSprite2D" parent="."]
-position = Vector2(171, -4)
-sprite_frames = ExtResource("3_i3wiy")
-animation = &"EXCELLENT"
-frame = 13
+[node name="Song" type="Label" parent="NameBox"]
+layout_mode = 0
+offset_right = 682.0
+offset_bottom = 45.0
+text = "Test! Hi, Hello! This is a test! Scroll scroll, my text go as far as you can haha"
+label_settings = SubResource("LabelSettings_i3wiy")
+vertical_alignment = 1
 
-[node name="PixelatedIcon" type="Node2D" parent="."]
+[node name="CharIcon" type="Node2D" parent="."]
 position = Vector2(-248, -40)
 script = ExtResource("4_iwk4y")
 metadata/_custom_type_script = "uid://or5jxqf6c3iu"
 
-[node name="Test" type="AnimatedSprite2D" parent="PixelatedIcon"]
+[node name="Test" type="AnimatedSprite2D" parent="CharIcon"]
+visible = false
 texture_filter = 1
 scale = Vector2(3, 3)
 sprite_frames = ExtResource("5_iwk4y")
@@ -60,23 +73,59 @@ animation = &"confirm"
 position = Vector2(-181, 46)
 texture = ExtResource("7_7ejj3")
 
+[node name="Num1" type="Sprite2D" parent="BPM"]
+position = Vector2(40, 0)
+texture = ExtResource("8_7ejj3")
+hframes = 10
+frame = 9
+
+[node name="Num2" type="Sprite2D" parent="BPM"]
+position = Vector2(53, 0)
+texture = ExtResource("8_7ejj3")
+hframes = 10
+frame = 9
+
+[node name="Num3" type="Sprite2D" parent="BPM"]
+position = Vector2(66, 0)
+texture = ExtResource("8_7ejj3")
+hframes = 10
+frame = 9
+
 [node name="WeekType" type="Sprite2D" parent="."]
 position = Vector2(46, 47)
 texture = ExtResource("8_2p8yr")
 hframes = 2
 
+[node name="Num1" type="Sprite2D" parent="WeekType"]
+position = Vector2(25, 0)
+texture = ExtResource("8_7ejj3")
+hframes = 10
+frame = 9
+
+[node name="Num2" type="Sprite2D" parent="WeekType"]
+position = Vector2(38, 0)
+texture = ExtResource("8_7ejj3")
+hframes = 10
+frame = 9
+
+[node name="Num3" type="Sprite2D" parent="WeekType"]
+position = Vector2(51, 0)
+texture = ExtResource("8_7ejj3")
+hframes = 10
+frame = 9
+
 [node name="Diff" type="Sprite2D" parent="."]
 position = Vector2(216, 47)
 texture = ExtResource("9_4b5pt")
 
-[node name="DiffNum1" type="Sprite2D" parent="."]
-position = Vector2(223, -6)
+[node name="Num1" type="Sprite2D" parent="Diff"]
+position = Vector2(7, -53)
 texture = ExtResource("10_bjeys")
 hframes = 10
 frame = 8
 
-[node name="DiffNum2" type="Sprite2D" parent="."]
-position = Vector2(259, -6)
+[node name="Num2" type="Sprite2D" parent="Diff"]
+position = Vector2(43, -53)
 texture = ExtResource("10_bjeys")
 hframes = 10
 frame = 8
