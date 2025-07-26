@@ -68,22 +68,16 @@ var invalid_chars:Array = [] # should only ever be a max of 3, since how song ch
 var stage_list:Array = []
 var SONG
 
+var stored_wave_data:Dictionary = {}
+func store_wave_data(sound:String) -> void:
+	var data:WaveformData = WaveformDataParser.interpretSound(get_sound_path(sound))
+	stored_wave_data[sound] = data
 
-
-
-
-var storedWaveData = {}
-
-func storeWaveData(sound,Name):
-	var data:WaveformData = WaveformDataParser.interpretSound(sound)
-	storedWaveData[Name] = data
-
-func getPathToSound(type): #returns a path 2 the target sound
+func get_sound_path(type:String) -> String: #returns a path 2 the target sound
 	var audio_variant = (JsonHandler.song_variant.substr(1) if JsonHandler.song_variant != '' else '')
-	#I LOVE %S !!! ! ! 
-	var path:String = 'songs/%s/audio/%s' %[JsonHandler.song_root, audio_variant]
-	var output = 'res://assets/%s/%s.ogg' % [path,type]
-	return output
+	#I LOVE %S !!! ! !
+	var path:String = 'songs/%s/audio/%s' % [JsonHandler.song_root, audio_variant]
+	return 'res://assets/%s/%s.ogg' % [path, type]
 
 # Node Vars
 @onready var cam:Camera2D = $Cam
@@ -133,42 +127,38 @@ func _ready():
 
 	$ChartUI/WaveformToggle.add_item('None')
 	$ChartUI/WaveformToggle.add_item('Inst')
-	
-	storeWaveData(getPathToSound("Inst"),"Inst")
+
+	store_wave_data('Inst')
 	if Conductor.mult_vocals:
 		$ChartUI/WaveformToggle.add_item('Voices-Player')
 		$ChartUI/WaveformToggle.add_item('Voices-Opponent')
-		
-		storeWaveData(getPathToSound('Voices-Player'),'Voices-Player')
-		storeWaveData(getPathToSound('Voices-Opponent'),'Voices-Opponent')
+
+		store_wave_data('Voices-Player')
+		store_wave_data('Voices-Opponent')
 	elif Conductor.vocals:
 		$ChartUI/WaveformToggle.add_item('Voices')
-		storeWaveData(getPathToSound('Voices'),'Voices')
-		
+		store_wave_data('Voices')
+
 	$ChartUI/WaveformToggle.item_selected.connect(func(id:int):
 		var audio_file:String = $ChartUI/WaveformToggle.get_item_text(id)
 		waveform.visible = (audio_file != 'None')
 		if !waveform.visible: return
-		
-		var currentData:WaveformData = null
-		if storedWaveData.has(audio_file): #pull ts from the dictionary,got me hella studious
-			currentData = storedWaveData.get(audio_file,null)
-			
+
+		#pull ts from the dictionary,got me hella studious
+		var current_data:WaveformData = stored_wave_data.get(audio_file, null)
+		if current_data == null:
+			push_error("waveform data error, its null somehow pls fix %s" % audio_file)
+			return
+
 		var diff:int = 4
 		match audio_file: # dont question my math ill kill you
 			'Voices-Opponent': diff = 2
 			'Voices-Player': diff = 6
-		
-		if currentData == null:
-			push_error("waveform data error, its null somehow pls fix %s" %audio_file)
-			return
-			
+
 		waveform.position.x = 150 + (GRID_SIZE * diff)
-		waveform.create(currentData, Color.LIGHT_CYAN, null, Conductor.crochet / 1.95)
+		waveform.create(current_data, Color.LIGHT_CYAN, null, Conductor.crochet / 1.95)
 	)
 
-	if !JsonHandler.song_root.is_empty():
-		pass
 	var lil_box = ColorRect.new()
 	lil_box.color = Color.DARK_SLATE_GRAY
 	lil_box.position = Vector2(180, 591)

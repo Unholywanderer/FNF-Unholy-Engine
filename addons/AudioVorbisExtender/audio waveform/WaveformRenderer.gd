@@ -17,10 +17,10 @@ var keepData = false #be warned keeping the waveform data can cause very large m
 var waveformdata:WaveformData = null
 var showRenderTime = false
 
-var width = null 
+var width = null
 #width is assumed to be the length of the song in pixels by default
 
-var height = DEFAULT_HEIGHT 
+var height = DEFAULT_HEIGHT
 #on the other hand height CAN be assigned
 
 var amplitude = 200.0
@@ -59,24 +59,24 @@ func create(InitialData, this_color:Color = DEFAULT_COLOR,background_color = nul
 	else:
 		push_error("Initial Waveform input must be Waveform data or a path to the sound!!")
 		return
-	
+
 	if visible_duration == null:
-		#something something pixel something something, basically 130 
+		#something something pixel something something, basically 130
 		#allows me to actually see the whole waveform
 		visible_duration = waveformdata.songLength * 130
-	
-	
+
+
 	duration = visible_duration
-	
-	
-	if width == null: 
+
+
+	if width == null:
 		width = DEFAULT_WIDTH
 	if height == null:
 		height = DEFAULT_HEIGHT
-	
-	
+
+
 	color = this_color
-	
+
 	if background_color != null:
 		#assume that the bg SHOULD be drawn
 		draw_bg = true
@@ -91,7 +91,7 @@ func create(InitialData, this_color:Color = DEFAULT_COLOR,background_color = nul
 	else:
 		if bg_color == null:
 			draw_bg = false
-	
+
 	drawWaveform()
 	orient()
 
@@ -110,34 +110,34 @@ func setOrientation(value:String):
 
 func drawWaveform():
 	clear()
-	
+
 	var startRenderTime = 0
 	if waveformdata == null:
 		push_error("no waveform found at all, try using create()")
 		return
-	
+
 	if waveformdata.data.is_empty():
 		push_error("waveform data is empty, re-gen the waveform data!!")
 		return
-		
-		
+
+
 	var waveformCenterPos = int(height / 2)
-	
-	
+
+
 	if showRenderTime:
 		startRenderTime = Time.get_ticks_msec()
-	
+
 	buildLength(waveformCenterPos)
 	build()
-	
-	
+
+
 	if not keepData:
 		waveformdata.clear_data()
 		waveformdata = null
 		push_warning("data rendered, clearing waveform data!")
 		return
-	
-	
+
+
 	#this MIGHT work to show render time?, chat can i get some help
 	if showRenderTime:
 		await get_tree().process_frame
@@ -148,16 +148,16 @@ func drawWaveform():
 func buildLength(waveformCenterPos):
 	var startIndex = waveformdata.secondsToIndex(time)
 	var Index = waveformdata.secondsToIndex(duration)
-	
+
 	var pixelsPerIndex = float(width) / (Index)
 	var indexesPerPixel = 1 / pixelsPerIndex
-	
+
 	var this_channel = waveformdata.channel(0)
-	
+
 	for pixel in range(0,width):
 		var sampleMax = 0
 		var sampleMin = 0
-		
+
 		var rangeStart = int(pixel * indexesPerPixel + startIndex)
 		var rangeEnd = int((pixel + 1) * indexesPerPixel + startIndex)
 		if not useDummy:
@@ -165,10 +165,10 @@ func buildLength(waveformCenterPos):
 			#print(this_channel.maxSampleRangeMap(rangeStart,rangeEnd)," ",this_channel.minSampleRangeMap(rangeStart,rangeEnd))
 			sampleMax = min(this_channel.maxSampleRangeMap(rangeStart,rangeEnd) * amplitude,1.0)
 			sampleMin = max(this_channel.minSampleRangeMap(rangeStart,rangeEnd) * amplitude,-1.0)
-			
-		
-		
-		
+
+
+
+
 		var sampleMaxSize = 0
 		var sampleMinSize = 0
 		if sampleMax + sampleMin != 0:
@@ -197,7 +197,7 @@ func _draw():
 			draw_texture_rect(texture,Rect2(0,0,width,height),true,bg_color)
 		else:
 			draw_rect(Rect2(0,0,width,height),bg_color)
-	
+
 	if vertices.is_empty():
 		return
 	draw_polyline(vertices, color,line_width,anti_aliasing)
@@ -234,13 +234,13 @@ func _exit_tree():
 class WaveFormMesh:
 	extends Node2D
 	var vertices = []
-	
+
 	func build_line(y, yy, x,to = vertices):
 		var line = [Vector2(x, y),Vector2(x, yy)]
 		to.append_array(line)
-	
+
 	func clear():
 		vertices.clear()
-	
+
 	func build():
 		vertices = PackedVector2Array(vertices)
