@@ -67,6 +67,24 @@ var char_list:Array = []
 var invalid_chars:Array = [] # should only ever be a max of 3, since how song chars works
 var stage_list:Array = []
 var SONG
+
+
+
+
+
+var storedWaveData = {}
+
+func storeWaveData(sound,Name):
+	var data:WaveformData = WaveformDataParser.interpretSound(sound)
+	storedWaveData[Name] = data
+
+func getPathToSound(type): #returns a path 2 the target sound
+	var audio_variant = (JsonHandler.song_variant.substr(1) if JsonHandler.song_variant != '' else '')
+	#I LOVE %S !!! ! ! 
+	var path:String = 'songs/%s/audio/%s' %[JsonHandler.song_root, audio_variant]
+	var output = 'res://assets/%s/%s.ogg' % [path,type]
+	return output
+
 # Node Vars
 @onready var cam:Camera2D = $Cam
 @onready var note_group:Node2D = $Notes
@@ -115,25 +133,38 @@ func _ready():
 
 	$ChartUI/WaveformToggle.add_item('None')
 	$ChartUI/WaveformToggle.add_item('Inst')
+	
+	storeWaveData(getPathToSound("Inst"),"Inst")
 	if Conductor.mult_vocals:
 		$ChartUI/WaveformToggle.add_item('Voices-Player')
 		$ChartUI/WaveformToggle.add_item('Voices-Opponent')
+		
+		storeWaveData(getPathToSound('Voices-Player'),'Voices-Player')
+		storeWaveData(getPathToSound('Voices-Opponent'),'Voices-Opponent')
 	elif Conductor.vocals:
 		$ChartUI/WaveformToggle.add_item('Voices')
-
+		storeWaveData(getPathToSound('Voices'),'Voices')
+		
 	$ChartUI/WaveformToggle.item_selected.connect(func(id:int):
-		Conductor.paused = true
 		var audio_file:String = $ChartUI/WaveformToggle.get_item_text(id)
 		waveform.visible = (audio_file != 'None')
 		if !waveform.visible: return
-		var path:String = 'songs/'+ JsonHandler.song_root +'/audio/'+ (JsonHandler.song_variant.substr(1) +'/' if JsonHandler.song_variant != '' else '')
+		
+		var currentData:WaveformData = null
+		if storedWaveData.has(audio_file): #pull ts from the dictionary,got me hella studious
+			currentData = storedWaveData.get(audio_file,null)
+			
 		var diff:int = 4
 		match audio_file: # dont question my math ill kill you
 			'Voices-Opponent': diff = 2
 			'Voices-Player': diff = 6
-
+		
+		if currentData == null:
+			push_error("waveform data error, its null somehow pls fix %s" %audio_file)
+			return
+			
 		waveform.position.x = 150 + (GRID_SIZE * diff)
-		waveform.create('res://assets/'+ path + audio_file +'.ogg', Color.LIGHT_CYAN, null, Conductor.crochet / 1.95)
+		waveform.create(currentData, Color.LIGHT_CYAN, null, Conductor.crochet / 1.95)
 	)
 
 	if !JsonHandler.song_root.is_empty():
@@ -471,7 +502,6 @@ func play_strum(note):
 		var dir = wrap(note.lane, 0, 8)
 		strums[dir].play_anim('confirm', true)
 		strums[dir].reset_timer = 0.15
-
 		var funk:Character = funky_boys[0 if dir > 3 else 1]
 		if note.type == 'GF': funk = funky_boys[2]
 		funk.sing(note.dir, '', !note.is_sustain)
@@ -960,4 +990,3 @@ class NoteGrid extends Grid:
 			step_mark.position.x += int(width / 8.0)
 			step_mark.position.y += int(height / 16.0) * i
 			markers.add_child(step_mark)
-			#markers.append(step_mark)
