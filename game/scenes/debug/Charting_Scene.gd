@@ -121,6 +121,7 @@ func _ready():
 	waveform = WaveformRenderer.new()
 	waveform.keepData = true
 	waveform.width = GRID_SIZE * 16
+	waveform.hide()
 
 	$Notes.add_child(waveform)
 	waveform.setOrientation('VERTICAL')
