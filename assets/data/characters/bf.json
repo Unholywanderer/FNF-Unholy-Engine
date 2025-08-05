@@ -141,7 +141,7 @@
 			],
 			"framerate": 24,
 			"frames": [],
-			"loop": false
+			"loop": true
 		},
 		{
 			"name": "dodge",

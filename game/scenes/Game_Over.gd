@@ -1,8 +1,8 @@
 extends Node2D
 
-signal on_game_over(scene) # when you first die, with the deathStart anim and sounds
-signal on_game_over_idle(scene) # after the timer is done and the deathLoop starts
-signal on_game_over_confirm(is_retry:bool, scene) # once you choose to either leave or retry the song
+signal on_game_over() # when you first die, with the deathStart anim and sounds
+signal on_game_over_idle() # after the timer is done and the deathLoop starts
+signal on_game_over_confirm(is_retry:bool) # once you choose to either leave or retry the song
 
 var _char_name:String = ''
 var dead:Character
@@ -15,7 +15,7 @@ var on_death_start:Callable = func(): # once the death sound and deathStart fini
 	if !retried:
 		Audio.play_music('skins/'+ this.cur_skin +'/gameOver')
 		dead.play_anim('deathLoop')
-	on_game_over_idle.emit(self)
+	on_game_over_idle.emit()
 
 var on_death_confirm:Callable = func(): # once the player chooses to retry
 	Audio.sync_conductor = false
@@ -73,7 +73,7 @@ func _ready():
 	on_game_over_idle.connect(this.stage.game_over_idle)
 	on_game_over_confirm.connect(this.stage.game_over_confirm)
 
-	on_game_over.emit(self)
+	on_game_over.emit()
 
 	this.ui.visible = false
 	#this.boyfriend.visible = false # hide his ass!!!
@@ -120,10 +120,10 @@ func _process(delta):
 		this.cam.zoom.y = this.cam.zoom.x
 
 		if Input.is_action_just_pressed('accept'):
-			on_game_over_confirm.emit(true, self)
+			on_game_over_confirm.emit(true)
 
-			if death_sound and death_sound.get_playback_position() < 1.0: # skip to mic drop
-				death_sound.play(1)
+			#if death_sound and death_sound.get_playback_position() < 1.0: # skip to mic drop
+			#	death_sound.play(1)
 			timer.paused = false
 			timer.start(2)
 			timer.timeout.disconnect(on_death_start)
@@ -134,7 +134,7 @@ func _process(delta):
 			dead.play_anim('deathConfirm', true)
 
 		if Input.is_action_just_pressed('back'):
-			on_game_over_confirm.emit(false, self)
+			on_game_over_confirm.emit(false)
 
 			timer.stop()
 			Audio.stop_music()

@@ -4,8 +4,8 @@
 			"name": "idle",
 			"prefix": "BF idle dance",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -15,8 +15,8 @@
 			"name": "singLEFT",
 			"prefix": "BF NOTE LEFT0",
 			"offsets": [
-				-12,
-				7
+				-12.0,
+				7.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +26,8 @@
 			"name": "singDOWN",
 			"prefix": "BF NOTE DOWN0",
 			"offsets": [
-				18,
-				51
+				18.0,
+				51.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -37,8 +37,8 @@
 			"name": "singUP",
 			"prefix": "BF NOTE UP0",
 			"offsets": [
-				41,
-				-29
+				41.0,
+				-29.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -48,8 +48,8 @@
 			"name": "singRIGHT",
 			"prefix": "BF NOTE RIGHT0",
 			"offsets": [
-				43,
-				7
+				43.0,
+				7.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -59,8 +59,8 @@
 			"name": "singLEFTmiss",
 			"prefix": "BF NOTE LEFT MISS",
 			"offsets": [
-				-12,
-				-20
+				-12.0,
+				-20.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -70,8 +70,8 @@
 			"name": "singDOWNmiss",
 			"prefix": "BF NOTE DOWN MISS",
 			"offsets": [
-				11,
-				19
+				11.0,
+				19.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -81,8 +81,8 @@
 			"name": "singUPmiss",
 			"prefix": "BF NOTE UP MISS",
 			"offsets": [
-				39,
-				-27
+				39.0,
+				-27.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -92,8 +92,8 @@
 			"name": "singRIGHTmiss",
 			"prefix": "BF NOTE RIGHT MISS",
 			"offsets": [
-				40,
-				-21
+				40.0,
+				-21.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -101,10 +101,10 @@
 		},
 		{
 			"name": "idle-loop",
-			"prefix": "BF idle dance",
+			"prefix": "idle",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -117,10 +117,10 @@
 		},
 		{
 			"name": "singLEFT-loop",
-			"prefix": "BF NOTE LEFT0",
+			"prefix": "singLEFT",
 			"offsets": [
-				-12,
-				7
+				-12.0,
+				7.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -133,10 +133,10 @@
 		},
 		{
 			"name": "singRIGHT-loop",
-			"prefix": "BF NOTE RIGHT0",
+			"prefix": "singRIGHT",
 			"offsets": [
-				43,
-				7
+				43.0,
+				7.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -149,10 +149,10 @@
 		},
 		{
 			"name": "singUP-loop",
-			"prefix": "BF NOTE UP0",
+			"prefix": "singUP",
 			"offsets": [
-				41,
-				-29
+				41.0,
+				-29.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -165,10 +165,10 @@
 		},
 		{
 			"name": "singDOWN-loop",
-			"prefix": "BF NOTE DOWN0",
+			"prefix": "singDOWN",
 			"offsets": [
-				18,
-				51
+				18.0,
+				51.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -181,6 +181,7 @@
 		}
 	],
 	"path": "characters/bf/car/char",
+	"death_char": "bf-dead",
 	"icon": "bf",
 	"facing_left": true,
 	"antialiasing": true,
@@ -193,5 +194,5 @@
 		350
 	],
 	"sing_dur": 4,
-	"scale": 1
+	"scale": 1.0
 }

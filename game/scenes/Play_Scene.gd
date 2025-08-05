@@ -7,6 +7,7 @@ extends Node2D
 @onready var Judge:Rating = Rating.new()
 
 var DIE
+var death_screen
 
 var story_mode:bool = false
 var SONG:Dictionary
@@ -184,7 +185,9 @@ func _ready():
 	events = JsonHandler.song_events.duplicate(true)
 	for i in events:
 		if i.event != 'Change Character': continue
-		var peep = char_from_string(i.values[0])
+		if JsonHandler.parse_type == 'codename':
+			i.values[0] = abs(i.values[0] - 1)
+		var peep = char_from_string(str(i.values[0]))
 		peep.cache_char(i.values[1])
 
 	print(SONG.song +' '+ JsonHandler.get_diff.to_upper())
@@ -411,7 +414,7 @@ func try_death() -> void:
 	gf.play_anim('sad')
 	get_tree().paused = true
 	var death = DIE.instantiate()
-	stage.game_over_start(death)
+	stage.game_over_start()
 	add_child(death)
 
 func _exit_tree() -> void:
@@ -527,15 +530,16 @@ func event_hit(event:EventData) -> void:
 				peep.special_anim = true
 		'Change Scroll Speed', "Scroll Speed Change": # [true,2.67,16,"cube","In"],"name":"Scroll Speed Change"
 			if Prefs.scroll_speed != 0: return
-			var data = {'speed': SONG.speed * float(event.values[0]), 'dur': float(event.values[1])}
+			var data = {'speed': SONG.speed * float(event.values[0]), 'dur': float(event.values[1]), 't': [0, 0]}
 			if event.event == 'Scroll Speed Change':
 				data.speed = event.values[1]
 				data.dur = 0
 				if event.values[0]:
-					data.dur = float(event.values[2]) / Conductor.step_crochet
-
+					data.dur = (Conductor.step_crochet / 1000) * float(event.values[2])
+				data.t = [Util.trans_from_string(event.values[3]), Util.ease_from_string(event.values[4])]
+				print(data.t)
 			if abs(data.dur) > 0:
-				create_tween().tween_property(Game.scene, 'cur_speed', data.speed, data.dur)
+				Util.quick_tween(Game.scene, 'cur_speed', data.speed, data.dur, data.t[0], data.t[1])
 			else:
 				cur_speed = data.speed
 		'Add Camera Zoom':
@@ -547,7 +551,7 @@ func event_hit(event:EventData) -> void:
 			ui.zoom += zoom_ui
 			cam.zoom += Vector2(zoom_game, zoom_game)
 		'Change Character':
-			var peep := char_from_string(event.values[0])
+			var peep := char_from_string(str(event.values[0]))
 			if peep == boyfriend:
 				if Prefs.daniel: event.values[1] = event.values[1].replace('bf', 'bf-girl')
 				#if Prefs.femboy: event.values[1] = 'bf-femboy'

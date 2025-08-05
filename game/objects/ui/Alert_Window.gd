@@ -4,7 +4,7 @@ signal on_add
 signal on_leave
 
 ## Icon the window will have
-@export_enum('Error', 'Warn', 'Check') var ALERT_TYPE:String = 'Error'
+@export_enum('ERROR', 'WARN', 'CHECK', 'INFO') var ALERT_TYPE:String = 'ERROR'
 ## Max time the window will stay when made (Resets  [code]life_time[/code]  when changed)
 @export var max_time:float = 4.0:
 	set(new_max):
@@ -29,48 +29,48 @@ var text:String = 'This is an Alert Window':
 
 const ALERT_DATA = {
 	'ERROR': ['ERROR!', Color.RED, 'cross'],
-	'WARN': ['OOPS!', Color.YELLOW, 'warn'],
-	'CHECK': ['SUCCESS', Color.LIME_GREEN, 'check']
+	'WARN' : ['OOPS!', Color.YELLOW, 'warn'],
+	'CHECK': ['SUCCESS', Color.LIME_GREEN, 'check'],
+	'INFO' : ['', Color.WHITE, '']
 }
+
 func _ready() -> void:
-	on_leave.connect(remove)
 	mouse_entered.connect(func():
 		Game.set_mouse_visibility(true)
 		life_time = max_time # if you hover over it, reset the life time
+		can_die = false
 	)
-	mouse_exited.connect(func(): Game.set_mouse_visibility(false))
+	mouse_exited.connect(func():
+		Game.set_mouse_visibility(false)
+		can_die = true
+	)
 
-	#text = 'Saved file at:\nassets/images/GAY'
 	var al = ALERT_DATA[ALERT_TYPE]
 	title = al[0]
 	add_theme_color_override('title_color', al[1])
-	$Icon.texture = load('res://assets/images/ui/noti_%s.png' % al[2])
+	if !al[2].is_empty():
+		$Icon.texture = load('res://assets/images/ui/noti_%s.png' % al[2])
 
 	popup()
 
+var id:int = 0
 var leaving:bool = false
 func _process(delta:float) -> void:
-	position = Vector2(20, ((Game.screen[1] - size.y) - 20)) # i dont want you to drag it FUCK YOU
+	position = Vector2(20, ((Game.screen[1] - (size.y * id)) - 20)) # i dont want you to drag it FUCK YOU
 
-	if can_die:
-		life_time = max(life_time - delta, 0)
+	if can_die: life_time -= delta
 	$LifeBar.value = (life_time / max_time) * 100
 	$LifeBar.position.y = size.y - 5
 	$LifeBar.size.x = size.x
 
-	if life_time <= 0:
-		if !leaving and can_die:
-			leaving = true
-			var outta_here = create_tween()
-			outta_here.tween_property(self, 'position:x', -size.x * 1.15, 0.5).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_IN_OUT)
-			outta_here.finished.connect(func():
-				on_leave.emit()
-				remove()
-			)
+	if life_time <= 0 and can_die:
+		if leaving: return
+		leaving = true
+		var outta_here = create_tween()
+		outta_here.tween_property(self, 'position:x', -size.x * 1.15, 0.7).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN_OUT)
+		outta_here.finished.connect(remove)
 
 func remove() -> void:
-	#Alert.all_alerts.remove_at(Alert.all_alerts.find(self))
+	Alert.all_alerts.remove_at(Alert.all_alerts.find(self))
+	on_leave.emit()
 	queue_free()
-
-func _on_close_requested() -> void: # no you may not close!!
-	pass # Replace with function body.

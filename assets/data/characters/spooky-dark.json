@@ -52,11 +52,7 @@
 				0
 			],
 			"framerate": 24,
-			"frames": [
-				0,
-				2,
-				6
-			],
+			"frames": [],
 			"loop": false
 		},
 		{
@@ -67,12 +63,7 @@
 				0
 			],
 			"framerate": 24,
-			"frames": [
-				8,
-				10,
-				12,
-				14
-			],
+			"frames": [],
 			"loop": false
 		},
 		{

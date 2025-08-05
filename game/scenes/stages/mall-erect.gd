@@ -36,7 +36,7 @@ func beat_hit(_beat:int):
 
 var seen_shit:bool = false
 func song_end() -> void:
-	if !seen_shit:
+	if !seen_shit and parents and santa:
 		seen_shit = true
 		THIS.can_end = false
 		var cutscene := Cutscene.new()

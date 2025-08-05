@@ -54,6 +54,6 @@ func ghost_tap(dir:int) -> void: pass
 func event_hit(event:EventData) -> void: pass
 
 # bf died
-func game_over_start(scene) -> void: pass
-func game_over_idle(scene) -> void: pass
-func game_over_confirm(is_retry:bool, scene) -> void: pass
+func game_over_start() -> void: pass
+func game_over_idle() -> void: pass
+func game_over_confirm(is_retry:bool) -> void: pass

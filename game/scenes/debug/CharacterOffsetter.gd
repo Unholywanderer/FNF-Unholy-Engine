@@ -18,9 +18,10 @@ var cur_anim:String = ''
 var selected_id:int = 0:
 	set(new_id):
 		if new_id < anim_list.size():
-			anim_list[selected_id].modulate = Color.WHITE  # if this is greater than the new char's anim list, crash
+			if selected_id < anim_list.size():
+				anim_list[selected_id].modulate = Color.WHITE  # if this is greater than the new char's anim list, crash
 			anim_list[new_id].modulate = Color.YELLOW
-			cur_anim = anim_list[new_id].text.split('[')[0].strip_edges()
+			cur_anim = char_json.animations[new_id].name
 		selected_id = new_id
 
 		character.play(cur_anim)
@@ -28,6 +29,16 @@ var selected_id:int = 0:
 		character.offset = Vector2(got[0], got[1])
 		character.flip_h = flipped.get(cur_anim, false)
 
+		var doop:Dictionary = char_json.animations[selected_id]
+		ANIM('Name').text = doop.name
+		ANIM('Prefix').text = doop.prefix
+		ANIM('Frames').text = Util.array_to_str(doop.frames).replace(' ', '').replace('.0', '')
+		ANIM('Framerate').value = doop.framerate
+		ANIM('Loop').button_pressed = doop.loop
+		ANIM('Flip/X').button_pressed = doop.get('flip_x', false)
+		ANIM('Flip/Y').button_pressed = doop.get('flip_y', false)
+
+@onready var _ui = $UILayer
 func _ready() -> void:
 	Prefs.auto_pause = false
 	Game.set_mouse_visibility()
@@ -49,8 +60,7 @@ func _ready() -> void:
 	MAIN('IconSelect').get_popup().connect("id_pressed", func(id:int): change_icon(icon_list[id]))
 	MAIN('Shadow/AnimSelect').get_popup().connect("id_pressed", shadow_anim_change)
 
-	MAIN('IconSelect/Icon').default_scale = 0.7
-	MAIN('IconSelect/Icon').scale = Vector2(0.7, 0.7)
+	%Icon.default_scale = 0.7
 
 	var thing_change = func(_val, thing_name:String): # we dont use the '_val' for this
 		var new_vals:Array[int]
@@ -74,8 +84,10 @@ func _ready() -> void:
 		character.antialiasing = tog
 		shadow.antialiasing = tog
 	)
-	MAIN('Center').connect('toggled', func(tog:bool):
-		character.centered = tog
+	$UILayer/Reset.pressed.connect(func():
+		var heh = cur_char
+		cur_char = ''
+		change_char(heh)
 	)
 	$Cam.position = get_viewport_rect().size / 2.0
 
@@ -106,13 +118,15 @@ func _process(delta:float) -> void:
 	shadow.scale = character.scale
 
 	DATA('Anim').text = cur_anim
-	DATA('Offset').text = str(offsets[cur_anim])
+	DATA('Offset').text = str(offsets.get(cur_anim, '[No Offsets]'))
 	DATA('Frame').text = 'Frame\n'+ str(character.frame) +' / '+ str(character.sprite_frames.get_frame_count(character.animation) - 1)
 
 var press_time:float = 0.0
 func _unhandled_input(event:InputEvent) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and !event.is_released():
 		get_viewport().gui_release_focus()
+	if get_viewport().gui_get_focus_owner() != null: return
+
 	if event is InputEventMouse: return
 
 	if event.is_action_pressed('back'):
@@ -157,41 +171,38 @@ func _unhandled_input(event:InputEvent) -> void:
 		character.play()
 
 func change_icon(new_icon:String = 'bf') -> void:
-	var ic:Icon = MAIN('IconSelect/Icon')
-	var hi:ColorRect = MAIN('IconSelect/Highlight')
-	var lo:ColorRect = MAIN('IconSelect/Lowlight')
+	MAIN('IconSelect/CurIconLabel').text = new_icon
+
+	var ic:Icon = %Icon
+	var hi:ColorRect = %Icon/Highlight
+	var lo:ColorRect = %Icon/Lowlight
 
 	char_json.icon = new_icon
 	ic.change_icon(new_icon.strip_edges())
-	var scale_diff:float = 0.7 * (5 if new_icon.ends_with('pixel') else 1)
 	ic.default_scale = (5 if new_icon.ends_with('pixel') else 1) * 0.7
-	var ic_size = Vector2(ic.texture.get_width() * scale_diff, ic.texture.get_height() * scale_diff)
-	ic.position = Vector2(-845, 590)
+	ic.position = Vector2(120, 655)
 	ic.hframes = 1
 
-	hi.custom_minimum_size = ic_size
-	hi.position = ic.position - hi.custom_minimum_size / 2.0
+	hi.size = Vector2(ic.width, ic.height) #/ (2.0 if ic.has_lose else 1)
+	hi.position = -(hi.size / 2.0)
 	lo.visible = ic.has_lose
 	if ic.has_lose:
-		hi.custom_minimum_size.x = ic_size.x / 2.0
-		hi.size = hi.custom_minimum_size
-		lo.custom_minimum_size = hi.custom_minimum_size
-		lo.position = hi.position
-		lo.position.x += hi.size.x
+		hi.size.x = ic.width / 2.0
+		lo.size = hi.size
+		lo.position = hi.position + Vector2(hi.size.x, 0)
 
 func change_char(new_char:String = 'bf') -> void:
 	char_json = JsonHandler.get_character(new_char)
 	if char_json == null or cur_char == new_char: return
-	selected_id = 0
 	cur_char = new_char
-	MAIN('CharacterSelect').text = cur_char
+	MAIN('CharName').text = cur_char
 	if char_json.has('no_antialiasing'):
 		char_json = Legacy.fix_json(char_json)
 	if char_json.has('assetPath'):
 		char_json = VSlice.fix_json(char_json)
 
+	_ui.get_node('ResPath').text = char_json.path
 	DATA('Warn').visible = !ResourceLoader.exists('res://assets/images/'+ char_json.path +'.res')
-	MAIN('CharacterSelect/CurCharLabel').text = cur_char
 	reload_list(char_json.animations)
 
 	# update character
@@ -224,8 +235,7 @@ func change_char(new_char:String = 'bf') -> void:
 	# then update the shadow
 	shadow.copy(character)
 	shadow.antialiasing = !character.antialiasing # uhm??
-	var frame_limit = shadow.sprite_frames.get_frame_count(cur_anim) - 1
-	shadow.frame = frame_limit
+	shadow.frame = shadow.sprite_frames.get_frame_count(cur_anim) - 1
 	shadow_anim_change(0)
 
 func reload_list(anims:Array) -> void:
@@ -239,11 +249,11 @@ func reload_list(anims:Array) -> void:
 		#temp_arr.clear()
 		#temp_arr.assign(anim.offsets) # make sure they are ints to remove the extra '.0'
 		offsets[anim.name] = anim.offsets #temp_arr
-		flipped[anim.name] = anim.get('flipX', false)
+		flipped[anim.name] = anim.get('flip_x', false)
 
 		var lab := make_label()
 		lab.position.x += 15
-		lab.position.y = 70 + (20 * i)
+		lab.position.y = 70 + (17 * i)
 		lab.text = anim.name +' '+ str(anim.offsets)#temp_arr)
 
 		$UILayer/Animations.add_child(lab)
@@ -251,66 +261,136 @@ func reload_list(anims:Array) -> void:
 
 		anim_list.append(lab)
 
-	if anim_list.size() == 0:
+	if anim_list.is_empty():
 		var lab = make_label()
 		lab.text = 'NO ANIMATIONS'
 		lab.modulate = Color.RED
-		lab.position.x -= 20
-		lab.position.y = 50
+		lab.position.x += 15
+		lab.position.y = 87
+		lab.add_theme_font_size_override('font_size', 20)
 		$UILayer/Animations.add_child(lab)
 		anim_list.append(lab)
 	else:
 		selected_id = 0
 		anim_list[0].modulate = Color.YELLOW
 
-func on_char_change(id:int) -> void: change_char(char_list[id])
-
 func make_label() -> Label:
 	var lab = Label.new()
 	lab.add_theme_font_override('font', load('res://assets/fonts/vcr.ttf'))
-	lab.add_theme_font_size_override('font_size', 20)
-	lab.add_theme_constant_override('outline_size', 4)
+	lab.add_theme_font_size_override('font_size', 17)
+	lab.add_theme_constant_override('outline_size', 3)
 	return lab
 
-func MAIN(to_get:String): return $UILayer.get_node('Main/'+ to_get)
-func DATA(to_get:String): return $UILayer.get_node('CurData/'+ to_get)
+func MAIN(to_get:String): return _ui.get_node('Main/'+ to_get)
+func DATA(to_get:String): return _ui.get_node('CurData/'+ to_get)
+func ANIM(to_get:String): return _ui.get_node('Anim/'+ to_get)
+
+func new_pressed() -> void:
+	MAIN('Shadow/AnimSelect').get_popup().clear()
+	cur_anim = ''
+	var new = UnholyFormat.CHAR_JSON.duplicate(true)
+
+	char_json.clear()
+	offsets.clear()
+	reload_list([])
+	char_json = new
+	character.load_char('bf')
+
+	shadow.copy(character)
+	shadow.antialiasing = !character.antialiasing # uhm??
+	shadow.frame = shadow.sprite_frames.get_frame_count('idle') - 1
 
 func save_pressed() -> void:
-	var old_json = JsonHandler.get_character(cur_char) # should remove this once you can actually add prefixes
-	if old_json and old_json.has('no_antialiasing'):
-		old_json = Legacy.fix_json(old_json)
+	var to_check:String = MAIN('CharName').text.strip_edges() # check the char name box
+	if to_check.is_empty(): to_check = cur_char # if its empty, just use stored char name
 
-	var new_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
-	for i in offsets.keys():
-		var new_anim = UnholyFormat.CHAR_ANIM.duplicate()
-		new_anim.offsets = offsets[i]
-		new_anim.name = i
-		if old_json:
-			for a in old_json.animations:
-				if a.name == i:
-					new_anim.prefix = a.prefix
-					new_anim.frames = a.frames
-		new_json.animations.append(new_anim)
+	var save_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
+	for i in char_json.animations:
+		var new_anim = UnholyFormat.CHAR_ANIM.duplicate(true)
+		new_anim.offsets = offsets[i.name]
+		new_anim.name = i.name
+		new_anim.prefix = i.prefix
+		new_anim.frames = i.frames
+		new_anim.loop = i.loop
+		if i.get('flip_x', false): new_anim.set('flip_x', true)
+		if i.get('flip_y', false): new_anim.set('flip_y', true)
+		save_json.animations.append(new_anim)
 
-	new_json.path = old_json.path # and this
-	new_json.icon = char_json.icon
-	new_json.antialiasing = MAIN('Anti').button_pressed
-	new_json.facing_left = MAIN('FacesLeft').button_pressed
-	new_json.cam_offset = cur_cam_offset
-	new_json.pos_offset = cur_pos_offset
-	new_json.scale = MAIN('ScaleBox').value
-	if old_json.has('speaker'):
-		new_json.speaker = old_json.speaker
+	save_json.path = char_json.path # and this
+	save_json.icon = char_json.icon
+	save_json.antialiasing = MAIN('Anti').button_pressed
+	save_json.facing_left = MAIN('FacesLeft').button_pressed
+	save_json.cam_offset = cur_cam_offset
+	save_json.pos_offset = cur_pos_offset
+	save_json.scale = MAIN('ScaleBox').value
+	#if old_json.has('speaker'):
+	#	save_json.speaker = old_json.speaker
 
-	var file:FileAccess = FileAccess.open("res://assets/data/characters/"+ cur_char +".json", FileAccess.WRITE)
+	var file:FileAccess = FileAccess.open("res://assets/data/characters/"+ to_check +".json", FileAccess.WRITE)
 	file.resize(0) # clear the file, if it has stuff in it
-	file.store_string(JSON.stringify(new_json, '\t', false))
+	file.store_string(JSON.stringify(save_json, '\t', false))
 	file.close()
 
+func _res_path_updated() -> void:
+	var new_path:String = _ui.get_node('ResPath').text
+	if ResourceLoader.exists('res://assets/images/'+ new_path +'.res'):
+		character.sprite_frames = load('res://assets/images/'+ new_path +'.res')
+
+func add_anim() -> void:
+	get_viewport().gui_release_focus() # make sure you arent focused on anything
+
+	var anim_name:String = ANIM('Name').text.strip_edges()
+	if anim_name.is_empty():
+		return Alert.make_alert('ADD ANIMATION NAME', Alert.WARN)
+
+	var fixed_frames:Array[int] = []
+	if !ANIM('Frames').text.is_empty():
+		var temp = ANIM('Frames').text.strip_edges()
+		if temp.contains('-'):
+			temp = temp.split('-')
+			for i in range(int(temp[0]), int(temp[1]) + 1):
+				fixed_frames.append(i)
+			ANIM('Frames').text = Util.array_to_str(fixed_frames).replace(' ', '')
+		else:
+			temp = temp.split(',')
+			for i in temp:
+				fixed_frames.append(int(i))
+
+	for i in char_json.animations:
+		if i.name == anim_name: # Animation exists, just update it with new info
+			i.prefix = ANIM('Prefix').text
+			i.frames = fixed_frames
+			i.loop = ANIM('Loop').button_pressed
+			i.framerate = ANIM('Framerate').value
+			i.flip_x = ANIM('Flip/X').button_pressed
+			i.flip_y = ANIM('Flip/Y').button_pressed
+
+			character.add_anim(i.name, i.prefix, i.frames, i.framerate, i.loop)
+			if cur_anim == i.name:
+				character.play(i.name)
+				character.offset = Vector2(offsets[i.name][0], offsets[i.name][1])
+			return
+
+	# Animation doesn't exist, make a new one
+	var _data := UnholyFormat.CHAR_ANIM.duplicate(true)
+	_data.name = anim_name
+	_data.prefix = ANIM('Prefix').text
+	_data.frames = fixed_frames
+
+	_data.framerate = ANIM('Framerate').value
+	_data.loop = ANIM('Loop').button_pressed
+
+	_data.flip_x = ANIM('Flip/X').button_pressed
+	_data.flip_y = ANIM('Flip/Y').button_pressed
+
+	char_json.animations.append(_data)
+
+	character.add_anim(anim_name, _data.prefix, fixed_frames, _data.framerate, _data.loop)
+	reload_list(char_json.animations)
 
 func shadow_anim_change(id:int) -> void:
-	var new_anim = anim_list[id].text.split('[')[0].strip_edges()
-	var frame_lim = shadow.sprite_frames.get_frame_count(new_anim) - 1
+	var new_anim:String = char_json.animations[id].name
+	var frame_lim:int = shadow.sprite_frames.get_frame_count(new_anim) - 1
 	MAIN('Shadow/Anim').text = new_anim
 	shadow.play(new_anim)
 	shadow.pause()

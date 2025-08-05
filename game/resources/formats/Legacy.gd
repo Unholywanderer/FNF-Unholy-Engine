@@ -36,7 +36,7 @@ func parse_chart(data) -> Array:
 			var must_hit:bool = sec.mustHitSection if note[1] <= 3 else not sec.mustHitSection
 			if p_v1: must_hit = n_data < 4
 
-			var n_type:String = str(note[3]) if note.size() > 3 else ''
+			var n_type:String = str(note[3]) if (note.size() > 3 and note[3]) else ''
 			if n_type == 'true': n_type = 'Alt'
 
 			add_note([time, n_data, is_sustain, sustain_len, must_hit, n_type])

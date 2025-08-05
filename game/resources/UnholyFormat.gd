@@ -7,13 +7,13 @@ const CHAR_ANIM = {
 	'offsets': [0, 0],
 	'framerate': 24,
 	'frames': [], #idk maybe
-	'flip_x': false,
-	'flip_y': false,
+	#'flip_x': false, #optional
+	#'flip_y': false, #will only be added if it exists
 	'loop': false
 }
 const CHAR_JSON = {
 	'animations': [],
-	'path': '',
+	'path': 'characters/bf/char',
 	'death_char': 'bf-dead',
 	'icon': 'bf',
 	'facing_left': false,

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b1aps5umea8ha"]
+[gd_scene load_steps=21 format=3 uid="uid://b1aps5umea8ha"]
 
 [ext_resource type="Script" uid="uid://4tm27sr1yioq" path="res://game/scenes/stages/philly-streets.gd" id="1_gj0t7"]
 [ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_oc14b"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="12_hmg21"]
 [ext_resource type="SpriteFrames" uid="uid://c8xjkosko2jyi" path="res://assets/images/stages/philly-streets/traffic.res" id="12_n1j8s"]
 [ext_resource type="Texture2D" uid="uid://dlmaetgi2ouy7" path="res://assets/images/stages/philly-streets/traffic_lightmap.png" id="13_vbm05"]
+[ext_resource type="Shader" uid="uid://kxrxkjkelq0r" path="res://game/resources/shaders/rain.gdshader" id="17_n1j8s"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_x0kr0"]
 blend_mode = 1
@@ -23,8 +24,20 @@ blend_mode = 1
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_aklk8"]
 blend_mode = 1
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vbm05"]
+shader = ExtResource("17_n1j8s")
+shader_parameter/calculate_rain = true
+shader_parameter/use_lightmap = false
+shader_parameter/use_screen = true
+shader_parameter/warp_screen = true
+shader_parameter/direction = 0.2
+shader_parameter/Scale = 2.0
+shader_parameter/Intensity = 0.1
+shader_parameter/speed = 1.0
+shader_parameter/RainColor = Color(1, 1, 1, 1)
+shader_parameter/warp_amount = 40.1
+
 [node name="Philly Streets" type="Node2D"]
-position = Vector2(0, -3)
 script = ExtResource("1_gj0t7")
 default_zoom = 0.77
 bf_pos = Vector2(1800, 450)
@@ -148,7 +161,8 @@ centered = false
 [node name="CharGroup" type="Node2D" parent="."]
 
 [node name="SprayCan" type="Node2D" parent="."]
-position = Vector2(1575, 915)
+visible = false
+position = Vector2(1535, 895)
 script = ExtResource("12_hmg21")
 atlas = "res://assets/images/stages/philly-streets/effects/spraycan"
 loop_mode = "Play Once"
@@ -158,3 +172,17 @@ metadata/_custom_type_script = "uid://bvq0ling1c7sm"
 position = Vector2(920, 1045)
 texture = ExtResource("11_j4p15")
 centered = false
+
+[node name="Rain" type="Node2D" parent="."]
+visible = false
+script = ExtResource("2_oc14b")
+scroll_factor = Vector2(1.3, 1)
+metadata/_custom_type_script = "uid://cpk88phsyg88s"
+
+[node name="ColorRect" type="ColorRect" parent="Rain"]
+material = SubResource("ShaderMaterial_vbm05")
+offset_right = 2959.0
+offset_bottom = 1624.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Rain"]
+visible = false

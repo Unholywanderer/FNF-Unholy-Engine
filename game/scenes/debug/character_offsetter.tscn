@@ -25,29 +25,78 @@ region_rect = Rect2(0, 0, 1300, 800)
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
+[node name="Icon" type="Sprite2D" parent="UILayer"]
+unique_name_in_owner = true
+position = Vector2(24, 572)
+script = ExtResource("5_36ais")
+
+[node name="Highlight" type="ColorRect" parent="UILayer/Icon"]
+show_behind_parent = true
+custom_minimum_size = Vector2(105, 105)
+offset_left = -17.0
+offset_top = 32.0
+offset_right = 88.0
+offset_bottom = 137.0
+color = Color(0, 1, 0, 0.392157)
+
+[node name="Lowlight" type="ColorRect" parent="UILayer/Icon"]
+show_behind_parent = true
+custom_minimum_size = Vector2(105, 105)
+offset_left = 88.0
+offset_top = 32.0
+offset_right = 193.0
+offset_bottom = 137.0
+color = Color(1, 1, 0, 0.392157)
+
 [node name="Reset" type="Button" parent="UILayer"]
 modulate = Color(1, 0, 0, 1)
-offset_left = 1133.0
+offset_left = 1139.0
 offset_top = 344.0
-offset_right = 1250.0
+offset_right = 1256.0
 offset_bottom = 375.0
 focus_mode = 0
 text = "RESET"
 
 [node name="Save" type="Button" parent="UILayer"]
 modulate = Color(0, 1, 1, 1)
-offset_left = 950.0
+offset_left = 956.0
 offset_top = 345.0
-offset_right = 1067.0
+offset_right = 1073.0
 offset_bottom = 376.0
 focus_mode = 0
 text = "SAVE Json"
 
+[node name="ResPath" type="TextEdit" parent="UILayer"]
+clip_contents = false
+offset_left = 721.0
+offset_top = 673.0
+offset_right = 950.0
+offset_bottom = 705.0
+focus_mode = 1
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 15
+placeholder_text = "characters/..."
+context_menu_enabled = false
+emoji_menu_enabled = false
+scroll_fit_content_height = true
+
+[node name="Label" type="Label" parent="UILayer/ResPath"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = -24.0
+offset_right = 225.0
+offset_bottom = -1.0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 13
+text = ".res File (starts in images/)"
+vertical_alignment = 1
+
 [node name="Main" type="ColorRect" parent="UILayer"]
 custom_minimum_size = Vector2(300, 300)
-offset_left = 950.0
+offset_left = 956.0
 offset_top = 15.0
-offset_right = 1250.0
+offset_right = 1256.0
 offset_bottom = 335.0
 color = Color(0.194349, 0.194349, 0.194349, 1)
 
@@ -125,12 +174,37 @@ theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 text = "Centered Offsetting"
 
+[node name="CharName" type="TextEdit" parent="UILayer/Main"]
+clip_contents = false
+layout_mode = 0
+offset_left = 11.0
+offset_top = 7.0
+offset_right = 290.0
+offset_bottom = 35.0
+focus_mode = 1
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 15
+placeholder_text = "Character Name"
+context_menu_enabled = false
+emoji_menu_enabled = false
+scroll_fit_content_height = true
+
+[node name="New" type="Button" parent="UILayer/Main"]
+modulate = Color(0.176471, 1, 0.0784314, 1)
+layout_mode = 0
+offset_left = 172.0
+offset_top = 38.0
+offset_right = 289.0
+offset_bottom = 69.0
+focus_mode = 0
+text = "NEW Json"
+
 [node name="Anti" type="CheckBox" parent="UILayer/Main"]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 285.0
-offset_right = 146.0
-offset_bottom = 316.0
+offset_left = 150.0
+offset_top = 258.0
+offset_right = 291.0
+offset_bottom = 289.0
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -138,10 +212,10 @@ text = "Antialiasing"
 
 [node name="FacesLeft" type="CheckBox" parent="UILayer/Main"]
 layout_mode = 0
-offset_left = 160.0
-offset_top = 285.0
-offset_right = 292.0
-offset_bottom = 316.0
+offset_left = 150.0
+offset_top = 283.0
+offset_right = 282.0
+offset_bottom = 314.0
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -150,9 +224,9 @@ text = "Facing Left"
 [node name="ScaleBox" type="SpinBox" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 235.0
+offset_top = 268.0
 offset_right = 138.0
-offset_bottom = 266.0
+offset_bottom = 299.0
 min_value = 0.1
 max_value = 10.0
 step = 0.01
@@ -161,66 +235,42 @@ prefix = "Scale:"
 
 [node name="IconSelect" type="MenuButton" parent="UILayer/Main"]
 layout_mode = 0
-offset_left = 11.0
-offset_top = 55.0
-offset_right = 123.0
-offset_bottom = 86.0
+offset_left = 13.0
+offset_top = 95.0
+offset_right = 125.0
+offset_bottom = 126.0
 theme_override_fonts/font = ExtResource("4_e8b0o")
 action_mode = 1
 text = "Change Icon"
 flat = false
 
-[node name="Highlight" type="ColorRect" parent="UILayer/Main/IconSelect"]
-custom_minimum_size = Vector2(105, 105)
+[node name="CurIconLabel" type="Label" parent="UILayer/Main/IconSelect"]
 layout_mode = 0
-offset_left = -940.0
-offset_top = 520.0
-offset_right = -835.0
-offset_bottom = 625.0
-color = Color(0, 1, 0, 0.392157)
-
-[node name="Lowlight" type="ColorRect" parent="UILayer/Main/IconSelect"]
-custom_minimum_size = Vector2(105, 105)
-layout_mode = 0
-offset_left = -835.0
-offset_top = 520.0
-offset_right = -730.0
-offset_bottom = 625.0
-color = Color(1, 1, 0, 0.392157)
-
-[node name="Icon" type="Sprite2D" parent="UILayer/Main/IconSelect"]
-position = Vector2(-939, 472)
-script = ExtResource("5_36ais")
+offset_top = -18.0
+offset_right = 111.0
+offset_bottom = -3.0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+text = "icon-bf"
+vertical_alignment = 1
 
 [node name="CharacterSelect" type="MenuButton" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 11.0
-offset_top = 10.0
-offset_right = 289.0
-offset_bottom = 41.0
+offset_top = 38.0
+offset_right = 169.0
+offset_bottom = 69.0
 theme_override_fonts/font = ExtResource("4_e8b0o")
 action_mode = 1
 text = "Change Character"
 flat = false
 
-[node name="CurCharLabel" type="Label" parent="UILayer/Main/CharacterSelect"]
-visible = false
-layout_mode = 0
-offset_left = 165.0
-offset_top = 3.0
-offset_right = 255.0
-offset_bottom = 26.0
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("4_e8b0o")
-text = "bf"
-vertical_alignment = 1
-
 [node name="Pos" type="Label" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 165.0
+offset_top = 195.0
 offset_right = 151.0
-offset_bottom = 188.0
+offset_bottom = 218.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 16
@@ -239,7 +289,7 @@ update_on_text_changed = true
 layout_mode = 0
 offset_left = 90.0
 offset_top = 20.0
-offset_right = 173.063
+offset_right = 177.0
 offset_bottom = 51.0
 min_value = -9999.0
 max_value = 9999.0
@@ -248,9 +298,9 @@ update_on_text_changed = true
 [node name="Cam" type="Label" parent="UILayer/Main"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 100.0
+offset_top = 135.0
 offset_right = 151.0
-offset_bottom = 123.0
+offset_bottom = 158.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 16
@@ -304,13 +354,6 @@ offset_top = 15.0
 offset_right = 681.0
 offset_bottom = 182.0
 
-[node name="ColorRect" type="ColorRect" parent="UILayer/CurData"]
-visible = false
-layout_mode = 0
-offset_left = 1.0
-offset_right = 249.0
-offset_bottom = 168.0
-
 [node name="Anim" type="Label" parent="UILayer/CurData"]
 layout_mode = 1
 anchors_preset = -1
@@ -361,24 +404,24 @@ offset_bottom = 159.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 20
-text = "No .res file exists"
+text = "No .res file found!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Anim" type="ColorRect" parent="UILayer"]
-custom_minimum_size = Vector2(300, 300)
-offset_left = 950.0
+custom_minimum_size = Vector2(300, 320)
+offset_left = 956.0
 offset_top = 385.0
-offset_right = 1250.0
-offset_bottom = 685.0
+offset_right = 1256.0
+offset_bottom = 705.0
 color = Color(0.196078, 0.196078, 0.196078, 1)
 
 [node name="AnimSpeed" type="HSlider" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 74.0
-offset_top = 11.0
+offset_top = 19.0
 offset_right = 289.0
-offset_bottom = 27.0
+offset_bottom = 35.0
 focus_mode = 0
 min_value = 0.5
 max_value = 2.0
@@ -396,6 +439,128 @@ theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 20
 text = "Speed"
 vertical_alignment = 1
+
+[node name="Hey" type="Label" parent="UILayer/Anim/AnimSpeed"]
+layout_mode = 0
+offset_left = -42.0
+offset_top = -16.0
+offset_right = 193.0
+offset_bottom = 2.0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 10
+text = "Only for editor! Does NOT apply in game!"
+vertical_alignment = 1
+
+[node name="Name" type="TextEdit" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 90.0
+offset_right = 289.0
+offset_bottom = 118.0
+focus_mode = 1
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 15
+placeholder_text = "Animation Name"
+context_menu_enabled = false
+emoji_menu_enabled = false
+scroll_fit_content_height = true
+
+[node name="Prefix" type="TextEdit" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 130.0
+offset_right = 289.0
+offset_bottom = 158.0
+focus_mode = 1
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 15
+placeholder_text = "XML/.res Animation Prefix"
+context_menu_enabled = false
+emoji_menu_enabled = false
+scroll_fit_content_height = true
+
+[node name="Frames" type="TextEdit" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 170.0
+offset_right = 289.0
+offset_bottom = 198.0
+focus_mode = 1
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 15
+placeholder_text = "Animation Frames (OPTIONAL)"
+context_menu_enabled = false
+emoji_menu_enabled = false
+scroll_fit_content_height = true
+
+[node name="Framerate" type="SpinBox" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 220.0
+offset_right = 97.0
+offset_bottom = 251.0
+max_value = 48.0
+value = 24.0
+update_on_text_changed = true
+prefix = "FPS:"
+
+[node name="Flip" type="Label" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 205.0
+offset_right = 208.0
+offset_bottom = 228.0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 16
+text = "Flip"
+vertical_alignment = 1
+
+[node name="X" type="CheckBox" parent="UILayer/Anim/Flip"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = -3.0
+offset_right = 83.0
+offset_bottom = 28.0
+tooltip_text = "Lock Camera's position to the cross"
+focus_mode = 0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+text = "X"
+
+[node name="Y" type="CheckBox" parent="UILayer/Anim/Flip"]
+layout_mode = 0
+offset_left = 85.0
+offset_top = -3.0
+offset_right = 123.0
+offset_bottom = 28.0
+tooltip_text = "Lock Camera's position to the cross"
+focus_mode = 0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+text = "Y"
+
+[node name="Loop" type="CheckBox" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 215.0
+offset_top = 230.0
+offset_right = 281.0
+offset_bottom = 261.0
+tooltip_text = "Lock Camera's position to the cross"
+focus_mode = 0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+text = "Loop"
+
+[node name="AddAnim" type="Button" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 100.0
+offset_top = 280.0
+offset_right = 209.0
+offset_bottom = 311.0
+focus_mode = 0
+text = "Add/Update"
 
 [node name="Weee!!" type="Label" parent="UILayer"]
 visible = false
@@ -418,5 +583,8 @@ scale = Vector2(5, 5)
 texture = ExtResource("4_7buq4")
 
 [connection signal="pressed" from="UILayer/Save" to="." method="save_pressed"]
+[connection signal="text_changed" from="UILayer/ResPath" to="." method="_res_path_updated"]
 [connection signal="value_changed" from="UILayer/Main/Shadow/Frame" to="." method="shadow_frame_change"]
 [connection signal="color_changed" from="UILayer/Main/Shadow/Color" to="." method="shadow_color_changed"]
+[connection signal="pressed" from="UILayer/Main/New" to="." method="new_pressed"]
+[connection signal="pressed" from="UILayer/Anim/AddAnim" to="." method="add_anim"]

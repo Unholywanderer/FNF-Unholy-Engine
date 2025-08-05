@@ -11,6 +11,9 @@ func center_obj(obj = null, axis:String = 'xy') -> void:
 func format_str(string:String = '') -> String:
 	return string.to_lower().strip_edges().replace(' ', '-').replace('\'', '').replace(':', '')
 
+func array_to_str(arr:Array) -> String:
+	return str(arr).strip_edges().substr(1).replace(']', '') # i do NOT care brah
+
 func round_d(num:float, digit:int) -> float: # bowomp
 	return round(num * pow(10.0, digit)) / pow(10.0, digit)
 
@@ -58,7 +61,7 @@ func set_dropdown(dropdown:OptionButton, to_val:String = '') -> void:
 func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans:int = 0, ease:int = 0) -> Tweener:
 	return create_tween().tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease)
 
-func quick_label(t:String, s:int, ol_s:int = s / 3, f:String = 'vcr.ttf') -> Label:
+func quick_label(t:String = '', s:int = 15, ol_s:int = s / 3, f:String = 'vcr.ttf') -> Label:
 	var new_label:Label = Label.new()
 	new_label.text = t
 	new_label.add_theme_font_override('font', ResourceLoader.load('res://assets/fonts/'+ f))

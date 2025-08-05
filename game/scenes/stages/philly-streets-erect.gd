@@ -149,10 +149,10 @@ func opponent_note_hit(note:Note):
 			dad.special_anim = true
 			Audio.play_sound('weekend/kickForward')
 
-func game_over_start(scene):
+func game_over_start():
 	if died_by_can:
 		died_by_can = false
-		scene.we_dyin = scene.DEATH_TYPE.EXPLODE
+		THIS.DIE.we_dyin = THIS.DIE.DEATH_TYPE.EXPLODE
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:

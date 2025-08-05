@@ -4,8 +4,8 @@
 			"name": "idle",
 			"prefix": "Mom Idle",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -15,8 +15,8 @@
 			"name": "singLEFT",
 			"prefix": "Mom Left Pose",
 			"offsets": [
-				-250,
-				23
+				-250.0,
+				23.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +26,8 @@
 			"name": "singRIGHT",
 			"prefix": "Mom Pose Left",
 			"offsets": [
-				-10,
-				60
+				-10.0,
+				60.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -37,8 +37,8 @@
 			"name": "singDOWN",
 			"prefix": "MOM DOWN POSE",
 			"offsets": [
-				-20,
-				160
+				-20.0,
+				160.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -48,8 +48,8 @@
 			"name": "singUP",
 			"prefix": "Mom Up Pose",
 			"offsets": [
-				-14,
-				-71
+				-14.0,
+				-71.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -57,10 +57,10 @@
 		},
 		{
 			"name": "idle-loop",
-			"prefix": "Mom Idle",
+			"prefix": "idle",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -73,10 +73,10 @@
 		},
 		{
 			"name": "singLEFT-loop",
-			"prefix": "Mom Left Pose",
+			"prefix": "singLEFT",
 			"offsets": [
-				-250,
-				23
+				-250.0,
+				23.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -89,10 +89,10 @@
 		},
 		{
 			"name": "singUP-loop",
-			"prefix": "Mom Up Pose",
+			"prefix": "singUP",
 			"offsets": [
-				-14,
-				-71
+				-14.0,
+				-71.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -105,10 +105,10 @@
 		},
 		{
 			"name": "singRIGHT-loop",
-			"prefix": "Mom Pose Left",
+			"prefix": "singRIGHT",
 			"offsets": [
-				-10,
-				60
+				-10.0,
+				60.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -121,10 +121,10 @@
 		},
 		{
 			"name": "singDOWN-loop",
-			"prefix": "MOM DOWN POSE",
+			"prefix": "singDOWN",
 			"offsets": [
-				-20,
-				160
+				-20.0,
+				160.0
 			],
 			"framerate": 24,
 			"frames": [
@@ -137,6 +137,7 @@
 		}
 	],
 	"path": "characters/mom-car",
+	"death_char": "bf-dead",
 	"icon": "mom",
 	"facing_left": false,
 	"antialiasing": true,
@@ -149,5 +150,5 @@
 		0
 	],
 	"sing_dur": 4,
-	"scale": 1
+	"scale": 1.0
 }

@@ -91,6 +91,3 @@ offset_bottom = 100.0
 theme_override_styles/background = SubResource("StyleBoxFlat_jy5ly")
 theme_override_styles/fill = SubResource("StyleBoxFlat_iuocy")
 show_percentage = false
-
-[connection signal="about_to_popup" from="." to="." method="_on_about_to_popup"]
-[connection signal="close_requested" from="." to="." method="_on_close_requested"]

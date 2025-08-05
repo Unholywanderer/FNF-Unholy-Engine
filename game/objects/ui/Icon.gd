@@ -18,6 +18,11 @@ var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR
 	set(anti): texture_filter = Util.get_alias(anti)
 
+var width:float:
+	get: return texture.get_width() if texture else 0
+var height:float:
+	get: return texture.get_height() if texture else 0
+
 func change_icon(new_image:String = 'face', player:bool = false, credit:bool = false) -> void:
 	if new_image.begins_with('icon-'): new_image = new_image.replace('icon-', '')
 
@@ -49,7 +54,7 @@ func _process(delta):
 	var scale_ratio:float = icon_speed / Conductor.step_crochet * 100.0
 	scale.x = lerpf(default_scale, scale.x, exp(-delta * scale_ratio))
 	scale.y = lerpf(default_scale, scale.y, exp(-delta * scale_ratio))
-	if follow_spr != null:
+	if follow_spr:
 		if follow_spr is HealthBar: # is healthbar or something
 			var bar_width:float = follow_spr.width
 			var remapped:float = remap(follow_spr.value, 0, 100, 100, 0) * 0.01

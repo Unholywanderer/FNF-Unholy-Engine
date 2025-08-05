@@ -79,8 +79,8 @@ func event_hit(event:EventData) -> void:
 		dad.forced_suffix = '-bloody'
 
 var played_line:bool = false
-func game_over_start(scene): played_line = false
-func game_over_idle(scene):
+func game_over_start(): played_line = false
+func game_over_idle():
 	if !played_line:
 		played_line = true
 		Audio.volume = 0.4

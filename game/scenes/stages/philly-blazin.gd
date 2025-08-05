@@ -1,14 +1,9 @@
 extends StageBase
 
 var def_index
-func _ready() -> void:
+func post_ready() -> void:
 	THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
-	default_zoom = 0.75
-	bf_pos = Vector2(850, -550)
-	dad_pos = Vector2(-450, -550)
-	gf_pos = Vector2(350, 100)
 
-	dad_cam_offset = Vector2(350, 250)
 	UI.health_bar.rotation = deg_to_rad(90)
 	UI.health_bar.scale = Vector2(0.90, 0.90)
 	UI.health_bar.position = Vector2(Game.screen[0] - 80, (Game.screen[1] / 2.0) - 280)
@@ -19,7 +14,6 @@ func _ready() -> void:
 	UI.get_group('opponent').visible = false
 	UI.get_group('player').position.x = Game.screen[0] / 2.0 - 180
 
-func countdown_start():
 	def_index = boyfriend.get_index()
 	if Prefs.rating_cam == 'game':
 		THIS.Judge.rating_pos = boyfriend.position + Vector2(650, 250)
@@ -28,8 +22,6 @@ func countdown_start():
 func _process(delta):
 	UI.icon_p1.position.y = 0
 	UI.icon_p2.position.y = 0
-
-	pass
 	#var lol = ['punchHigh1', 'punchLow1', 'punchHigh2', 'punchLow2']
 	#var an = lol.pick_random()
 	#dad.play_anim(an, true)
@@ -186,8 +178,8 @@ func alter(a:String):
 	set(a, !get(a))
 	return '1' if get(a) else '2'
 
-func game_over_start(scene):
-	scene.we_dyin = scene.DEATH_TYPE.PUNCH
+func game_over_start():
+	THIS.we_dyin = THIS.DEATH_TYPE.PUNCH
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
 #	pass

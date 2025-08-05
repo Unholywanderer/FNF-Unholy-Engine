@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-var time_existed:float = 0.0
+var _time_existed:float = 0.0
 var vol_visible:bool = false
 var vol_tween:Tween
 var max_tween:Tween
@@ -20,7 +20,7 @@ var volume:int = 10:
 				max_tween.tween_property($Volume/BarsBG/VolBar10, 'modulate', Color.WHITE, 0.3)
 				Audio.play_sound('vol/max')
 			$Volume.position.y = 0
-			time_existed = 0
+			_time_existed = 0
 		AudioServer.set_bus_volume_db(0, linear_to_db(vol / 10.0))
 		volume = vol
 		Prefs.saved_volume = vol
@@ -43,9 +43,9 @@ func _process(delta):
 			var bar = get_node('Volume/BarsBG/VolBar'+ str(i + 1))
 			bar.scale.y = clampf(lerp(0.0 if round(volume) <= i else 1.0, bar.scale.y, exp(-delta * 15)), 0, 1)
 
-		time_existed += delta
-		vol_visible = time_existed < 1
-		if time_existed >= 1.0:
+		_time_existed += delta
+		vol_visible = _time_existed < 1
+		if _time_existed >= 1.0:
 			vol_tween = create_tween()
 			vol_tween.tween_property($Volume, 'position:y', -100, 0.22)
 

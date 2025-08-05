@@ -18,12 +18,24 @@ blend_mode = 3
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_at4qc"]
 shader = ExtResource("7_1apta")
+shader_parameter/calculate_rain = true
+shader_parameter/use_lightmap = false
+shader_parameter/use_screen = false
+shader_parameter/warp_screen = false
+shader_parameter/direction = 0.2
+shader_parameter/Scale = 2.0
 shader_parameter/Intensity = 0.4
-shader_parameter/Timescale = 0.0900005
+shader_parameter/speed = 1.0
+shader_parameter/RainColor = Color(1, 1, 1, 1)
+shader_parameter/warp_amount = 0.1
 
 [node name="Philly Blazin" type="Node2D"]
 script = ExtResource("1_gj0t7")
 default_zoom = 0.75
+bf_pos = Vector2(850, -550)
+dad_pos = Vector2(-450, -550)
+gf_pos = Vector2(350, 100)
+dad_cam_offset = Vector2(350, 250)
 
 [node name="ScrollSprite" type="Node2D" parent="."]
 scale = Vector2(1.1, 0.9)
@@ -74,6 +86,7 @@ centered = false
 [node name="CharGroup" type="Node2D" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 material = SubResource("ShaderMaterial_at4qc")
 offset_left = -764.0
 offset_top = -407.0

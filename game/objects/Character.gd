@@ -79,7 +79,7 @@ func load_char(new_char:String = 'bf') -> void:
 	cur_char = new_char
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % cur_char):
 		var replace_char = get_closest(cur_char)
-		print_rich('No JSON found for: '+ cur_char +'\n', '[color=red]'+ cur_char +' [color=yellow]-> [color=green]'+ replace_char)
+		print_rich('No JSON found for: '+ cur_char +'\n', '[color=red]'+ cur_char +'[color=yellow] -> [color=green]'+ replace_char)
 		cur_char = replace_char
 
 	json = JsonHandler.get_character(cur_char) # get offsets and anim names...
@@ -99,20 +99,9 @@ func load_char(new_char:String = 'bf') -> void:
 
 	offsets.clear()
 	for anim in json.animations:
-		var got_prefix:String = Util.get_closest_anim(sprite_frames, anim.prefix.left(-1))
-		if !got_prefix.is_empty() and !has_anim(anim.name):
-			if !anim.frames.is_empty():
-				#print(anim.name)
-				sprite_frames.add_animation(anim.name)
-				for frm in anim.frames:
-					var tex:Texture2D = sprite_frames.get_frame_texture(got_prefix, frm)
-					sprite_frames.add_frame(anim.name, tex)
-			else:
-				sprite_frames.rename_animation(got_prefix, anim.name)
+		add_anim(anim.name, anim.prefix, anim.frames, anim.framerate, anim.loop)
 		offsets[anim.name] = anim.offsets
 		flippers[anim.name] = anim.get('flip_x', false)
-		if has_anim(anim.name):
-			sprite_frames.set_animation_speed(anim.name, anim.get('framerate', 24))
 
 	icon = json.icon
 	scale = Vector2(json.scale, json.scale)
@@ -176,10 +165,6 @@ func _process(delta):
 			var boogie = (!is_player or (is_player and !holding)) and can_dance
 			if hold_timer >= Conductor.step_crochet * (0.0011 * sing_duration) and boogie:
 				dance()
-
-	if cur_char.contains('-car') and frame >= sprite_frames.get_frame_count(animation) - 1:
-		looping = true
-		frame = sprite_frames.get_frame_count(animation) - 5
 
 	if !chart.is_empty():
 		for i in chart: # [0] = strum time, [1] = direction, [2] = is sustain, [3] = length
@@ -271,6 +256,25 @@ func set_stuff() -> void:
 
 func has_anim(anim:String) -> bool:
 	return sprite_frames.has_animation(anim) if sprite_frames else false
+
+func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int =  24, loop:bool = false) -> void:
+	var got_prefix:String = Util.get_closest_anim(sprite_frames, prefix.left(-1))
+	if !has_anim(anim_name):
+		if got_prefix.is_empty(): return print('No Prefix Found!')
+		sprite_frames.duplicate_animation(got_prefix, anim_name)
+
+	sprite_frames.set_animation_speed(anim_name, fps)
+	sprite_frames.set_animation_loop(anim_name, loop)
+	if !frames.is_empty():
+		var anim_textures = []
+		for i in sprite_frames.get_frame_count(anim_name):
+			anim_textures.append(sprite_frames.get_frame_texture(anim_name, i))
+		sprite_frames.clear(anim_name)
+		for frm:int in frames:
+			if anim_textures.size() - 1 >= frm:
+				sprite_frames.add_frame(anim_name, anim_textures[frm])
+	#else:
+	#	sprite_frames.rename_animation(got_prefix, anim_name)
 
 static func get_closest(char_name:String = 'bf') -> String: # if theres no character named "pico-but-devil" itll just use "pico"
 	var char_list = DirAccess.get_files_at('res://assets/data/characters')

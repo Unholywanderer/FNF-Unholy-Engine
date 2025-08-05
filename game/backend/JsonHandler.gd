@@ -154,7 +154,7 @@ func get_character(character:String = 'bf'):
 	if !ResourceLoader.exists(json_path):
 		printerr('JSON: get_character | [%s.json] COULD NOT BE FOUND' % character);
 		return null
-	var file = FileAccess.open(json_path, FileAccess.READ).get_as_text()
+	var file = FileAccess.get_file_as_string(json_path)
 	return_json = JSON.parse_string(file)
 	return return_json
 

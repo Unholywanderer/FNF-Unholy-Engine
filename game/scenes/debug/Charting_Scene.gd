@@ -286,6 +286,7 @@ func _ready():
 	)
 
 	var chars = [JsonHandler.get_character(SONG.player2), JsonHandler.get_character(SONG.player1)]
+	for i in 2: if chars[i] and chars[i].has('no_antialiasing'): chars[i] = Legacy.fix_json(chars[i])
 	$ChartLine/IconL.change_icon(chars[0].icon if chars[0] else 'face')
 	$ChartLine/IconR.change_icon(chars[1].icon if chars[1] else 'face', true)
 

@@ -103,6 +103,7 @@ func _unhandled_key_input(_event:InputEvent) -> void:
 			show_catagory(catagories[cur_option].to_lower())
 
 func show_main() -> void:
+	Prefs.save_prefs()
 	Audio.play_sound('cancelMenu')
 	Audio.volume = 0.7
 
@@ -115,7 +116,7 @@ func show_main() -> void:
 	$Description/Text.text = 'Choose a Catagory'
 
 func show_catagory(catagory:String) -> void:
-	Audio.play_sound('confirmMenu')
+	Audio.play_sound('confirmBrief')
 	in_sub = true
 	sub_option = 0
 	if catagory != 'controls':
@@ -248,4 +249,3 @@ class Option extends Alphabet:
 				check.checked = !a_bool
 		if type != 'bool':
 			vis.text = str(Prefs.get(option)).capitalize()
-		Prefs.save_prefs()
