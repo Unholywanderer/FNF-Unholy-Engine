@@ -316,7 +316,7 @@ func save_pressed() -> void:
 		if i.get('flip_y', false): new_anim.set('flip_y', true)
 		save_json.animations.append(new_anim)
 
-	save_json.path = char_json.path # and this
+	save_json.path = ANIM('ResPath').text # and this
 	save_json.icon = char_json.icon
 	save_json.antialiasing = MAIN('Anti').button_pressed
 	save_json.facing_left = MAIN('FacesLeft').button_pressed
