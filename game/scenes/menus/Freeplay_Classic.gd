@@ -165,7 +165,7 @@ func _unhandled_key_input(_event):
 		hold_time += get_process_delta_time()
 		if hold_time >= (1.5 * get_process_delta_time()):
 			hold_time = 0
-			update_list(diff * Input.get_axis('menu_up', 'menu_down'))
+			update_list(diff * int(Input.get_axis('menu_up', 'menu_down')))
 
 	if just_pressed.call('menu_left') : change_diff(-1)
 	if just_pressed.call('menu_right'): change_diff(1)
@@ -198,6 +198,7 @@ func check_variants(song:String) -> Dictionary:
 		got_variants.set(i, var_meta.get('difficulties', JsonHandler.base_diffs))
 	return got_variants
 
+@warning_ignore("missing_tool")
 class FreeplaySong extends Alphabet:
 	var song:String = 'Tutorial'
 	var diff_list:Array = JsonHandler.base_diffs

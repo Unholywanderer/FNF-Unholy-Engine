@@ -14,6 +14,7 @@ var loop_song:bool = false
 	#Conductor.song_end.connect(song_finished)
 
 var progress:float = 0.0
+@warning_ignore(\"unused_parameter\")
 func _process(delta: float) -> void:
 	progress = (abs(Conductor.song_pos / Conductor.song_length) * 100.0)
 	$Progress.value = progress

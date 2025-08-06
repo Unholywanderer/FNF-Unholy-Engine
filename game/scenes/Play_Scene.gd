@@ -11,6 +11,7 @@ var death_screen
 
 var story_mode:bool = false
 var SONG:Dictionary
+
 var default_zoom:float = 0.8
 var cur_skin:String = 'default': # yes
 	set(new_skin):
@@ -64,6 +65,10 @@ var misses:int = 0
 var max_combo:int = -1
 
 func _ready():
+	 
+	if JsonHandler._SONG.is_empty(): #i love fallbacks !! ! 
+		JsonHandler.parse_song("test","hard", "normal")
+	
 	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
 	if Prefs.daniel: spl_path = 'res://assets/images/ui/notesplashes/FOREVER.res'
 	Game.persist.note_splash = load(spl_path)
@@ -75,7 +80,10 @@ func _ready():
 
 	if !LuaHandler.active_lua.is_empty():
 		LuaHandler.remove_all()
+	
+	
 
+	
 	SONG = JsonHandler._SONG
 
 	#if Prefs.femboy: SONG.player1 = 'bf-femboy'
@@ -234,6 +242,7 @@ func _process(delta):
 
 	if Input.is_action_just_pressed("back"):
 		auto_play = !auto_play
+		
 	if Input.is_action_just_pressed("accept") and can_pause:
 		get_tree().paused = true
 		other.add_child(load('res://game/scenes/pause_screen.tscn').instantiate())

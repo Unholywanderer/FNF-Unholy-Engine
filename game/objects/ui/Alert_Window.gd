@@ -1,5 +1,6 @@
 class_name AlertWindow; extends Window
 
+@warning_ignore("unused_signal")
 signal on_add
 signal on_leave
 
@@ -67,10 +68,10 @@ func _process(delta:float) -> void:
 		if leaving: return
 		leaving = true
 		var outta_here = create_tween()
+		Alert.all_alerts.erase(self.name)
 		outta_here.tween_property(self, 'position:x', -size.x * 1.15, 0.7).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN_OUT)
 		outta_here.finished.connect(remove)
 
 func remove() -> void:
-	Alert.all_alerts.remove_at(Alert.all_alerts.find(self))
 	on_leave.emit()
 	queue_free()

@@ -62,8 +62,8 @@ func _process(delta):
 		var txt_add:String = 'Press (Debug 2) for more info'
 		$Other.text = 'Mem: %s / %s\n' % [mem, mem_peak]
 		if debug_data:
-			var vid_mem:String = String.humanize_size(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED))
-			var tex_mem:String = String.humanize_size(Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED))
+			var vid_mem:String = String.humanize_size(int(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED)))
+			var tex_mem:String = String.humanize_size(int(Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED)))
 			var other_data:Array = [
 				vid_mem, tex_mem,
 				get_tree().get_node_count(),

@@ -29,6 +29,7 @@ class ClearPercent extends Node2D:
 		add_child(per_txt)
 		num_me_harder()
 
+	@warning_ignore("unused_parameter")
 	func _process(delta: float) -> void:
 		if num_changed: num_me_harder()
 
@@ -81,6 +82,7 @@ class Score extends Node2D:
 		for i in 10:
 			var new_num = ScoreNum.new(pos + Vector2(65 * i, 0))
 			add_child(new_num)
+			@warning_ignore("incompatible_ternary")
 			new_num.final_digit = le_num[i] if le_num[i] != '-' else 10
 			nums.append(new_num)
 	func shuffle() -> void:
@@ -134,9 +136,12 @@ class ScoreNum extends AnimatedSprite2D:
 
 	var shuffle_timer:Timer = Timer.new()
 	var loops:int = 0
+	@warning_ignore("unused_parameter")
 	func shuffle(indx:int = 0) -> void:
 		if final_digit == 10: return
+		@warning_ignore("unused_variable")
 		var duration:float = 41.0 / 24.0
+		@warning_ignore("unused_variable")
 		var interval:float = 1.0 / 24.0
 		if shuffle_timer.get_parent() == null: Game.scene.add_child(shuffle_timer)
 		shuffle_timer.start(1.0 / 24.0)
@@ -167,6 +172,7 @@ class Tally extends Node2D:
 			color = new
 			modulate = color
 
+	@warning_ignore("shadowed_variable")
 	func _init(pos:Vector2 = Vector2.ZERO, true_number:int = 0, color:Color = Color.WHITE) -> void:
 		position = pos
 		actual_num = true_number
@@ -174,6 +180,7 @@ class Tally extends Node2D:
 		self.color = color
 		if actual_num == cur_num: num_that_shit_babe()
 
+	@warning_ignore("unused_parameter")
 	func _process(delta:float) -> void:
 		if cur_num != actual_num: num_that_shit_babe()
 

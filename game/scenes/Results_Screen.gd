@@ -95,8 +95,8 @@ func _ready() -> void:
 	var total = Counters.Tally.new(Vector2(350, y_pos * 3), score_data.total_notes)
 	$RatingCounters.add_child(total)
 
-	var max = Counters.Tally.new(Vector2(350, y_pos * 4), score_data.max_combo)
-	$RatingCounters.add_child(max)
+	var max_ = Counters.Tally.new(Vector2(350, y_pos * 4), score_data.max_combo)
+	$RatingCounters.add_child(max_)
 
 	y_pos += 4
 	var y_off:float = 7.0
@@ -182,6 +182,7 @@ func _process(delta:float) -> void:
 	if song_name.position.x + song_name.width < 100:
 		timer_and_song()
 
+@warning_ignore("unused_parameter")
 func _unhandled_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed('accept'):
 		Game.switch_scene('menus/'+ ('story_menu' if from_story else 'freeplay_classic'))

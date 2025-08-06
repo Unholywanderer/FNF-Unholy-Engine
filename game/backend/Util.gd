@@ -58,10 +58,10 @@ func set_dropdown(dropdown:OptionButton, to_val:String = '') -> void:
 		dropdown.add_item(to_val)
 		dropdown.select(items.size())
 
-func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans:int = 0, ease:int = 0) -> Tweener:
-	return create_tween().tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease)
+func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans:int = 0,ease_type:int = 0) -> Tweener:
+	return create_tween().tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease_type)
 
-func quick_label(t:String = '', s:int = 15, ol_s:int = s / 3, f:String = 'vcr.ttf') -> Label:
+func quick_label(t:String = '', s:int = 15, ol_s:int = int(s / 3.0), f:String = 'vcr.ttf') -> Label:
 	var new_label:Label = Label.new()
 	new_label.text = t
 	new_label.add_theme_font_override('font', ResourceLoader.load('res://assets/fonts/'+ f))
@@ -70,8 +70,8 @@ func quick_label(t:String = '', s:int = 15, ol_s:int = s / 3, f:String = 'vcr.tt
 	return new_label
 
 # Welcome back Psych Engine
-func ease_from_string(ease:StringName = &'linear') -> Tween.EaseType:
-	match ease.to_lower().strip_edges().replace(' ', ''):
+func ease_from_string(ease_type:StringName = &'linear') -> Tween.EaseType:
+	match ease_type.to_lower().strip_edges().replace(' ', ''):
 		&'in'   : return Tween.EASE_IN
 		&'out'  : return Tween.EASE_OUT
 		&'outin': return Tween.EASE_OUT_IN
@@ -93,7 +93,8 @@ func trans_from_string(trans:StringName = &'linear') -> Tween.TransitionType:
 		_: return Tween.TRANS_LINEAR
 
 
-func flash_screen(color:Color = Color.WHITE) -> void:
+@warning_ignore("unused_parameter")
+func flash_screen(flash_color:Color = Color.WHITE) -> void:
 	pass
 
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:

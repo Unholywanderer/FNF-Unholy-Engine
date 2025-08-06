@@ -1,7 +1,9 @@
 class_name Cutscene; extends Resource;
 
 signal skipped
+@warning_ignore("unused_signal")
 signal finished
+@warning_ignore("unused_signal")
 signal video_skipped
 signal video_finished
 
@@ -14,6 +16,7 @@ var timed_events:Array = []
 func add_timed_event(time:float, event:Callable) -> void:
 	Game.scene.get_tree().create_timer(abs(time), false).timeout.connect(event)
 
+@warning_ignore("unused_parameter")
 func start_dialogue(file:String = 'dialogue', on_finish:Callable = func(): pass, delay:float = 0) -> void:
 	var dia = load("res://game/objects/ui/dialogue_box.tscn").instantiate()
 	dia.load_legacy(file)
@@ -22,6 +25,7 @@ func start_dialogue(file:String = 'dialogue', on_finish:Callable = func(): pass,
 	dia.play_dialogue()
 
 var video:VideoStreamPlayer
+@warning_ignore("unused_parameter")
 func play_video(vid_name:String, auto_play:bool = true, loop:bool = false, add_to = null) -> void:
 	if video: video.queue_free()
 	var new_video:VideoStreamPlayer = VideoStreamPlayer.new()

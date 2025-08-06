@@ -19,6 +19,7 @@ var hits:Dictionary = { # technically epics and sicks will be added together so 
 func add_hits(dic:Dictionary) -> void:
 	for i in hits.keys(): hits[i] += dic.get(i, 0)
 
+@warning_ignore("unused_parameter")
 func is_highscore(songs:Array, is_week:bool = false) -> bool:
 	return HighScore.get_score(songs[0]) < score and is_valid
 

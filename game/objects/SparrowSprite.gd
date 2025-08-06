@@ -116,6 +116,7 @@ func find_anim(anim:String): # find animation from an alias
 	if returnin == '': returnin = list[0]
 	return returnin
 
+@warning_ignore("unused_parameter")
 func play_anim(anim_name:String, forced:bool = false, fps:float = 24.0, reversed:bool = false):
 	var got_name:String = find_anim(anim_name)
 	print(got_name)

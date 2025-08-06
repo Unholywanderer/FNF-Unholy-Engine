@@ -61,7 +61,7 @@ var antialiasing:bool = true:
 
 var sing_anims:PackedStringArray = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 
-func _init(pos:Vector2 = Vector2.ZERO, char:String = 'bf', player:bool = false):
+func _init(pos:Vector2 = Vector2.ZERO, Char:String = 'bf', player:bool = false):
 	centered = false
 	is_player = player
 	position = pos
@@ -70,7 +70,7 @@ func _init(pos:Vector2 = Vector2.ZERO, char:String = 'bf', player:bool = false):
 			looping = true
 			play_anim(animation +'-loop')
 	)
-	load_char(char)
+	load_char(Char)
 
 func load_char(new_char:String = 'bf') -> void:
 	if new_char == cur_char or new_char.is_empty():
