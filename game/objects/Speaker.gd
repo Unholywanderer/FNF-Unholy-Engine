@@ -18,6 +18,7 @@ func bump(forced:bool = true) -> void:
 			i.play()
 			if forced: i.frame = 0
 
+@warning_ignore("unused_parameter")
 func _process(delta:float) -> void:
 	#if parent != null: position = parent.position + offsets
 	for i in addons:

@@ -1,5 +1,6 @@
 extends Node2D
 
+var discord_exists:bool = false
 var initalized:bool = false
 var can_rpc:bool = true
 var _info = [
@@ -10,7 +11,8 @@ var _info = [
 
 var last_presence:Array[String] = ['Nutthin', 'Check it'] # hold the actual presence text, so it can swap
 func init_discord() -> void:
-	if initalized: return
+	discord_exists =  DiscordRPC.get_is_discord_working()
+	if initalized or not discord_exists: return
 	print('Initializing Discord...')
 
 	DiscordRPC.app_id = _info[int(Prefs.daniel)].id
@@ -26,10 +28,14 @@ func init_discord() -> void:
 	print('Discord Initialized')
 
 func clear() -> void:
+	if not discord_exists:
+		return
 	initalized = false
 	DiscordRPC.clear(true) # it takes a bit for it to actually stop showing
 
 func update(update_id:bool = false, disable:bool = false) -> void:
+	if not discord_exists:
+		return
 	if disable: 
 		print('Turning off RPC')
 		clear()
@@ -55,11 +61,15 @@ func update(update_id:bool = false, disable:bool = false) -> void:
 	print('Updated')
 	
 func _process(_delta):
+	if not discord_exists:
+		return
 	can_rpc = Prefs.allow_rpc and DiscordRPC.get_is_discord_working()
 	if can_rpc: 
 		DiscordRPC.run_callbacks()
 
 func change_presence(main:String = 'Nutthin', sub:String = 'Check it') -> void:
+	if not discord_exists:
+		return
 	last_presence = [main, sub]
 	DiscordRPC.details = 'I LOVE DANIEL' if Prefs.daniel else main
 	DiscordRPC.state = 'I LOVE DANIEL' if Prefs.daniel else sub

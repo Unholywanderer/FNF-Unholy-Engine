@@ -25,11 +25,11 @@ func copy_from(sprite:VelocitySprite):
 	acceleration = sprite.acceleration
 	moving = sprite.moving
 	
-static func _compute_velocity(velocity:float, acceleration:float, elapsed:float):
-	return velocity + (acceleration * elapsed if acceleration != 0.0 else 0.0)
+static func _compute_velocity(in_velocity:float, in_acceleration:float, elapsed:float):
+	return in_velocity + (in_acceleration * elapsed if in_acceleration != 0.0 else 0.0)
 
-static func _get_velocity_delta(velocity:Vector2, acceleration:Vector2, elapsed:float):
+static func _get_velocity_delta(in_velocity:Vector2, in_acceleration:Vector2, elapsed:float):
 	return Vector2(
-		0.5 * (_compute_velocity(velocity.x, acceleration.x, elapsed) - velocity.x),
-		0.5 * (_compute_velocity(velocity.y, acceleration.y, elapsed) - velocity.y),
+		0.5 * (_compute_velocity(in_velocity.x, in_acceleration.x, elapsed) - in_velocity.x),
+		0.5 * (_compute_velocity(in_velocity.y, in_acceleration.y, elapsed) - in_velocity.y),
 	)

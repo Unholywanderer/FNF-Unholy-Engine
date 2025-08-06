@@ -2,9 +2,9 @@ class_name Osu; extends Chart;
 # Stole most if not all of this
 
 var osu_file:Array
-func parse_chart(data):
+func parse_chart(_data):
 	var circ_size = int(get_data('CircleSize'))
-	var bpm_mill = get_time_points()[1]
+	var _bpm_mill = get_time_points()[1]
 
 	for h in osu_file.size():
 		if osu_file[h].begins_with('[HitObjects]'):

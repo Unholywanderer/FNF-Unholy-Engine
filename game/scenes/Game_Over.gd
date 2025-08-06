@@ -143,6 +143,7 @@ func _process(delta):
 			get_tree().paused = false
 			Game.switch_scene('menus/freeplay_classic', true)
 
+@warning_ignore("unused_parameter")
 func beat_hit(b) -> void:
 	Audio.play_sound('tick')
 

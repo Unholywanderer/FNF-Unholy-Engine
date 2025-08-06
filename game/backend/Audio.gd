@@ -30,6 +30,7 @@ func _ready() -> void:
 		play_music('freakyMenu')
 
 func _process(_delta) -> void:
+	AudioDeviceChecker()
 	if Player.stream and Player.playing:
 		pos = Player.get_playback_position() * 1000.0
 		if sync_conductor: Conductor.song_pos = pos
@@ -106,3 +107,42 @@ class AutoSound extends AudioStreamPlayer:
 		Audio.sound_list.remove_at(Audio.sound_list.find(self))
 		Audio.remove_child(self)
 		queue_free()
+
+
+
+
+#AudioDevice managing stuffs - mae
+#how to track audio devices tutorial working 2014
+var AudioDevices = {
+	"current" = null,
+	"cached_list" = null
+}
+signal AudioDevice_changed(device)
+#godot has no signal for when u change an audio device, so this does that
+
+func AudioDeviceChecker() -> void:
+	var device_list = AudioServer.get_output_device_list()
+	device_list.remove_at(device_list.find("Default"))
+	if AudioDevices.cached_list != device_list:
+		var newDevice = AudioDeviceHandler(device_list)
+		if newDevice != null:
+			emit_signal("AudioDevice_changed",newDevice)
+			Alert.make_alert("device_changed").text = "New Audio Device Connected! %s" % newDevice
+		AudioDevices.cached_list = device_list.duplicate()
+	else:
+		return
+
+func AudioDeviceHandler(device_list):
+	if AudioDevices.cached_list != null:
+		if device_list.size() > 0:
+			for device in device_list: #handle new devices
+				if not AudioDevices.cached_list.has(device):
+					AudioDevices.current = device
+					return device
+			var device = device_list[0] #if anything just use whatevers left
+			AudioDevices.current = device
+			return device
+		else:
+			push_error("no device found at all")
+			Alert.make_alert("No Audio Device Connected!",0)
+			return null

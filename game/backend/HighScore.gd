@@ -37,11 +37,15 @@ func get_data(song:String, diff:String = ''):
 func get_score(song:String, diff:String = JsonHandler.get_diff): # just need the score, for readability
 	return get_data(song, diff)[0]
 
+@warning_ignore("unused_parameter")
 func add_week(week_name:String, diffs:Array = ['easy', 'normal', 'hard']):
 	pass
 
+@warning_ignore("unused_parameter")
 func get_week_score(week_name:String, diff:String = 'hard'):
+	@warning_ignore("unused_variable")
 	var DEFAULT_WEEK = {}
+	@warning_ignore("unused_variable")
 	var week_data = song_scores.get_value(get_section(), week_name.to_lower().strip_edges())
 
 	pass

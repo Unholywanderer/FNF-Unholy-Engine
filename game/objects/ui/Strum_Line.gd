@@ -64,6 +64,7 @@ func note_miss(note:Note) -> void:
 
 var cur_sparks:Array = [null, null, null, null]
 var is_holding:Array = [false, false, false, false]
+@warning_ignore("unused_parameter")
 func _process(delta:float) -> void:
 	if !is_cpu:
 		for i in ['left', 'down', 'up', 'right'].size():

@@ -39,21 +39,31 @@ var gf:Character:
 # song functions for signals
 func post_ready() -> void: pass
 func countdown_start() -> void: pass
+@warning_ignore("unused_parameter")
 func countdown_tick(tick:int) -> void: pass
 func song_start() -> void: pass
 func song_end() -> void: pass
 
+@warning_ignore("unused_parameter")
 func beat_hit(beat:int) -> void: pass
+@warning_ignore("unused_parameter")
 func step_hit(step:int) -> void: pass
+@warning_ignore("unused_parameter")
 func section_hit(section:int) -> void: pass
 
+@warning_ignore("unused_parameter")
 func good_note_hit(note:Note) -> void: pass
+@warning_ignore("unused_parameter")
 func opponent_note_hit(note:Note) -> void: pass
+@warning_ignore("unused_parameter")
 func note_miss(note:Note) -> void: pass
+@warning_ignore("unused_parameter")
 func ghost_tap(dir:int) -> void: pass
+@warning_ignore("unused_parameter")
 func event_hit(event:EventData) -> void: pass
 
 # bf died
 func game_over_start() -> void: pass
 func game_over_idle() -> void: pass
+@warning_ignore("unused_parameter")
 func game_over_confirm(is_retry:bool) -> void: pass

@@ -229,9 +229,9 @@ func _ready():
 			char_list.append(i)
 			invalid_chars.append(i)
 
-	var update:Callable = func(id:int, character:String = 'Player1'):
-		SONG[character] = char_list[id]
-		on_char_change(character)
+	var update:Callable = func(id:int, Char:String = 'Player1'):
+		SONG[Char] = char_list[id]
+		on_char_change(Char)
 
 	for i:String in ['player1', 'player2', 'gfVersion']:
 		var caps = i.capitalize().replace(' ', '') if i != 'gfVersion' else 'GF'

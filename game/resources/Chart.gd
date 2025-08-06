@@ -25,11 +25,11 @@ func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Ar
 	return le_parse.parse_chart(data)
 
 ## For loading a chart that isn't specifically named a difficulty
-static func load_named_chart(song:String, chart_name:String, format:String = 'legacy'):
+static func load_named_chart(song:String, chart_name:String, chart_format:String = 'legacy'):
 	var path:String = 'res://assets/songs/%s/charts/%s.json' % [Util.format_str(song), chart_name]
-	if format == 'v_slice':
+	if chart_format == 'v_slice':
 		path = 'res://assets/songs/%s/chart%s.json' % [Util.format_str(song), JsonHandler.song_variant]
-	var le_parse = get_parse(get_format(format), chart_name)
+	var le_parse = get_parse(get_format(chart_format), chart_name)
 	print(path)
 	if ResourceLoader.exists(path):
 		var json = JsonHandler.parse(path)

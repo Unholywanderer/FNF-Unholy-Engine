@@ -91,6 +91,7 @@ func load_lua(lua:LuaEx, path:String) -> bool:
 	return true
 
 func call_func(_func:String, args:Array = []) -> RET_TYPES:
+	@warning_ignore("int_as_enum_without_cast")
 	if _func.length() == 0: return 1
 	var ret_val:RET_TYPES = RET_TYPES.CONTINUE
 	for i in active_lua:
@@ -164,7 +165,7 @@ func lua_tween(obj:Variant, prop:String, to_val:Variant, dur:float) -> void:
 #		for lua in active_lua:
 #			lua.push_variant(variant, load('res://game/'+ variant.replace('.', '/') +'.gd'))
 
-func add_character(char:Character, _layer:String = ''):
+func add_character(Char:Character, _layer:String = ''):
 	var layer_indx:int = -1
 	var add_to = Game.scene.stage.get_node('CharGroup') if Game.scene.stage.has_node('CharGroup') else Game.scene
 
@@ -173,10 +174,10 @@ func add_character(char:Character, _layer:String = ''):
 		'gf': layer_indx = add_to.get('gf').get_index()
 		'dad': layer_indx = add_to.get('dad').get_index()
 
-	Game.scene.characters.append(char)
-	add_to.add_child(char)
+	Game.scene.characters.append(Char)
+	add_to.add_child(Char)
 	if layer_indx > -1:
-		add_to.move_child(char, layer_indx)
+		add_to.move_child(Char, layer_indx)
 
 func parse_json(path:String):
 	if !path.ends_with('.json'): path += '.json'

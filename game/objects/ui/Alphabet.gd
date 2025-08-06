@@ -86,7 +86,7 @@ func make_text(tx:String) -> void:
 			var e := sheet.get_frame_texture(anim, 0)
 			var let:String = anim if e != null else "question"
 
-			letter.char = anim # just in case
+			letter.character = anim # just in case
 			letter.sprite_frames = sheet
 			letter.centered = false
 			letter.play(let)
@@ -99,7 +99,7 @@ func make_text(tx:String) -> void:
 		cur_loop += 1
 
 	for i in letters_made:
-		if i.char != '': width += i._width
+		if i.character != '': width += i._width
 		add_child(i)
 		all_letters.append(i)
 	height = letters_made.back()._height
@@ -165,7 +165,7 @@ class Letter extends AnimatedSprite2D:
 	const NUMBERS = '1234567890'
 
 	var is_bold:bool = true
-	var char:String = ''
+	var character:String = ''
 	var id:int = 0
 	var row:int = 0
 
@@ -174,16 +174,17 @@ class Letter extends AnimatedSprite2D:
 
 	var _width:float = 0.0:
 		get: return get_dimension(false)
+	@warning_ignore("unused_private_class_variable")
 	var _height:float = 0.0:
 		get: return get_dimension(true)
 
 	func _init(pos:Vector2, _char:String, _id:int, _row:int):
-		position = pos; char = _char;
+		position = pos; character = _char;
 		id = _id; row = _row;
 
 	func get_dimension(other:bool = false) -> float:
 		var to_return:float = 65.0 if other else 47.0
-		if sprite_frames != null and sprite_frames.has_animation(char):
-			if other: to_return = sprite_frames.get_frame_texture(char, 0).get_height()
-			else: to_return = sprite_frames.get_frame_texture(char, 0).get_width()
+		if sprite_frames != null and sprite_frames.has_animation(character):
+			if other: to_return = sprite_frames.get_frame_texture(character, 0).get_height()
+			else: to_return = sprite_frames.get_frame_texture(character, 0).get_width()
 		return to_return

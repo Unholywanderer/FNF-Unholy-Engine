@@ -39,7 +39,7 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 	antialiasing = !image.ends_with('-pixel')
 	#has_lose = texture.get_width() > MIN_WIDTH
 	has_lose = texture.get_width() > MIN_WIDTH
-	default_scale = default_scale if !image.ends_with('-pixel') else 5 # shhhh
+	default_scale = default_scale if !image.ends_with('-pixel') else 5.0 # shhhh
 	if default_scale > 1:
 		has_lose = texture.get_width() > MIN_WIDTH / default_scale
 

@@ -148,11 +148,11 @@ func generate_chart(data, keep_loaded:bool = true) -> Array:
 
 	return _notes
 
-func get_character(character:String = 'bf'):
-	var json_path = 'res://assets/data/characters/%s.json' % character
+func get_character(Char:String = 'bf'):
+	var json_path = 'res://assets/data/characters/%s.json' % Char
 	var return_json
 	if !ResourceLoader.exists(json_path):
-		printerr('JSON: get_character | [%s.json] COULD NOT BE FOUND' % character);
+		printerr('JSON: get_character | [%s.json] COULD NOT BE FOUND' % Char);
 		return null
 	var file = FileAccess.get_file_as_string(json_path)
 	return_json = JSON.parse_string(file)
