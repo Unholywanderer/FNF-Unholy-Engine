@@ -9,10 +9,18 @@
 [ext_resource type="Texture2D" uid="uid://fcndirjhsd8p" path="res://assets/images/stages/spooky/erect/bgLight.png" id="6_3fgsl"]
 [ext_resource type="Texture2D" uid="uid://cdeisebr5yo8p" path="res://assets/images/stages/spooky/erect/stairsLight.png" id="7_guobi"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_eqrxk"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rx1op"]
 shader = ExtResource("4_rx1op")
-shader_parameter/Intensity = 0.4
-shader_parameter/Timescale = -7.029
+shader_parameter/calculate_rain = true
+shader_parameter/use_lightmap = false
+shader_parameter/use_screen = false
+shader_parameter/warp_screen = true
+shader_parameter/direction = 0.3
+shader_parameter/Scale = 4.0
+shader_parameter/Intensity = 0.3
+shader_parameter/speed = 1.0
+shader_parameter/RainColor = Color(1, 1, 1, 1)
+shader_parameter/warp_amount = 2.0
 
 [node name="Spooky" type="Node2D"]
 script = ExtResource("1_8pmlf")
@@ -22,19 +30,13 @@ script = ExtResource("2_gfpnc")
 scroll_factor = Vector2(0.8, 0.8)
 
 [node name="Sprite" type="AnimatedSprite2D" parent="Trees"]
+material = SubResource("ShaderMaterial_rx1op")
 position = Vector2(200, 50)
 sprite_frames = ExtResource("3_ey5pp")
 animation = &"bgtrees"
 autoplay = "bgtrees"
-frame_progress = 0.085523
+frame_progress = 0.945858
 centered = false
-
-[node name="Rain" type="ColorRect" parent="Trees/Sprite"]
-material = SubResource("ShaderMaterial_eqrxk")
-offset_left = 17.0
-offset_top = -15.0
-offset_right = 644.0
-offset_bottom = 407.0
 
 [node name="DARK" type="Node2D" parent="."]
 
