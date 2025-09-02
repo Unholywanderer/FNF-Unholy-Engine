@@ -201,8 +201,8 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 		if suffix == 'miss': return
 		to_sing = sing_anims[dir]
 
-	var can_reset:bool = reset or (!reset and !animation.begins_with('sing'))
-	if (sing_timer >= Conductor.step_crochet / 1000.0 or can_reset) and !special_anim:
+	var can_reset:bool = reset or (!reset and !animation.begins_with('sing') and !special_anim)
+	if (sing_timer >= Conductor.step_crochet / 1000.0 or can_reset):
 		sing_timer = 0.0 if can_reset else (Conductor.step_crochet / 1000.0) * (1 * get_process_delta_time())
 		play_anim(to_sing, true)
 
