@@ -1,23 +1,25 @@
 extends Node2D
 
-var discord_exists:bool = false
-var initalized:bool = false
-var can_rpc:bool = true
-var _info = [
+const INFO = [
 	{id = 1225971084998737952, l_img = 'deedee_phantonm', l_txt = 'out here unholy-ing baby'},
 	{id = 1227081103932657664, l_img = 'daniel', l_txt = 'I LOVE DANIEL'}
 	#'false': {id = 1225971084998737952, l_img = 'deedee_phantonm', l_txt = 'out here unholy-ing baby'}
 ]
 
+var initalized:bool = false
+var discord_exists:bool = true # aint this a bitch, it dont work, ill just make it true
+
+var can_rpc:bool:
+	get: return Prefs.allow_rpc and discord_exists
+
 var last_presence:Array[String] = ['Nutthin', 'Check it'] # hold the actual presence text, so it can swap
 func init_discord() -> void:
-	discord_exists =  DiscordRPC.get_is_discord_working()
-	if initalized or not discord_exists: return
+	if initalized or !discord_exists: return
 	print('Initializing Discord...')
 
-	DiscordRPC.app_id = _info[int(Prefs.daniel)].id
-	DiscordRPC.large_image = _info[int(Prefs.daniel)].l_img
-	DiscordRPC.large_image_text = _info[int(Prefs.daniel)].l_txt
+	DiscordRPC.app_id = INFO[int(Prefs.daniel)].id
+	DiscordRPC.large_image = INFO[int(Prefs.daniel)].l_img
+	DiscordRPC.large_image_text = INFO[int(Prefs.daniel)].l_txt
 	DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system())
 
 	DiscordRPC.run_callbacks()
@@ -28,15 +30,14 @@ func init_discord() -> void:
 	print('Discord Initialized')
 
 func clear() -> void:
-	if not discord_exists:
-		return
+	if !discord_exists: return
 	initalized = false
 	DiscordRPC.clear(true) # it takes a bit for it to actually stop showing
 
 func update(update_id:bool = false, disable:bool = false) -> void:
-	if not discord_exists:
+	if !discord_exists:
 		return
-	if disable: 
+	if disable:
 		print('Turning off RPC')
 		clear()
 		DiscordRPC.refresh()
@@ -44,32 +45,28 @@ func update(update_id:bool = false, disable:bool = false) -> void:
 		return
 	elif !disable and !initalized:
 		init_discord()
-		
+
 	if !initalized: return
 	print('Updating Discord')
-	
+
 	if update_id:
 		clear()
-		DiscordRPC.app_id = _info[int(Prefs.daniel)].id
+		DiscordRPC.app_id = INFO[int(Prefs.daniel)].id
 		DiscordRPC.start_timestamp = int(Time.get_unix_time_from_system())
-	DiscordRPC.large_image = _info[int(Prefs.daniel)].l_img
-	DiscordRPC.large_image_text = _info[int(Prefs.daniel)].l_txt
-	
+	DiscordRPC.large_image = INFO[int(Prefs.daniel)].l_img
+	DiscordRPC.large_image_text = INFO[int(Prefs.daniel)].l_txt
+
 	change_presence(last_presence[0], last_presence[1])
 
 	DiscordRPC.run_callbacks()
 	print('Updated')
-	
+
 func _process(_delta):
-	if not discord_exists:
-		return
-	can_rpc = Prefs.allow_rpc and DiscordRPC.get_is_discord_working()
-	if can_rpc: 
-		DiscordRPC.run_callbacks()
+	if !discord_exists or !can_rpc: return
+	DiscordRPC.run_callbacks()
 
 func change_presence(main:String = 'Nutthin', sub:String = 'Check it') -> void:
-	if not discord_exists:
-		return
+	if !discord_exists: return
 	last_presence = [main, sub]
 	DiscordRPC.details = 'I LOVE DANIEL' if Prefs.daniel else main
 	DiscordRPC.state = 'I LOVE DANIEL' if Prefs.daniel else sub
