@@ -2,20 +2,20 @@
   "version": "2.2.4",
   "songName": "Ugh (Pico Mix)",
   "artist": "tsuyunoshi (ft. Saruky)",
-  "charter": "Fabs + Spazkid",
+  "charter": "fabs + Spazkid",
   "playData": {
     "difficulties": ["easy", "normal", "hard"],
     "characters": {
       "player": "pico-playable",
-      "girlfriend": "nene",
+      "girlfriend": "nene-tankmen",
       "opponent": "tankman",
       "instrumental": "pico",
       "altInstrumentals": []
     },
     "stage": "tankmanBattlefieldErect",
     "noteStyle": "funkin",
-    "ratings": { "easy": 1, "normal": 2, "hard": 13 },
-    "album": "expansion2",
+    "ratings": { "easy": 2, "normal": 3, "hard": 4 },
+    "album": "volume4",
     "previewStart": 0,
     "previewEnd": 15000
   },

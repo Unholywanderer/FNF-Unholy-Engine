@@ -12,8 +12,8 @@
     },
     "stage": "mallEvil",
     "noteStyle": "funkin",
-    "ratings": { "easy": 1, "normal": 1, "hard": 2 },
-    "album": "volume1",
+    "ratings": { "easy": 1, "normal": 2, "hard": 2 },
+    "album": "volume2",
     "previewStart": 0,
     "previewEnd": 15000
   },

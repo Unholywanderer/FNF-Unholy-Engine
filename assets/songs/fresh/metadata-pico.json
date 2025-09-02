@@ -2,7 +2,7 @@
   "version": "2.2.4",
   "songName": "Fresh (Pico Mix)",
   "artist": "Xploshi (ft. Saster)",
-  "charter": "Fabs + Spazkid",
+  "charter": "fabs + Spazkid",
   "playData": {
     "difficulties": ["easy", "normal", "hard"],
     "characters": {
@@ -14,8 +14,8 @@
     },
     "stage": "mainStageErect",
     "noteStyle": "funkin",
-    "ratings": { "easy": 1, "normal": 2, "hard": 6 },
-    "album": "expansion2",
+    "ratings": { "easy": 2, "normal": 3, "hard": 4 },
+    "album": "volume4",
     "previewStart": 0,
     "previewEnd": 15000
   },

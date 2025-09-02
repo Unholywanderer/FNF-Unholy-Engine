@@ -2,15 +2,9 @@
   "version": "2.2.4",
   "songName": "Darnell Erect",
   "artist": "Kawai Sprite",
-  "charter": "Fabs + Spazkid",
+  "charter": "fabs + Spazkid",
   "divisions": 96,
   "looped": false,
-  "offsets": {
-    "instrumental": 0,
-    "altInstrumentals": {},
-    "vocals": {},
-    "altVocals": {}
-  },
   "playData": {
     "songVariations": [],
     "difficulties": ["erect", "nightmare"],
@@ -25,7 +19,8 @@
     },
     "stage": "phillyStreetsErect",
     "noteStyle": "funkin",
-    "album": "volume4",
+    "album": "expansion2",
+    "stickerPack": "bonus-weekend1",
     "ratings": { "erect": 8, "nightmare": 9 },
     "previewStart": 0,
     "previewEnd": 0

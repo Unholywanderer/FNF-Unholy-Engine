@@ -2,29 +2,26 @@
   "version": "2.2.4",
   "songName": "Guns (Pico Mix)",
   "artist": "tsuyunoshi (ft. Saruky)",
-  "charter": "Fabs + Spazkid",
+  "charter": "fabs + Spazkid",
   "divisions": 96,
   "looped": false,
   "offsets": {
-    "instrumental": 0,
-    "altInstrumentals": {},
-    "vocals": {},
-    "altVocals": {}
+    "instrumental": 0
   },
   "playData": {
     "songVariations": [],
     "difficulties": ["easy", "normal", "hard"],
     "characters": {
       "player": "pico-playable",
-      "girlfriend": "nene",
+      "girlfriend": "nene-tankmen",
       "opponent": "tankman",
       "instrumental": "pico",
       "altInstrumentals": []
     },
     "stage": "tankmanBattlefieldErect",
     "noteStyle": "funkin",
-    "ratings": { "easy": 3, "normal": 5, "hard": 13 },
-    "album": "expansion2",
+    "ratings": { "easy": 3, "normal": 4, "hard": 5 },
+    "album": "volume4",
     "previewStart": 0,
     "previewEnd": 0
   },

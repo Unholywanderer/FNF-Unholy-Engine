@@ -2,7 +2,7 @@
   "version": "2.2.4",
   "songName": "Senpai Erect",
   "artist": "Kawai Sprite",
-  "charter": "Jenny Crowe + Fabs",
+  "charter": "Jenny Crowe + fabs",
   "playData": {
     "difficulties": ["erect", "nightmare"],
     "characters": {
@@ -13,7 +13,7 @@
     },
     "stage": "schoolErect",
     "noteStyle": "pixel",
-    "ratings": { "erect": 7, "nightmare": 8 },
+    "ratings": { "erect": 6, "nightmare": 7 },
     "album": "volume3",
     "previewStart": 0,
     "previewEnd": 15000
