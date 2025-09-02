@@ -66,6 +66,7 @@ func _init(pos:Vector2 = Vector2.ZERO, Char:String = 'bf', player:bool = false):
 	is_player = player
 	position = pos
 	animation_finished.connect(func():
+		if debug: return
 		if has_anim(animation +'-loop') and offsets.has(animation +'-loop'):
 			looping = true
 			play_anim(animation +'-loop')
@@ -125,9 +126,10 @@ func load_char(new_char:String = 'bf') -> void:
 		'senpai-angry':
 			forced_suffix = '-alt' # boooo
 		'pico-speaker', 'otis-speaker':
-			animation_changed.connect(func(): can_dance = animation == 'idle')
-			animation_finished.connect(func(): if animation != 'idle': play_anim('idle'))
-			can_dance = cur_char == 'otis-speaker'
+			if cur_char == 'otis-speaker':
+				animation_changed.connect(func(): can_dance = animation == 'idle')
+				animation_finished.connect(func(): if animation != 'idle': play_anim('idle'))
+				can_dance = true
 			sing_anims = ['shootLeft', 'shootLeft', 'shootRight', 'shootRight']
 			play_anim('idle')
 		_:
@@ -199,8 +201,9 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 		if suffix == 'miss': return
 		to_sing = sing_anims[dir]
 
-	if sing_timer >= Conductor.step_crochet / 1000.0 or reset:
-		sing_timer = 0.0 if reset else (Conductor.step_crochet / 1000.0) * (1 * get_process_delta_time())
+	var can_reset:bool = reset or (!reset and !animation.begins_with('sing'))
+	if (sing_timer >= Conductor.step_crochet / 1000.0 or can_reset) and !special_anim:
+		sing_timer = 0.0 if can_reset else (Conductor.step_crochet / 1000.0) * (1 * get_process_delta_time())
 		play_anim(to_sing, true)
 
 func flip_char() -> void:
@@ -257,7 +260,7 @@ func set_stuff() -> void:
 func has_anim(anim:String) -> bool:
 	return sprite_frames.has_animation(anim) if sprite_frames else false
 
-func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int =  24, loop:bool = false) -> void:
+func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int = 24, loop:bool = false) -> void:
 	var got_prefix:String = Util.get_closest_anim(sprite_frames, prefix.left(-1))
 	if !has_anim(anim_name):
 		if got_prefix.is_empty(): return print('No Prefix Found!')
@@ -266,13 +269,14 @@ func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int =
 	sprite_frames.set_animation_speed(anim_name, fps)
 	sprite_frames.set_animation_loop(anim_name, loop)
 	if !frames.is_empty():
-		var anim_textures = []
-		for i in sprite_frames.get_frame_count(anim_name):
+		var anim_textures:Array[Texture2D] = []
+		for i:int in sprite_frames.get_frame_count(anim_name):
 			anim_textures.append(sprite_frames.get_frame_texture(anim_name, i))
 		sprite_frames.clear(anim_name)
-		for frm:int in frames:
+		for frm in frames:
 			if anim_textures.size() - 1 >= frm:
-				sprite_frames.add_frame(anim_name, anim_textures[frm])
+				sprite_frames.add_frame(anim_name, anim_textures[int(frm)])
+	#print('added animation ', str([anim_name, prefix, frames, loop]))
 	#else:
 	#	sprite_frames.rename_animation(got_prefix, anim_name)
 
