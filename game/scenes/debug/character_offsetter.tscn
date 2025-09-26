@@ -416,6 +416,14 @@ offset_right = 1256.0
 offset_bottom = 705.0
 color = Color(0.196078, 0.196078, 0.196078, 1)
 
+[node name="AllAnims" type="OptionButton" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 50.0
+offset_right = 177.0
+offset_bottom = 81.0
+focus_mode = 1
+
 [node name="AnimSpeed" type="HSlider" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 74.0
@@ -523,7 +531,6 @@ offset_left = 45.0
 offset_top = -3.0
 offset_right = 83.0
 offset_bottom = 28.0
-tooltip_text = "Lock Camera's position to the cross"
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -535,7 +542,6 @@ offset_left = 85.0
 offset_top = -3.0
 offset_right = 123.0
 offset_bottom = 28.0
-tooltip_text = "Lock Camera's position to the cross"
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -547,7 +553,6 @@ offset_left = 215.0
 offset_top = 230.0
 offset_right = 281.0
 offset_bottom = 261.0
-tooltip_text = "Lock Camera's position to the cross"
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -561,6 +566,15 @@ offset_right = 209.0
 offset_bottom = 311.0
 focus_mode = 0
 text = "Add/Update"
+
+[node name="RemoveAnim" type="Button" parent="UILayer/Anim"]
+layout_mode = 0
+offset_left = 206.0
+offset_top = 50.0
+offset_right = 288.0
+offset_bottom = 81.0
+focus_mode = 0
+text = "Remove"
 
 [node name="Weee!!" type="Label" parent="UILayer"]
 visible = false
@@ -587,4 +601,6 @@ texture = ExtResource("4_7buq4")
 [connection signal="value_changed" from="UILayer/Main/Shadow/Frame" to="." method="shadow_frame_change"]
 [connection signal="color_changed" from="UILayer/Main/Shadow/Color" to="." method="shadow_color_changed"]
 [connection signal="pressed" from="UILayer/Main/New" to="." method="new_pressed"]
+[connection signal="item_selected" from="UILayer/Anim/AllAnims" to="." method="_anim_chosen"]
 [connection signal="pressed" from="UILayer/Anim/AddAnim" to="." method="add_anim"]
+[connection signal="pressed" from="UILayer/Anim/RemoveAnim" to="." method="remove_anim"]

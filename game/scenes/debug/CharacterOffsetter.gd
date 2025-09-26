@@ -17,11 +17,12 @@ var cur_char:String = ''
 var cur_anim:String = ''
 var selected_id:int = 0:
 	set(new_id):
+		if char_json.animations.is_empty(): return # no reason to update id if no animations
 		if new_id < anim_list.size():
-			if selected_id < anim_list.size():
-				anim_list[selected_id].modulate = Color.WHITE  # if this is greater than the new char's anim list, crash
+			anim_list[selected_id % anim_list.size()].modulate = Color.WHITE
 			anim_list[new_id].modulate = Color.YELLOW
 			cur_anim = char_json.animations[new_id].name
+
 		selected_id = new_id
 
 		character.play(cur_anim)
@@ -29,14 +30,7 @@ var selected_id:int = 0:
 		character.offset = Vector2(got[0], got[1])
 		character.flip_h = flipped.get(cur_anim, false)
 
-		var doop:Dictionary = char_json.animations[selected_id]
-		ANIM('Name').text = doop.name
-		ANIM('Prefix').text = doop.prefix
-		ANIM('Frames').text = Util.array_to_str(doop.frames).replace(' ', '').replace('.0', '')
-		ANIM('Framerate').value = doop.framerate
-		ANIM('Loop').button_pressed = doop.loop
-		ANIM('Flip/X').button_pressed = doop.get('flip_x', false)
-		ANIM('Flip/Y').button_pressed = doop.get('flip_y', false)
+		#_anim_chosen(selected_id) #ANIM('AllAnims').selected = -1
 
 @onready var _ui = $UILayer
 func _ready() -> void:
@@ -75,6 +69,7 @@ func _ready() -> void:
 				character.position -= Vector2(cur_pos_offset[0], cur_pos_offset[1])
 				cur_pos_offset = new_vals
 				character.position += Vector2(cur_pos_offset[0], cur_pos_offset[1])
+				shadow.position = character.position
 
 	for i in ['Pos', 'Cam']:
 		MAIN(i +'/X').connect('value_changed', thing_change.bind(i))
@@ -106,7 +101,7 @@ func _ready() -> void:
 			icon_list.append(i)
 			MAIN('IconSelect').get_popup().add_item(i)
 
-func _process(delta:float) -> void:
+func _process(_delta:float) -> void:
 	if MAIN('Cam/Lock').button_pressed:
 		$Cam.position = $Point.position
 	$Backdrop.scale = Vector2.ONE / $Cam.zoom
@@ -136,7 +131,7 @@ func _unhandled_input(event:InputEvent) -> void:
 	if event.is_pressed(): press_time += get_process_delta_time()
 	if event.is_released(): press_time = 0
 	if event is not InputEventKey or (event.is_pressed() and press_time < 0.01): return
-	var ctrl:bool = Input.is_key_pressed(KEY_CTRL)
+	#var ctrl:bool = Input.is_key_pressed(KEY_CTRL)
 	var shift:bool = Input.is_key_pressed(KEY_SHIFT)
 
 	var replay_anim:bool = false
@@ -204,6 +199,7 @@ func change_char(new_char:String = 'bf') -> void:
 	_ui.get_node('ResPath').text = char_json.path
 	DATA('Warn').visible = !ResourceLoader.exists('res://assets/images/'+ char_json.path +'.res')
 	reload_list(char_json.animations)
+	_anim_chosen(0)
 
 	# update character
 	character.position = get_viewport_rect().size / 2.0 - Vector2(300, 450)
@@ -238,14 +234,18 @@ func change_char(new_char:String = 'bf') -> void:
 	shadow.frame = shadow.sprite_frames.get_frame_count(cur_anim) - 1
 	shadow_anim_change(0)
 
+var _last_id:int = -1
 func reload_list(anims:Array) -> void:
 	Util.remove_all([anim_list], $UILayer/Animations)
+	_last_id = ANIM('AllAnims').selected
+	ANIM('AllAnims').clear()
 	offsets.clear()
 	MAIN('Shadow/AnimSelect').get_popup().clear()
 
 	#var temp_arr:Array[int] = [] # fix for the dumb floats
 	for i in anims.size():
 		var anim:Dictionary = anims[i]
+		anim.offsets = [int(anim.offsets[0]), int(anim.offsets[1])] # curse you floats
 		#temp_arr.clear()
 		#temp_arr.assign(anim.offsets) # make sure they are ints to remove the extra '.0'
 		offsets[anim.name] = anim.offsets #temp_arr
@@ -258,6 +258,7 @@ func reload_list(anims:Array) -> void:
 
 		$UILayer/Animations.add_child(lab)
 		MAIN('Shadow/AnimSelect').get_popup().add_item(anim.name)
+		ANIM('AllAnims').add_item(anim.name)
 
 		anim_list.append(lab)
 
@@ -273,6 +274,7 @@ func reload_list(anims:Array) -> void:
 	else:
 		selected_id = 0
 		anim_list[0].modulate = Color.YELLOW
+		ANIM('AllAnims').selected = _last_id
 
 func make_label() -> Label:
 	var lab = Label.new()
@@ -309,6 +311,7 @@ func save_pressed() -> void:
 		var new_anim = UnholyFormat.CHAR_ANIM.duplicate(true)
 		new_anim.offsets = offsets[i.name]
 		new_anim.name = i.name
+		new_anim.framerate = i.framerate
 		new_anim.prefix = i.prefix
 		new_anim.frames = i.frames
 		new_anim.loop = i.loop
@@ -316,7 +319,7 @@ func save_pressed() -> void:
 		if i.get('flip_y', false): new_anim.set('flip_y', true)
 		save_json.animations.append(new_anim)
 
-	save_json.path = ANIM('ResPath').text # and this
+	save_json.path = _ui.get_node('ResPath').text # and this
 	save_json.icon = char_json.icon
 	save_json.antialiasing = MAIN('Anti').button_pressed
 	save_json.facing_left = MAIN('FacesLeft').button_pressed
@@ -334,14 +337,31 @@ func save_pressed() -> void:
 func _res_path_updated() -> void:
 	var new_path:String = _ui.get_node('ResPath').text
 	if ResourceLoader.exists('res://assets/images/'+ new_path +'.res'):
+		ANIM('AllAnims').selected = -1
 		character.sprite_frames = load('res://assets/images/'+ new_path +'.res')
+		shadow.sprite_frames = character.sprite_frames
+		shadow_frame_change(shadow.sprite_frames.get_frame_count(shadow.animation) - 1)
+
+func _anim_chosen(index:int) -> void:
+	ANIM('AllAnims').selected = index # just in case
+
+	var doop:Dictionary = char_json.animations[index]
+
+	ANIM('Name').text = doop.name
+	ANIM('Prefix').text = doop.prefix
+	ANIM('Frames').text = Util.array_to_str(doop.frames).replace(' ', '').replace('.0', '')
+	ANIM('Framerate').value = doop.framerate
+	ANIM('Loop').button_pressed = doop.loop
+	ANIM('Flip/X').button_pressed = doop.get('flip_x', false)
+	ANIM('Flip/Y').button_pressed = doop.get('flip_y', false)
 
 func add_anim() -> void:
 	get_viewport().gui_release_focus() # make sure you arent focused on anything
 
 	var anim_name:String = ANIM('Name').text.strip_edges()
 	if anim_name.is_empty():
-		return Alert.make_alert('ADD ANIMATION NAME', Alert.WARN)
+		Alert.make_alert('ADD ANIMATION NAME!', Alert.WARN)
+		return
 
 	var fixed_frames:Array[int] = []
 	if !ANIM('Frames').text.is_empty():
@@ -387,6 +407,18 @@ func add_anim() -> void:
 
 	character.add_anim(anim_name, _data.prefix, fixed_frames, _data.framerate, _data.loop)
 	reload_list(char_json.animations)
+
+func remove_anim() -> void:
+	if char_json.animations.is_empty() or ANIM('Name').text.strip_edges() == '': return
+	var anim_name:String = ANIM('Name').text.strip_edges()
+	for i in char_json.animations.size():
+		var _anim:String = char_json.animations[i].name
+		if _anim == anim_name: # Animation exists, just update it with new info
+			char_json.animations.remove_at(i)
+			if ANIM('AllAnims').selected == i:
+				ANIM('AllAnims').selected = -1
+			reload_list(char_json.animations)
+			return
 
 func shadow_anim_change(id:int) -> void:
 	var new_anim:String = char_json.animations[id].name
