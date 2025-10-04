@@ -9,7 +9,12 @@ func center_obj(obj = null, axis:String = 'xy') -> void:
 		_: obj.position = Vector2(Game.screen[0] / 2, Game.screen[1] / 2)
 
 func format_str(string:String = '') -> String:
-	return string.to_lower().strip_edges().replace(' ', '-').replace('\'', '').replace(':', '')
+	const change:String = ' [~&;:<>#]' # replace with dashes
+	const clear:String = '[.,\'"%?!]' # remove completely
+
+	for i in change.split(): string = string.replace(i, '-')
+	for i in clear.split(): string = string.replace(i, '')
+	return string.to_lower().strip_edges()
 
 func array_to_str(arr:Array) -> String:
 	return str(arr).strip_edges().substr(1).replace(']', '') # i do NOT care brah
@@ -58,7 +63,9 @@ func set_dropdown(dropdown:OptionButton, to_val:String = '') -> void:
 		dropdown.add_item(to_val)
 		dropdown.select(items.size())
 
-func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans:int = 0,ease_type:int = 0) -> Tweener:
+func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans = 0, ease_type = 0) -> Tweener:
+	if trans is String: trans = trans_from_string(trans)
+	if ease_type is String: ease_type = ease_from_string(ease_type)
 	return create_tween().tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease_type)
 
 func quick_label(t:String = '', s:int = 15, ol_s:int = int(s / 3.0), f:String = 'vcr.ttf') -> Label:
@@ -95,7 +102,12 @@ func trans_from_string(trans:StringName = &'linear') -> Tween.TransitionType:
 
 @warning_ignore("unused_parameter")
 func flash_screen(flash_color:Color = Color.WHITE) -> void:
-	pass
+	var flash = ColorRect.new()
+	flash.color = flash_color
+	flash.size = Vector2(Game.screen[0], Game.screen[1])
+
+	if get_viewport().get_camera_2d():
+		get_viewport().get_camera_2d().add_child(flash)
 
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST

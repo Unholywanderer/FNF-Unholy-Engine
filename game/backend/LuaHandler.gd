@@ -24,11 +24,11 @@ func add_script(script:String) -> void:
 	lua.push_variant("Character", Character)
 	lua.push_variant("Sprite", LuaSprite)
 	lua.push_variant("AnimSprite", SparrowSprite) # WIP
+	lua.push_variant("Chart", Chart)
 
 	if SCENE.name == "Play_Scene":
 		lua.push_variant("song_root", JsonHandler.song_root)
 		lua.push_variant("variant", JsonHandler.song_variant.substr(1))
-		lua.push_variant("Chart", Chart)
 		lua.push_variant("move_cam", SCENE.move_cam)
 		lua.push_variant("UI", SCENE.ui)
 		lua.push_variant("boyfriend", SCENE.boyfriend)
@@ -125,15 +125,16 @@ func move_obj(obj:Variant, indx):
 func file_exists(file:String): return ResourceLoader.exists('res://assets/'+ file)
 func cache_file(tag:String, file_path:String):
 	if cached_items.has(tag):
-		print(tag +' already cached, overwriting')
+		print(tag +' already cached, overwritting')
 	var check = file_path.split('/')
-	if check[check.size() - 1].split('.').size() == 0:
+	if check[-1].split('.').is_empty():
 		printerr('file type not specified, assuming ".png"')
 		file_path += '.png'
 
-	cached_items[tag] = load('res://assets/'+ file_path)
+	if ResourceLoader.exists('res://assets/'+ file_path):
+		cached_items[tag] = load('res://assets/'+ file_path)
 
-func is_cached(tag:String): return cached_items.has(tag)
+func is_cached(tag:String): return cached_items.has(tag) and cached_items.get(tag) != null
 func get_cached_file(tag:String):
 	return cached_items[tag] if is_cached(tag) else load('res://assets/images/logoBumpin.png')
 
@@ -157,9 +158,12 @@ func set_param(obj:Variant, param:String, new_value:Variant):
 func get_param(obj:Variant, param:String):
 	return obj.material.get_shader_parameter(param)
 
-func lua_tween(obj:Variant, prop:String, to_val:Variant, dur:float) -> void:
-	if obj == null: return printerr('obj null!!!')
-	Util.quick_tween(obj, prop, to_val, dur, Tween.TransitionType.TRANS_QUAD, Tween.EaseType.EASE_IN)
+func lua_tween(obj:Variant, prop:String, to_val:Variant, dur:float, t:String = '', e:String = '') -> void:
+	if obj == null: return Alert.make_alert('Tween Error\nobj is null!')
+	if typeof(obj) == TYPE_STRING: obj = Game.scene.get(obj)
+	Util.quick_tween(obj, prop.replace('.', ':'), to_val, dur,\
+	 Util.trans_from_string(t), Util.ease_from_string(e))
+
 #func add_variant(variant:String):
 #	if !variant.is_empty():
 #		for lua in active_lua:
@@ -167,12 +171,12 @@ func lua_tween(obj:Variant, prop:String, to_val:Variant, dur:float) -> void:
 
 func add_character(Char:Character, _layer:String = ''):
 	var layer_indx:int = -1
-	var add_to = Game.scene.stage.get_node('CharGroup') if Game.scene.stage.has_node('CharGroup') else Game.scene
+	var add_to = Game.scene.stage.get_node('CharGroup') \
+	 if Game.scene.stage.has_node('CharGroup') else Game.scene
 
 	match _layer.to_lower().strip_edges():
-		'boyfriend': layer_indx = add_to.get('boyfriend').get_index()
-		'gf': layer_indx = add_to.get('gf').get_index()
-		'dad': layer_indx = add_to.get('dad').get_index()
+		'boyfriend', 'gf', 'dad':
+			layer_indx = add_to.get(_layer).get_index()
 
 	Game.scene.characters.append(Char)
 	add_to.add_child(Char)

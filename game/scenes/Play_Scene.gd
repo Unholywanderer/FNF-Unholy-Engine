@@ -1,4 +1,4 @@
-extends Node2D
+class_name PlayScene extends Node2D
 
 @onready var cam:Camera2D = $Camera
 @onready var ui:CanvasLayer = $UI
@@ -65,10 +65,6 @@ var misses:int = 0
 var max_combo:int = -1
 
 func _ready():
-	 
-	if JsonHandler._SONG.is_empty(): #i love fallbacks !! ! 
-		JsonHandler.parse_song("test","hard", "normal")
-	
 	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
 	if Prefs.daniel: spl_path = 'res://assets/images/ui/notesplashes/FOREVER.res'
 	Game.persist.note_splash = load(spl_path)
@@ -80,10 +76,10 @@ func _ready():
 
 	if !LuaHandler.active_lua.is_empty():
 		LuaHandler.remove_all()
-	
-	
 
-	
+	if JsonHandler._SONG.is_empty(): #i love fallbacks !! !
+		JsonHandler.parse_song("test", "hard")
+
 	SONG = JsonHandler._SONG
 
 	#if Prefs.femboy: SONG.player1 = 'bf-femboy'
@@ -208,11 +204,11 @@ func _ready():
 
 	Conductor.connect_signals(stage)
 
-	#for i in ResourceLoader.list_directory('res://assets/data/scripts'):
-	#	if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
+	for i in DirAccess.get_files_at('res://assets/data/scripts'): #ResourceLoader.list_directory('res://assets/data/scripts'):
+		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
 
-	#for i in ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
-	#	if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
+	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root): #ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
+		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
 
 	if DIE == null:
 		var char_suff = '-pico' if boyfriend.cur_char.contains('pico') else ''
@@ -242,7 +238,7 @@ func _process(delta):
 
 	if Input.is_action_just_pressed("back"):
 		auto_play = !auto_play
-		
+
 	if Input.is_action_just_pressed("accept") and can_pause:
 		get_tree().paused = true
 		other.add_child(load('res://game/scenes/pause_screen.tscn').instantiate())
@@ -434,24 +430,30 @@ func song_end() -> void:
 	stage.song_end()
 	if !can_end: return
 
-	#TODO: clean this up later and change it, rather sloppy fix
-	if should_save: pass
-		#var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
-		#var song_name:String = JsonHandler.song_root + JsonHandler.song_variant
-		#var saved_score = HighScore.get_score(song_name, JsonHandler.get_diff)
-
-		#if save_data[0] > saved_score:
-		#	HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
-
-	Conductor.reset()
 	if Game.persist.get('scoring') == null:
 		Game.persist.scoring = ScoreData.new()
+	Game.persist.scoring.is_highscore = false
+	Game.persist.scoring.is_valid = should_save
+
+
+	#TODO: clean this up later and change it, rather sloppy fix
+	if should_save:
+		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
+		var song_name:String = JsonHandler.song_root + JsonHandler.song_variant
+		var saved_score = HighScore.get_score(song_name, JsonHandler.get_diff)
+
+		if save_data[0] > saved_score:
+			if playlist.is_empty() or song_idx + 1 >= playlist.size():
+				Game.persist.scoring.is_highscore = true
+			HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
+
+	Conductor.reset()
+
 	Game.persist.scoring.add_hits(ui.hit_count)
 	Game.persist.scoring.total_notes += note_count
 	Game.persist.scoring.song_name = SONG.song
 	Game.persist.scoring.score += roundi(score)
-	Game.persist.scoring.is_valid = should_save
-	Game.persist.scoring.save_format = [roundi(score), ui.accuracy, misses, ui.grade, combo]
+	#Game.persist.scoring.save_format = [roundi(score), ui.accuracy, misses, ui.grade, combo]
 
 	if misses == 0:
 		Game.persist.scoring.max_combo += note_count
@@ -545,8 +547,7 @@ func event_hit(event:EventData) -> void:
 				data.dur = 0
 				if event.values[0]:
 					data.dur = (Conductor.step_crochet / 1000) * float(event.values[2])
-				data.t = [Util.trans_from_string(event.values[3]), Util.ease_from_string(event.values[4])]
-				print(data.t)
+				data.t = [event.values[3], event.values[4]]
 			if abs(data.dur) > 0:
 				Util.quick_tween(Game.scene, 'cur_speed', data.speed, data.dur, data.t[0], data.t[1])
 			else:
@@ -787,7 +788,7 @@ func note_miss(note:Note) -> void:
 
 	var be_sad:bool = combo >= 10
 	pop_up_combo(['miss', ('000' if be_sad else '')], true)
-	if be_sad:
+	if be_sad and gf.has_anim('sad'):
 		gf.play_anim('sad')
 		gf.anim_timer = 0.5
 

@@ -27,12 +27,7 @@ func _ready() -> void:
 	# set signals shit
 	$Highscore.animation_finished.connect(func(): $Highscore.play('loop'))
 
-	var sco_chk = JsonHandler.song_root + JsonHandler.song_variant
-	var is_high:bool =  score_data.is_highscore([sco_chk])
-	if is_high:
-		HighScore.set_score(JsonHandler.song_root + JsonHandler.song_variant, JsonHandler.get_diff, score_data.save_format)
-
-	var player_data = JSON.parse_string(FileAccess.get_file_as_string('res://assets/data/players/'+ player +'.json'))
+	var player_data := JsonHandler.parse('data/players/'+ player +'.json')
 	var item_list:Array = player_data.results[rank]
 
 	var items = []
@@ -95,8 +90,8 @@ func _ready() -> void:
 	var total = Counters.Tally.new(Vector2(350, y_pos * 3), score_data.total_notes)
 	$RatingCounters.add_child(total)
 
-	var max_ = Counters.Tally.new(Vector2(350, y_pos * 4), score_data.max_combo)
-	$RatingCounters.add_child(max_)
+	var max_c = Counters.Tally.new(Vector2(350, y_pos * 4), score_data.max_combo)
+	$RatingCounters.add_child(max_c)
 
 	y_pos += 4
 	var y_off:float = 7.0
@@ -148,7 +143,7 @@ func _ready() -> void:
 	)
 
 	get_tree().create_timer(delays.score, false).timeout.connect(func():
-		if is_high:
+		if score_data.is_highscore:
 			$Highscore.visible = true
 			$Highscore.play('new')
 	)
@@ -182,9 +177,8 @@ func _process(delta:float) -> void:
 	if song_name.position.x + song_name.width < 100:
 		timer_and_song()
 
-@warning_ignore("unused_parameter")
-func _unhandled_input(event: InputEvent) -> void:
-	if Input.is_action_just_pressed('accept'):
+func _unhandled_input(event:InputEvent) -> void:
+	if event.is_action_pressed('accept'):
 		Game.switch_scene('menus/'+ ('story_menu' if from_story else 'freeplay_classic'))
 
 var percent_target:int = 100
@@ -195,8 +189,7 @@ func start_tally() -> void:
 	$Flash.color.a = 1
 	create_tween().tween_property($Flash, "color:a", 0, 5.0 / 24.0)
 
-	var cur_percent:float = 0.0 if score_data.total_notes == 0 else\
-	 ((score_data.hits.epic + score_data.hits.sick + score_data.hits.good) / float(score_data.total_notes)) * 100.0
+	var cur_percent:float = score_data.get_hit_percent()
 	percent_target = floori(cur_percent)
 	percent_lerp = int(max(0, percent_target - 36))
 

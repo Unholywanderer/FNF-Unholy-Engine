@@ -6,8 +6,8 @@ func _init(d:String): diff = d
 func parse_chart(data) -> Array:
 	for note in data.notes[diff]:
 		var time:float = maxf(0, note.t)
-		var sustain_len:float = maxf(0.0, note.l) if note.has('l') else 0.0
-		var n_type:String = str(note.k) if note.has('k') else ''
+		var sustain_len:float = maxf(0.0, note.get('l', 0.0))
+		var n_type:String = str(note.get('k', ''))
 		if n_type == 'true': n_type = 'alt'
 
 		add_note([time, int(note.d), sustain_len > 0, sustain_len, note.d <= 3, n_type])
@@ -16,7 +16,7 @@ func parse_chart(data) -> Array:
 	return return_notes
 
 static func fix_json(data:Dictionary) -> Dictionary:
-	# make psych char json mine grrr
+	# make vslice char json mine grrr
 	var vslice_anim:Dictionary = {
 		"looped": "loop",
 		"flipX": "flip_x",

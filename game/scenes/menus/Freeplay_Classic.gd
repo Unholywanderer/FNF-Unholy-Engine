@@ -154,8 +154,9 @@ func _unhandled_key_input(_event):
 	#var is_pressed:Callable = func(action): return just_pressed.call(action) or is_held.call(action)
 
 	if Input.is_key_pressed(KEY_R):
-		print('Erasing '+ ('all' if shifty else diff_str) +' | '+ songs[cur_song].text)
-		HighScore.clear_score(songs[cur_song].text, diff_str, shifty)
+		var to_erase:String = songs[cur_song].text + ('' if variant_str == 'normal' else '-'+ variant_str)
+		print('Erasing '+ ('all' if shifty else diff_str) +' | '+ to_erase)
+		HighScore.clear_score(to_erase, diff_str, shifty)
 		update_list()
 
 	if just_pressed.call('menu_down'): update_list(diff)

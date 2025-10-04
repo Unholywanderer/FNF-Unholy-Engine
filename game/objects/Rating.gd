@@ -35,13 +35,13 @@ func make_rating(rate:String = 'sick') -> VelocitySprite:
 	rating.texture = skin.rating_skin
 	rating.vframes = ratings_data.name.size()
 	rating.frame = ratings_data.name.find(rate.to_lower())
-	
+
 	rating.moving = true
 	rating.velocity.y = randi_range(-140, -175)
 	rating.acceleration.y = 550
 	rating.scale = skin.rating_scale
 	rating.antialiasing = skin.antialiased
-	
+
 	return rating
 
 func make_combo(combo) -> Array[VelocitySprite]:
@@ -55,12 +55,12 @@ func make_combo(combo) -> Array[VelocitySprite]:
 		num.hframes = 10
 		num.frame = int(i)
 		all_nums.append(num)
-		
+
 		num.moving = true
 		num.acceleration.y = randi_range(200, 300)
 		num.velocity.y = randi_range(-140, -160)
 		num.velocity.x = randf_range(-5, 5)
-		
+
 		num.scale = skin.num_scale
 		num.antialiasing = skin.antialiased
 		loops += 1
@@ -75,12 +75,12 @@ func make_timing(rating:VelocitySprite, diff:float = 0.0) -> VelocitySprite:
 	time.texture = skin.timing_skin
 	time.hframes = 2; time.vframes = 3;
 	time.frame = early + frame_diffs[get_rating(diff)]
-	
+
 	var offset = (rating.texture.get_width() * skin.rating_scale.x)
 	time.position = rating.position
 	time.position.x += offset / 2.2 * (-1.1 if early == 0 else 1.0)
 	time.copy_from(rating)
-	
+
 	time.scale = skin.time_scale
 	time.antialiasing = skin.antialiased
 

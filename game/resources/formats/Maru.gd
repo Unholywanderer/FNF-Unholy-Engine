@@ -3,7 +3,7 @@ class_name Maru; extends Chart;
 var last_must:bool = false
 func parse_chart(data) -> Array:
 	for sec in data.notes:
-		last_must = sec.mustHitSection if sec.has('mustHitSection') else true
+		last_must = sec.get('mustHitSection', true)
 		if !sec.has('sectionNotes'): continue
 		for note in sec.sectionNotes:
 			if note[1] < 0: continue

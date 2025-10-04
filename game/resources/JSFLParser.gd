@@ -4,9 +4,8 @@ static var format:Dictionary = {x = 0, y = 0, alpha = 1, scale_x = 1, scale_y = 
 static func parse(text:String) -> Array[Dictionary]:
 	var file:String = FileAccess.get_file_as_string('res://assets/'+ text +'.txt')
 	if file.is_empty(): return [format] # just return if nothing is found
-	var split:Array = file.split('\n')
 	var frames:Array[Dictionary] = []
-	for line:String in split:
+	for line:String in file.split('\n'):
 		var le_mat:Dictionary = format.duplicate(true)
 
 		var line_info:Array = line.split(' ')

@@ -1,5 +1,5 @@
 class_name Counters; extends Resource;
-# Class that holds those tally counters and shit
+## Class that holds those tally counters and shit
 # Put here so it can be used anywhere
 
 class ClearPercent extends Node2D:
@@ -30,7 +30,7 @@ class ClearPercent extends Node2D:
 		num_me_harder()
 
 	@warning_ignore("unused_parameter")
-	func _process(delta: float) -> void:
+	func _process(delta:float) -> void:
 		if num_changed: num_me_harder()
 
 	func flash(yes:bool = true) -> void:
@@ -88,7 +88,7 @@ class Score extends Node2D:
 	func shuffle() -> void:
 		for i:int in nums.size():
 			Game.scene.get_tree().create_timer((i - 1.0) / 24.0).timeout.connect(func():
-				nums[i].shuffle(i)
+				nums[i].shuffle()
 			)
 
 class ScoreNum extends AnimatedSprite2D:
@@ -136,14 +136,10 @@ class ScoreNum extends AnimatedSprite2D:
 
 	var shuffle_timer:Timer = Timer.new()
 	var loops:int = 0
-	@warning_ignore("unused_parameter")
-	func shuffle(indx:int = 0) -> void:
+	func shuffle() -> void:
 		if final_digit == 10: return
-		@warning_ignore("unused_variable")
-		var duration:float = 41.0 / 24.0
-		@warning_ignore("unused_variable")
-		var interval:float = 1.0 / 24.0
-		if shuffle_timer.get_parent() == null: Game.scene.add_child(shuffle_timer)
+		if shuffle_timer.get_parent() == null:
+			Game.scene.add_child(shuffle_timer)
 		shuffle_timer.start(1.0 / 24.0)
 		shuffle_timer.timeout.connect(func():
 			loops += 1
@@ -153,12 +149,6 @@ class ScoreNum extends AnimatedSprite2D:
 				digit = final_digit
 				frame = 0
 				play()
-
-			#if (shuffleTimer.loops > 0 && shuffleTimer.loopsLeft == 0)
-			#{
-			#//digit = finalDigit;
-			#finishShuffleTween();
-			#}
 		)
 
 

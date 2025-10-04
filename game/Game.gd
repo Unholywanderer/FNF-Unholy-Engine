@@ -12,7 +12,8 @@ var persist = { # change this to a global script or something
 	'loaded_already': false,
 	'week_list': ['test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'],
 	'stage_list': [
-		'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank', 'philly-streets', 'philly-blazin',
+		'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank',
+		'philly-streets', 'philly-blazin',
 		'stage-erect', 'spooky-erect', 'philly-erect', 'limo-erect', 'mall-erect'
 	],
 	'week_int': -1, 'week_diff': -1,
@@ -56,12 +57,14 @@ var is_paused:bool = false:
 
 func _focus_in():
 	if !Prefs.auto_pause: return
+	if get_viewport().gui_get_focus_owner() != null: return
 	focus_change.emit(true)
 	Audio.process_mode = Node.PROCESS_MODE_ALWAYS
 	if is_paused: is_paused = false
 
 func _focus_out():
 	if !Prefs.auto_pause: return
+	if get_viewport().gui_get_focus_owner() != null: return
 	focus_change.emit(false)
 	Audio.process_mode = Node.PROCESS_MODE_DISABLED
 	if !get_tree().paused: is_paused = true
@@ -72,13 +75,14 @@ func reset_scene() -> void:
 	get_tree().reload_current_scene()
 
 func switch_scene(to_scene, skip_trans:bool = false) -> void:
-	LuaHandler.remove_all()
-	Audio.sync_conductor = false
-	persist.loaded_already = false
-	persist.prev_scene = scene.name
 	if ((to_scene is not String) and (to_scene is not PackedScene)) or to_scene == null:
 		printerr('Switch Scene: new scene is invalid')
 		return
+
+	LuaHandler.remove_all()
+	Audio.sync_conductor = false
+	persist.loaded_already = false
+	if scene: persist.prev_scene = scene.name
 
 	set_mouse_visibility(false)
 	if Prefs.skip_transitions: skip_trans = true
