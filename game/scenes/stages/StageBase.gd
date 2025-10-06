@@ -26,7 +26,6 @@ var gf:Character:
 	get: return Game.scene.gf
 
 # initial positions the characters will take
-# set these on _ready()
 @export var bf_pos:Vector2 = Vector2(770, 100)
 @export var dad_pos:Vector2 = Vector2(100, 100)
 @export var gf_pos:Vector2 = Vector2(550, 100)

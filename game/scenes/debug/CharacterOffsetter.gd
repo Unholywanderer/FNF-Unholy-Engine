@@ -413,7 +413,7 @@ func remove_anim() -> void:
 	var anim_name:String = ANIM('Name').text.strip_edges()
 	for i in char_json.animations.size():
 		var _anim:String = char_json.animations[i].name
-		if _anim == anim_name: # Animation exists, just update it with new info
+		if _anim == anim_name: # Animation exists, remove the fucker
 			char_json.animations.remove_at(i)
 			if ANIM('AllAnims').selected == i:
 				ANIM('AllAnims').selected = -1
