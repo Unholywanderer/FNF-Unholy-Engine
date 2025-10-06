@@ -9,8 +9,8 @@ func center_obj(obj = null, axis:String = 'xy') -> void:
 		_: obj.position = Vector2(Game.screen[0] / 2, Game.screen[1] / 2)
 
 func format_str(string:String = '') -> String:
-	const change:String = ' [~&;:<>#]' # replace with dashes
-	const clear:String = '[.,\'"%?!]' # remove completely
+	const change:String = ' ~&;:<>#' # replace with dashes
+	const clear:String = '.,\'"%?!' # remove completely
 
 	for i in change.split(): string = string.replace(i, '-')
 	for i in clear.split(): string = string.replace(i, '')
@@ -99,15 +99,16 @@ func trans_from_string(trans:StringName = &'linear') -> Tween.TransitionType:
 		&'spring' : return Tween.TRANS_SPRING
 		_: return Tween.TRANS_LINEAR
 
-
-@warning_ignore("unused_parameter")
-func flash_screen(flash_color:Color = Color.WHITE) -> void:
-	var flash = ColorRect.new()
+func flash_screen(flash_color:Color = Color.WHITE, duration:float = 1.0) -> void:
+	var flash = ColorRect.new() # i unno ill figure it out later
 	flash.color = flash_color
 	flash.size = Vector2(Game.screen[0], Game.screen[1])
 
 	if get_viewport().get_camera_2d():
 		get_viewport().get_camera_2d().add_child(flash)
+	else:
+		Game.scene.add_child(flash)
+	quick_tween(flash, 'modulate:a', 0, duration).finished.connect(flash.queue_free)
 
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST
