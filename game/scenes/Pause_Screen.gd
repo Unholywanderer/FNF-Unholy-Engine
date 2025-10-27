@@ -91,7 +91,7 @@ func _process(_delta):
 					close()
 					LuaHandler.remove_all()
 					Conductor.reset()
-					var back_to = 'story_mode' if Game.scene.story_mode else 'freeplay'
+					var back_to = 'story_mode' if Game.scene.story_mode else 'freeplay_classic'
 					Game.switch_scene('menus/'+ back_to)
 				_:
 					Audio.play_sound('cancelMenu')
