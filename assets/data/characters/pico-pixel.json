@@ -101,6 +101,7 @@
 		}
 	],
 	"path": "characters/pico/pixel/char",
+	"death_char": "pico-pixel-dead",
 	"icon": "pico-pixel",
 	"facing_left": true,
 	"antialiasing": false,

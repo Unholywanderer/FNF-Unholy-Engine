@@ -124,6 +124,7 @@
 	],
 	"path": "characters/pico/nene/char",
 	"icon": "pico",
+	"death_char": "pico-holding-nene-dead",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [

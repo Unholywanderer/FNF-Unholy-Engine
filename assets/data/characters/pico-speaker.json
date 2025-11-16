@@ -4,8 +4,8 @@
 			"name": "shootRight1",
 			"prefix": "Pico shoot 10",
 			"offsets": [
-				-5,
-				-134
+				-5.0,
+				-134.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -15,8 +15,8 @@
 			"name": "shootRight2",
 			"prefix": "Pico shoot 20",
 			"offsets": [
-				8,
-				-5
+				-3.0,
+				-5.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +26,8 @@
 			"name": "idle",
 			"prefix": "Pico Dual Wield on Speaker idle",
 			"offsets": [
-				0,
-				0
+				0.0,
+				0.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -37,8 +37,8 @@
 			"name": "shootLeft1",
 			"prefix": "Pico shoot 30",
 			"offsets": [
-				-568,
-				-68
+				-568.0,
+				-68.0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -48,15 +48,31 @@
 			"name": "shootLeft2",
 			"prefix": "Pico shoot 40",
 			"offsets": [
-				-579,
-				-114
+				-593.0,
+				-114.0
 			],
 			"framerate": 24,
 			"frames": [],
 			"loop": false
+		},
+		{
+			"name": "shootRight1-loop",
+			"prefix": "shootRight1",
+			"offsets": [
+				-5,
+				-134
+			],
+			"framerate": 24,
+			"frames": [
+				23,
+				24,
+				25
+			],
+			"loop": true
 		}
 	],
 	"path": "characters/pico/tankman/char",
+	"death_char": "bf-dead",
 	"icon": "pico",
 	"facing_left": false,
 	"antialiasing": true,
@@ -69,13 +85,5 @@
 		10
 	],
 	"sing_dur": 4,
-	"scale": 1,
-	"speaker": {
-		"sprite": "speaker",
-		"offsets": [
-			-180,
-			305.5
-		],
-		"scale": 1
-	}
+	"scale": 1.0
 }

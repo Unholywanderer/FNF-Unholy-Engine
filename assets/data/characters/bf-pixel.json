@@ -102,6 +102,7 @@
 	],
 	"path": "characters/bf/pixel/char",
 	"icon": "bf-pixel",
+	"death_char": "bf-pixel-dead",
 	"facing_left": true,
 	"antialiasing": false,
 	"cam_offset": [

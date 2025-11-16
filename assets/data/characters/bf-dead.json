@@ -7,7 +7,7 @@
 				-37,
 				-11
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -18,7 +18,7 @@
 				-37,
 				-5
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": true
 		},
@@ -29,23 +29,82 @@
 				-37,
 				-69
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
+			"loop": false
+		},
+		{
+			"name": "deathDanceLeft",
+			"prefix": "deathLoop",
+			"offsets": [
+				-37,
+				-5
+			],
+			"framerate": 24.0,
+			"frames": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16
+			],
+			"loop": false
+		},
+		{
+			"name": "deathDanceRight",
+			"prefix": "deathLoop",
+			"offsets": [
+				-37,
+				-5
+			],
+			"framerate": 24.0,
+			"frames": [
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33
+			],
 			"loop": false
 		}
 	],
 	"path": "characters/bf/dead",
+	"death_char": "bf-dead",
 	"icon": "bf",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		0,
-		0
+		100,
+		90
 	],
 	"pos_offset": [
 		15,
 		350
 	],
 	"sing_dur": 4,
-	"scale": 1
+	"scale": 1.0
 }

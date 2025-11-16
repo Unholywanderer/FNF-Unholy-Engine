@@ -7,7 +7,7 @@
 				-37,
 				3
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": true
 		},
@@ -18,7 +18,7 @@
 				-37,
 				-14
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -29,18 +29,19 @@
 				-37,
 				-28
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		}
 	],
 	"path": "characters/bf/gf/dead",
+	"death_char": "bf-dead",
 	"icon": "bf",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		0,
-		0
+		30,
+		90
 	],
 	"pos_offset": [
 		0,

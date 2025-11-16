@@ -2,105 +2,40 @@
 	"animations": [
 		{
 			"name": "deathStart",
-			"prefix": "Pico Death Stab",
+			"prefix": "",
 			"offsets": [
 				-225,
 				-125
 			],
-			"framerate": 24,
-			"frames": [
-				0,
-				1,
-				2,
-				3,
-				4,
-				5,
-				6,
-				7,
-				8,
-				9,
-				10,
-				11,
-				12,
-				13,
-				14,
-				15,
-				16,
-				17,
-				18,
-				19,
-				20,
-				21,
-				22,
-				23,
-				24,
-				25,
-				26,
-				27,
-				28,
-				29,
-				30,
-				31,
-				32,
-				33,
-				34,
-				35,
-				36,
-				37,
-				38,
-				39,
-				40,
-				41,
-				42,
-				43,
-				44,
-				45,
-				46,
-				47
-			],
+			"framerate": 24.0,
+			"frames": [],
 			"loop": false
 		},
 		{
 			"name": "deathLoop",
-			"prefix": "Pico Death Stab",
+			"prefix": "",
 			"offsets": [
 				-225,
 				-125
 			],
-			"framerate": 24,
-			"frames": [
-				48,
-				49,
-				50,
-				51,
-				52,
-				53,
-				54,
-				55,
-				56,
-				57,
-				58,
-				59,
-				60,
-				61,
-				62,
-				63
-			],
+			"framerate": 24.0,
+			"frames": [],
 			"loop": true
 		}
 	],
 	"path": "characters/pico/dead",
+	"death_char": "bf-dead",
 	"icon": "pico",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		0,
-		0
+		-100,
+		-30
 	],
 	"pos_offset": [
-		15.0,
-		200.0
+		15,
+		320
 	],
 	"sing_dur": 4,
-	"scale": 1
+	"scale": 1.0
 }

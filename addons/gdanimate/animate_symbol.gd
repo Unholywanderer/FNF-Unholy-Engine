@@ -63,29 +63,61 @@ signal finished
 signal symbol_changed(symbol: String)
 signal frame_changed(frame_int: int)
 
-var _added_anims:Dictionary[String, Array] = {}
+#region Custom Shit
+var _added_anims:Dictionary[String, AnimData] = {}
 var frame_index:int = -1
-var cur_anim:String
-func add_anim_by_frames(alias:String, frames:Array = []):
+var cur_anim:StringName = '':
+	set(an): if _added_anims.has(an): cur_anim = an
+
+func add_anim_by_frames(alias:String, frames:Array = [], fps:float = 24.0, loop:bool = false):
+	var new_anim := AnimData.new()
 	if frames.size() == 2:
 		var le_arr:Array[int] = []
 		for i in range(frames[0], frames[1]):
 			le_arr.append(i)
 		frames = le_arr
 
-	_added_anims.set(alias, frames)
+	new_anim.frames = frames
+	new_anim.framerate = fps
+	new_anim.loop = loop
+	print('added %s, with %s frames and %s fps' % [alias, frames.size(), fps])
+	_added_anims.set(alias, new_anim)
+
+func add_anim_by_symbol(alias:String, symb:String, frames:Array = [], fps:float = 24.0, loop:bool = false) -> void:
+	var new_anim := AnimData.new()
+	new_anim.anim = symb
+	if frames.size() == 2:
+		var le_arr:Array[int] = []
+		for i in range(frames[0], frames[1]):
+			le_arr.append(i)
+		frames = le_arr
+
+	new_anim.frames = frames
+	new_anim.framerate = fps
+	new_anim.loop = loop
+	print('added %s (%s), with %s custom frames at %s fps' % [alias, symb, frames.size(), fps])
+	_added_anims.set(alias, new_anim)
+
+func get_frame_count(anim:String) -> int:
+	return _added_anims[anim].frames.size() if _added_anims.has(anim) else 0
 
 func play_anim(anim:String, force:bool = false) -> void:
 	if !_added_anims.has(anim): return
-	if !force and cur_anim == anim and frame_index < _added_anims[cur_anim].size() - 1: return
-	frame = _added_anims[anim][0]
+	var da_anim:AnimData = _added_anims[anim]
+	if !force and cur_anim == anim and \
+	 frame_index < da_anim.frames.size() - 1: return #or (!da_anim.anim.is_empty() and frame < _timeline.length): return
 	playing = true
+	_timer = 0.0
 	frame_index = 0
+
+	if !da_anim.anim.is_empty():
+		symbol = da_anim.anim
+
+	frame = da_anim.frames[0] if !da_anim.frames.is_empty() else 0
 	cur_anim = anim
 
-
-func add_anim_by_symbols(array:Array[String]) -> void:
-	pass
+func pause() -> void: playing = false
+#endregion
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(_animation):
@@ -93,16 +125,15 @@ func _process(delta: float) -> void:
 			frame = 0
 		return
 
-	if not playing:
-		return
+	if not playing:	return
 
 	_timer += delta
-	if _timer >= 1.0 / _animation.framerate:
-		#var frame_diff := _timer / (1.0 / _animation.framerate)
-		_timer -= (1.0 / _animation.framerate) #* frame_diff
-		if cur_anim.is_empty():
+	if cur_anim.is_empty():
+		if _timer >= 1.0 / _animation.framerate:
+			#var frame_diff := _timer / (1.0 / _animation.framerate)
+			_timer -= (1.0 / _animation.framerate) #* frame_diff
 			frame += 1 #floori(frame_diff)
-			#_timer -= (1.0 / _animation.framerate) #* frame_diff
+				#_timer -= (1.0 / _animation.framerate) #* frame_diff
 			if frame > _timeline.length - 1:
 				match loop_mode:
 					'Loop':
@@ -112,18 +143,32 @@ func _process(delta: float) -> void:
 							playing = false
 							finished.emit()
 						frame = _timeline.length - 1
-		else:
-			if !_added_anims.has(cur_anim):
-				cur_anim = ''
-				return
+	else:
+		var _le_data:AnimData = _added_anims[cur_anim]
+		if _timer >= 1.0 / _le_data.framerate:
+			_timer = 0.0
+			var symb_anim:bool = !symbol.is_empty()
 
-			if _added_anims[cur_anim].size() - 1 > frame_index:
+			if symb_anim and _le_data.frames.is_empty() and frame < _timeline.length - 1: frame += 1
+			if _le_data.frames.size() - 1 > frame_index:
 				frame_index += 1
-				frame = _added_anims[cur_anim][frame_index]
+				frame = _le_data.frames[frame_index]
 			else:
+				if _le_data.loop:
+					if _le_data.frames.size() > 0:
+						frame_index = 0
+						frame = _le_data.frames[0]
+					else:
+						frame = 0
+					playing = true
+					return
+
 				playing = false
 				finished.emit()
-				frame = _added_anims[cur_anim][-1]
+				if !_le_data.frames.is_empty():
+					frame = _le_data.frames[-1]
+				else:
+					frame = _timeline.length - 1
 
 func _cache_atlas() -> void:
 	var parsed := ParsedAtlas.new()
@@ -136,8 +181,8 @@ func _cache_atlas() -> void:
 
 	var err := ResourceSaver.save(parsed, \
 			'%s/Animation.res' % [atlas_directory], ResourceSaver.FLAG_COMPRESS)
-	if err != OK:
-		printerr(err)
+
+	if err != OK: printerr(err)
 
 
 func _reload_atlas() -> void:
@@ -145,7 +190,6 @@ func _reload_atlas() -> void:
 	if not atlas_directory.get_extension().is_empty():
 		atlas_directory = atlas_directory.get_base_dir()
 	load_atlas(atlas_directory, false)
-
 
 ## Loads a new atlas from the specified [param path].
 func load_atlas(path: String, use_cache: bool = true) -> void:
@@ -291,10 +335,8 @@ func _clear_items() -> void:
 		var item: RID = _canvas_items.pop_back()
 		RenderingServer.free_rid(item)
 
-
 func _exit_tree() -> void:
 	_clear_items()
-
 
 func _draw() -> void:
 	_clear_items()
@@ -303,3 +345,9 @@ func _draw() -> void:
 		return
 	_current_transform = Transform2D.IDENTITY
 	_draw_timeline(_timeline, frame)
+
+class AnimData extends Resource:
+	var anim:String = ''
+	var framerate:float = 24.0
+	var frames:Array = []
+	var loop:bool = false
