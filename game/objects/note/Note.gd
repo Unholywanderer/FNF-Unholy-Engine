@@ -1,6 +1,6 @@
 class_name Note; extends Node2D;
 
-var skin:SkinInfo = (Game.scene.ui.SKIN if Game.scene.has_node('UI') else SkinInfo.new())
+var skin:SkinInfo = (Game.persist.note_skin if Game.persist.note_skin else SkinInfo.new())
 var tex_path:String = 'assets/images/ui/skins/%s/notes/'
 var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR
@@ -60,6 +60,7 @@ var type:String = "":
 					modulate = Color.BLACK
 				else:
 					tex_path += 'hurt/note'
+			'ugh', 'hehPrettyGood': pass
 			_:
 				unknown = true
 				modulate = Color.GRAY
@@ -81,6 +82,7 @@ var too_late:bool = false:
 	get: return strum_time < Conductor.song_pos - Conductor.safe_zone and !was_good_hit
 
 var is_sustain:bool = false
+var is_event:bool = false
 var length:float = 0.0
 var temp_len:float = 0.0 #if you dont immediately hold
 var offset_y:float = 0.0
@@ -164,13 +166,14 @@ func _ready() -> void:
 		add_child(note)
 
 		if unknown:
-			var lol = Alphabet.new('?')
-			var diff:Vector2 = Vector2.ONE
+			var lol = Sprite2D.new()
+			lol.texture = load("res://assets/images/ui/question.png")
+			var diff:Vector2 = Vector2(0.7, 0.7)
 			if Util.round_d(scale.x, 1) > 0.7:
 				diff = lol.scale / scale
-				lol.scale = diff
-			lol.position.x -= 22 * diff.x
-			lol.position.y -= 30 * diff.y
+			lol.scale = diff
+			#lol.position.x -= 22 * diff.x
+			#lol.position.y -= 30 * diff.y
 			add_child(lol)
 			lol.z_index = 3
 
@@ -189,15 +192,16 @@ func _process(delta:float) -> void:
 
 func follow_song_pos(strum:Strum) -> void:
 	var pos:float = -(0.45 * ((Conductor.song_pos - strum_time) * velocity) * speed) #/ Conductor.playback_rate# + offset_y
-
+	#if is_event != strum.is_event and !is_sustain:
+	#	note.texture = load('res://assets/images/ui/event.png')
 	position.x = strum.position.x + (pos * cos(strum.scroll * PI / 180))
 	position.y = strum.position.y + (pos * sin(strum.scroll * PI / 180))
 	rotation = (deg_to_rad(strum.scroll - 90.0) if sustain else 0.0) + strum.rotation
 	if is_sustain and holding:
 		position = strum.position
 
-func load_skin(new_skin:String) -> void:
-	skin.load_skin(new_skin)  # this is actually terrible
+func load_skin(_new_skin:String) -> void:
+	#skin.load_skin(new_skin)  # this is actually terrible
 
 	tex_path = 'assets/images/ui/skins/%s/notes/' % [skin.cur_skin]
 
@@ -241,7 +245,7 @@ func convert_type(t:String) -> String:
 		'no animation': return 'No Anim'
 		'gf sing': return 'GF'
 		'hurt note', '3.0', 'markov note', 'ebola', 'burger note', 'fart note': return 'Hurt'
-		'hey!': return 'Hey'
+		'hey!', 'hey': return 'Hey'
 		_: return t
 
 class Event extends Note:

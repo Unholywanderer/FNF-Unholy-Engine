@@ -1,16 +1,15 @@
 [gd_scene load_steps=3 format=3 uid="uid://da716o2r8v6ai"]
 
-[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="1_e2bit"]
 [ext_resource type="Script" uid="uid://ddnje3xnq0jvn" path="res://game/scenes/menus/Freeplay.gd" id="1_l4eik"]
+[ext_resource type="Script" uid="uid://ctnes3nxk1qlt" path="res://game/objects/Atlas.gd" id="2_l4eik"]
 
 [node name="Freeplay" type="Node2D"]
 script = ExtResource("1_l4eik")
 
 [node name="DJ" type="Node2D" parent="."]
 position = Vector2(720, 352)
-script = ExtResource("1_e2bit")
+script = ExtResource("2_l4eik")
 atlas = "res://assets/images/freeplay/freeplay-boyfriend"
-frame = 20
-metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
 
 [node name="RightPiece" type="Sprite2D" parent="."]

@@ -16,9 +16,9 @@ var blammin:bool = false:
 		$Black.visible = true
 		$Gradifloor.visible = blam
 		blammin = blam
-		#THIS.speaker.modulate = Color.BLACK if blam else Color.WHITE
+		#Main.speaker.modulate = Color.BLACK if blam else Color.WHITE
 		if blam:
-			last_mat = boyfriend.material
+			last_mat = boyfriend.material.duplicate_deep()
 			for i in [boyfriend, gf, dad]:
 				if i == null: continue
 				i.material = blammed_shader.duplicate()
@@ -26,13 +26,18 @@ var blammin:bool = false:
 			boyfriend.material.set_shader_parameter('outline_color', Color.CYAN)
 			gf.material.set_shader_parameter('outline_color', Color.MAROON)
 			dad.material.set_shader_parameter('outline_color', Color.GREEN_YELLOW)
+			if Main.speaker.has_node('VizBG'):
+				Main.speaker.get_node('VizBG').modulate = Color.BLACK
 
 			#UI.icon_p1.material = boyfriend.material
 			#UI.icon_p2.material = dad.material
 		else:
 			for i in [boyfriend, gf, dad]:
 				if i == null: continue
-				i.material = last_mat
+				#i.material = last_mat
+
+			if Main.speaker.has_node('VizBG'):
+				Main.speaker.get_node('VizBG').modulate = Color.WHITE
 
 @onready var initial_points:Array = $Windows/Line.points
 var spec = AudioServer.get_bus_effect_instance(1, 0)
@@ -82,7 +87,7 @@ func post_ready() -> void:
 func countdown_start():
 	pass
 	#gf.load_char('gf-car')
-	#THIS.remove_child(gf)
+	#Main.remove_child(gf)
 	#train.add_child(gf)
 	#gf.scale /= 2.0
 	#gf.position -= Vector2(155, train.texture.get_size()[1] / (1.28 / gf.scale.x))

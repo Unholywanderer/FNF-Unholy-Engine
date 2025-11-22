@@ -54,7 +54,7 @@ func _ready():
 		story_mode = true
 		playlist = Game.persist.song_list
 
-	SONG = JsonHandler._SONG
+	SONG = JsonHandler.SONG
 
 	if Prefs.daniel and !SONG.player1.contains('bf-girl'):
 		var try = SONG.player1.replace('bf', 'bf-girl')
@@ -260,7 +260,7 @@ func song_end() -> void:
 	else:
 		song_idx += 1
 		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
-		SONG = JsonHandler._SONG
+		SONG = JsonHandler.SONG
 		cur_speed = SONG.speed
 		Conductor.load_song(SONG.song)
 		refresh(true)

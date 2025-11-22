@@ -23,11 +23,11 @@ func _process(delta:float) -> void:
 
 func _unhandled_input(event:InputEvent) -> void:
 	if in_time < 0.15: return
-	if Input.is_action_just_pressed('menu_down'):
+	if event.is_action_pressed('menu_down'):
 		change_selection(1)
-	elif Input.is_action_just_pressed('menu_up'):
+	elif event.is_action_pressed('menu_up'):
 		change_selection(-1)
-	if Input.is_action_just_pressed('accept'):
+	if event.is_action_pressed('accept'):
 		if scene_to_load[cur_option] != null:
 			Audio.play_sound('confirmMenu')
 			if scene_to_load[cur_option] != 'donate':
@@ -36,11 +36,11 @@ func _unhandled_input(event:InputEvent) -> void:
 		else:
 			Audio.play_sound('cancelMenu')
 
-	if Input.is_action_just_pressed('back'):
+	if event.is_action_pressed('back'):
 		Audio.play_sound('cancelMenu')
 		Game.switch_scene('menus/title_scene')
 
-	if Input.is_action_just_pressed('debug_1'):
+	if event.is_action_pressed('debug_1'):
 		get_tree().paused = true
 		add_child(load('res://game/scenes/debug/editor_menu.tscn').instantiate())
 		#Game.switch_scene('debug/Character_Offsetter')

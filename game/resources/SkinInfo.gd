@@ -1,10 +1,10 @@
 class_name SkinInfo; extends Resource;
 
 var cur_skin:String = 'default' # just the current skin as a string
-var strum_skin:SpriteFrames = preload('res://assets/images/ui/skins/default/strums.res')
-var rating_skin:Texture2D = preload('res://assets/images/ui/skins/default/ratings.png')
-var num_skin:Texture2D = preload('res://assets/images/ui/skins/default/nums.png')
-var timing_skin:Texture2D = preload('res://assets/images/ui/skins/default/timings.png')
+var strum_skin:SpriteFrames = load('res://assets/images/ui/skins/default/strums.res')
+var rating_skin:Texture2D = load('res://assets/images/ui/skins/default/ratings.png')
+var num_skin:Texture2D = load('res://assets/images/ui/skins/default/nums.png')
+var timing_skin:Texture2D = load('res://assets/images/ui/skins/default/timings.png')
 
 var strum_scale:Vector2 = Vector2(0.7, 0.7)
 var note_scale:Vector2 = Vector2(0.7, 0.7)
@@ -24,22 +24,28 @@ var countdown_scale:Vector2 = Vector2(1, 1)
 
 var antialiased:bool = true
 
-func _init(skinny:String = '') -> void:
-	if !skinny.is_empty():
-		load_skin(skinny)
+func _init(to_load:String = '') -> void:
+	load_skin(to_load)
 
-func load_skin(new_skin:String = 'default'):
-	if new_skin == cur_skin:
-		print('SKIN: "'+ new_skin +'" already loaded, continuing')
-		return
+	#var test = SkinBase.new()
+	#var heh = load('res://game/resources/skins/pixel.gd').new()
+	#for i in heh.get_script().get_script_property_list():
+	#	test.set(i.name, heh.get(i.name))
 
-	var skin_to_check:String = 'assets/images/ui/skins/%s/' % [new_skin]
-	if DirAccess.dir_exists_absolute('res://'+ skin_to_check):
+	#ResourceSaver.save(test, 'res://assets/data/skins/pixel.tres')
+
+func load_skin(new_skin:String = 'default') -> void:
+	if new_skin == cur_skin or new_skin.is_empty():
+		return print('SKIN: "'+ new_skin +'" already loaded, skipping')
+
+	var skin_to_check:String = 'assets/data/skins/%s.tres' % [new_skin.strip_edges()]
+	if ResourceLoader.exists('res://'+ skin_to_check):
 		cur_skin = new_skin
-		var skin_file:Resource = load('res://game/resources/skins/'+ new_skin +'.gd').new()
-		for item in skin_file.get_script().get_script_property_list():
-			if item.name in self:
-				set(item.name, skin_file.get(item.name))
+		var new_skin_data:SkinBase = load('res://'+ skin_to_check)
+		for field in get_property_list():
+			if get(field.name) == null or field.name.contains('script'):  continue
+			if get(field.name) == new_skin_data.get(field.name): continue
+			set(field.name, new_skin_data.get(field.name))
 	else:
 		printerr('SKIN: "'+ new_skin +'" does not exist!')
 		return load_skin(cur_skin)

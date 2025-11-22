@@ -1,11 +1,16 @@
 extends Node2D
 
+var player_jsons:Dictionary = {}
+
 var funny_test:PixelatedIcon
 var name_tag:NameTag
 var player:DipshitPlayer
 
 var stroke:ShaderMaterial = ShaderMaterial.new()
 func _ready() -> void:
+	for json in DirAccess.get_files_at('res://assets/data/players'):
+		player_jsons[json] = JsonHandler.parse('data/players/'+ json)
+
 	stroke.shader = load('res://game/resources/shaders/stroke_shader.gdshader')
 	stroke.set_shader_parameter('size', 50)
 	#funny_test = PixelatedIcon.new()
@@ -41,7 +46,7 @@ func _ready() -> void:
 
 
 	var ehh = [
-		'bf', '', '',
+		'', '', '',
 		'', '', '',
 		'',  '', ''
 	]
@@ -70,14 +75,15 @@ func _ready() -> void:
 var lo:int = 0
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"back"): Game.switch_scene('menus/freeplay')
-	if event.is_action_pressed("accept"):
-		bop_play = true
-		player.play_anim('slideOut')
-		get_tree().create_timer(0.3, false).timeout.connect(func():
-			lo = wrapi(lo + 1, 0, 3)
-			name_tag.switch_tag(['bf', 'pico', 'locked'][lo])
-			player.change_char(['bf', 'pico', 'locked'][lo])
-		)
+	if event.is_action_pressed(&"accept"):
+		#bop_play = true
+		lo = wrapi(lo + 1, 0, 5)
+		player.play_anim(['idle', 'confirm', 'unconfirm', 'slideIn', 'slideOut'][lo])
+		#get_tree().create_timer(0.3, false).timeout.connect(func():
+		#	lo = wrapi(lo + 1, 0, 3)
+		#	name_tag.switch_tag(['bf', 'pico', 'locked'][lo])
+		#	player.change_char(['bf', 'pico', 'locked'][lo])
+		#)
 
 func beat_hit(_beat:int) -> void:
 	if player.cur_anim == 'idle':
@@ -98,11 +104,11 @@ func align_icons() -> void:
 		#item.position.y += grpIcons.y;
 
 func _process(delta:float) -> void:
-	if bop_play: bop_icon($Icons.get_child(0), delta)
+	pass#if bop_play: bop_icon($Icons.get_child(0), delta)
 
 var bop_info:Array[Dictionary] = JSFParser.parse('images/char_select/_info/iconBop/iconBopInfo')
 var bop_timer:float = 0;
-var delay:float = 1 / 24.0;
+var delay:float = 1.0 / 24.0;
 var bop_frame:int = 0;
 var bop_play:bool = false;
 var bop_ref_x:float = 0;
@@ -133,22 +139,40 @@ func bop_icon(icon:PixelatedIcon, elapsed:float) -> void:
 
 		bop_frame += 1
 
-class DipshitPlayer extends AnimateSymbol:
+@warning_ignore("missing_tool")
+class DipshitPlayer extends Atlas:
 	var char_name:String = ''
 	var le_anim:String = ''
 	var pos:Dictionary[String, Vector2] = {
 		'bf': Vector2(630, 345), 'pico': Vector2(750, 390),
 		'locked': Vector2(715, 380)
 	}
-	var anim_data = { # this works fine for now since only 2 chars but, this isnt very customizable is it
-		'bf': {'idle': [0, 9], 'confirm': [16, 28], 'unconfirm': [29, 46],
-		 'slideIn': [50, 57], 'slideOut': [48, 49]},
-		'pico': {'idle': [0, 11], 'confirm': [16, 22], 'unconfirm': [29, 38],
-		 'slideIn': [42, 50], 'slideOut': [40, 41], 'unlock': [51, 80]},
-		'locked': {'idle': [0, 26], 'unlock': [27, 108]}
+	var anim_data = {
+		# this works fine for now since only 2 chars but, this isnt very customizable is it
+		#'bf': {
+		#	'idle': [0, 9],
+		#	'confirm': [16, 28],
+		#	'unconfirm': [29, 46],
+		#	'slideIn': [50, 57],
+		#	'slideOut': [48, 49]
+		#},
+		'pico': {
+			'idle': [0, 11],
+			'confirm': [16, 22],
+			'unconfirm': [29, 38],
+			'slideIn': [42, 50],
+			'slideOut': [40, 41],
+			'unlock': [51, 80]
+		},
+		'locked': {'idle': [0, 26], 'unlock': [27, 108]},
 
-	#	'bf': {'idle': 'bf cs idle', 'confirm': 'bf cs confirm', 'unconfirm': 'bf cs deselect',
-	#	 'slideIn': 'bf slide in', 'slideOut': 'bf slide out'},
+		'bf': {
+			'idle': 'bf cs idle',
+			'confirm': 'bf cs confirm',
+			'unconfirm': 'bf cs deselect',
+		 	'slideIn': 'bf slide in',
+			'slideOut': 'bf slide out'
+		},
 	#	'pico': {'idle': 'bf cs idle', 'confirm': 'bf cs confirm', 'unconfirm': 'bf cs deselect',
 	#	 'slideIn': 'bf slide in', 'slideOut': 'bf slide out'}
 	}
@@ -171,13 +195,19 @@ class DipshitPlayer extends AnimateSymbol:
 		_added_anims.clear()
 		char_name = new_chill
 		for i in anim_data[char_name].keys():
-			add_anim_by_frames(i, anim_data[char_name][i])
+			var data = anim_data[char_name][i]
+			if data is Array:
+				add_anim_by_frames(i, data)
+			else:
+				add_anim_by_symbol(i, data, [], 24)
 		play_anim('slideIn')
 
-class DipshitGF extends AnimateSymbol:
+@warning_ignore("missing_tool")
+class DipshitGF extends Atlas:
 	pass
 
-class Lock extends AnimateSymbol:
+@warning_ignore("missing_tool")
+class Lock extends Atlas:
 	const colors = [
 		0x31F2A5, 0x20ECCD, 0x24D9E8,
 		0x20ECCD, 0x20C8D4, 0x209BDD,
@@ -223,12 +253,12 @@ class NameTag extends Sprite2D:
 			block_timer(1, size.x / 73.0, size.y / 6.0)
 			block_timer(2, size.x / 10.0, size.y / 10.0)
 
-	func block_timer(frame:int, force_x:float = -1, force_y:float = -1) -> void:
+	func block_timer(da_frame:int, force_x:float = -1, force_y:float = -1) -> void:
 		var da:Vector2 = Vector2(10 * randi_range(1, 4), 10 * randi_range(1, 4))
 
 		if force_x > -1: da.x = force_x
 		if force_y > -1: da.y = force_y
 
-		get_tree().create_timer(frame / 30.0, false).timeout.connect(func():
+		get_tree().create_timer(da_frame / 30.0, false).timeout.connect(func():
 			material.set_shader_parameter('uBlocksize', da)
 		)

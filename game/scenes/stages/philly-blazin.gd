@@ -2,30 +2,31 @@ extends StageBase
 
 var def_index
 func post_ready() -> void:
-	THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
+	gf.z_index = -50
+	UI.time_bar.position.x = (Game.screen[0] / 2.0) - 400
 
 	UI.health_bar.rotation = deg_to_rad(90)
 	UI.health_bar.scale = Vector2(0.90, 0.90)
-	UI.health_bar.position = Vector2(Game.screen[0] - 80, (Game.screen[1] / 2.0) - 280)
+	UI.health_bar.position = Vector2(Game.screen[0] - 80, (Game.screen[1] / 2.0) - 270)
 	UI.mark.rotation = -UI.health_bar.rotation
-	UI.mark.position -= Vector2(15, -25)
-	UI.time_bar.position.x = (Game.screen[0] / 2.0) - 400
+	UI.mark.offset += Vector2(-55, -25)
 	UI.icon_p2.flip_h = true
+
 	UI.get_group('opponent').visible = false
 	UI.get_group('player').position.x = Game.screen[0] / 2.0 - 180
 
-	def_index = boyfriend.get_index()
 	if Prefs.rating_cam == 'game':
-		THIS.Judge.rating_pos = boyfriend.position + Vector2(650, 250)
-		THIS.Judge.combo_pos = boyfriend.position + Vector2(550, 350)
+		Main.Judge.rating_pos = Vector2(650, 250)
+		Main.Judge.combo_pos = Vector2(550, 350)
 
-func _process(delta):
+func _process(_delta):
+	Main.cam.position = Vector2(625, 350)
 	UI.icon_p1.position.y = 0
 	UI.icon_p2.position.y = 0
 	#var lol = ['punchHigh1', 'punchLow1', 'punchHigh2', 'punchLow2']
 	#var an = lol.pick_random()
 	#dad.play_anim(an, true)
-	#THIS.move_child(dad, boyfriend.get_index() + 1)
+	#Main.move_child(dad, boyfriend.get_index() + 1)
 	#boyfriend.play_anim('hit'+ an.replace('punch', '').replace('1', '').replace('2', ''), true)
 	#Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.1)
 	#UI.hp -= 10 * delta
@@ -73,7 +74,7 @@ func pico_anim(note:String, missed:bool = false):
 				boyfriend.flip_h = true
 			'idle': boyfriend.play_anim('idle', true)
 			'fakeout': boyfriend.play_anim('fakeout', true)
-			'taunt': if boyfriend.animation == 'fakeout': boyfriend.play_anim('taunt', true)
+			'taunt': if boyfriend.get_anim() == 'fakeout': boyfriend.play_anim('taunt', true)
 			'tauntforce': boyfriend.play_anim('taunt', true)
 			'reversefakeout': boyfriend.play_anim('idle', true)
 	else:
@@ -97,14 +98,17 @@ func pico_anim(note:String, missed:bool = false):
 				boyfriend.flip_h = true
 			'idle': boyfriend.play_anim('idle', true)
 			'fakeout': boyfriend.play_anim('fakeout', true)
-			'taunt': if boyfriend.animation == 'fakeout': boyfriend.play_anim('taunt', true)
+			'taunt': if boyfriend.get_anim() == 'fakeout': boyfriend.play_anim('taunt', true)
 			'tauntforce': boyfriend.play_anim('taunt', true)
 			'reversefakeout': boyfriend.play_anim('idle', true)
-	boyfriend.flip_h = (boyfriend.animation == 'uppercutHit') # i cant be assed
-	if front_anims.has(boyfriend.animation):
-		$CharGroup.move_child(boyfriend, 2)
+
+	if note.contains('hit') and !missed: UI.hp -= 3
+	if front_anims.has(boyfriend.get_anim()):
+		boyfriend.z_index = 100
+		#$CharGroup.move_child(boyfriend, 2)
 	else:
-		$CharGroup.move_child(boyfriend, 1)
+		boyfriend.z_index = 0
+		#$CharGroup.move_child(boyfriend, 1)
 
 func darnell_anim(note, missed:bool = false):
 	dad.can_dance = false
@@ -167,19 +171,18 @@ func darnell_anim(note, missed:bool = false):
 			'taunt': dad.play_anim('pissed', true)
 			'tauntforce': dad.play_anim('pissed', true)
 			'reversefakeout': dad.play_anim('fakeout', true)
-	if front_anims.has(dad.animation):
-		$CharGroup.move_child(dad, 2)
+	if front_anims.has(dad.get_anim()):
+		dad.z_index = 100
+		#$CharGroup.move_child(dad, 2)
 	else:
-		$CharGroup.move_child(dad, 1)
-
-
+		dad.z_index = 0
+		#$CharGroup.move_child(dad, 1)
 
 func alter(a:String):
 	set(a, !get(a))
 	return '1' if get(a) else '2'
 
-func game_over_start():
-	THIS.we_dyin = THIS.DEATH_TYPE.PUNCH
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-#	pass
+func game_over_start() -> void:
+	Main.GAME_OVER.death_type = Main.GAME_OVER.TYPES.PUNCH
+	$Rain.visible = false
+	dad.z_index = -45

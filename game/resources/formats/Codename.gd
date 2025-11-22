@@ -7,7 +7,7 @@ func parse_chart(data):
 		for note in line.notes:
 			var time:float = maxf(0.0, note.time)
 			var sustain_len:float = maxf(0.0, note.sLen)
-			var n_type:String = init_type # uses int for note type, will check later
+			var n_type:String = init_type
 			if note.type > 0: n_type = possible_types[int(note.type - 1)]
 
 			add_note([time, int(note.id), sustain_len > 0, sustain_len, line.position == 'boyfriend', n_type])

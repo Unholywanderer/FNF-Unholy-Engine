@@ -45,6 +45,9 @@ func note_hit(note:Note) -> void:
 			'Hey':
 				singer.play_anim('hey', true)
 				singer.anim_timer = 0.6
+			'ugh', 'hehPrettyGood':
+				singer.play_anim(note.type, true)
+				singer.special_anim = true
 			_:
 				singer.sing(note.dir, note.alt, !note.is_sustain)
 
@@ -64,8 +67,7 @@ func note_miss(note:Note) -> void:
 
 var cur_sparks:Array = [null, null, null, null]
 var is_holding:Array = [false, false, false, false]
-@warning_ignore("unused_parameter")
-func _process(delta:float) -> void:
+func _process(_delta:float) -> void:
 	if !is_cpu:
 		for i in ['left', 'down', 'up', 'right'].size():
 			is_holding[i] = Input.is_action_pressed('note_'+ ['left', 'down', 'up', 'right'][i])

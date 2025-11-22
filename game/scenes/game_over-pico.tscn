@@ -1,30 +1,28 @@
-[gd_scene load_steps=3 format=3 uid="uid://ou2vqfgb2tml"]
+[gd_scene load_steps=2 format=3 uid="uid://ou2vqfgb2tml"]
 
 [ext_resource type="Script" uid="uid://b8cfs6ype4w6h" path="res://game/scenes/Game_Over-pico.gd" id="1_frtla"]
-[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="2_sgi3l"]
 
-[node name="Game_Over" type="Node2D"]
+[node name="Game_Over" type="Control"]
 process_mode = 3
+layout_mode = 3
+anchors_preset = 0
 script = ExtResource("1_frtla")
 
 [node name="BG" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="Fade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+top_level = true
+z_index = 50
+layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
-
-[node name="AnimateSymbol" type="Node2D" parent="."]
-visible = false
-position = Vector2(720, 360)
-script = ExtResource("2_sgi3l")
-atlas = "res://assets/images/characters/pico/ex_death/explosion"
-frame = 171
-playing = true
-metadata/_custom_type_script = "uid://bvq0ling1c7sm"

@@ -127,10 +127,10 @@ func _ready():
 		text = (type.left(4) +'.' if type.length() > 4 else type)#.replace('Note', '') # purely visual
 		label.position -= Vector2(label.size.x * (30 * label.get_total_character_count()), -label.size.y * 1.5)
 
-func load_skin(skin) -> void:
-	tex_path = 'res://assets/images/ui/skins/'+ skin.cur_skin +'/notes/'+ COLORS[dir]
-	antialiasing = skin.antialiased
-	scale = skin.note_scale
+func load_skin(new_skin) -> void:
+	tex_path = 'res://assets/images/ui/skins/'+ new_skin.cur_skin +'/notes/'+ COLORS[dir]
+	antialiasing = new_skin.antialiased
+	scale = new_skin.note_scale
 
 	if is_sustain:
 		scale.y = 0.7

@@ -19,8 +19,10 @@ func _ready():
 		dancers.append(new_dancer)
 
 func post_ready() -> void:
-	gf.reparent($FGLimo)
-	gf.show_behind_parent = true
+	$CharGroup.remove_child(gf)
+	$GFGroup.add_child(gf)
+	#gf.reparent($FGLimo)
+	#gf.show_behind_parent = true
 
 	var new = ShaderMaterial.new()
 	new.shader = load('res://game/resources/shaders/adjust_color.gdshader')

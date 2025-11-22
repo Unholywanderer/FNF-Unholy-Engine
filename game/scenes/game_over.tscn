@@ -2,19 +2,32 @@
 
 [ext_resource type="Script" uid="uid://bv0aey11nievt" path="res://game/scenes/Game_Over.gd" id="1_frtla"]
 
-[node name="Game_Over" type="Node2D"]
+[node name="Game_Over" type="Control"]
 process_mode = 3
+z_index = 10
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
 script = ExtResource("1_frtla")
 
 [node name="BG" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="Fade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+top_level = true
+z_index = 10
+layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
+
+[node name="Overlay" type="CanvasLayer" parent="."]

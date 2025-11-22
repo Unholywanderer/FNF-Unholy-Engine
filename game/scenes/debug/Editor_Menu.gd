@@ -20,13 +20,13 @@ func _ready() -> void:
 
 var changing:bool = false
 func _input(event:InputEvent) -> void:
-	update_scroll(Input.get_axis("menu_up", "menu_down"))
+	update_scroll(int(Input.get_axis("menu_up", "menu_down")))
 
-	if Input.is_action_just_pressed('back'):
+	if event.is_action_pressed('back'):
 		queue_free()
 		Game.scene.in_time = 0
 		get_tree().paused = false
-	if Input.is_action_just_pressed("accept") and not changing:
+	if event.is_action_pressed("accept") and not changing:
 		var le_scene = PATHS[cur_item]
 		if le_scene == null: return Alert.make_alert('Whoops no scene', Alert.ERROR)
 		if le_scene.begins_with('tools'): le_scene = '../'+ le_scene

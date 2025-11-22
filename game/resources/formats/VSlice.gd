@@ -41,8 +41,9 @@ static func fix_json(data:Dictionary) -> Dictionary:
 
 	var new_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
 	for anim:Dictionary in data.animations:
-		var anis:Dictionary = UnholyFormat.CHAR_ANIM.duplicate()
+		var anis:Dictionary = UnholyFormat.CHAR_ANIM.duplicate(true)
 		for key in vslice_anim:
+			if !anim.has(key): continue
 			if key == 'offsets':
 				var off:Array[int] = [-anim[key][0], -anim[key][1]]
 				if off[0] == -0: off[0] = 0

@@ -101,6 +101,7 @@
 		}
 	],
 	"path": "characters/pico/christmas/char",
+	"death_char": "pico-christmas-dead",
 	"icon": "pico",
 	"facing_left": true,
 	"antialiasing": true,

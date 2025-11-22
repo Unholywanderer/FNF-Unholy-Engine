@@ -78,7 +78,7 @@
 				],
 				1,
 				true,
-				true
+				"back"
 			],
 			[
 				"tankman-head2",
@@ -87,7 +87,8 @@
 					-215
 				],
 				1,
-				true
+				true,
+				"front"
 			],
 			[
 				"tankman-body",
@@ -97,7 +98,7 @@
 				],
 				1,
 				false,
-				true
+				"back"
 			],
 			[
 				"tankman-head1",
@@ -106,7 +107,8 @@
 					-215
 				],
 				1,
-				false
+				false,
+				"front"
 			]
 		]
 	}

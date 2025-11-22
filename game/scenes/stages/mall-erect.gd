@@ -38,7 +38,7 @@ var seen_shit:bool = false
 func song_end() -> void:
 	if !seen_shit and parents and santa:
 		seen_shit = true
-		THIS.can_end = false
+		Main.can_end = false
 		var cutscene := Cutscene.new()
 		dad.hide()
 		$Santa.hide()
@@ -51,21 +51,21 @@ func song_end() -> void:
 
 		Audio.play_sound('santa_emotion')
 
-		THIS.cam.position_smoothing_enabled = false
-		THIS.lerp_zoom = false
+		Main.cam.position_smoothing_enabled = false
+		Main.lerp_zoom = false
 
-		Util.quick_tween(THIS.cam, 'position', santa.position + Vector2(300, 0), 2.8, Tween.TRANS_EXPO, Tween.EASE_OUT)
-		Util.quick_tween(THIS.cam, 'zoom', Vector2(0.73, 0.73), 2, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+		Util.quick_tween(Main.cam, 'position', santa.position + Vector2(300, 0), 2.8, Tween.TRANS_EXPO, Tween.EASE_OUT)
+		Util.quick_tween(Main.cam, 'zoom', Vector2(0.73, 0.73), 2, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
 
 		cutscene.add_timed_event(2.8, func():
-			Util.quick_tween(THIS.cam, 'position', santa.position + Vector2(150, 0), 9, Tween.TRANS_QUART, Tween.EASE_IN_OUT)
-			Util.quick_tween(THIS.cam, 'zoom', Vector2(0.79, 0.79), 9, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+			Util.quick_tween(Main.cam, 'position', santa.position + Vector2(150, 0), 9, Tween.TRANS_QUART, Tween.EASE_IN_OUT)
+			Util.quick_tween(Main.cam, 'zoom', Vector2(0.79, 0.79), 9, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
 		)
 		cutscene.add_timed_event(11.375, func(): Audio.play_sound('santa_shot'))
 		cutscene.add_timed_event(12.83, func():
-			Util.quick_tween(THIS.cam, 'position', santa.position + Vector2(160, 80), 5, Tween.TRANS_EXPO, Tween.EASE_OUT)
+			Util.quick_tween(Main.cam, 'position', santa.position + Vector2(160, 80), 5, Tween.TRANS_EXPO, Tween.EASE_OUT)
 		)
 		cutscene.add_timed_event(16, func():
-			THIS.can_end = true
-			THIS.song_end()
+			Main.can_end = true
+			Main.song_end()
 		)

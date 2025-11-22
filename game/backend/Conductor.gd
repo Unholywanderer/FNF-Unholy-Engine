@@ -63,7 +63,7 @@ var vocals:AudioStream # make this an array for vocals at this rate
 var vocals_opp:AudioStream
 var ex_audio:Array[AudioStream] = []
 
-var bpm_changes = {}
+var bpm_changes:Array[BPMChange] = []
 func _ready():
 	audio = AudioStreamPlayer.new()
 	add_child(audio)
@@ -72,24 +72,23 @@ func _ready():
 		print('Song Finished')
 		song_end.emit()
 	)
-	
-	#fix for notes being thrown forward (or backward?), causing a bunch of misses to occur + notes dissapearing 
+
+	#fix for notes being thrown forward (or backward?), causing a bunch of misses to occur + notes dissapearing
 	#after the lag spike when changing audio devices - mae
-	Audio.AudioDevice_changed.connect(func(newDevice): 
-		if newDevice == null || not song_loaded || paused:
-			return
+	Audio.AudioDevice_changed.connect(func(newDevice):
+		if newDevice == null || not song_loaded || paused: return
 		var stepForwardTime = AudioServer.get_time_to_next_mix()
 		paused = true
 		while stepForwardTime <= 0.05:
-			_last_time = song_pos + (AudioServer.get_time_to_next_mix() * 1000) * playback_rate 
-			_resync_timer = 0 
+			_last_time = song_pos + (AudioServer.get_time_to_next_mix() * 1000) * playback_rate
+			_resync_timer = 0
 			await get_tree().process_frame
 			stepForwardTime += get_physics_process_delta_time()
 		paused = false
 	)
-	#worked on my device but not too sure if this always works 
-	
-	
+	#worked on my device but not too sure if this always works
+
+
 	#add_child(inst)
 	#add_child(vocals)
 	#add_child(vocals_opp)
@@ -99,6 +98,7 @@ func _ready():
 
 func load_song(song:String = '') -> void:
 	if song.is_empty(): song = 'tutorial'
+	reset_beats()
 
 	song = Util.format_str(song)
 	mult_vocals = false
@@ -110,21 +110,35 @@ func load_song(song:String = '') -> void:
 		var inf = [JsonHandler.song_root, JsonHandler.song_variant.substr(1)]
 		path = 'res://assets/songs/'+ inf[0] +'/audio/'+ inf[1] +'/%s.ogg'
 
-	if JsonHandler.parse_type == 'osu':
-		if ResourceLoader.exists('res://assets/songs/'+ song +'/audio.mp3'):
-			grabbed_audios.append(load('res://assets/songs/'+ song +'/audio.mp3'))
-	else:
-		var suffix:String = ''
-		if JsonHandler._SONG.has('variant'): suffix += ('-'+ JsonHandler._SONG.variant)
+	var grab_audio = func(mod_folder:bool = false):
+		#var pa = Util.file_path(path)
+		if JsonHandler.parse_type == 'osu':
+			if ResourceLoader.exists('res://assets/songs/'+ song +'/audio.mp3'):
+				grabbed_audios.append(load('res://assets/songs/'+ song +'/audio.mp3'))
+		else:
+			var suffix:String = ''
+			if JsonHandler.SONG.has('variant'): suffix += ('-'+ JsonHandler.SONG.variant)
 
-		if ResourceLoader.exists(path % ['Inst'+ suffix]):
-			grabbed_audios.append(load(path % ['Inst'+ suffix]))
-		if ResourceLoader.exists(path % ['Voices-player'+ suffix]):
-			mult_vocals = true
-			grabbed_audios.append(load(path % ['Voices-player'+ suffix]))
-			grabbed_audios.append(load(path % ['Voices-opponent'+ suffix]))
-		elif ResourceLoader.exists(path % ['Voices'+ suffix]):
-			grabbed_audios.append(load(path % ['Voices'+ suffix]))
+			var check_func:Callable = ResourceLoader.exists
+			var load_func:Callable = load
+			var check_path:String = path
+			if mod_folder:
+				check_func = FileAccess.file_exists
+				load_func = Util.load_audio
+				check_path = path.replace('res://assets/', Game.exe_path +'mods/')
+
+			if check_func.call(check_path % ['Inst'+ suffix]):
+				grabbed_audios.append(load_func.call(check_path % ['Inst'+ suffix]))
+			if check_func.call(check_path % ['Voices-player'+ suffix]):
+				mult_vocals = true
+				grabbed_audios.append(load_func.call(check_path % ['Voices-player'+ suffix]))
+				grabbed_audios.append(load_func.call(check_path % ['Voices-opponent'+ suffix]))
+			elif check_func.call(check_path % ['Voices'+ suffix]):
+				grabbed_audios.append(load_func.call(check_path % ['Voices'+ suffix]))
+
+	grab_audio.call()
+	if grabbed_audios.is_empty():
+		grab_audio.call(true)
 
 	audio.stream = AudioStreamSynchronized.new()
 	total_streams = grabbed_audios.size()
@@ -149,7 +163,7 @@ func _process(delta) -> void:
 				_resync_timer += delta * 1000
 			else:
 				_resync_timer = 0
-			
+
 			_last_time = aud_pos
 
 			song_pos = aud_pos + _resync_timer * playback_rate
@@ -168,8 +182,8 @@ func _process(delta) -> void:
 			beat_hit.emit(cur_beat)
 
 			var beats:int = 4
-			if JsonHandler.parse_type == 'legacy' and Game.scene:
-				var son = Game.scene.get('SONG')
+			if JsonHandler.parse_type == 'legacy':
+				var son:Dictionary = JsonHandler.SONG
 				if son and son.get('notes', []).size() > cur_section:
 					beats = son.notes[cur_section].get('sectionBeats', 4)
 
@@ -207,13 +221,15 @@ func add_audio(new_id:int = -1, file_name:String = '', vol:float = 0.7, song_nam
 		return
 
 	var new_aud = load('res://'+ path_to_check)
-	total_streams += 1
+	if new_id >= total_streams:
+		total_streams += 1
 	audio.stream.set_sync_stream(new_id, new_aud)
 	audio_volume(new_id, vol)
 	ex_audio.append(new_aud)
 
 func audio_volume(id:int, vol:float = 1.0, _can_wrap:bool = true) -> void:
-	var stream_count = audio.stream.stream_count - 1
+	if !audio or !audio.stream: return
+	var stream_count:int = total_streams - 1
 	#if id > stream_count: printerr('ID '+ str(id) +' doesn\'t exist!')
 	if id > stream_count: return
 	#id = clampi(id, 0, stream_count)
@@ -240,6 +256,7 @@ func start(at_point:float = -1) -> void:
 	#audio.seek(song_pos)
 
 func seek(point:float, auto_pause:bool = true) -> void:
+	if point < 0: point = 0
 	audio.play(point / 1000.0)
 	if auto_pause: paused = true
 	_last_time = point
@@ -255,3 +272,7 @@ func reset_beats() -> void:
 	beat_time = 0; step_time = 0;
 	cur_beat = 0; cur_step = 0; cur_section = 0;
 	paused = false
+
+class BPMChange extends Resource:
+	var bpm:float = 100
+	var time:float = 0.0

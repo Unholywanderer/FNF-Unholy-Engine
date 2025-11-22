@@ -2,15 +2,17 @@ extends Node2D
 
 signal focus_change(is_focused) # when you click on/off the game window
 
-var TRANS = preload('res://game/objects/ui/transition.tscn') # always have it loaded for instantiating
-var cur_trans
+var TRANS:PackedScene = preload('res://game/objects/ui/transition.tscn') # always have it loaded for instantiating
+var cur_trans:CanvasLayer
 
-var persist = { # change this to a global script or something
+var persist:Dictionary[String, Variant] = { # change this to a global script or something
 	'scoring': null,
 	'prev_scene': null,
 	'note_splash': null,
-	'loaded_already': false,
-	'week_list': ['test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'],
+	'note_skin': null,
+	'week_list': [
+		'test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'
+	],
 	'stage_list': [
 		'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank',
 		'philly-streets', 'philly-blazin',
@@ -25,18 +27,43 @@ var main_window:Window
 var scene:Node2D = null:
 	get: return get_tree().current_scene
 
-var screen = [
+var screen:Array[float] = [
 	ProjectSettings.get_setting("display/window/size/viewport_width"),
 	ProjectSettings.get_setting("display/window/size/viewport_height")
 ]
-var fullscreen = false:
+var fullscreen:bool = false:
 	set(f):
 		fullscreen = f
 		var window_mode = Window.MODE_EXCLUSIVE_FULLSCREEN if f else Window.MODE_WINDOWED
 		main_window.mode = window_mode
 
 # fix pause screen because it sets the paused of the tree as well
+var exe_path:String = ''
+
 func _ready():
+	exe_path = OS.get_executable_path()
+	var exe_name := exe_path.split('/', false)[-1]
+	exe_path = exe_path.replace(exe_name, '')
+	if !OS.is_debug_build():
+		var folders_to_make = {
+			'data' = ['characters', 'events', 'players', 'scripts', 'skins', 'weeks'],
+			'fonts' = [],
+			'images' = ['characters', 'credits', 'freeplay', 'icons', 'main_menu',
+				'results_screen', 'stages', 'story_mode', 'ui'],
+			'music' = [],
+			'songs' = [],
+			'sounds' = [],
+			'videos' = []
+		}
+
+		if !DirAccess.dir_exists_absolute(exe_path +'mods'):
+			DirAccess.make_dir_absolute(exe_path +'mods')
+			for i:String in folders_to_make.keys():
+				DirAccess.make_dir_absolute(exe_path +'mods/'+ i)
+				if !folders_to_make[i].is_empty():
+					for sub:String in folders_to_make[i]:
+						DirAccess.make_dir_absolute(exe_path +'mods/'+ i +'/'+ sub)
+
 	main_window = get_window()
 	# this is cool but its funky
 	main_window.focus_entered.connect(_focus_in)
@@ -44,7 +71,7 @@ func _ready():
 	set_mouse_visibility(false)
 
 var just_pressed:bool = false
-func  _unhandled_input(event:InputEvent) -> void:
+func _unhandled_input(event:InputEvent) -> void:
 	if Input.is_key_pressed(KEY_F6): # i kinda like how janky this is when you hold the key
 		just_pressed = event.is_released()
 		if !just_pressed:
@@ -56,15 +83,13 @@ var is_paused:bool = false:
 		get_tree().paused = is_paused
 
 func _focus_in():
-	if !Prefs.auto_pause: return
-	if get_viewport().gui_get_focus_owner() != null: return
+	if !Prefs.auto_pause or get_viewport().gui_get_focus_owner(): return
 	focus_change.emit(true)
 	Audio.process_mode = Node.PROCESS_MODE_ALWAYS
 	if is_paused: is_paused = false
 
 func _focus_out():
-	if !Prefs.auto_pause: return
-	if get_viewport().gui_get_focus_owner() != null: return
+	if !Prefs.auto_pause or get_viewport().gui_get_focus_owner(): return
 	focus_change.emit(false)
 	Audio.process_mode = Node.PROCESS_MODE_DISABLED
 	if !get_tree().paused: is_paused = true
@@ -95,7 +120,7 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 		if ResourceLoader.exists('res://game/scenes/'+ to_scene +'.tscn', 'PackedScene'):
 			to_scene = load('res://game/scenes/'+ to_scene +'.tscn')
 		else:
-			printerr('Switch Scene: "'+ to_scene +'" doesn\'t exist, reloading')
+			Alert.make_alert('Switch Scene: "'+ to_scene +'" doesn\'t exist\nreloading')
 			return reset_scene()
 
 	var new_scene:PackedScene = to_scene

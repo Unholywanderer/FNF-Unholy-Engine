@@ -29,7 +29,7 @@ var saw_cutscene:bool = false
 func song_end() -> void:
 	if SONG.song == 'Stress (Pico Mix)' and !saw_cutscene:
 		saw_cutscene = true
-		THIS.can_end = false
+		Main.can_end = false
 		var cutscene = Cutscene.new()
 		#add_child(cutscene)
 		dad.hide()
@@ -41,19 +41,19 @@ func song_end() -> void:
 		tanky_boy.playing = true
 		tanky_boy.material = dad.material
 		tanky_boy.position = dad.position + Vector2(300, 195)
-		THIS.cam.position_smoothing_speed = 2
-		THIS.cam.position = dad.get_cam_pos() + Vector2(320, -60)
-		THIS.default_zoom = 0.65
+		Main.cam.position_smoothing_speed = 2
+		Main.cam.position = dad.get_cam_pos() + Vector2(320, -60)
+		Main.default_zoom = 0.65
 
 		Audio.play_sound('tank/cutscene/end-pico')
 		cutscene.add_timed_event(176.0/24.0, func(): boyfriend.play_anim('laugh'))
 		cutscene.add_timed_event(270.0/24.0, func():
-			THIS.cam.position_smoothing_speed = 1
-			THIS.cam.position = boyfriend.get_cam_pos() - Vector2(130, -80)
+			Main.cam.position_smoothing_speed = 1
+			Main.cam.position = boyfriend.get_cam_pos() - Vector2(130, -80)
 		)
 		cutscene.add_timed_event(320.0/24.0, func():
-			THIS.can_end = true
-			THIS.song_end()
+			Main.can_end = true
+			Main.song_end()
 		)
 
 func init_tankmen():
@@ -78,15 +78,15 @@ func event_hit(event:EventData) -> void:
 	if event.event == 'SetHealthIcon' and dad.cur_char == 'tankman-bloody':
 		dad.forced_suffix = '-bloody'
 
-var played_line:bool = false
-func game_over_start(): played_line = false
+func game_over_start():
+	if SONG.player1.ends_with('-holding-nene'):
+		Main.GAME_OVER.death_type = Main.GAME_OVER.TYPES.NENE
+
 func game_over_idle():
-	if !played_line:
-		played_line = true
-		Audio.volume = 0.4
-		var _death = Audio.return_sound('tank/jeffGameover-'+ str(randi_range(1, 25)))
-		_death.play()
-		_death.finished.connect(func(): Audio.volume = 1)
+	Audio.volume = 0.4
+	var _death = Audio.return_sound('tank/jeffGameover-'+ str(randi_range(1, 25)))
+	_death.play()
+	_death.finished.connect(func(): Audio.volume = 1)
 
 class Tankmen extends AnimatedSprite2D:
 	var t_speed:float = 0.0

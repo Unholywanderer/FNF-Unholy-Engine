@@ -28,7 +28,7 @@ var gf_strums:Array
 var strums:Array[Strum] = []
 var chart_notes = []
 
-var SKIN = SkinInfo.new()
+var SKIN:SkinInfo = SkinInfo.new()
 var cur_skin:String = 'default':
 	set(new_style):
 		if new_style != cur_skin:
@@ -157,11 +157,22 @@ func _process(delta):
 	mark.position.x = max(613, (icon_p1.position.x) + 100)
 
 func update_score_txt() -> void:
-	if Game.scene.get('score') != null:
+	if Game.scene.get('score'):
 		var stuff = [roundi(Game.scene.score), get_acc(), Game.scene.misses]
 		score_txt.text = 'Score: %s / Accuracy: [%s] \\ Misses: %s' % stuff
 
-	$Tally.text = '[color=magenta]Epics: %s\n[color=cyan]Sicks: %s\n[color=green]Goods: %s\n[color=yellow]Bads : %s\n[color=red]Shits: %s' % [hit_count.epic, hit_count.sick, hit_count.good, hit_count.bad, hit_count.shit]
+	$Tally.text = '
+	[color=magenta]Epics: %s\n
+	[color=cyan]Sicks: %s\n
+	[color=green]Goods: %s\n
+	[color=yellow]Bads : %s\n
+	[color=red]Shits: %s' % [
+		hit_count.epic,
+		hit_count.sick,
+		hit_count.good,
+		hit_count.bad,
+		hit_count.shit
+	]
 
 func get_acc() -> String:
 	var new_acc = clampf(note_percent / total_hit, 0, 1)
@@ -206,7 +217,7 @@ func reset_stats() -> void:
 
 func add_group(group_name:String, singer:Character = null): # add a strum group to the ui
 	var new_group = load('res://game/objects/ui/strum_line.tscn').instantiate()
-	if singer != null: new_group.singer = singer
+	if singer: new_group.singer = singer
 	strum_groups[group_name.to_lower().strip_edges()] = new_group
 	$Strum_Group.add_child(new_group)
 	return new_group
@@ -229,7 +240,7 @@ func add_behind(item) -> void:
 	#move_child(item, 0) #layering would get fucked
 
 func change_skin(new_skin:String = 'default') -> void: # change style of whole hud, instead of one by one
-	cur_skin = new_skin
+	#cur_skin = new_skin
 	SKIN.load_skin(new_skin)
 
 	for i in strum_groups.keys():
@@ -265,35 +276,35 @@ func start_countdown(from_beginning:bool = false) -> void:
 	if pause_countdown or skip_countdown:
 		Conductor.paused = pause_countdown or !skip_countdown
 		if skip_countdown: Conductor.song_pos = 0
-		stop_countdown()
-		return
+		return stop_countdown()
 
 	count_down.start((Conductor.crochet / 1000.0) / Conductor.playback_rate)
-	await count_down.timeout
-	times_looped += 1
-	countdown_tick.emit(times_looped)
-	if times_looped < 4:
-		if times_looped > 0:
-			var spr = Sprite2D.new()
-			spr.texture = load('res://assets/images/ui/skins/'+ cur_skin +'/'+ countdown_spr[times_looped - 1] +'.png')
-			add_child(spr)
-			spr.scale = SKIN.countdown_scale
-			spr.texture_filter = Util.get_alias(SKIN.antialiased)
-			Util.center_obj(spr)
+	count_down.timeout.connect(func():
+		times_looped += 1
+		countdown_tick.emit(times_looped)
+		var spr_path:String = 'res://assets/images/ui/skins/'+ cur_skin +'/'
+		if times_looped < 4:
+			if times_looped > 0:
+				var spr:Sprite2D = Sprite2D.new()
+				spr.texture = load(spr_path + countdown_spr[times_looped - 1] +'.png')
+				add_child(spr)
+				spr.scale = SKIN.countdown_scale
+				spr.texture_filter = Util.get_alias(SKIN.antialiased)
+				Util.center_obj(spr)
 
-			var tween = create_tween().tween_property(spr, 'modulate:a', 0, Conductor.crochet / 1000.0)
-			tween.finished.connect(spr.queue_free)
-		Audio.play_sound(sounds[times_looped], 1, true)
-		start_countdown()
-	else:
-		stop_countdown()
-		song_start.emit()
+				var tween = create_tween().tween_property(spr, 'modulate:a', 0, Conductor.crochet / 1000.0)
+				tween.finished.connect(spr.queue_free)
+			Audio.play_sound(sounds[times_looped], 1, true)
+		else:
+			stop_countdown()
+			song_start.emit()
+	)
 
 func stop_countdown() -> void:
 	pause_countdown = false
 	skip_countdown = false
 	finished_countdown = true
 	times_looped = -1
-	if count_down != null:
+	if count_down:
 		remove_child(count_down)
 		count_down.queue_free()

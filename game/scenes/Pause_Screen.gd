@@ -17,7 +17,7 @@ func _ready():
 	Discord.change_presence('Paused '+ this.SONG.song +' - '+ JsonHandler.get_diff.to_upper(), break_text.pick_random())
 	Conductor.paused = true
 
-	$SongName.text = JsonHandler._SONG.song
+	$SongName.text = JsonHandler.SONG.song
 	$SongName.modulate.a = 0
 	create_tween().tween_property($SongName, 'modulate:a', 1, 0.3)
 
@@ -58,7 +58,7 @@ func _process(_delta):
 			var choice = options[cur_option].text
 			if diffs.has(choice.to_lower()):
 				var path = 'res://assets/songs/'+ Util.format_str(this.SONG.song) +'/charts/'
-				if ResourceLoader.exists(path + choice +'.json') or JsonHandler._SONG.notes.has(choice.to_lower()):
+				if ResourceLoader.exists(path + choice +'.json') or JsonHandler.SONG.notes.has(choice.to_lower()):
 					JsonHandler.parse_song(this.SONG.song, choice)
 					close()
 					Conductor.reset()

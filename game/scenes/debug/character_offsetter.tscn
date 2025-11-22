@@ -419,53 +419,17 @@ color = Color(0.196078, 0.196078, 0.196078, 1)
 [node name="AllAnims" type="OptionButton" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 50.0
+offset_top = 10.0
 offset_right = 177.0
-offset_bottom = 81.0
+offset_bottom = 41.0
 focus_mode = 1
-
-[node name="AnimSpeed" type="HSlider" parent="UILayer/Anim"]
-layout_mode = 0
-offset_left = 74.0
-offset_top = 19.0
-offset_right = 289.0
-offset_bottom = 35.0
-focus_mode = 0
-min_value = 0.5
-max_value = 2.0
-step = 0.1
-value = 1.0
-
-[node name="Label" type="Label" parent="UILayer/Anim/AnimSpeed"]
-layout_mode = 0
-offset_left = -65.0
-offset_top = -4.0
-offset_right = -6.0
-offset_bottom = 19.0
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("4_e8b0o")
-theme_override_font_sizes/font_size = 20
-text = "Speed"
-vertical_alignment = 1
-
-[node name="Hey" type="Label" parent="UILayer/Anim/AnimSpeed"]
-layout_mode = 0
-offset_left = -42.0
-offset_top = -16.0
-offset_right = 193.0
-offset_bottom = 2.0
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("4_e8b0o")
-theme_override_font_sizes/font_size = 10
-text = "Only for editor! Does NOT apply in game!"
-vertical_alignment = 1
 
 [node name="Name" type="TextEdit" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 90.0
+offset_top = 50.0
 offset_right = 289.0
-offset_bottom = 118.0
+offset_bottom = 78.0
 focus_mode = 1
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 15
@@ -477,9 +441,9 @@ scroll_fit_content_height = true
 [node name="Prefix" type="TextEdit" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 130.0
+offset_top = 90.0
 offset_right = 289.0
-offset_bottom = 158.0
+offset_bottom = 118.0
 focus_mode = 1
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 15
@@ -491,9 +455,9 @@ scroll_fit_content_height = true
 [node name="Frames" type="TextEdit" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 170.0
+offset_top = 130.0
 offset_right = 289.0
-offset_bottom = 198.0
+offset_bottom = 158.0
 focus_mode = 1
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 15
@@ -505,9 +469,9 @@ scroll_fit_content_height = true
 [node name="Framerate" type="SpinBox" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 220.0
+offset_top = 180.0
 offset_right = 97.0
-offset_bottom = 251.0
+offset_bottom = 211.0
 max_value = 48.0
 value = 24.0
 update_on_text_changed = true
@@ -516,9 +480,9 @@ prefix = "FPS:"
 [node name="Flip" type="Label" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 170.0
-offset_top = 205.0
+offset_top = 165.0
 offset_right = 208.0
-offset_bottom = 228.0
+offset_bottom = 188.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 16
@@ -550,9 +514,9 @@ text = "Y"
 [node name="Loop" type="CheckBox" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 215.0
-offset_top = 230.0
+offset_top = 190.0
 offset_right = 281.0
-offset_bottom = 261.0
+offset_bottom = 221.0
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -561,23 +525,23 @@ text = "Loop"
 [node name="AddAnim" type="Button" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 100.0
-offset_top = 280.0
+offset_top = 240.0
 offset_right = 209.0
-offset_bottom = 311.0
+offset_bottom = 271.0
 focus_mode = 0
 text = "Add/Update"
 
 [node name="RemoveAnim" type="Button" parent="UILayer/Anim"]
 layout_mode = 0
 offset_left = 206.0
-offset_top = 50.0
+offset_top = 10.0
 offset_right = 288.0
-offset_bottom = 81.0
+offset_bottom = 41.0
 focus_mode = 0
 text = "Remove"
 
-[node name="Weee!!" type="Label" parent="UILayer"]
-visible = false
+[node name="Notice" type="Label" parent="UILayer"]
+modulate = Color(0, 1, 0.4117647, 0)
 offset_left = 10.0
 offset_top = 680.0
 offset_right = 561.0
@@ -585,12 +549,13 @@ offset_bottom = 703.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 20
-text = "Successfully SAVED json at '../characters/data/%s'"
+text = "Successfully SAVED json at '../bleh/blah/bloo'"
 
 [node name="Cam" type="Camera2D" parent="."]
 position = Vector2(624, 360)
 
 [node name="Point" type="Sprite2D" parent="."]
+z_index = 50
 texture_filter = 1
 position = Vector2(568, 368)
 scale = Vector2(5, 5)

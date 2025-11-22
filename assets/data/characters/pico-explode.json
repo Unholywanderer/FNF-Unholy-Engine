@@ -236,17 +236,17 @@
 			"loop": false
 		}
 	],
-	"path": "characters/pico/explode",
+	"path": "characters/pico/dead_explode",
 	"icon": "pico",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		-700,
-		400
+		-480,
+		-380
 	],
 	"pos_offset": [
-		-120,
-		-200
+		500,
+		600
 	],
 	"sing_dur": 4,
 	"scale": 1

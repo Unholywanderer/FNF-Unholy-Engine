@@ -11,6 +11,11 @@ var on_video_finish:Callable = func(): # if overwritten, make sure video is clea
 	video.queue_free()
 	video_finished.emit()
 
+var max_time:float = 0.0:
+	set(time):
+		max_time = time
+		add_timed_event(time, finished.emit)
+
 var cutscene_in_progress:bool = false
 var timed_events:Array = []
 func add_timed_event(time:float, event:Callable) -> void:

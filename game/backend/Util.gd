@@ -1,18 +1,20 @@
 extends Node
 # Node with functions
+func _ready() -> void: process_mode = Node.PROCESS_MODE_ALWAYS # heh
 
 func center_obj(obj = null, axis:String = 'xy') -> void:
 	if obj == null: return
+	var obj_size:Vector2 = obj.size * obj.scale if obj.get('size') else Vector2.ZERO
 	match axis:
-		'x': obj.position.x = (Game.screen[0] / 2) #- (obj_size.x / 2)
-		'y': obj.position.y = (Game.screen[1] / 2) #- (obj_size.y / 2)
-		_: obj.position = Vector2(Game.screen[0] / 2, Game.screen[1] / 2)
+		'x': obj.position.x = (Game.screen[0] / 2) - (obj_size.x / 2)
+		'y': obj.position.y = (Game.screen[1] / 2) - (obj_size.y / 2)
+		_: obj.position = Vector2(Game.screen[0] / 2, Game.screen[1] / 2) - (obj_size / 2)
 
 func format_str(string:String = '') -> String:
 	const change:String = ' ~&;:<>#' # replace with dashes
 	const clear:String = '.,\'"%?!' # remove completely
 
-	for i in change.split(): string = string.replace(i, '-')
+	string = string.replace_chars(change, '-'.unicode_at(0))
 	for i in clear.split(): string = string.replace(i, '')
 	return string.to_lower().strip_edges()
 
@@ -63,7 +65,7 @@ func set_dropdown(dropdown:OptionButton, to_val:String = '') -> void:
 		dropdown.add_item(to_val)
 		dropdown.select(items.size())
 
-func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans = 0, ease_type = 0) -> Tweener:
+func quick_tween(obj:Variant, prop:String, to:Variant, dur:float, trans = 0, ease_type = 0) -> PropertyTweener:
 	if trans is String: trans = trans_from_string(trans)
 	if ease_type is String: ease_type = ease_from_string(ease_type)
 	return create_tween().tween_property(obj, prop, to, dur).set_trans(trans).set_ease(ease_type)
@@ -75,6 +77,12 @@ func quick_label(t:String = '', s:int = 15, ol_s:int = int(s / 3.0), f:String = 
 	new_label.add_theme_font_size_override('font_size', s)
 	new_label.add_theme_constant_override('outline_size', ol_s)
 	return new_label
+
+func quick_rect(color:Color = Color.WHITE, pos:Vector2 = Vector2.ZERO) -> ColorRect:
+	var new_col_rect:ColorRect = ColorRect.new()
+	new_col_rect.color = color
+	new_col_rect.position = pos
+	return new_col_rect
 
 # Welcome back Psych Engine
 func ease_from_string(ease_type:StringName = &'linear') -> Tween.EaseType:
@@ -99,8 +107,13 @@ func trans_from_string(trans:StringName = &'linear') -> Tween.TransitionType:
 		&'spring' : return Tween.TRANS_SPRING
 		_: return Tween.TRANS_LINEAR
 
+func shake_cam(cam:Camera2D, _power:float = 0.05, _axis:String = 'xy', _length:float = 0.5) -> void:
+	cam = get_viewport().get_camera_2d() if cam == null else cam
+	if cam == null: return printerr('No Camera to shake!')
+
+
 func flash_screen(flash_color:Color = Color.WHITE, duration:float = 1.0) -> void:
-	var flash = ColorRect.new() # i unno ill figure it out later
+	var flash:ColorRect = ColorRect.new() # i unno ill figure it out later
 	flash.color = flash_color
 	flash.size = Vector2(Game.screen[0], Game.screen[1])
 
@@ -113,9 +126,37 @@ func flash_screen(flash_color:Color = Color.WHITE, duration:float = 1.0) -> void
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST
 
+func check_path(path:String) -> String:
+	var new_path:String = path.replace('res://assets/', '').replace(Game.exe_path, '')
+
+	if new_path.get_extension().is_empty():
+		return ''#return DirAccess.dir_exists_absolute(new_path)
+
+	if FileAccess.file_exists(Game.exe_path +'mods/'+ new_path):
+		return Game.exe_path +'mods/'+ new_path
+
+	if ResourceLoader.exists('res://assets/'+ new_path):
+		return 'res://assets/'+ new_path
+	return path
+
+func dir_exists(path:String) -> bool:
+	path = path.replace('res://', '').replace(Game.exe_path, '')
+	return DirAccess.dir_exists_absolute('res://'+ path) or \
+	  DirAccess.dir_exists_absolute(Game.exe_path + path)
+
+func file_exists(path:String) -> bool:
+	path = path.replace('res://assets/', '').replace(Game.exe_path, '')
+	return FileAccess.file_exists(Game.exe_path +'mods/'+ path) or \
+	  ResourceLoader.exists('res://assets/'+ path)
+
+## Loads an .ogg audio file, without it needing to be imported
+func load_audio(path:String) -> AudioStreamOggVorbis:
+	#var file = FileAccess.open(path, FileAccess.READ)
+	return AudioStreamOggVorbis.load_from_file(path)
+
 func get_closest_anim(frames:SpriteFrames, anim:String) -> String:
 	for i in frames.get_animation_names():
-		if i.begins_with(anim): return i
+		if anim.begins_with(i): return i
 	return ''
 
 func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:

@@ -19,19 +19,19 @@ func _ready():
 	# song list
 	if Audio.music != 'freakyMenu':
 		Audio.play_music('freakyMenu')
-		
-	for bleh in base_songs: 
+
+	for bleh in base_songs:
 		base_list.append(bleh.replace('\r', ''))
 	#song_list.append_array(base_songs)
 	#print(base_songs)
 	for song in DirAccess.get_directories_at('res://assets/songs'):
 		if base_list.has(song): continue
 		song_list.append(song)
-	
+
 	list_list.append(base_list)
 	list_list.append(song_list)
 	load_list(base_list)
-	
+
 	for song in base_list:
 		var alphabet = Alphabet.new()
 		alphabet.bold = true
@@ -42,18 +42,18 @@ func _ready():
 		add_child(alphabet)
 	update_list()
 	#print(list_list)
-	
+
 	# pref stuff
 	#var things = [$SickMS, $GoodMS, $BadMS]
 	#for i in 3:
 	#	things[i].value = Prefs.get_pref(ratings[i] +'_window')
-		
+
 	#var txt = Label.new()
 	#txt.text = 'Downscroll: '
 	#txt.position = Vector2(800, 150)
 	#txt.modulate = Color(255, 255, 255)
 	#add_child(txt)
-	
+
 	#downscroll_check = CheckBox.new()
 	#downscroll_check.position.x = txt.position.x + 100
 	#downscroll_check.position.y = txt.position.y
@@ -62,13 +62,13 @@ func _ready():
 	#add_child(downscroll_check)
 	#downscroll_check.toggle_mode = true
 	#downscroll_check.toggled.connect(get_tree().current_scene.downscroll_toggled)
-	
+
 	#var txt2 = Label.new()
 	#txt2.text = 'Hitsounds: '
 	#txt2.position = Vector2(800, 170)
 	#txt2.modulate = Color(255, 255, 255)
 	#add_child(txt2)
-	
+
 	#hitsound_check = CheckBox.new()
 	#hitsound_check.position.x = txt2.position.x + 100
 	#hitsound_check.position.y = txt2.position.y
@@ -77,13 +77,13 @@ func _ready():
 	#add_child(hitsound_check)
 	#hitsound_check.toggle_mode = true
 	#hitsound_check.toggled.connect(get_tree().current_scene.hitsound_toggled)
-	
+
 	#var txt3 = Label.new()
 	#txt3.text = 'Autoplay: '
 	#txt3.position = Vector2(800, 190)
 	#txt3.modulate = Color(255, 255, 255)
 	#add_child(txt3)
-	
+
 	#auto_check = CheckBox.new()
 	#auto_check.position.x = txt3.position.x + 100
 	#auto_check.position.y = txt3.position.y
@@ -92,7 +92,7 @@ func _ready():
 	#add_child(auto_check)
 	#auto_check.toggle_mode = true
 	#auto_check.toggled.connect(get_tree().current_scene.auto_toggled)
-	
+
 	#for pref in Prefs.preferences:
 		#pref
 var i:int = 0
@@ -103,7 +103,7 @@ func load_list(list:Array[String]):
 		remove_child(songs[0])
 		songs.remove_at(0)
 	songs.clear()
-	
+
 	for song in list:
 		var alphabet = Alphabet.new()
 		alphabet.bold = true
@@ -116,7 +116,7 @@ func load_list(list:Array[String]):
 	#	remove_child(item)
 	#	item.queue_free()
 	#selectable_songs.clear()
-	
+
 	#for item in list:
 	#	var song_txt = Label.new()
 	#	song_txt.position = Vector2(100, 50 + (15 * i))
@@ -143,11 +143,11 @@ func _process(delta):
 		switch_list(-1)
 	if Input.is_action_just_pressed('menu_right'):
 		switch_list(1)
-	
+
 	if Input.is_action_just_pressed('back'):
 		Audio.play_sound('cancelMenu')
 		Game.switch_scene('menus/main_menu')
-		
+
 
 func update_list(amount:int = 0):
 	cur_song = wrapi(cur_song + amount, 0, songs.size())
@@ -162,7 +162,7 @@ func switch_list(amount:int = 0):
 	var new_list = list_list[cur_list]
 	load_list(new_list)
 	update_list()
-	
+
 func downscroll_toggled(is_active):
 	Prefs.set_pref('downscroll', is_active)
 

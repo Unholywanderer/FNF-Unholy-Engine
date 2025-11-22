@@ -6,11 +6,14 @@ class_name PlayScene extends Node2D
 
 @onready var Judge:Rating = Rating.new()
 
-var DIE
-var death_screen
+var SONG:Dictionary
+
+var key_names:PackedStringArray = ['note_left', 'note_down', 'note_up', 'note_right']
+var GAME_OVER
 
 var story_mode:bool = false
-var SONG:Dictionary
+var playlist:Array[String] = []
+var song_idx:int = 0
 
 var default_zoom:float = 0.8
 var cur_skin:String = 'default': # yes
@@ -34,18 +37,11 @@ var events:Array[EventData] = []
 var start_time:float = 0 # when the first note is actually loaded
 var spawn_time:int = 2000
 
-var song_idx:int = 0
-var playlist:Array[String] = []
-
 var boyfriend:Character
 var dad:Character
 var gf:Character
-var characters:Array = []
+var characters:Array[Character] = []
 var speaker
-
-var cached_chars:Dictionary = {'bf' = [], 'gf' = [], 'dad' = []}
-
-var key_names:PackedStringArray = ['note_left', 'note_down', 'note_up', 'note_right']
 
 var should_save:bool = !Prefs.auto_play
 var can_pause:bool = true
@@ -68,6 +64,7 @@ func _ready():
 	var spl_path = 'res://assets/images/ui/notesplashes/'+ Prefs.splash_sprite.to_upper() +'.res'
 	if Prefs.daniel: spl_path = 'res://assets/images/ui/notesplashes/FOREVER.res'
 	Game.persist.note_splash = load(spl_path)
+	Game.persist.note_skin = SkinInfo.new()
 
 	auto_play = Prefs.auto_play # there is a reason
 	if Game.persist.song_list.size() > 0:
@@ -77,12 +74,11 @@ func _ready():
 	if !LuaHandler.active_lua.is_empty():
 		LuaHandler.remove_all()
 
-	if JsonHandler._SONG.is_empty(): #i love fallbacks !! !
+	if JsonHandler.SONG.is_empty(): #i love fallbacks !! !
 		JsonHandler.parse_song("test", "hard")
 
-	SONG = JsonHandler._SONG
+	SONG = JsonHandler.SONG
 
-	#if Prefs.femboy: SONG.player1 = 'bf-femboy'
 	if Prefs.daniel and !SONG.player1.contains('bf-girl'):
 		var try = SONG.player1.replace('bf', 'bf-girl')
 		var it_exists = ResourceLoader.exists('res://assets/data/characters/'+ try +'.json')
@@ -115,7 +111,7 @@ func _ready():
 	add.call(gf)
 
 	if !gf.speaker_data.keys().is_empty():
-		var _data = gf.speaker_data
+		var _data:Dictionary = gf.speaker_data
 		match _data.sprite:
 			'ABot': speaker = load('res://game/objects/a_bot.tscn').instantiate()
 			'ABot-pixel': speaker = load('res://game/objects/a_bot_pixel.tscn').instantiate()
@@ -126,21 +122,19 @@ func _ready():
 		speaker.use_parent_material = true
 
 		if _data.has('addons'):
-			for i in _data.addons: # [sprite_name, [offset_x, offset_y], scale, flip_x, add_behind_speaker]
-				var new := AnimatedSprite2D.new()
-				new.sprite_frames = load('res://assets/images/characters/speakers/addons/'+ i[0] +'.res')
-				new.centered = false
-				new.name = i[0]
+			for i in _data.addons:
+				# [sprite_name, [offset_x, offset_y], scale, flip_x, layer]
+				var new := Speaker.Addon.new(i[0], i[1])
 
-				new.offset = Vector2(i[1][0], i[1][1])
 				new.scale = Vector2(i[2], i[2])
 				new.flip_h = i[3]
-				new.use_parent_material = true
 
 				gf.add_child(new)
-				new.show_behind_parent = true
-				if i.size() >= 5 and i[4]: # add behind speaker
-					new.reparent(speaker)
+				if i.size() >= 5:
+					match i[4].to_lower():
+						'back': new.reparent(speaker)
+						'front': new.show_behind_parent = false
+						#_: gf.add_child(new)
 				speaker.addons.append(new)
 
 	if gf.cur_char.to_lower().ends_with('-speaker') and cur_stage.contains('tank'):
@@ -169,8 +163,6 @@ func _ready():
 
 	if cur_stage.begins_with('school'):
 		cur_skin = 'pixel'
-		#Game.persist.note_splash = load('res://assets/images/ui/notesplashes/BASE-pixel.res')
-		#Prefs.splash_sprite = 'base-pixel'
 
 	Judge.skin = ui.SKIN
 	if Prefs.rating_cam == 'game':
@@ -204,15 +196,26 @@ func _ready():
 
 	Conductor.connect_signals(stage)
 
-	for i in DirAccess.get_files_at('res://assets/data/scripts'): #ResourceLoader.list_directory('res://assets/data/scripts'):
+	for i in DirAccess.get_files_at('res://assets/data/scripts'):
+		#ResourceLoader.list_directory('res://assets/data/scripts'):
 		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
 
-	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root): #ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
+	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
+		#ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
 		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
 
-	if DIE == null:
+	if !OS.is_debug_build(): # scripts for exported builds
+		var folder:String = Game.exe_path +'mods/'
+		for i in DirAccess.get_files_at(folder +'/data/scripts'):
+			if i.ends_with('.lua'): LuaHandler.add_script(folder +'data/scripts/'+ i)
+
+		for i in DirAccess.get_files_at(folder +'songs/'+ JsonHandler.song_root):
+			if i.ends_with('.lua'):
+				LuaHandler.add_script(folder +'songs/'+ JsonHandler.song_root +'/'+ i)
+
+	if GAME_OVER == null:
 		var char_suff = '-pico' if boyfriend.cur_char.contains('pico') else ''
-		DIE = load('res://game/scenes/game_over'+ char_suff +'.tscn')
+		GAME_OVER = load('res://game/scenes/game_over'+ char_suff +'.tscn').instantiate()
 
 	stage.post_ready()
 	LuaHandler.call_func('post_ready')
@@ -261,6 +264,7 @@ func _process(delta):
 		var new_note:Note = Note.new(NoteData.new(chart_notes[chunk]))
 		new_note.speed = cur_speed
 		notes.append(new_note)
+
 		if new_note.must_press and new_note.should_hit: note_count += 1
 
 		var to_add:String = 'player' if new_note.must_press else 'opponent'
@@ -272,8 +276,10 @@ func _process(delta):
 
 			notes.append(new_sustain)
 			ui.add_to_strum_group(new_sustain, to_add)
+			#LuaHandler.call_func('note_added', [new_sustain])
 
 		ui.add_to_strum_group(new_note, to_add)
+		#LuaHandler.call_func('note_added', [new_note])
 		chunk += 1
 
 	if !notes.is_empty():
@@ -415,12 +421,11 @@ func try_death() -> void:
 	Game.persist['deaths'] += 1
 	kill_all_notes()
 	boyfriend.process_mode = Node.PROCESS_MODE_ALWAYS
-	boyfriend.top_level = true
-	gf.play_anim('sad')
+	if gf.has_anim('sad'):
+		gf.play_anim('sad')
 	get_tree().paused = true
-	var death = DIE.instantiate()
 	stage.game_over_start()
-	add_child(death)
+	add_child(GAME_OVER)
 
 func _exit_tree() -> void:
 	Game.persist.set('seen_cutscene', false)
@@ -469,7 +474,7 @@ func song_end() -> void:
 	else:
 		song_idx += 1
 		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
-		SONG = JsonHandler._SONG
+		SONG = JsonHandler.SONG
 		cur_speed = SONG.speed
 		Conductor.load_song(SONG.song)
 		refresh(true)
@@ -608,7 +613,10 @@ func event_hit(event:EventData) -> void:
 				#peep.can_sing = !data.force
 		'SetCameraBop':
 			zoom_beat = event.values[0].rate
-			zoom_add.game = event.values[0].intensity / 25.0
+			if event.values[0].intensity != 0:
+				zoom_add.game = event.values[0].intensity / 25.0
+			else:
+				zoom_add.game = 0
 		'ZoomCamera':
 			var data = event.values[0]
 			var zoom_mode = 'direct'

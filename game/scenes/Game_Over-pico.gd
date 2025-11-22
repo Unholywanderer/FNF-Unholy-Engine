@@ -1,278 +1,218 @@
-extends Node2D
+extends Control
 
-signal on_game_over(s) # when you first die, with the deathStart anim and sounds
-signal on_game_over_idle(s) # after the timer is done and the deathLoop starts
-signal on_game_over_confirm(is_retry:bool, s) # once you choose to either leave or retry the song
+## When you first die, emitted BEFORE the deathStart anim and sounds
+signal on_game_over()
+## After the timer is done and the idle deathLoop starts
+signal on_game_over_idle()
+## Once you choose to either leave or retry the song
+signal on_game_over_confirm(is_retry:bool)
 
-var dead
-var _char_name:String
-var this = Game.scene
-var last_cam_pos:Vector2
-var last_zoom:Vector2
-var death_delay:float = 0
-enum DEATH_TYPE {
+# always have these loaded since its the normal game over shit
+const nene_frames:SpriteFrames = preload('res://assets/images/characters/pico/ex_death/nene_toss.res')
+const retry_frames:SpriteFrames = preload('res://assets/images/characters/pico/ex_death/retry.res')
+
+var pico:Character
+var this := Game.scene
+var cam:Camera2D = this.cam #get_viewport().get_camera_2d()
+
+enum TYPES {
+	## Nene throws knife and pico bleeds to death
+	NORMAL,
+	## Paint can explodes on pico
 	EXPLODE,
+	## Pico got his shit rocked
 	PUNCH,
-	NORMAL
+	## Love hurts or something like that
+	NENE,
 }
-var we_dyin:DEATH_TYPE = DEATH_TYPE.NORMAL
-var music:String = 'gameOver-pico'
+@export var death_delay:float = 0.0
+@export var death_type:TYPES = TYPES.NORMAL
+@export var death_char:String = ''
+@export var death_music:String = 'gameOver-pico'
+
 var on_death_start:Callable = func(): # once the death sound and deathStart finish playing
 	if !retried:
-		Audio.play_music('skins/'+ this.cur_skin +'/'+ music)
-		dead.play_anim('deathLoop')
-	on_game_over_idle.emit(self)
+		Audio.play_music('skins/%s/%s' % [this.cur_skin, death_music])
+		pico.play_anim('deathLoop')
+	on_game_over_idle.emit()
+	timer.timeout.disconnect(on_death_start)
 
 var on_death_confirm:Callable = func(): # once the player chooses to retry
-	var cam_twen = create_tween().tween_property(this.cam, 'position', last_cam_pos, 1).set_trans(Tween.TRANS_SINE)
-	create_tween().tween_property($BG, 'modulate:a', 0, 0.7).set_trans(Tween.TRANS_SINE)
-	create_tween().tween_property(this.cam, 'zoom', last_zoom, 1).set_trans(Tween.TRANS_SINE)
+	cam.process_mode = Node.PROCESS_MODE_INHERIT
 
-	await cam_twen.finished
-	for i in [this.ui, this.cam, this.boyfriend, this.stage]:
-		i.process_mode = Node.PROCESS_MODE_INHERIT
-	if this.stage.has_node('CharGroup'):
-		for i in this.stage.get_node('CharGroup').get_children():
-			i.process_mode = Node.PROCESS_MODE_INHERIT
+	Util.quick_tween(fade, 'color:a', 1, 0.7, 'sine').set_delay(1.0)
+	var zoom := create_tween()
+	zoom.tween_method(func(val):
+		cam.zoom = val
+		follow_bg()
+	, cam.zoom, Vector2(0.4, 0.4), 1.6).set_delay(0.2).set_trans(Tween.TRANS_QUAD)
 
-	dead.position = this.stage.bf_pos
-	dead.load_char(_char_name)
-	dead.top_level = false
+	zoom.finished.connect(func():
+		await RenderingServer.frame_post_draw
+		Game.reset_scene()
+		queue_free()
+	)
 
-	this.cam.position_smoothing_speed = 4
-	this.gf.danced = true
-	#this.boyfriend.visible = true
-	#this.dad.visible = true
-	this.ui.visible = true
-	get_tree().paused = false
-	this.refresh()
-	queue_free()
-	#this.boyfriend.dance()
+var _death_audio:AudioStreamPlayer
+var retry:AnimatedSprite2D
 
-var death_sound:AudioStreamPlayer
-var retry:AnimatedSprite2D = AnimatedSprite2D.new()
-
-var smoke:AnimatedSprite2D
 @onready var timer:Timer = $Timer
+@onready var bg:ColorRect = %BG
+@onready var fade:ColorRect = %Fade
 func _ready():
 	Audio.stop_all_sounds()
+
+	Conductor.paused = true
+
 	Game.focus_change.connect(focus_change)
-	Discord.change_presence('Game Over on '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'I\'ll get it next time maybe')
+	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'I\'ll get it next time maybe')
 
-	#await RenderingServer.frame_post_draw
-	for i in [this.ui, this.cam, this.stage]:
-		i.process_mode = Node.PROCESS_MODE_ALWAYS
+	follow_bg()
+	cam.process_mode = Node.PROCESS_MODE_ALWAYS
 
-	if this.stage.has_node('CharGroup'):
-		for i in this.stage.get_node('CharGroup').get_children():
-			if i == this.boyfriend: continue
-			i.process_mode = Node.PROCESS_MODE_DISABLED
-
-	this.ui.stop_countdown()
 	on_game_over.connect(this.stage.game_over_start)
 	on_game_over_idle.connect(this.stage.game_over_idle)
 	on_game_over_confirm.connect(this.stage.game_over_confirm)
 
-	on_game_over.emit(self)
+	on_game_over.emit()
 
 	this.ui.visible = false
-	#this.boyfriend.visible = false # hide his ass!!!
-	Conductor.paused = true
 
-	$BG.modulate.a = 0
-	$BG.scale = (Vector2.ONE / this.cam.zoom) + Vector2(0.05, 0.05)
-	$BG.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / this.cam.zoom)
-	$BG.position -= Vector2(5, 5) # you could see the stage bg leak out
-	$Fade.modulate.a = 0
+	pico = this.boyfriend
+	pico.reparent(self)
+	pico.material = null
 
-	var da_boy = this.boyfriend.death_char
-	if we_dyin == DEATH_TYPE.EXPLODE: da_boy = 'pico-explode'
-	if da_boy == 'bf-dead' and ResourceLoader.exists('res://assets/data/characters/'+ this.boyfriend.cur_char +'-dead.json'):
-		da_boy = this.boyfriend.cur_char +'-dead'
+	if death_char.is_empty(): # if empty, get the death char from the json
+		death_char = pico.death_char
 
-	#if we_dyin == DEATH_TYPE.EXPLODE:
-		#dead = AnimateSymbol.new()
-		#dead.position = this.boyfriend.position - Vector2(100, 200)
-		#dead.atlas = 'res://assets/images/characters/pico/ex_death/explosion'
-		#dead.playing = false
-	#else:
-	dead = this.boyfriend #Character.new(this.boyfriend.position, da_boy, true)
-	_char_name = dead.cur_char
-	dead.load_char(da_boy)
+	if death_type == TYPES.EXPLODE:
+		death_char = pico.cur_char +'-explode'
 
-	dead.play_anim('deathStart', true) # apply the offsets
-	#dead.stop()
-	#add_child(dead)
-	#move_child(dead, 1)
+	if !death_char.is_empty():
+		pico.global_position = this.stage.bf_pos
+		pico.load_char(death_char)
+	pico.play_anim('deathStart', true) # apply the offset
 
 	var sound_suff:String = '-pico'
 
-	match we_dyin:
-		DEATH_TYPE.EXPLODE:
-			death_delay = 2
+	match death_type:
+		TYPES.EXPLODE:
+			death_delay = 1.55
 			sound_suff += '-explode'
-			music = 'gameOver-pico-explode'
+			death_music += '-explode'
 			Audio.Player.finished.connect(func():
 				if Audio.music.ends_with('-explode'):
-					Audio.play_music('gameOver-pico')
+					Audio.play_music('skins/'+ this.cur_skin +'/gameOver-pico')
 			)
-
-			var other = AnimatedSprite2D.new()
-			other.sprite_frames = ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
-			other.position = dead.position + Vector2(320, 100)
-			add_child(other)
-			other.play('start')
-
-			retry = AnimatedSprite2D.new()
-			retry.sprite_frames = ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
-			retry.position = dead.position + Vector2(320, 100)
-			add_child(retry)
-			move_child(retry, dead.get_index())
-			retry.play('start')
-			other.frame_changed.connect(func():
-				if other.frame == 35:
-					create_tween().tween_property(other, 'modulate:a', 0, 0.5).finished.connect(other.queue_free)
-			)
-
-			retry.animation_finished.connect(func():
-				if retry.animation == 'start': retry.play('loop')
-				if retry.animation == 'confirm': retry.queue_free()
-			)
-
-		DEATH_TYPE.PUNCH:
+		TYPES.PUNCH:
 			sound_suff += '-gutpunch'
 			death_delay = -1
-			retry.sprite_frames = ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
-			retry.position = dead.position - Vector2(100, 90)
-			add_child(retry)
-			retry.scale = Vector2(1.75, 1.75)
+		TYPES.NENE:
+			sound_suff += '-and-nene'
+			death_delay = -1
+			cam.position = pico.get_cam_pos()
 		_:
 			death_delay = -0.8
-			var al_la_nene = AnimatedSprite2D.new()
-			al_la_nene.sprite_frames = ResourceLoader.load('res://assets/images/characters/pico/ex_death/nene_toss.res')
-			al_la_nene.position = this.gf.position + Vector2(290, 200)
-			add_child(al_la_nene)
-			move_child(al_la_nene, dead.get_index())
-			al_la_nene.play('toss')
-			al_la_nene.animation_finished.connect(al_la_nene.queue_free)
+			var el_nene = AnimatedSprite2D.new()
+			el_nene.centered = false
+			el_nene.sprite_frames = nene_frames
+			el_nene.position = this.gf.global_position + Vector2(150, 0)
+			add_child(el_nene)
+			move_child(el_nene, pico.get_index())
+			el_nene.play('toss')
+			el_nene.animation_finished.connect(el_nene.queue_free)
 
-			retry.sprite_frames = load('res://assets/images/characters/pico/ex_death/retry.res')
-			retry.position = dead.position + Vector2((dead.width / 3.2) + 10, -20)
-			retry.visible = false
-			add_child(retry)
+			if !pico.cur_char.ends_with('-pixel-dead'): # pixel pico has his own baked in
+				retry = AnimatedSprite2D.new()
+				retry.sprite_frames = retry_frames
+				retry.position = pico.position + Vector2((pico.width / 3.2) + 10, -20)
+				retry.visible = false
+				add_child(retry)
+				retry.top_level = true
 
-	retry.top_level = true
-	death_sound = Audio.return_sound('fnf_loss_sfx'+ sound_suff, true)
+	_death_audio = Audio.return_sound('fnf_loss_sfx'+ sound_suff, true)
 
-	last_cam_pos = this.cam.position
-	last_zoom = this.cam.zoom
-
-	if we_dyin == DEATH_TYPE.NORMAL:
-		$BG.modulate.a = 1
+	if death_type == TYPES.NORMAL:
+		bg.color.a = 1
 	else:
-		create_tween().tween_property($BG, 'modulate:a', 1, 0.7).set_trans(Tween.TRANS_SINE)
+		Util.quick_tween(bg, 'color:a', 1, 0.7, 'sine')
 	timer.start(2.5 + death_delay)
 	timer.timeout.connect(on_death_start)
 
-	await get_tree().create_timer(0.05).timeout
-	dead.play_anim('deathStart', true)
-	death_sound.play()
-	if we_dyin != DEATH_TYPE.NORMAL:
-		retry.play('start')
-
-	if this.dad.cur_char == 'pico':
-		await get_tree().create_timer(0.4).timeout
-		this.dad.visible = false
-		var dead2 = Character.new(this.dad.position - Vector2(1100, 0), 'pico-dead')
-		add_child(dead2)
-
-		dead2.play_anim('deathStart', true)
-
-		Audio.play_sound('fnf_loss_sfx-pico', 1, true)
-		await get_tree().create_timer(1).timeout
-		dead2.play_anim('deathLoop')
-		var other_music:AudioStreamPlayer = AudioStreamPlayer.new()
-		add_child(other_music)
-		other_music.stream = load('res://assets/music/skins/default/gameOver-pico.ogg')
-		other_music.finished.connect(other_music.play)
-		other_music.play()
+	_death_audio.play()
 
 var retried:bool = false
 var focused:bool = false
 var stop_sync:bool = false
 func _process(delta):
-	$BG.scale = (Vector2.ONE / this.cam.zoom) + Vector2(0.05, 0.05)
-	$BG.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / this.cam.zoom)
-	$BG.position -= Vector2(5, 5) # you could see the stage bg leak out
-	$Fade.position = $BG.position
+	follow_bg()
 
-	if (dead.frame >= 14 or dead.anim_finished) and !focused:
+	if (((pico.is_atlas and pico.atlas.frame_index >= 14) or pico.frame >= 14) or
+	   pico.anim_finished) and !focused:
 		focused = true
-		this.cam.position_smoothing_speed = 2
-		this.cam.position = dead.position
-		match we_dyin:
-			DEATH_TYPE.EXPLODE:
-				this.cam.position += Vector2(dead.width / 3.5, (dead.height / 2))
-			DEATH_TYPE.PUNCH:
-				this.cam.position += Vector2(dead.width / 6.0, -(dead.height / 2.5))
-			_: this.cam.position += Vector2(dead.width / 3.5, (dead.height / 2) - 150)
+		cam.position_smoothing_speed = 2
+		cam.position = pico.get_cam_pos()
+		#match death_type:
+		#	TYPES.EXPLODE:
+		#		cam.position += Vector2(pico.width / 3.5, (pico.height / 2))
+		#	TYPES.PUNCH:
+		#		cam.position += Vector2(pico.width / 6.0, -(pico.height / 2.5))
+		#	_: cam.position += Vector2(pico.width / 3.5, (pico.height / 2) - 150)
 
 	if !retried:
-		var zoo = 1.05 if we_dyin == DEATH_TYPE.NORMAL else 0.9
-		this.cam.zoom.x = lerpf(this.cam.zoom.x, zoo, delta * 4)
-		this.cam.zoom.y = this.cam.zoom.x
+		var zoo:float = 1.05 if death_type == TYPES.NORMAL else 0.9
+		cam.zoom.x = lerpf(cam.zoom.x, zoo, delta * 4)
+		cam.zoom.y = cam.zoom.x
 
-		if we_dyin == DEATH_TYPE.NORMAL:
-			if retry != null and dead.frame >= 35 and !retry.visible:
-				retry.visible = true
-				retry.play('loop')
-
-		if we_dyin == DEATH_TYPE.PUNCH and !stop_sync:
-			stop_sync = dead.frame >= retry.sprite_frames.get_frame_count('start')
+		if death_type == TYPES.NORMAL and retry.sprite_frames and pico.frame >= 35 and !retry.visible:
+			retry.visible = true
+			retry.play('loop')
 
 		if Input.is_action_just_pressed('accept'):
 			stop_sync = true
-			on_game_over_confirm.emit(true, self)
+			on_game_over_confirm.emit(true)
 
-			#if death_sound != null and death_sound.get_playback_position() < 1.0: # skip to mic drop
-			#	death_sound.play(1)
 			timer.paused = false
 			timer.start(2)
-			timer.timeout.disconnect(on_death_start)
 			timer.timeout.connect(on_death_confirm)
 
 			retried = true
 			Audio.play_music('skins/'+ this.cur_skin +'/gameOverEnd-pico', false)
-			dead.play_anim('deathConfirm', true)
-			if retry != null:
+			if pico.has_anim('deathConfirm'):
+				pico.play_anim('deathConfirm', true)
+			if retry:
 				retry.play('confirm')
-				if we_dyin == DEATH_TYPE.NORMAL:
-					create_tween().tween_property(retry, "position:y", retry.position.y - 400, 2.0)\
-					 .set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN).set_delay(0.5)
-					create_tween().tween_property(retry, 'modulate:a', 0, 1.2).set_delay(0.5)
-
-			await get_tree().create_timer(0.5).timeout
-			dead.play_anim('deathStart', true, true)
-			dead.speed_scale = 1.05
+				if death_type == TYPES.NORMAL:
+					Util.quick_tween(retry, "position:y", retry.position.y - 400, 2.0, 'cubic', 'in')\
+					.set_delay(0.5)
+					Util.quick_tween(retry, 'modulate:a', 0, 1.2).set_delay(0.5)
 
 		if Input.is_action_just_pressed('back'):
-			on_game_over_confirm.emit(false, self)
+			on_game_over_confirm.emit(false)
 
 			timer.stop()
 			Audio.stop_music()
 			Audio.stop_all_sounds()
 			Conductor.reset()
 			get_tree().paused = false
-			Game.switch_scene('menus/freeplay', true)
+			Game.switch_scene('menus/freeplay_classic', true)
+
+func follow_bg() -> void:
+	bg.scale = (Vector2.ONE / cam.zoom) + Vector2(0.05, 0.05)
+	bg.position = (get_viewport().get_camera_2d().get_screen_center_position() - (get_viewport_rect().size / 2.0) / cam.zoom)
+	bg.position -= Vector2(5, 5) # you could see the stage bg leak out
+	fade.position = bg.position
+	fade.scale = bg.scale
 
 func focus_change(is_focused):
 	timer.paused = !is_focused
-	if death_sound != null: death_sound.stream_paused = !is_focused
+	if _death_audio: _death_audio.stream_paused = !is_focused
 	var is_retry_fin:bool = true
-	if retry != null: is_retry_fin = (retry.frame == retry.sprite_frames.get_frame_count(retry.animation) - 1)
+	if retry and retry.sprite_frames:
+		is_retry_fin = (retry.frame == retry.sprite_frames.get_frame_count(retry.animation) - 1)
 	if !is_focused:
 		if !is_retry_fin: retry.pause()
-		dead.pause()
+		if !pico.is_atlas: pico.pause()
 	else:
 		if !is_retry_fin: retry.play()
-		dead.play()
+		if !pico.is_atlas: pico.play()

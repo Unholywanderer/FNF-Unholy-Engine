@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="SkinBase" load_steps=6 format=3 uid="uid://bdcsffwlt57l6"]
+
+[ext_resource type="Texture2D" uid="uid://nh6pwic4tpeb" path="res://assets/images/ui/skins/pixel/nums.png" id="1_ugngu"]
+[ext_resource type="Texture2D" uid="uid://d041x0wqig88d" path="res://assets/images/ui/skins/pixel/ratings.png" id="2_ktfjk"]
+[ext_resource type="Script" uid="uid://c7sqgokd3g2au" path="res://game/resources/SkinBase.gd" id="3_2a0hi"]
+[ext_resource type="SpriteFrames" uid="uid://bg6k5n320hfyf" path="res://assets/images/ui/skins/pixel/strums.res" id="4_2ur32"]
+[ext_resource type="Texture2D" uid="uid://uwqxhyxeacjg" path="res://assets/images/ui/skins/pixel/timings.png" id="5_lgchg"]
+
+[resource]
+script = ExtResource("3_2a0hi")
+cur_skin = "pixel"
+strum_skin = ExtResource("4_2ur32")
+rating_skin = ExtResource("2_ktfjk")
+num_skin = ExtResource("1_ugngu")
+timing_skin = ExtResource("5_lgchg")
+strum_scale = Vector2(6, 6)
+note_scale = Vector2(6, 6)
+rating_scale = Vector2(5, 5)
+num_scale = Vector2(5.5, 5.5)
+time_scale = Vector2(2.5, 2.5)
+mark_scale = Vector2(4, 4)
+countdown_scale = Vector2(6, 6)
+antialiased = false

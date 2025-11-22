@@ -30,7 +30,7 @@ func _ready():
 	volume = Prefs.saved_volume
 
 	Util.center_obj($Volume, 'x')
-	$Volume.position.x -= ($Volume.size.x * $Volume.scale.x) / 2.0
+	#$Volume.position.x -= ($Volume.size.x * $Volume.scale.x) / 2.0
 	$Other.visible = OS.is_debug_build()
 
 var debug_data:bool = false
@@ -56,7 +56,7 @@ func _process(delta):
 		#if tex_mem > texture_memory_peak:
 		#	texture_memory_peak = tex_mem
 
-		if Input.is_action_just_pressed('debug_2'):
+		if Input.is_action_just_pressed('debug_2') and !get_viewport().gui_get_focus_owner():
 			debug_data = !debug_data
 
 		var txt_add:String = 'Press (Debug 2) for more info'
@@ -79,9 +79,10 @@ func _process(delta):
 
 
 func _unhandled_key_input(event:InputEvent):
-	if event.is_action_pressed('vol_up') or event.is_action_pressed('vol_down'):
-		pressed_key = true
-		volume = min(volume + (1 * Input.get_axis('vol_down', 'vol_up')), 10)
+	if get_viewport().gui_get_focus_owner() == null:
+		if event.is_action_pressed('vol_up') or event.is_action_pressed('vol_down'):
+			pressed_key = true
+			volume = min(volume + (1 * Input.get_axis('vol_down', 'vol_up')), 10)
 
 	if Input.is_key_pressed(KEY_F4): LuaHandler.reload_scripts()
 	if Input.is_key_pressed(KEY_F5):

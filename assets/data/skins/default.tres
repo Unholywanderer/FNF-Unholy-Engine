@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="SkinBase" load_steps=6 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/images/ui/skins/default/nums.png" id="1_lpaih"]
+[ext_resource type="Texture2D" path="res://assets/images/ui/skins/default/ratings.png" id="2_c08a1"]
+[ext_resource type="Script" path="res://game/resources/SkinBase.gd" id="3_52ghp"]
+[ext_resource type="SpriteFrames" path="res://assets/images/ui/skins/default/strums.res" id="4_kv7a5"]
+[ext_resource type="Texture2D" path="res://assets/images/ui/skins/default/timings.png" id="5_6i6kl"]
+
+[resource]
+script = ExtResource("3_52ghp")
+cur_skin = "default"
+strum_skin = ExtResource("4_kv7a5")
+rating_skin = ExtResource("2_c08a1")
+num_skin = ExtResource("1_lpaih")
+timing_skin = ExtResource("5_6i6kl")
+strum_scale = Vector2(0.7, 0.7)
+note_scale = Vector2(0.7, 0.7)
+rating_scale = Vector2(0.7, 0.7)
+num_scale = Vector2(0.5, 0.5)
+time_scale = Vector2(0.7, 0.7)
+mark_scale = Vector2(0.4, 0.4)
+has_countdown = true
+countdown_scale = Vector2(1, 1)
+antialiased = true

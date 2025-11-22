@@ -1,55 +1,29 @@
-[gd_scene load_steps=17 format=3 uid="uid://deksi37bicvb3"]
+[gd_scene load_steps=15 format=3 uid="uid://deksi37bicvb3"]
 
 [ext_resource type="Script" uid="uid://dt4t8ibp485bx" path="res://game/scenes/debug/Charting_Scene.gd" id="1_li1ut"]
 [ext_resource type="Texture2D" uid="uid://c2r5ulxx1lb0t" path="res://assets/images/menuDark.png" id="2_g7jes"]
 [ext_resource type="PackedScene" uid="uid://cxm5dlppp62td" path="res://game/objects/charting/chart_line.tscn" id="3_nef5n"]
+[ext_resource type="Theme" uid="uid://bbjl6c1muuuvf" path="res://assets/data/skins/MinimalUI.tres" id="5_7uqx1"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="5_85d4d"]
 [ext_resource type="PackedScene" uid="uid://wcwdtmwuvcvy" path="res://game/objects/charting/tab_Chart.tscn" id="5_s5ygp"]
 [ext_resource type="PackedScene" uid="uid://crkjoido6ywl4" path="res://game/objects/charting/tab_Events.tscn" id="6_b5b73"]
 [ext_resource type="PackedScene" uid="uid://c1grjonp1kg71" path="res://game/objects/charting/tab_Notes.tscn" id="7_p04ox"]
 [ext_resource type="PackedScene" uid="uid://olqp78f66slw" path="res://game/objects/charting/tab_Section.tscn" id="8_dlht4"]
 [ext_resource type="PackedScene" uid="uid://dy6ra5sr6shul" path="res://game/objects/charting/tab_Song.tscn" id="9_hxyvv"]
-[ext_resource type="PackedScene" uid="uid://bfvp1yk8ek2e6" path="res://game/objects/charting/tab_ChartWin.tscn" id="10_7fjlb"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jwrmc"]
-bg_color = Color(0.237539, 0.237539, 0.237539, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dor2"]
-bg_color = Color(0.788235, 0.788235, 0.788235, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_omfdg"]
 bg_color = Color(0.152941, 0.152941, 0.152941, 0.921569)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_63kew"]
-bg_color = Color(0.215902, 0.215902, 0.215902, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-expand_margin_left = 3.0
-expand_margin_top = 20.0
-expand_margin_right = 3.0
-expand_margin_bottom = 3.0
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_irmsa"]
+color = Color(0.0962048, 0.0962047, 0.0962047, 1)
+grow_begin = 0.0
+grow_end = 0.0
+thickness = 14
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jqob8"]
-bg_color = Color(0.215686, 0.215686, 0.215686, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-expand_margin_left = 2.0
-expand_margin_top = 20.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7uqx1"]
 
-[sub_resource type="Theme" id="Theme_rolgm"]
-Window/constants/close_h_offset = 95
-Window/constants/close_v_offset = -11
-Window/constants/resize_margin = 0
-Window/constants/title_height = 0
-Window/constants/title_outline_size = 0
-Window/styles/embedded_border = SubResource("StyleBoxFlat_63kew")
-Window/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_jqob8")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hhfsi"]
+expand_margin_bottom = 4.0
 
 [node name="Charting_Scene" type="Node2D"]
 script = ExtResource("1_li1ut")
@@ -64,9 +38,11 @@ texture = ExtResource("2_g7jes")
 position = Vector2(390, 320)
 
 [node name="Cam" type="Camera2D" parent="."]
-position = Vector2(639, 360)
+position = Vector2(640, 360)
 
 [node name="ChartUI" type="CanvasLayer" parent="."]
+
+[node name="Funkers" type="Node2D" parent="ChartUI"]
 
 [node name="WaveformToggle" type="OptionButton" parent="ChartUI"]
 offset_left = 1009.0
@@ -75,12 +51,16 @@ offset_right = 1215.0
 offset_bottom = 315.0
 focus_mode = 0
 alignment = 1
+selected = 0
+item_count = 1
+popup/item_0/text = "None"
+popup/item_0/id = 0
 
 [node name="Info" type="Label" parent="ChartUI"]
-offset_left = 850.0
-offset_top = 20.0
-offset_right = 1232.0
-offset_bottom = 142.0
+offset_left = 840.0
+offset_top = 75.0
+offset_right = 1222.0
+offset_bottom = 197.0
 theme_override_fonts/font = ExtResource("5_85d4d")
 theme_override_font_sizes/font_size = 25
 text = "Beat: %s
@@ -89,51 +69,134 @@ Sect: %s
 
 Snap: 16th"
 
-[node name="SongProgress" type="ProgressBar" parent="ChartUI"]
-offset_left = -1.0
-offset_top = 706.0
-offset_right = 1280.0
-offset_bottom = 733.0
-theme_override_styles/background = SubResource("StyleBoxFlat_jwrmc")
-theme_override_styles/fill = SubResource("StyleBoxFlat_3dor2")
-step = 0.0
-value = 50.0
-show_percentage = false
-
-[node name="Time" type="Label" parent="ChartUI/SongProgress"]
-layout_mode = 0
-offset_left = 5.0
-offset_top = -24.0
-offset_right = 120.0
-offset_bottom = 1.0
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("5_85d4d")
-theme_override_font_sizes/font_size = 25
-text = "0:00"
-
-[node name="Length" type="Label" parent="ChartUI/SongProgress"]
-layout_mode = 0
-offset_left = 1160.0
-offset_top = -24.0
-offset_right = 1275.0
-offset_bottom = 1.0
-theme_override_constants/outline_size = 5
-theme_override_fonts/font = ExtResource("5_85d4d")
-theme_override_font_sizes/font_size = 25
-text = "0:00"
-horizontal_alignment = 2
-
-[node name="Control" type="Control" parent="ChartUI"]
+[node name="Buttons" type="Control" parent="ChartUI"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 980.0
+offset_right = 1280.0
+offset_bottom = 31.0
+theme = ExtResource("5_7uqx1")
+
+[node name="View" type="Button" parent="ChartUI/Buttons"]
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 30.0
+text = "View"
+
+[node name="Menu" type="Control" parent="ChartUI/Buttons/View"]
+visible = false
+show_behind_parent = true
+clip_contents = true
+anchors_preset = 0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 225.0
+
+[node name="BG" type="ColorRect" parent="ChartUI/Buttons/View/Menu"]
+visible = false
+layout_mode = 0
+offset_top = -31.0
+offset_right = 100.0
+offset_bottom = 229.0
+color = Color(0.11858138, 0.11858138, 0.11858138, 1)
+
+[node name="BoysToggle" type="Button" parent="ChartUI/Buttons/View/Menu"]
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 30.0
+focus_mode = 0
+text = "Funky Boys"
+
+[node name="GridToggle" type="Button" parent="ChartUI/Buttons/View/Menu"]
+layout_mode = 0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 60.0
+focus_mode = 0
+text = "Chart Grid"
+
+[node name="Waveform" type="OptionButton" parent="ChartUI/Buttons/View/Menu"]
+layout_mode = 0
+offset_top = 60.0
+offset_right = 100.0
+offset_bottom = 90.0
+focus_mode = 0
+alignment = 1
+selected = 0
+item_count = 2
+popup/item_0/text = "Waveform"
+popup/item_0/id = 1
+popup/item_0/separator = true
+popup/item_1/text = "None"
+popup/item_1/id = 0
+
+[node name="Data" type="Button" parent="ChartUI/Buttons"]
+layout_mode = 0
+offset_left = 100.0
+offset_right = 200.0
+offset_bottom = 30.0
+text = "Data"
+
+[node name="Menu" type="Control" parent="ChartUI/Buttons/Data"]
+visible = false
+show_behind_parent = true
+clip_contents = true
+anchors_preset = 0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 225.0
+mouse_default_cursor_shape = 2
+
+[node name="BG" type="ColorRect" parent="ChartUI/Buttons/Data/Menu"]
+visible = false
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 230.0
+color = Color(0.11858138, 0.11858138, 0.11858138, 1)
+
+[node name="TypeChange" type="Button" parent="ChartUI/Buttons/Data/Menu"]
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 30.0
+focus_mode = 0
+text = "Chart Type..."
+
+[node name="Edit" type="Button" parent="ChartUI/Buttons"]
+layout_mode = 0
+offset_left = 200.0
+offset_right = 300.0
+offset_bottom = 30.0
+text = "Edit"
+
+[node name="Menu" type="Control" parent="ChartUI/Buttons/Edit"]
+visible = false
+show_behind_parent = true
+clip_contents = true
+anchors_preset = 0
+offset_top = 30.0
+offset_right = 100.0
+offset_bottom = 225.0
+
+[node name="BG" type="ColorRect" parent="ChartUI/Buttons/Edit/Menu"]
+visible = false
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 230.0
+color = Color(0.11858138, 0.11858138, 0.11858138, 1)
+
+[node name="Convert" type="Button" parent="ChartUI/Buttons/Edit/Menu"]
+layout_mode = 0
+offset_right = 100.0
+offset_bottom = 30.0
+focus_mode = 0
+text = "Convert..."
 
 [node name="Tabs" type="TabContainer" parent="ChartUI"]
 offset_left = 850.0
 offset_top = 348.0
 offset_right = 1230.0
 offset_bottom = 679.0
+theme = ExtResource("5_7uqx1")
 theme_override_styles/panel = SubResource("StyleBoxFlat_omfdg")
 tab_alignment = 1
 current_tab = 0
@@ -161,14 +224,36 @@ metadata/_tab_index = 3
 visible = false
 layout_mode = 2
 
-[node name="ChartTools" type="Window" parent="ChartUI"]
-position = Vector2i(30, 80)
-size = Vector2i(335, 230)
-visible = false
-unresizable = true
-theme = SubResource("Theme_rolgm")
+[node name="SongProgress" type="HSlider" parent="ChartUI"]
+offset_top = 692.0
+offset_right = 1280.0
+offset_bottom = 734.0
+focus_mode = 0
+theme_override_styles/slider = SubResource("StyleBoxLine_irmsa")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_7uqx1")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_hhfsi")
+step = 0.0
+value = 50.0
 
-[node name="Chart" parent="ChartUI/ChartTools" instance=ExtResource("10_7fjlb")]
-offset_top = -4.0
-offset_right = 266.0
-offset_bottom = 122.435
+[node name="Time" type="Label" parent="ChartUI/SongProgress"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = -12.0
+offset_right = 120.0
+offset_bottom = 13.0
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("5_85d4d")
+theme_override_font_sizes/font_size = 22
+text = "0:00"
+
+[node name="Length" type="Label" parent="ChartUI/SongProgress"]
+layout_mode = 0
+offset_left = 1160.0
+offset_top = -12.0
+offset_right = 1275.0
+offset_bottom = 13.0
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("5_85d4d")
+theme_override_font_sizes/font_size = 22
+text = "0:00"
+horizontal_alignment = 2

@@ -16,16 +16,11 @@ func _ready() -> void:
 	$Car1/Sprite.position = Vector2(1200, 818)
 	$Car2/Sprite.position = Vector2(1200, 818)
 
-	if SONG.player1.contains('pico'):
-		THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
-	if !Game.persist.loaded_already:
-		Game.persist.loaded_already = true
-		ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
-		ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
-
-	THIS.cam.position = Vector2(400, 490)
+	Main.cam.position = Vector2(400, 490)
 
 func post_ready() -> void:
+	if SONG.player1.contains('pico'): pass
+		#Main.GAME_OVER = load('res://game/scenes/game_over-pico.tscn')
 	if gf.cur_char.contains('gf'):
 		gf_pos.x += 150 if !gf.speaker_data.is_empty() else 0
 		gf.position.x = gf_pos.x
@@ -34,7 +29,6 @@ func post_ready() -> void:
 func _process(delta:float) -> void:
 	$Skybox/Sprite.region_rect.position.x -= delta * 22
 	$Smog/Sprite.region_rect.position.x += delta * 22
-
 
 func beat_hit(beat:int) -> void:
 	var can_change:bool = (beat == (prev_change + change_interval))
@@ -151,8 +145,7 @@ func opponent_note_hit(note:Note):
 
 func game_over_start():
 	if died_by_can:
-		died_by_can = false
-		THIS.DIE.we_dyin = THIS.DIE.DEATH_TYPE.EXPLODE
+		Main.GAME_OVER.set('death_type', Main.GAME_OVER.DEATH_TYPE.EXPLODE)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:

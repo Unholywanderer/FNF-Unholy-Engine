@@ -293,7 +293,7 @@
 			"loop": true
 		},
 		{
-			"name": "firstDeath",
+			"name": "deathStart",
 			"prefix": "Pico Fighting ALL ANIMS",
 			"offsets": [
 				100,
@@ -629,8 +629,8 @@
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		0,
-		-470
+		250,
+		200
 	],
 	"pos_offset": [
 		-450,

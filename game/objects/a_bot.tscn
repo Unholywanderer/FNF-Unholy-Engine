@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://dho30ko8csxeb"]
 
 [ext_resource type="Script" uid="uid://dcehs8gcfm8ms" path="res://game/objects/A_Bot.gd" id="1_63ws8"]
-[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="2_6g1xa"]
 [ext_resource type="Texture2D" uid="uid://dop4x3nfiywc2" path="res://assets/images/characters/speakers/abot/BG.png" id="2_k3joh"]
+[ext_resource type="Script" uid="uid://ctnes3nxk1qlt" path="res://game/objects/Atlas.gd" id="2_wr2bp"]
 [ext_resource type="SpriteFrames" path="res://assets/images/characters/speakers/abot/viz.res" id="3_e6bxv"]
 [ext_resource type="SpriteFrames" uid="uid://1lw5qm4bp1jj" path="res://assets/images/characters/speakers/abot/abot.res" id="4_42hql"]
 
@@ -20,11 +20,11 @@ offset_bottom = 286.0
 
 [node name="Eyes" type="Node2D" parent="."]
 position = Vector2(57, 238)
-script = ExtResource("2_6g1xa")
+script = ExtResource("2_wr2bp")
 atlas = "res://assets/images/characters/speakers/abot/systemEyes"
-frame = 13
+frame = 16
 loop_mode = "Play Once"
-metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
 
 [node name="VizBG" type="Sprite2D" parent="."]
 position = Vector2(163, 23)

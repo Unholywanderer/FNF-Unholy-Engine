@@ -79,8 +79,8 @@ func create_grid() -> Image:
 			else:
 				last_color = color_1
 
-			x += cell.x;
-		y += cell.y;
+			x += int(cell.x);
+		y += int(cell.y);
 
 		width = x - cell.x
 	height = y - cell.y

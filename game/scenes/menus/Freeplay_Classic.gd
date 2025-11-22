@@ -28,8 +28,15 @@ func _ready():
 	added_weeks.append_array(Game.persist.week_list) # base stuff first~
 	var other_weeks = []
 	for i in DirAccess.get_files_at('res://assets/data/weeks'): # then go through the weeks folder for any others
-		if !i.ends_with('.json') or added_weeks.has(i): continue
+		if !i.ends_with('.json') or added_weeks.has(i.replace('.json', '')): continue
 		other_weeks.append(i.replace('.json', ''))
+
+	if !OS.is_debug_build():
+		for i in DirAccess.get_files_at(Game.exe_path +'mods/data/weeks'):
+			if !i.ends_with('.json') or other_weeks.has(i.replace('.json', '')): continue
+			other_weeks.append('mod_'+ i.replace('.json', ''))
+
+		songs_in_folder.append_array(DirAccess.get_directories_at(Game.exe_path + 'mods/songs'))
 
 	added_weeks.append_array(other_weeks)
 
@@ -44,8 +51,8 @@ func _ready():
 	for song in songs_in_folder: # then add any other fuckass songs without a json
 		add_song(FreeplaySong.new([song, 'bf', [100, 100, 100]], [], check_variants(song)))
 
-	if JsonHandler._SONG.has('song'):
-		last_loaded.song = Util.format_str(JsonHandler._SONG.song)
+	if JsonHandler.SONG.has('song'):
+		last_loaded.song = Util.format_str(JsonHandler.SONG.song)
 		if JsonHandler.song_root != '':
 			last_loaded.song = JsonHandler.song_root
 			last_loaded.variant = JsonHandler.song_variant.substr(1)
@@ -84,7 +91,7 @@ var lerp_score:int = 0
 var actual_score:int = 2384397
 
 var in_time:float = 0.0
-func _process(delta):
+func _process(delta:float):
 	in_time += delta
 	lerp_score = floor(lerp(actual_score, lerp_score, exp(-delta * 24)))
 	if abs(lerp_score - actual_score) <= 10:
@@ -208,6 +215,7 @@ class FreeplaySong extends Alphabet:
 		get: return variants.size() > 1
 	var bg_color:Color = Color.WHITE
 	var icon:String = 'face'
+	var mod_folder:bool = false
 
 	func _init(info, diffs:Array = [], vars:Dictionary = {}):
 		if !diffs.is_empty(): diff_list = diffs

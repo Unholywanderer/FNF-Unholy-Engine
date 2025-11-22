@@ -25,12 +25,21 @@ var selected_id:int = 0:
 
 		selected_id = new_id
 
-		character.play(cur_anim)
+		play_anim(character, cur_anim)
 		var got:Array = offsets.get(cur_anim, [0, 0])
 		character.offset = Vector2(got[0], got[1])
 		character.flip_h = flipped.get(cur_anim, false)
 
 		#_anim_chosen(selected_id) #ANIM('AllAnims').selected = -1
+
+func play_anim(thing:Character, anim:String = '') -> void:
+	# this gets called a bit too often i think
+	if anim.is_empty(): anim = thing.get_anim()
+	if thing.is_atlas:
+		thing.play_anim(anim, true)
+	else:
+		thing.play(anim)
+
 
 @onready var _ui = $UILayer
 func _ready() -> void:
@@ -107,14 +116,14 @@ func _process(_delta:float) -> void:
 	$Backdrop.scale = Vector2.ONE / $Cam.zoom
 	$Backdrop.position = $Cam.position
 
-	character.speed_scale = $UILayer/Anim/AnimSpeed.value
+	#character.speed_scale = $UILayer/Anim/AnimSpeed.value
 	var sc:float = MAIN('ScaleBox').value
 	character.scale = Vector2(sc, sc)
 	shadow.scale = character.scale
 
 	DATA('Anim').text = cur_anim
 	DATA('Offset').text = str(offsets.get(cur_anim, '[No Offsets]'))
-	DATA('Frame').text = 'Frame\n'+ str(character.frame) +' / '+ str(character.sprite_frames.get_frame_count(character.animation) - 1)
+	DATA('Frame').text = 'Frame\n'+ str(character.frame) +' / '+ str(character.get_frame_count(character.get_anim()) - 1)
 
 var press_time:float = 0.0
 func _unhandled_input(event:InputEvent) -> void:
@@ -148,7 +157,10 @@ func _unhandled_input(event:InputEvent) -> void:
 		KEY_W: selected_id = wrapi(selected_id - 1, 0, anim_list.size())
 		KEY_S: selected_id = wrapi(selected_id + 1, 0, anim_list.size())
 		KEY_Q, KEY_E:
-			character.pause()
+			if character.is_atlas:
+				character.atlas.pause()
+			else:
+				character.pause()
 			character.frame += 1 if event.keycode == KEY_E else -1
 
 		## CHARACTER OFFSETTING
@@ -163,7 +175,7 @@ func _unhandled_input(event:InputEvent) -> void:
 		character.frame = 0
 		anim_list[selected_id].text = cur_anim +' '+ str(offsets[cur_anim])
 		character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
-		character.play()
+		play_anim(character)
 
 func change_icon(new_icon:String = 'bf') -> void:
 	MAIN('IconSelect/CurIconLabel').text = new_icon
@@ -197,7 +209,10 @@ func change_char(new_char:String = 'bf') -> void:
 		char_json = VSlice.fix_json(char_json)
 
 	_ui.get_node('ResPath').text = char_json.path
-	DATA('Warn').visible = !ResourceLoader.exists('res://assets/images/'+ char_json.path +'.res')
+	DATA('Warn').visible = (
+		!Util.file_exists('images/'+ char_json.path +'.res') and \
+		!Util.dir_exists('assets/images/'+ char_json.path)
+	)
 	reload_list(char_json.animations)
 	_anim_chosen(0)
 
@@ -231,7 +246,7 @@ func change_char(new_char:String = 'bf') -> void:
 	# then update the shadow
 	shadow.copy(character)
 	shadow.antialiasing = !character.antialiasing # uhm??
-	shadow.frame = shadow.sprite_frames.get_frame_count(cur_anim) - 1
+	shadow.frame = shadow.get_frame_count(cur_anim) - 1
 	shadow_anim_change(0)
 
 var _last_id:int = -1
@@ -300,7 +315,7 @@ func new_pressed() -> void:
 
 	shadow.copy(character)
 	shadow.antialiasing = !character.antialiasing # uhm??
-	shadow.frame = shadow.sprite_frames.get_frame_count('idle') - 1
+	shadow.frame = shadow.get_frame_count('idle') - 1
 
 func save_pressed() -> void:
 	var to_check:String = MAIN('CharName').text.strip_edges() # check the char name box
@@ -333,6 +348,9 @@ func save_pressed() -> void:
 	file.resize(0) # clear the file, if it has stuff in it
 	file.store_string(JSON.stringify(save_json, '\t', false))
 	file.close()
+	$UILayer/Notice.text = 'Successfully saved JSON at "../data/characters/%s.json"' % [to_check]
+	$UILayer/Notice.modulate.a = 1.0
+	Util.quick_tween($UILayer/Notice, 'modulate:a', 0, 0.75).set_delay(1.7)
 
 func _res_path_updated() -> void:
 	var new_path:String = _ui.get_node('ResPath').text
@@ -340,7 +358,12 @@ func _res_path_updated() -> void:
 		ANIM('AllAnims').selected = -1
 		character.sprite_frames = load('res://assets/images/'+ new_path +'.res')
 		shadow.sprite_frames = character.sprite_frames
-		shadow_frame_change(shadow.sprite_frames.get_frame_count(shadow.animation) - 1)
+		shadow_frame_change(shadow.get_frame_count(shadow.get_anim()) - 1)
+	else:
+		character.is_atlas = ResourceLoader.exists('res://assets/images/'+ new_path +'/Animation.json')
+		if character.is_atlas:
+			character.atlas.atlas = 'res://assets/images/'+ new_path # looks so stupid guhh
+			ANIM('AllAnims').selected = -1
 
 func _anim_chosen(index:int) -> void:
 	ANIM('AllAnims').selected = index # just in case
@@ -387,7 +410,7 @@ func add_anim() -> void:
 
 			character.add_anim(i.name, i.prefix, i.frames, i.framerate, i.loop)
 			if cur_anim == i.name:
-				character.play(i.name)
+				play_anim(character, i.name)
 				character.offset = Vector2(offsets[i.name][0], offsets[i.name][1])
 			return
 
@@ -422,7 +445,7 @@ func remove_anim() -> void:
 
 func shadow_anim_change(id:int) -> void:
 	var new_anim:String = char_json.animations[id].name
-	var frame_lim:int = shadow.sprite_frames.get_frame_count(new_anim) - 1
+	var frame_lim:int = shadow.get_frame_count(new_anim) - 1
 	MAIN('Shadow/Anim').text = new_anim
 	shadow.play(new_anim)
 	shadow.pause()

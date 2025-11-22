@@ -25,9 +25,8 @@ var offset:Vector2 = Vector2.ZERO:
 		position = unedited_pos + offset
 
 func _ready() -> void:
-	$Eyes.frame_changed.connect(func(frame:int):
-		if !looking_right and frame >= 23: $Eyes.playing = false
-	)
+	$Eyes.add_anim_by_frames('lookLeft', [0, 15])
+	$Eyes.add_anim_by_frames('lookRight', [16, 31])
 
 func _update(): # yes i did steal code from @what-is-a-git 😊😊😊
 	var prev_hz:float = 0.0
@@ -52,6 +51,5 @@ func bump():
 var looking_right:bool = false
 func look(right:bool = false):
 	if looking_right != right:
-		$Eyes.playing = true
+		$Eyes.play_anim('look'+ ('Right' if right else 'Left'))
 		looking_right = right
-		$Eyes.frame = 13 if right else 0

@@ -8,23 +8,30 @@ var skin:SkinInfo = SkinInfo.new()
 		is_event = ev
 		if ev: sprite_frames = load('res://assets/images/ui/eventStrum.res')
 		else: load_skin(skin.cur_skin)
-@export var is_player:bool = false
-@export var scroll:float = 90.0
 
+@export var is_player:bool = false
 @export var dir:int = 0:
 	set(new_dir):
 		dir = new_dir
 		play_anim(animation.split('_')[1])
 
-@export var downscroll:bool = false: # not really just for downscroll, just flips the scroll direction
+@export var scroll:float = 90.0
+
+# not really for downscroll, just flips the scroll direction
+@export var downscroll:bool = false:
 	set(d):
 		if d != downscroll:
 			downscroll = d
 			scroll *= -1
+
 var width:float:
-	get: return sprite_frames.get_frame_texture(DIRECTION[dir] +'_static', 0).get_width() * scale.x
+	get:
+		var _anim:String = '' if is_event else DIRECTION[dir] +'_'
+		return sprite_frames.get_frame_texture(_anim +'static', 0).get_width() * scale.x
 var height:float:
-	get: return sprite_frames.get_frame_texture(DIRECTION[dir] +'_static', 0).get_height() * scale.y
+	get:
+		var _anim:String = '' if is_event else DIRECTION[dir] +'_'
+		return sprite_frames.get_frame_texture(_anim +'static', 0).get_height() * scale.y
 
 var anim_timer:float = 0.0 # used for confirm anim looping on sustains
 var reset_timer:float = 0.0
@@ -50,8 +57,8 @@ func load_skin(new_skin:String = 'default'):
 	#var _last = []
 	#if !animation.contains('static'):
 	#	_last = [animation, frame]
-	if Game.scene.has_node('UI') and new_skin == Game.scene.ui.cur_skin:
-		skin = Game.scene.ui.SKIN
+	if Game.persist.note_skin: #and new_skin == Game.persist.note_skin.cur_skin:
+		skin = Game.persist.note_skin
 	else:
 		skin.load_skin(new_skin)
 

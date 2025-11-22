@@ -13,7 +13,7 @@ func _ready():
 
 	bg_freaks.position = Vector2(-100, 190)
 	bg_freaks.scale *= Vector2(6, 6)
-	if JsonHandler._SONG.song.to_lower().contains('roses'): bg_freaks.swapped = true
+	if JsonHandler.SONG.song.to_lower().contains('roses'): bg_freaks.swapped = true
 
 	bg_freaks.dance() #update their animation, then stop
 	bg_freaks.stop()

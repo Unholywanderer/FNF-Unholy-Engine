@@ -16,8 +16,8 @@ func _ready():
 		dancers.append(new_dancer)
 
 func post_ready() -> void:
-	gf.reparent($FGLimo)
-	gf.show_behind_parent = true
+	$CharGroup.remove_child(gf)
+	$GFGroup.add_child(gf)
 
 func beat_hit(_beat:int) -> void:
 	for dancer in dancers:

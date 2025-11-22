@@ -25,5 +25,10 @@ func strike():
 	Audio.play_sound('thunder_'+ str(randi_range(1, 2)))
 	$BG.play('strike')
 	$BG.frame = 0
-	boyfriend.play_anim('scared', true)
-	gf.play_anim('scared', true)
+	if boyfriend.has_anim('scared'):
+		boyfriend.play_anim('scared', true)
+		boyfriend.anim_timer = 0.3
+	if gf.has_anim('scared'):
+		gf.play_anim('scared', true)
+		gf.anim_timer = 0.3
+	LuaHandler.call_func('stage_event', ['thunder'])

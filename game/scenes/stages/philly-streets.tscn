@@ -13,9 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://do02w5dqgativ" path="res://assets/images/stages/philly-streets/foreground.png" id="10_rdxjr"]
 [ext_resource type="SpriteFrames" path="res://assets/images/stages/philly-streets/cars.res" id="11_ci31t"]
 [ext_resource type="Texture2D" uid="uid://dja1w25ifvdmg" path="res://assets/images/stages/philly-streets/SpraycanPile.png" id="11_j4p15"]
-[ext_resource type="Script" uid="uid://bvq0ling1c7sm" path="res://addons/gdanimate/animate_symbol.gd" id="12_hmg21"]
 [ext_resource type="SpriteFrames" uid="uid://c8xjkosko2jyi" path="res://assets/images/stages/philly-streets/traffic.res" id="12_n1j8s"]
 [ext_resource type="Texture2D" uid="uid://dlmaetgi2ouy7" path="res://assets/images/stages/philly-streets/traffic_lightmap.png" id="13_vbm05"]
+[ext_resource type="Script" uid="uid://ctnes3nxk1qlt" path="res://game/objects/Atlas.gd" id="15_n1j8s"]
 [ext_resource type="Shader" uid="uid://kxrxkjkelq0r" path="res://game/resources/shaders/rain.gdshader" id="17_n1j8s"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_x0kr0"]
@@ -163,10 +163,10 @@ centered = false
 [node name="SprayCan" type="Node2D" parent="."]
 visible = false
 position = Vector2(1535, 895)
-script = ExtResource("12_hmg21")
+script = ExtResource("15_n1j8s")
 atlas = "res://assets/images/stages/philly-streets/effects/spraycan"
 loop_mode = "Play Once"
-metadata/_custom_type_script = "uid://bvq0ling1c7sm"
+metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
 
 [node name="SprayCanPile" type="Sprite2D" parent="."]
 position = Vector2(920, 1045)

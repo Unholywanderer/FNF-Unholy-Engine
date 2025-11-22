@@ -20,11 +20,11 @@ blend_mode = 3
 shader = ExtResource("7_1apta")
 shader_parameter/calculate_rain = true
 shader_parameter/use_lightmap = false
-shader_parameter/use_screen = false
-shader_parameter/warp_screen = false
+shader_parameter/use_screen = true
+shader_parameter/warp_screen = true
 shader_parameter/direction = 0.2
 shader_parameter/Scale = 2.0
-shader_parameter/Intensity = 0.4
+shader_parameter/Intensity = 0.3
 shader_parameter/speed = 1.0
 shader_parameter/RainColor = Color(1, 1, 1, 1)
 shader_parameter/warp_amount = 0.1
@@ -38,6 +38,7 @@ gf_pos = Vector2(350, 100)
 dad_cam_offset = Vector2(350, 250)
 
 [node name="ScrollSprite" type="Node2D" parent="."]
+z_index = -50
 scale = Vector2(1.1, 0.9)
 script = ExtResource("2_oc14b")
 scroll_factor = Vector2(0, 0)
@@ -63,6 +64,7 @@ region_enabled = true
 region_rect = Rect2(0, 0, 1525.7, 395)
 
 [node name="Lightning" type="AnimatedSprite2D" parent="ScrollSprite"]
+visible = false
 position = Vector2(-50, -300)
 scale = Vector2(1.75, 1.75)
 sprite_frames = ExtResource("5_ekwuh")
@@ -70,6 +72,7 @@ animation = &"lightning"
 centered = false
 
 [node name="City" type="Sprite2D" parent="."]
+z_index = -50
 position = Vector2(-600, -175)
 scale = Vector2(1.75, 1.75)
 texture = ExtResource("6_wciij")
@@ -77,18 +80,17 @@ centered = false
 
 [node name="CityAdd" type="Sprite2D" parent="."]
 visible = false
+z_index = -50
 material = SubResource("CanvasItemMaterial_e370x")
 position = Vector2(-600, -175)
 scale = Vector2(1.75, 1.75)
 texture = ExtResource("6_wciij")
 centered = false
 
-[node name="CharGroup" type="Node2D" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="."]
-visible = false
+[node name="Rain" type="ColorRect" parent="."]
+z_index = 1000
 material = SubResource("ShaderMaterial_at4qc")
-offset_left = -764.0
-offset_top = -407.0
-offset_right = 1962.0
-offset_bottom = 1177.0
+offset_left = -832.0
+offset_top = -190.0
+offset_right = 2225.0
+offset_bottom = 1631.0

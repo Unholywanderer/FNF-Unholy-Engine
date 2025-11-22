@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bcupyo5h1y7d"]
+[gd_scene load_steps=20 format=3 uid="uid://bcupyo5h1y7d"]
 
 [ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
 [ext_resource type="Script" uid="uid://dlcp7ueuu3pa6" path="res://game/scenes/stages/tank.gd" id="1_m3io1"]
@@ -13,6 +13,7 @@
 [ext_resource type="SpriteFrames" uid="uid://bb7snwocw3kwr" path="res://assets/images/stages/tank/tankWatchtower.res" id="11_nqnog"]
 [ext_resource type="Texture2D" uid="uid://ctu7xx7bnhs7u" path="res://assets/images/stages/tank/tankGround.png" id="12_kll81"]
 [ext_resource type="SpriteFrames" uid="uid://cebp3lqao55sm" path="res://assets/images/stages/tank/tankmen/tank0.res" id="13_222kd"]
+[ext_resource type="Script" uid="uid://ctnes3nxk1qlt" path="res://game/objects/Atlas.gd" id="13_737rp"]
 [ext_resource type="SpriteFrames" uid="uid://b1pfsgyxdvscm" path="res://assets/images/stages/tank/tankmen/tank1.res" id="14_btmcx"]
 [ext_resource type="SpriteFrames" uid="uid://7am0utwesp7k" path="res://assets/images/stages/tank/tankmen/tank2.res" id="15_sf75q"]
 [ext_resource type="SpriteFrames" uid="uid://bq05p544q5354" path="res://assets/images/stages/tank/tankmen/tank4.res" id="16_8maix"]
@@ -121,7 +122,16 @@ centered = false
 
 [node name="CharGroup" type="Node2D" parent="."]
 
+[node name="Tanky" type="Node2D" parent="CharGroup"]
+z_index = 2
+script = ExtResource("13_737rp")
+atlas = "res://assets/images/stages/tank/cutscenes/tankman"
+frame = 226
+loop_mode = "Play Once"
+metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
+
 [node name="Forground" type="Node2D" parent="."]
+z_index = 2
 
 [node name="Tank0" type="Node2D" parent="Forground"]
 script = ExtResource("1_fgt6k")

@@ -16,14 +16,12 @@ func _ready() -> void:
 	$Car1/Sprite.position = Vector2(1200, 818)
 	$Car2/Sprite.position = Vector2(1200, 818)
 
-	if SONG.player1.contains('pico'):
-		THIS.DIE = load('res://game/scenes/game_over-pico.tscn')
 	#if !Game.persist.loaded_already:
 	#	Game.persist.loaded_already = true
 	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
 	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
 
-	THIS.cam.position = Vector2(400, 490)
+	Main.cam.position = Vector2(400, 490)
 
 func _process(delta:float) -> void:
 	$Skybox/Sprite.region_rect.position.x -= delta * 22
@@ -60,6 +58,8 @@ func change_lights(b:int) -> void:
 			pass #finish_car_lights($Car1/Sprite)
 
 func post_ready() -> void:
+	if SONG.player1.contains('pico'):
+		Main.GAME_OVER = load('res://game/scenes/game_over-pico.tscn').instantiate()
 	#if boyfriend.cur_char.contains('pico'):
 	#	boyfriend.cache_char('pico-explode')
 	cur_can.atlas = 'res://assets/images/stages/philly-streets/effects/spraycan'
@@ -79,7 +79,7 @@ func post_ready() -> void:
 	#cur_can.position = $SprayCanPile.position + Vector2(650, -170)
 	#cur_can.animation_finished.connect(func(): cur_can.visible = cur_can.animation != 'fly')
 	#cur_can.visible = false
-	THIS.cam.position_smoothing_enabled = true
+	Main.cam.position_smoothing_enabled = true
 
 	if Game.scene.story_mode:
 		if Util.format_str(SONG.song) == 'darnell':
@@ -90,16 +90,16 @@ func post_ready() -> void:
 
 			UI.toggle_objects(false)
 			UI.pause_countdown = true
-			THIS.speaker.active = false
-			THIS.can_pause = false
-			THIS.lerp_zoom = false
+			Main.speaker.active = false
+			Main.can_pause = false
+			Main.lerp_zoom = false
 
 			var cutscene := Cutscene.new()
 			cutscene.play_video('darnellCutscene', true, false, UI.back)
 
 			cutscene.video_finished.connect(func():
 				var fucky = func(): dad.dance()
-				var fucke = func(): gf.dance(); THIS.speaker.bump()
+				var fucke = func(): gf.dance(); Main.speaker.bump()
 				dad.animation_finished.connect(fucky)
 				gf.animation_finished.connect(fucke)
 				dad.dance()
@@ -107,25 +107,25 @@ func post_ready() -> void:
 
 				create_tween().tween_property(BITCH, 'modulate:a', 0, 1.5).set_delay(0.3).finished.connect(BITCH.queue_free)
 
-				THIS.cam.position_smoothing_enabled = false
-				THIS.move_cam(true)
-				THIS.cam.position.x += 250
-				THIS.cam.zoom = Vector2(1.3, 1.3)
+				Main.cam.position_smoothing_enabled = false
+				Main.move_cam(true)
+				Main.cam.position.x += 250
+				Main.cam.zoom = Vector2(1.3, 1.3)
 
 				boyfriend.play_anim('intro')
-				THIS.speaker.look(true)
+				Main.speaker.look(true)
 
 				cutscene.add_timed_event(0.7, func():
 					Audio.play_music('darnellCanCutscene', false)
 					cutscene.add_timed_event(Audio.Player.stream.get_length(), func():
 						UI.toggle_objects()
-						create_tween().tween_property(THIS.cam, 'zoom', Vector2(0.77, 0.77), 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)\
-						 .finished.connect(func(): THIS.lerp_zoom = true)
+						create_tween().tween_property(Main.cam, 'zoom', Vector2(0.77, 0.77), 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)\
+						 .finished.connect(func(): Main.lerp_zoom = true)
 						UI.start_countdown(true)
-						THIS.can_pause = true
-						THIS.cam.position_smoothing_enabled = true
-						THIS.move_cam(false)
-						THIS.speaker.active = true
+						Main.can_pause = true
+						Main.cam.position_smoothing_enabled = true
+						Main.move_cam(false)
+						Main.speaker.active = true
 
 						dad.animation_finished.disconnect(fucky)
 						gf.animation_finished.disconnect(fucke)
@@ -133,14 +133,14 @@ func post_ready() -> void:
 				)
 				var init_delay = 2.0
 				cutscene.add_timed_event(init_delay, func():
-					THIS.speaker.look(false)
-					#THIS.move_cam(false)
+					Main.speaker.look(false)
+					#Main.move_cam(false)
 
 					var new_cam_pos:Vector2 = (dad.get_cam_pos() + dad_cam_offset) + Vector2(100, 0)
-					#THIS.cam.position.x += 100
+					#Main.cam.position.x += 100
 					var fuck = create_tween()
-					fuck.tween_property(THIS.cam, 'zoom', Vector2(0.66, 0.66), 2.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
-					fuck.parallel().tween_property(THIS.cam, 'position', new_cam_pos, 2.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+					fuck.tween_property(Main.cam, 'zoom', Vector2(0.66, 0.66), 2.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+					fuck.parallel().tween_property(Main.cam, 'position', new_cam_pos, 2.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 					#moveCamera(true);
 					#camFollow.x += 100;
 					#FlxTween.tween(FlxG.camera.scroll, {x: camFollow.x + 100 - FlxG.width/2, y: camFollow.y - FlxG.height/2}, 2.5, {ease: FlxEase.quadInOut});
@@ -151,10 +151,10 @@ func post_ready() -> void:
 					Audio.play_sound('weekend/lighter')
 				)
 				cutscene.add_timed_event(init_delay + 4, func():
-					THIS.speaker.look(true)
+					Main.speaker.look(true)
 					boyfriend.play_anim('cock')
 					Audio.play_sound('weekend/gun_prep')
-					create_tween().tween_property(THIS.cam, 'position:x', THIS.cam.position.x + 180, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+					create_tween().tween_property(Main.cam, 'position:x', Main.cam.position.x + 180, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 					#FlxTween.tween(FlxG.camera.scroll, {x: camFollow.x + 180 - FlxG.width/2}, 0.4, {ease: FlxEase.backOut});
 				)
@@ -173,7 +173,7 @@ func post_ready() -> void:
 				)
 				cutscene.add_timed_event(init_delay + 5.1, func():
 					boyfriend.play_anim('intro-return')
-					create_tween().tween_property(THIS.cam, 'position:x', THIS.cam.position.x - 100, 2.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+					create_tween().tween_property(Main.cam, 'position:x', Main.cam.position.x - 100, 2.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 					#FlxTween.tween(FlxG.camera.scroll, {x: camFollow.x + 100 - FlxG.width/2}, 2.5, {ease: FlxEase.quadInOut});
 					Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
 					cur_can.play_anim('shot')
@@ -185,7 +185,7 @@ func post_ready() -> void:
 	#				});
 				)
 				cutscene.add_timed_event(init_delay + 5.9, func():
-					THIS.speaker.look(false)
+					Main.speaker.look(false)
 					get_tree().create_timer(0.1, false).timeout.connect(func(): dad.play_anim('laugh'))
 					Audio.play_sound('weekend/cutscene/darnell_laugh')
 				)
@@ -258,9 +258,8 @@ func opponent_note_hit(note:Note):
 			Audio.play_sound('weekend/kickForward')
 
 func game_over_start():
-	if died_by_can:
-		died_by_can = false
-		THIS.DIE.we_dyin = THIS.DIE.DEATH_TYPE.EXPLODE
+	#if died_by_can:
+	Main.GAME_OVER.death_type = Main.GAME_OVER.TYPES.EXPLODE
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:

@@ -4,7 +4,8 @@ class_name StageBase extends Node2D
 @export var default_zoom:float = 0.8
 @export var cam_speed:float = 4.0
 
-var THIS:
+## Current scene the stage is on, most likely Play_Scene
+var Main:
 	get: return Game.scene
 var UI:
 	get: return Game.scene.ui

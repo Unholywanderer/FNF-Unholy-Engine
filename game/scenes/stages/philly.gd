@@ -56,7 +56,7 @@ func _ready():
 func countdown_start():
 	pass
 	#gf.load_char('gf-car')
-	#THIS.remove_child(gf)
+	#Main.remove_child(gf)
 	#train.add_child(gf)
 	#gf.scale /= 2.0
 	#gf.position -= Vector2(155, train.texture.get_size()[1] / (1.28 / gf.scale.x))

@@ -8,8 +8,10 @@ var center_offset:float = 12.0
 
 @export var default_scale:float = 1.0:
 	set(new):
+		if default_scale != new:
+			scale = Vector2(new, new)
 		default_scale = new
-		scale = Vector2(new, new)
+
 @export var icon_speed:float = 15.0
 const MIN_WIDTH:float = 150.0 # if icon width is less or equal, theres no lose anim
 var has_lose:bool = false

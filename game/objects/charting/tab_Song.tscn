@@ -62,13 +62,14 @@ offset_bottom = 175.0
 tooltip_text = "The song's Player character"
 text = "Player 1"
 flat = false
+text_overrun_behavior = 3
 
 [node name="Text" type="Label" parent="Player1"]
 layout_mode = 0
 offset_left = 2.0
-offset_top = 32.0
+offset_top = 33.0
 offset_right = 98.0
-offset_bottom = 55.0
+offset_bottom = 56.0
 theme_override_font_sizes/font_size = 15
 text = "Player"
 horizontal_alignment = 1
@@ -82,12 +83,12 @@ offset_bottom = 175.0
 tooltip_text = "The song's Opponent character"
 text = "Player 2"
 flat = false
+text_overrun_behavior = 3
 
 [node name="Text" type="Label" parent="Player2"]
 layout_mode = 0
-offset_left = 2.0
 offset_top = 33.0
-offset_right = 98.0
+offset_right = 100.0
 offset_bottom = 56.0
 theme_override_font_sizes/font_size = 15
 text = "Opponent"
@@ -102,13 +103,14 @@ offset_bottom = 175.0
 tooltip_text = "The song's GF/Spectator character"
 text = "GF"
 flat = false
+text_overrun_behavior = 3
 
 [node name="Text" type="Label" parent="GF"]
 layout_mode = 0
 offset_left = 2.0
-offset_top = 32.0
+offset_top = 33.0
 offset_right = 98.0
-offset_bottom = 55.0
+offset_bottom = 56.0
 theme_override_font_sizes/font_size = 15
 text = "GF"
 horizontal_alignment = 1
@@ -122,6 +124,7 @@ offset_bottom = 85.0
 tooltip_text = "The song's GF/Spectator character"
 text = "Stage"
 flat = false
+text_overrun_behavior = 3
 
 [node name="Text" type="Label" parent="Stage"]
 layout_mode = 0

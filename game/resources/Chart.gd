@@ -52,26 +52,34 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 	var path_to_check:String = 'songs/%s/events.json' % Util.format_str(SONG.song)
 
 	var events_found:Array = []
-	var events:Array[EventData] = []
 	if SONG.has('events'): # check current song json for any events
 		events_found.append_array(SONG.events)
 
-	if format != V_SLICE and ResourceLoader.exists('res://assets/'+ path_to_check): # then check if there is a event json
-		print('res://assets/'+ path_to_check)
-
-		var json = JsonHandler.parse(path_to_check)
-		if json.has('song'): json = json.song
-		if format == FPS_PLUS:
-			json = json.events
-
-		if json.get('notes', []).size() > 0: # if events are a -1 note
-			for sec in json.notes:
+	if format != V_SLICE:
+		if format == LEGACY:
+			for sec in SONG.notes: # check song json for any -1 event notes
 				for note in sec.sectionNotes:
-					if note[1] == -1:
-						events_found.append([note[0], [[note[2], note[3], note[4]]]])
-		elif json.has('events'):
-			events_found.append_array(json.events)
+					if note[1] != -1: continue
+					events_found.append([note[0], [[note[2], note[3], note[4]]]])
 
+		# then check if there is a event json
+		if Util.file_exists(path_to_check):
+			print('res://assets/'+ path_to_check)
+
+			var json:Dictionary = JsonHandler.parse(path_to_check)
+			if json.get('song') is not String: json = json.song
+			if format == FPS_PLUS:
+				json = json.events
+
+			if json.get('notes', []).size() > 0: # if events are a -1 note
+				for sec in json.notes:
+					for note in sec.sectionNotes:
+						if note[1] != -1: continue
+						events_found.append([note[0], [[note[2], note[3], note[4]]]])
+
+			if json.has('events'): events_found.append_array(json.events)
+
+	var events:Array[EventData] = []
 	for event in events_found:
 		match format:
 			V_SLICE: events.append(EventData.new(event, 'v_slice'))

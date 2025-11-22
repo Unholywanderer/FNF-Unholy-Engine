@@ -59,90 +59,90 @@ color = Color(0, 0, 0, 0.392157)
 [node name="VolBar1" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 10.0
+offset_left = 8.75
 offset_top = 55.0
-offset_right = 20.0
+offset_right = 18.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 15)
 
 [node name="VolBar2" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 25.0
+offset_left = 23.75
 offset_top = 50.0
-offset_right = 35.0
+offset_right = 33.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 20)
 
 [node name="VolBar3" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 40.0
+offset_left = 38.75
 offset_top = 45.0
-offset_right = 50.0
+offset_right = 48.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 25)
 
 [node name="VolBar4" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 55.0
+offset_left = 53.75
 offset_top = 40.0
-offset_right = 65.0
+offset_right = 63.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 30)
 
 [node name="VolBar5" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 70.0
+offset_left = 68.75
 offset_top = 35.0
-offset_right = 80.0
+offset_right = 78.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 35)
 
 [node name="VolBar6" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 85.0
+offset_left = 83.75
 offset_top = 30.0
-offset_right = 95.0
+offset_right = 93.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 40)
 
 [node name="VolBar7" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 100.0
+offset_left = 98.75
 offset_top = 25.0
-offset_right = 110.0
+offset_right = 108.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 45)
 
 [node name="VolBar8" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 115.0
+offset_left = 113.75
 offset_top = 20.0
-offset_right = 125.0
+offset_right = 123.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 50)
 
 [node name="VolBar9" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(10, 10)
 layout_mode = 0
-offset_left = 130.0
+offset_left = 128.75
 offset_top = 15.0
-offset_right = 140.0
+offset_right = 138.75
 offset_bottom = 70.0
 pivot_offset = Vector2(5, 55)
 
 [node name="VolBar10" type="ColorRect" parent="Volume/BarsBG"]
 custom_minimum_size = Vector2(20, 10)
 layout_mode = 0
-offset_left = 145.0
+offset_left = 143.75
 offset_top = 10.0
-offset_right = 165.0
+offset_right = 163.75
 offset_bottom = 70.0
 pivot_offset = Vector2(10, 60)
 

@@ -96,11 +96,11 @@
 	"antialiasing": true,
 	"cam_offset": [
 		-100,
-		-45
+		-30
 	],
 	"pos_offset": [
-		15,
-		30
+		10,
+		340
 	],
 	"sing_dur": 4,
 	"scale": 1.0

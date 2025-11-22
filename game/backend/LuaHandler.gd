@@ -4,6 +4,7 @@ enum RET_TYPES {STOP, CONTINUE}
 var cached_items:Dictionary = {}
 var active_lua:Array[LuaEx] = []
 var active:bool = true
+var script_vars:Dictionary[String, Variant] = {}
 
 func add_script(script:String) -> void:
 	if !script.ends_with('.lua'): script += '.lua'
@@ -23,7 +24,8 @@ func add_script(script:String) -> void:
 	lua.push_variant("Conductor", Conductor)
 	lua.push_variant("Character", Character)
 	lua.push_variant("Sprite", LuaSprite)
-	lua.push_variant("AnimSprite", SparrowSprite) # WIP
+	lua.push_variant("XMLSprite", LuaSparrowSprite) # WIP
+	lua.push_variant("ResSprite", LuaResSprite)
 	lua.push_variant("Chart", Chart)
 
 	if SCENE.name == "Play_Scene":
@@ -51,6 +53,7 @@ func add_script(script:String) -> void:
 	lua.push_variant("cache", cache_file)
 	lua.push_variant("file_exists", file_exists)
 	lua.push_variant("get_cache", get_cached_file)
+
 	# Shaders #
 	lua.push_variant("load_shader", load_shader)
 	lua.push_variant("set_shader", set_shader)
@@ -58,7 +61,7 @@ func add_script(script:String) -> void:
 
 	#lua.push_variant("import", add_variant)
 
-	if !load_lua(lua, script): return
+	if !load_lua(lua, script, !script.begins_with('C:/')): return
 	print(lua.script_path +' is loaded')
 
 	if !active_lua.has(lua):
@@ -78,8 +81,9 @@ func add_variant(vari_name:String, variant:Variant) -> void:
 	for i in active_lua:
 		i.push_variant(vari_name, variant)
 
-func load_lua(lua:LuaEx, path:String) -> bool:
-	var err = lua.do_file('res://assets/'+ path)
+func load_lua(lua:LuaEx, path:String, internal:bool = true) -> bool:
+	var lua_start:String = 'res://assets/' if internal else ''
+	var err = lua.do_file(lua_start + path)
 	if err is LuaError:
 		printerr(err.message)
 		var er_type = err.message.split(']')[0].replace('[', '').strip_edges()
@@ -105,9 +109,9 @@ func pain(x):
 	return (x^x^x^x^x^x^x^x^x^x^x^x^x^x)^-x
 
 func add_obj(obj:Variant = null, to_group:Variant = null):
-	if obj != null:
-		if to_group != null:  pass
-	add_child(obj)
+	if obj == null: return
+	if to_group == null: to_group = Game.scene
+	to_group.add_child(obj)
 
 func get_layer(obj):
 	if obj is int: return obj
@@ -119,10 +123,10 @@ func move_obj(obj:Variant, indx):
 		if Game.scene.stage.has_node('CharGroup'):
 			add_to = Game.scene.stage.get_node('CharGroup')
 	if indx is Node2D:
-		indx = indx.get_index() # assume its an object and get it's layer
+		indx = indx.get_index() # assume its an object and get its' layer
 	add_to.move_child(obj, indx)
 
-func file_exists(file:String): return ResourceLoader.exists('res://assets/'+ file)
+func file_exists(file:String): return Util.file_exists(file)
 func cache_file(tag:String, file_path:String):
 	if cached_items.has(tag):
 		print(tag +' already cached, overwritting')
@@ -169,9 +173,9 @@ func lua_tween(obj:Variant, prop:String, to_val:Variant, dur:float, t:String = '
 #		for lua in active_lua:
 #			lua.push_variant(variant, load('res://game/'+ variant.replace('.', '/') +'.gd'))
 
-func add_character(Char:Character, _layer:String = ''):
+func add_character(Char:Character, _layer:String = '') -> void:
 	var layer_indx:int = -1
-	var add_to = Game.scene.stage.get_node('CharGroup') \
+	var add_to:Node2D = Game.scene.stage.get_node('CharGroup') \
 	 if Game.scene.stage.has_node('CharGroup') else Game.scene
 
 	match _layer.to_lower().strip_edges():
@@ -183,18 +187,18 @@ func add_character(Char:Character, _layer:String = ''):
 	if layer_indx > -1:
 		add_to.move_child(Char, layer_indx)
 
-func parse_json(path:String):
+func parse_json(path:String) -> Dictionary:
 	if !path.ends_with('.json'): path += '.json'
 	if !ResourceLoader.exists('res://assets/'+ path):
 		Alert.make_alert('No .json at path\n"'+ path +'"', Alert.ERROR)
-		return
+		return {}
 	var le_json = FileAccess.get_file_as_string('res://assets/'+ path)
 	return JSON.parse_string(le_json)
 
-func makeLuaSprite(_t, _sp, _x, _y):
+func makeLuaSprite(_t, _sp, _x, _y) -> void:
 	get_tree().exit()
 
-func setProperty(_g, _p):
+func setProperty(_g, _p) -> void:
 	return IP.get_local_addresses()
 
 ## LUA OBJECTS
@@ -206,7 +210,7 @@ class LuaSprite extends Sprite2D:
 	func load_texture(spr:String):
 		texture = load('res://assets/images/'+ spr +'.png')
 
-class LuaAnimatedSprite extends AnimatedSprite2D:
+class LuaResSprite extends AnimatedSprite2D:
 	var offsets:Dictionary = {}
 	func load_anims(path:String):
 		offsets.clear()
@@ -225,9 +229,15 @@ class LuaAnimatedSprite extends AnimatedSprite2D:
 
 			offset = da_off
 
+class LuaSparrowSprite extends SparrowSprite:
+	var offsets:Dictionary = {}
+	func _init(spr:String = '') -> void:
+		super(spr)
+
+
 class LuaEx extends LuaAPI:
 	var global:bool = false # later
-	var active:bool = false # later
+	var active:bool = false
 	var script_path:String = ''
 	func _notification(what:int) -> void:
 		match what:
