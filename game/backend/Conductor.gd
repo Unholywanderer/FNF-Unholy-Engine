@@ -75,17 +75,17 @@ func _ready():
 
 	#fix for notes being thrown forward (or backward?), causing a bunch of misses to occur + notes dissapearing
 	#after the lag spike when changing audio devices - mae
-	Audio.AudioDevice_changed.connect(func(newDevice):
-		if newDevice == null || not song_loaded || paused: return
-		var stepForwardTime = AudioServer.get_time_to_next_mix()
-		paused = true
-		while stepForwardTime <= 0.05:
-			_last_time = song_pos + (AudioServer.get_time_to_next_mix() * 1000) * playback_rate
-			_resync_timer = 0
-			await get_tree().process_frame
-			stepForwardTime += get_physics_process_delta_time()
-		paused = false
-	)
+	#.AudioDevice_changed.connect(func(newDevice):
+	#	if newDevice == null || not song_loaded || paused: return
+	#	var stepForwardTime = AudioServer.get_time_to_next_mix()
+	#	paused = true
+	#	while stepForwardTime <= 0.05:
+	#		_last_time = song_pos + (AudioServer.get_time_to_next_mix() * 1000) * playback_rate
+	#		_resync_timer = 0
+	#		await get_tree().process_frame
+	#		stepForwardTime += get_physics_process_delta_time()
+	#	paused = false
+	#)
 	#worked on my device but not too sure if this always works
 
 

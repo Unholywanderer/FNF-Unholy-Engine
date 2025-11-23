@@ -64,6 +64,10 @@ func _ready():
 	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'MOTHER FUCK')
 	follow_bg()
 
+	on_game_over.connect(this.stage.game_over_start)
+	on_game_over_idle.connect(this.stage.game_over_idle)
+	on_game_over_confirm.connect(this.stage.game_over_confirm)
+
 	bf = this.boyfriend
 	bf.global_position = this.stage.bf_pos
 	bf.reparent(self)
@@ -71,10 +75,6 @@ func _ready():
 	bf.play_anim('deathStart', true) # apply the offsets
 
 	cam.process_mode = Node.PROCESS_MODE_ALWAYS
-
-	on_game_over.connect(this.stage.game_over_start)
-	on_game_over_idle.connect(this.stage.game_over_idle)
-	on_game_over_confirm.connect(this.stage.game_over_confirm)
 
 	on_game_over.emit()
 

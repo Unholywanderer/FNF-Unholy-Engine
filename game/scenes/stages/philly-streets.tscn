@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://b1aps5umea8ha"]
+[gd_scene load_steps=22 format=3 uid="uid://b1aps5umea8ha"]
 
 [ext_resource type="Script" uid="uid://4tm27sr1yioq" path="res://game/scenes/stages/philly-streets.gd" id="1_gj0t7"]
 [ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_oc14b"]
@@ -16,6 +16,7 @@
 [ext_resource type="SpriteFrames" uid="uid://c8xjkosko2jyi" path="res://assets/images/stages/philly-streets/traffic.res" id="12_n1j8s"]
 [ext_resource type="Texture2D" uid="uid://dlmaetgi2ouy7" path="res://assets/images/stages/philly-streets/traffic_lightmap.png" id="13_vbm05"]
 [ext_resource type="Script" uid="uid://ctnes3nxk1qlt" path="res://game/objects/Atlas.gd" id="15_n1j8s"]
+[ext_resource type="SpriteFrames" uid="uid://ocr3n1yc1jsc" path="res://assets/images/stages/philly-streets/effects/spraypaintExplosionEZ.res" id="16_vbm05"]
 [ext_resource type="Shader" uid="uid://kxrxkjkelq0r" path="res://game/resources/shaders/rain.gdshader" id="17_n1j8s"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_x0kr0"]
@@ -165,8 +166,18 @@ visible = false
 position = Vector2(1535, 895)
 script = ExtResource("15_n1j8s")
 atlas = "res://assets/images/stages/philly-streets/effects/spraycan"
+frame = 23
 loop_mode = "Play Once"
+offset = Vector2(-240, -130)
 metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
+
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
+visible = false
+position = Vector2(1950, 820)
+sprite_frames = ExtResource("16_vbm05")
+animation = &"explode"
+frame = 13
+frame_progress = 1.0
 
 [node name="SprayCanPile" type="Sprite2D" parent="."]
 position = Vector2(920, 1045)

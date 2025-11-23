@@ -10,76 +10,39 @@ var car2_interruptable:bool = true
 var papr_interruptable:bool = true
 const car_offsets = [[0, 0], [20, -15], [30, 50], [10, 60]]
 
-@onready var cur_can:AnimateSymbol = $SprayCan
+@onready var spraycan:Atlas = $SprayCan
 var CAN = load('res://assets/images/stages/philly-streets/effects/spraycanFULL.res')
 func _ready() -> void:
 	$Car1/Sprite.position = Vector2(1200, 818)
 	$Car2/Sprite.position = Vector2(1200, 818)
 
-	#if !Game.persist.loaded_already:
-	#	Game.persist.loaded_already = true
-	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/blood.res')
-	#	ResourceLoader.load('res://assets/images/characters/pico/ex_death/smoke.res')
-
 	Main.cam.position = Vector2(400, 490)
 
-func _process(delta:float) -> void:
-	$Skybox/Sprite.region_rect.position.x -= delta * 22
-	$Smog/Sprite.region_rect.position.x += delta * 22
-
-
-func beat_hit(beat:int) -> void:
-	var can_change:bool = (beat == (prev_change + change_interval))
-
-	if Util.rand_bool(10) && !can_change && car1_interruptable:
-		if !light_stop:
-			pass #drive_car($Car1/Sprite)
-		else:
-			pass #drive_car_lights($Car1/Sprite)
-
-	if (Util.rand_bool(10) && !can_change && car2_interruptable && !light_stop):pass
-		#drive_car_back($Cars2)
-
-	if can_change:
-		change_lights(beat)
-
-func change_lights(b:int) -> void:
-	prev_change = b
-	light_stop = !light_stop
-
-	if light_stop:
-		$Traffic/Sprite.play('to_red')
-		change_interval = 20
-	else:
-		$Traffic/Sprite.play('to_green')
-		change_interval = 30
-
-		if car_waiting:
-			pass #finish_car_lights($Car1/Sprite)
-
 func post_ready() -> void:
-	if SONG.player1.contains('pico'):
-		Main.GAME_OVER = load('res://game/scenes/game_over-pico.tscn').instantiate()
-	#if boyfriend.cur_char.contains('pico'):
-	#	boyfriend.cache_char('pico-explode')
-	cur_can.atlas = 'res://assets/images/stages/philly-streets/effects/spraycan'
-	#cur_can.playing = true
-	#$CharGroup.add_child(cur_can)
-	cur_can.add_anim_by_frames('kick_up', [0, 7])
-	cur_can.add_anim_by_frames('kick_at', [8, 18])
-	cur_can.add_anim_by_frames('bonk', [19, 24])
-	cur_can.add_anim_by_frames('shot', [26, 44])
-	#cur_can.animation_changed.connect(func():
-	#	if cur_can.animation == 'hit':
-	#		cur_can.offset = Vector2(-450, -70)
-	#	else:
-	#		cur_can.offset = Vector2(0, 0)
-	#)
-	#cur_can.sprite_frames = CAN
-	#cur_can.position = $SprayCanPile.position + Vector2(650, -170)
-	#cur_can.animation_finished.connect(func(): cur_can.visible = cur_can.animation != 'fly')
-	#cur_can.visible = false
-	Main.cam.position_smoothing_enabled = true
+	#if SONG.player1.contains('pico') and !Main.GAME_OVER:
+	#	Main.GAME_OVER = load('res://game/scenes/game_over-pico.tscn').instantiate()
+
+	spraycan.add_anim_by_frames('kick_up', [0, 7])
+	spraycan.add_anim_by_frames('kick_at', [8, 18])
+	spraycan.add_anim_by_frames('bonk', [19, 24])
+	spraycan.add_anim_by_frames('shot', [26, 44])
+	spraycan.anim_changed.connect(func():
+		if spraycan.cur_anim == 'bonk':
+			spraycan.offset = Vector2(-240, -130)
+			$Explosion.position = Vector2(1950, 820)
+		else:
+			spraycan.offset = Vector2(0, 0)
+	)
+	$Explosion.animation_finished.connect($Explosion.hide)
+	spraycan.frame_changed.connect(func():
+		if spraycan.frame == 22:
+			$Explosion.show()
+			$Explosion.play()
+			$Explosion.frame = 0
+	)
+	spraycan.finished.connect(func():
+		spraycan.visible = spraycan.cur_anim.begins_with('kick')
+	)
 
 	if Game.scene.story_mode:
 		if Util.format_str(SONG.song) == 'darnell':
@@ -162,21 +125,21 @@ func post_ready() -> void:
 				cutscene.add_timed_event(init_delay + 4.5, func():
 					dad.play_anim('kick')
 					Audio.play_sound('weekend/kickUp')
-					cur_can.visible = true
-					cur_can.play_anim('kick_up')
+					spraycan.visible = true
+					spraycan.play_anim('kick_up')
 				)
 				cutscene.add_timed_event(init_delay + 4.8, func():
 					dad.play_anim('knee')
 					dad.can_dance = true
 					Audio.play_sound('weekend/kickForward')
-					cur_can.play_anim('kick_at')
+					spraycan.play_anim('kick_at')
 				)
 				cutscene.add_timed_event(init_delay + 5.1, func():
 					boyfriend.play_anim('intro-return')
 					create_tween().tween_property(Main.cam, 'position:x', Main.cam.position.x - 100, 2.5).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 					#FlxTween.tween(FlxG.camera.scroll, {x: camFollow.x + 100 - FlxG.width/2}, 2.5, {ease: FlxEase.quadInOut});
 					Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
-					cur_can.play_anim('shot')
+					spraycan.play_anim('shot')
 
 	#				spraycan.playCanShot();
 	#				new FlxTimer().start(1/24, function(_)
@@ -195,6 +158,41 @@ func post_ready() -> void:
 				)
 			)
 
+func _process(delta:float) -> void:
+	$Skybox/Sprite.region_rect.position.x -= delta * 22
+	$Smog/Sprite.region_rect.position.x += delta * 22
+
+
+func beat_hit(beat:int) -> void:
+	var can_change:bool = (beat == (prev_change + change_interval))
+
+	if Util.rand_bool(10) && !can_change && car1_interruptable:
+		if !light_stop:
+			pass #drive_car($Car1/Sprite)
+		else:
+			pass #drive_car_lights($Car1/Sprite)
+
+	if (Util.rand_bool(10) && !can_change && car2_interruptable && !light_stop):pass
+		#drive_car_back($Cars2)
+
+	if can_change:
+		change_lights(beat)
+
+func change_lights(b:int) -> void:
+	prev_change = b
+	light_stop = !light_stop
+
+	if light_stop:
+		$Traffic/Sprite.play('to_red')
+		change_interval = 20
+	else:
+		$Traffic/Sprite.play('to_green')
+		change_interval = 30
+
+		if car_waiting:
+			pass #finish_car_lights($Car1/Sprite)
+
+
 var cocked:bool = false
 func good_note_hit(note:Note):
 	if !note.type.begins_with('weekend-1'): return
@@ -210,32 +208,42 @@ func good_note_hit(note:Note):
 				note_miss(note)
 				return
 			cocked = false
-			if Util.rand_bool(90) and boyfriend.cur_char == 'pico':
+			if Util.rand_bool(10) and boyfriend.cur_char == 'pico':
 				boyfriend.play_anim('intro')
 				boyfriend.frame = 34
 				boyfriend.pause()
 
-				cur_can.play_anim('bonk')
+				spraycan.play_anim('bonk')
+				spraycan.offset = Vector2(-350, -120)
+				$Explosion.position = Vector2.INF
 				Audio.play_sound('weekend/bonk')
 			else:
 				boyfriend.play_anim('shoot' if boyfriend.cur_char == 'pico' else 'attack', true)
 				boyfriend.special_anim = true
 
 				Audio.play_sound('weekend/shots/'+ str(randi_range(1, 4)))
-				cur_can.play_anim('shot')
+				spraycan.play_anim('shot')
 
 var died_by_can:bool = false
 func note_miss(note:Note):
 	if !note.type.begins_with('weekend-1'): return
 	note.no_anim = true
-	if note.type.replace('weekend-1-', '') == 'firegun':
+	if note.type == 'weekend-1-firegun':
 		Audio.play_sound('weekend/bonk')
-		cur_can.play_anim('bonk')
+		spraycan.play_anim('bonk')
 		boyfriend.play_anim('shootMISS', true)
 		boyfriend.special_anim = true
-		await get_tree().create_timer(0.3).timeout
-		UI.hp = 0
-		died_by_can = true
+
+		UI.icon_p1.has_lose = false
+		UI.icon_p1.frame = 1
+		get_tree().create_timer(0.75, false).timeout.connect(func(): UI.icon_p1.has_lose = true)
+
+		get_tree().create_timer(0.3).timeout.connect(func():
+			Util.shake_obj(UI.health_bar, 8, 1, 'y')
+			UI.hp -= 30
+			died_by_can = UI.hp <= 0
+		)
+
 
 func opponent_note_hit(note:Note):
 	if !note.type.begins_with('weekend-1'): return
@@ -248,19 +256,15 @@ func opponent_note_hit(note:Note):
 		&'kickcan' :
 			dad.play_anim('kick', true)
 			dad.special_anim = true
-			cur_can.visible = true
-			cur_can.play_anim('kick_up')
+			spraycan.visible = true
+			spraycan.play_anim('kick_up')
 			Audio.play_sound('weekend/kickUp')
 		&'kneecan' :
 			dad.play_anim('knee', true)
 			dad.special_anim = true
-			cur_can.play_anim('kick_at')
+			spraycan.play_anim('kick_at')
 			Audio.play_sound('weekend/kickForward')
 
 func game_over_start():
-	#if died_by_can:
-	Main.GAME_OVER.death_type = Main.GAME_OVER.TYPES.EXPLODE
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta: float) -> void:
-#	pass
+	if died_by_can:
+		Main.GAME_OVER.death_type = Main.GAME_OVER.TYPES.EXPLODE

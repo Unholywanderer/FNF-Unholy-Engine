@@ -229,6 +229,10 @@ var note_count:int = 0
 var section_data:Dictionary = {}
 var chunk:int = 0
 
+func _notification(what:int) -> void:
+	if what == NOTIFICATION_PREDELETE and GAME_OVER:
+		GAME_OVER.queue_free()
+
 func _process(delta):
 	if LuaHandler.call_func('process', [delta]) == LuaHandler.RET_TYPES.STOP: return
 

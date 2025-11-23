@@ -27,7 +27,7 @@ func round_d(num:float, digit:int) -> float: # bowomp
 func rand_bool(chance:float = 50.0) -> bool:
 	return (randi() % 100) < chance
 
-func remove_all(array:Array[Array], node:Node) -> void:
+func remove_all(array:Array[Array], node:Node = null) -> void:
 	if node == null: node = Game.scene
 	for sub in array:
 		for i in sub:
@@ -123,6 +123,16 @@ func flash_screen(flash_color:Color = Color.WHITE, duration:float = 1.0) -> void
 		Game.scene.add_child(flash)
 	quick_tween(flash, 'modulate:a', 0, duration).finished.connect(flash.queue_free)
 
+func shake_obj(obj:Node, intensity:float = 5.0, dur:float = 1.0, axis:String = 'xy') -> void:
+	if obj == null or !obj.get('position'): return
+	var shake = Shaker.new()
+	shake.shake(obj, intensity, dur, axis)
+	add_child(shake)
+	shake.finished.connect(func():
+		if obj != null: obj.position = shake.default_pos
+		shake.queue_free()
+	)
+
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST
 
@@ -176,3 +186,38 @@ func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:
 		time_part1 += str(time_part2)
 
 	return time_part1
+
+class Shaker extends Node2D:
+	signal finished
+	var obj:Node = null
+	var default_pos:Vector2 = Vector2.ZERO
+	var cur_shake:float = 0.0:
+		set(shake):
+			if cur_shake == shake: return
+			if shake <= 0:
+				print('fuck')
+				shake = 0
+				finished.emit()
+			cur_shake = shake
+
+	var axis:String = 'xy'
+
+	var intensity:float = 5.0
+	var duration:float = 1.0
+
+	func shake(i:Node, inten:float = 5.0, dur:float = 1.0, ax:String = 'xy') -> void:
+		obj = i
+		default_pos = obj.position
+		intensity = inten
+		duration = dur
+		axis = ax.to_lower().strip_edges()
+		cur_shake = intensity
+		print('hah')
+
+	func _process(delta:float) -> void:
+		cur_shake -= intensity * delta / duration
+		var shook:Vector2 = Vector2(randf_range(-cur_shake, cur_shake), randf_range(-cur_shake, cur_shake))
+		match axis:
+			'x': obj.position.x = default_pos.x + shook.x
+			'y': obj.position.y = default_pos.y + shook.y
+			_: obj.position = default_pos + shook

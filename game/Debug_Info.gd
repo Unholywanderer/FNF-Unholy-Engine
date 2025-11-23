@@ -66,15 +66,15 @@ func _process(delta):
 			var tex_mem:String = String.humanize_size(int(Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED)))
 			var other_data:Array = [
 				vid_mem, tex_mem,
-				get_tree().get_node_count(),
 				'???',
-				Performance.get_monitor(Performance.OBJECT_COUNT),
-				Performance.get_monitor(Performance.TIME_PROCESS),
-				Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
+				get_tree().get_node_count(),
+				int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)),
+				int(Performance.get_monitor(Performance.OBJECT_COUNT)),
+				int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME))
 				]
 			if get_tree().current_scene != null:
-				other_data[3] = get_tree().current_scene.name
-			txt_add = 'VMem: %s\nTMem: %s\nNodes: %s\nScene: %s\nAll Objs: %s\nFrm Delay: %s\nDraw Calls: %s' % other_data
+				other_data[2] = get_tree().current_scene.name
+			txt_add = 'VMem: %s\nTMem: %s\nScene: %s\nNodes: %s\nOrphans: %s\nAll Objs: %s\nDraw Calls: %s' % other_data
 		$Other.text += txt_add
 
 

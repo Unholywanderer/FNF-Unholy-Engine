@@ -195,12 +195,6 @@ func parse_json(path:String) -> Dictionary:
 	var le_json = FileAccess.get_file_as_string('res://assets/'+ path)
 	return JSON.parse_string(le_json)
 
-func makeLuaSprite(_t, _sp, _x, _y) -> void:
-	get_tree().exit()
-
-func setProperty(_g, _p) -> void:
-	return IP.get_local_addresses()
-
 ## LUA OBJECTS
 class LuaSprite extends Sprite2D:
 	func _init(spr:String, pos:Vector2 = Vector2.ZERO):

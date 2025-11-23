@@ -1,10 +1,14 @@
 @tool
 class_name Atlas extends AnimateSymbol
 
+signal anim_changed
 var _added_anims:Dictionary[String, AnimData] = {}
 var frame_index:int = -1
 var cur_anim:StringName = '':
-	set(an): if _added_anims.has(an): cur_anim = an
+	set(an):
+		if _added_anims.has(an):
+			cur_anim = an
+			anim_changed.emit()
 
 func add_anim_by_frames(alias:String, frames:Array = [], fps:float = 24.0, loop:bool = false):
 	var new_anim := AnimData.new()
@@ -36,7 +40,12 @@ func add_anim_by_symbol(alias:String, symb:String, frames:Array = [], fps:float 
 	_added_anims.set(alias, new_anim)
 
 func get_frame_count(anim:String) -> int:
-	return _added_anims[anim].frames.size() if _added_anims.has(anim) else 0
+	# TODO does not return count if animation is added by a symbol i think
+	var count:int = 0
+	if _added_anims.has(anim):
+		count = _added_anims[anim].frames.size()
+
+	return count
 
 func play_anim(anim:String, force:bool = false) -> void:
 	if !_added_anims.has(anim): return
