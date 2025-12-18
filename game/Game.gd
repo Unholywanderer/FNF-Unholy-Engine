@@ -2,29 +2,33 @@ extends Node2D
 
 signal focus_change(is_focused) # when you click on/off the game window
 
-var TRANS:PackedScene = preload('res://game/objects/ui/transition.tscn') # always have it loaded for instantiating
+const week_list:PackedStringArray = [
+	'test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'
+]
+const stage_list:PackedStringArray = [
+	'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank',
+	'philly-streets', 'philly-blazin',
+	'stage-erect', 'spooky-erect', 'philly-erect', 'limo-erect', 'mall-erect'
+]
+
+# always have it loaded for instantiating
+var TRANS:PackedScene = preload('res://game/objects/ui/transition.tscn')
 var cur_trans:CanvasLayer
 
+## Dictionary that holds variables/resources that will NOT reset when changing scenes
 var persist:Dictionary[String, Variant] = { # change this to a global script or something
-	'scoring': null,
 	'prev_scene': null,
+	'scoring': null,
+	'song_list': [],
+	'deaths': 0,
 	'note_splash': null,
 	'note_skin': null,
-	'week_list': [
-		'test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'
-	],
-	'stage_list': [
-		'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank',
-		'philly-streets', 'philly-blazin',
-		'stage-erect', 'spooky-erect', 'philly-erect', 'limo-erect', 'mall-erect'
-	],
-	'week_int': -1, 'week_diff': -1,
-	'song_list': [],
-	'deaths': 0
+	'week_int': -1,
+	'week_diff': -1,
 }
 
 var main_window:Window
-var scene:Node2D = null:
+var scene:Node2D:
 	get: return get_tree().current_scene
 
 var screen:Array[float] = [
@@ -63,12 +67,17 @@ func _ready():
 				if !folders_to_make[i].is_empty():
 					for sub:String in folders_to_make[i]:
 						DirAccess.make_dir_absolute(exe_path +'mods/'+ i +'/'+ sub)
+			#var txt_note = FileAccess.open(exe_path +'mods/', FileAccess.WRITE)
 
 	main_window = get_window()
 	# this is cool but its funky
-	main_window.focus_entered.connect(_focus_in)
-	main_window.focus_exited.connect(_focus_out)
+	#main_window.focus_entered.connect(_focus_in)
+	#main_window.focus_exited.connect(_focus_out)
 	set_mouse_visibility(false)
+
+func _notification(what:int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_IN: _focus_in()
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT: _focus_out()
 
 var just_pressed:bool = false
 func _unhandled_input(event:InputEvent) -> void:
@@ -106,7 +115,6 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 
 	LuaHandler.remove_all()
 	Audio.sync_conductor = false
-	persist.loaded_already = false
 	if scene: persist.prev_scene = scene.name
 
 	set_mouse_visibility(false)
@@ -117,7 +125,11 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 	if to_scene is String: # scene is a string, make it into a packed scene
 		to_scene = to_scene.to_lower()
 		if to_scene == 'play_scene' and Prefs.basic_play: to_scene += '_simple'
-		if ResourceLoader.exists('res://game/scenes/'+ to_scene +'.tscn', 'PackedScene'):
+		if FileAccess.file_exists('res://assets/data/scripts/custom_scenes/'+ to_scene +'.lua'):
+			print('we lua-ing')
+			to_scene = 'custom_scene'
+
+		if ResourceLoader.exists('res://game/scenes/'+ to_scene +'.tscn'):
 			to_scene = load('res://game/scenes/'+ to_scene +'.tscn')
 		else:
 			Alert.make_alert('Switch Scene: "'+ to_scene +'" doesn\'t exist\nreloading')
@@ -125,7 +137,7 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 
 	var new_scene:PackedScene = to_scene
 
-	if cur_trans != null and cur_trans.in_progress: # cancel previous trans, if exists
+	if cur_trans and cur_trans.in_progress: # cancel previous trans, if exists
 		remove_child(cur_trans)
 		cur_trans.cancel()
 		get_tree().paused = false

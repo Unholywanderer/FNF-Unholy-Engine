@@ -13,8 +13,6 @@
 [ext_resource type="Texture2D" uid="uid://oifct114c1b6" path="res://assets/images/freeplay/freeplayCapsule/bignumbers.png" id="10_bjeys"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_2p8yr"]
-shader = ExtResource("1_7ejj3")
-shader_parameter/strength = 1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4b5pt"]
 shader = ExtResource("1_7ejj3")

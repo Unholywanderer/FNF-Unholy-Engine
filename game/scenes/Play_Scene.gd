@@ -166,8 +166,8 @@ func _ready():
 
 	Judge.skin = ui.SKIN
 	if Prefs.rating_cam == 'game':
-		Judge.rating_pos = boyfriend.position + Vector2(0, -40)
-		Judge.combo_pos = boyfriend.position + Vector2(-150, 70)
+		Judge.rating_pos = boyfriend.get_cam_pos() + Vector2(boyfriend.width + 90, -40)
+		Judge.combo_pos = boyfriend.get_cam_pos() + Vector2(boyfriend.width - 40, 70)
 	elif Prefs.rating_cam == 'hud':
 		Judge.rating_pos = Vector2(580, 300)
 		Judge.combo_pos = Vector2(420, 420)
@@ -385,10 +385,11 @@ func move_cam(to_char:Variant) -> void:
 	if speaker and peep != gf and speaker.has_method('look'):
 		speaker.look(peep == boyfriend)
 	var new_pos:Vector2 = peep.get_cam_pos()
-	cam.position = new_pos + cam_off + focus_offset
+	cam.position = new_pos + cam_off #+ focus_offset
 	focus_offset = Vector2.ZERO
 
 func _unhandled_key_input(event:InputEvent) -> void:
+	LuaHandler.call_func('input_recieved')
 	if auto_play: return
 	for i in 4:
 		if event.is_action_pressed(key_names[i]): key_press(i)
@@ -441,9 +442,9 @@ func song_end() -> void:
 
 	if Game.persist.get('scoring') == null:
 		Game.persist.scoring = ScoreData.new()
-	Game.persist.scoring.is_highscore = false
-	Game.persist.scoring.is_valid = should_save
-
+	var scoring:ScoreData = Game.persist.get('scoring')
+	scoring.is_highscore = false
+	scoring.is_valid = should_save
 
 	#TODO: clean this up later and change it, rather sloppy fix
 	if should_save:
@@ -453,34 +454,33 @@ func song_end() -> void:
 
 		if save_data[0] > saved_score:
 			if playlist.is_empty() or song_idx + 1 >= playlist.size():
-				Game.persist.scoring.is_highscore = true
+				scoring.is_highscore = true
 			HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
 
-	Conductor.reset()
-
-	Game.persist.scoring.add_hits(ui.hit_count)
-	Game.persist.scoring.total_notes += note_count
-	Game.persist.scoring.song_name = SONG.song
-	Game.persist.scoring.score += roundi(score)
-	#Game.persist.scoring.save_format = [roundi(score), ui.accuracy, misses, ui.grade, combo]
+	scoring.add_hits(ui.hit_count)
+	scoring.total_notes += note_count
+	scoring.song_name = SONG.song
+	scoring.score += roundi(score)
 
 	if misses == 0:
-		Game.persist.scoring.max_combo += note_count
+		scoring.max_combo += note_count
 	else:
-		Game.persist.scoring.max_combo = max_combo
+		scoring.max_combo = max_combo
+
+	Conductor.reset()
 
 	if song_idx + 1 >= playlist.size():
 		Game.persist.song_list = []
 		Game.persist.scoring.difficulty = JsonHandler.get_diff
-		Game.switch_scene('results_screen' if !story_mode else 'story_mode')
-		#var back_to = 'story_mode' if story_mode else 'freeplay'
-		#Game.switch_scene("menus/"+ back_to)
+		Game.switch_scene('results_screen')
 	else:
 		song_idx += 1
 		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
 		SONG = JsonHandler.SONG
 		cur_speed = SONG.speed
+		Game.persist.set('seen_cutscene', false)
 		Conductor.load_song(SONG.song)
+		ui.time_circ.get_node('Song').text = SONG.song
 		refresh(true)
 
 func refresh(restart:bool = true) -> void: # start song from beginning with no restarts
@@ -501,11 +501,11 @@ func refresh(restart:bool = true) -> void: # start song from beginning with no r
 
 	chunk = 0
 	if restart:
-		for item in ['combo', 'score', 'misses']: set(item, 0)
-		ui.reset_stats()
+		#for item in ['combo', 'score', 'misses']: set(item, 0)
+		#ui.reset_stats()
 		Discord.change_presence('Starting: '+ SONG.song.capitalize())
-		ui.get_node('Left').text = '0:00'
-		ui.time_bar.value = 0
+		ui.time_circ.get_node('Pos').text = '0:00'
+		ui.time_circ.value = 0
 		Conductor.song_pos = (-Conductor.crochet * 4)
 		ui.start_countdown(true)
 		ui.hp = 50
@@ -564,8 +564,8 @@ func event_hit(event:EventData) -> void:
 		'Add Camera Zoom':
 			var ev_zoom:Array[String] = [event.values[0], event.values[1]]
 
-			var zoom_ui:float = float(ev_zoom[0]) / 2.0 if ev_zoom[0].is_valid_float() else 0.03
-			var zoom_game:float = float(ev_zoom[1]) / 2.0 if ev_zoom[1].is_valid_float() else 0.015
+			var zoom_game:float = float(ev_zoom[0]) / 2.0 if ev_zoom[0].is_valid_float() else 0.015
+			var zoom_ui:float = float(ev_zoom[1]) / 2.0 if ev_zoom[1].is_valid_float() else 0.03
 
 			ui.zoom += zoom_ui
 			cam.zoom += Vector2(zoom_game, zoom_game)
@@ -656,8 +656,6 @@ func good_note_hit(note:Note) -> void:
 	if Conductor.vocals:
 		Conductor.audio_volume(1, 1.0)
 
-	#boyfriend.material.set_shader_parameter('color_to_be', Color(randf(), randf(), randf()))
-
 	var time:float = Conductor.song_pos - note.strum_time if !auto_play else 0.0
 	note.rating = Rating.get_rating(time)
 
@@ -701,7 +699,6 @@ func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hi
 		#sustain.dropped = true
 		sustain.strum_time = Conductor.song_pos
 		sustain.holding = false
-		print('let go too soon ', sustain.length)
 		sustain.drop_time += get_process_delta_time() #testing something
 		if sustain.drop_time >= 0.15:
 			note_miss(sustain)

@@ -294,7 +294,7 @@ func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	offset = anim_offset
 	flip_h = flippers.get(anim, false)
 
-func get_anim() -> StringName:
+func get_anim() -> String:
 	return atlas.cur_anim if is_atlas else animation
 
 func get_cam_pos() -> Vector2:

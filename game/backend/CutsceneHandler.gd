@@ -1,7 +1,6 @@
 class_name Cutscene; extends Resource;
 
 signal skipped
-@warning_ignore("unused_signal")
 signal finished
 @warning_ignore("unused_signal")
 signal video_skipped
@@ -19,6 +18,9 @@ var max_time:float = 0.0:
 var cutscene_in_progress:bool = false
 var timed_events:Array = []
 func add_timed_event(time:float, event:Callable) -> void:
+	#var timer:Timer = Timer.new()
+	#timer.start(time)
+	#timer.timeout.connect(event)
 	Game.scene.get_tree().create_timer(abs(time), false).timeout.connect(event)
 
 @warning_ignore("unused_parameter")
@@ -36,7 +38,7 @@ func play_video(vid_name:String, auto_play:bool = true, loop:bool = false, add_t
 	var new_video:VideoStreamPlayer = VideoStreamPlayer.new()
 	new_video.stream = FFmpegVideoStream.new()
 	new_video.stream.file = 'res://assets/videos/%s.mp4' % [vid_name]
-	if add_to != null:
+	if add_to:
 		if add_to is Callable: add_to.call(new_video)
 		else: add_to.add_child(new_video)
 
@@ -50,8 +52,8 @@ func play_video(vid_name:String, auto_play:bool = true, loop:bool = false, add_t
 
 var _hold_time:float = 0.0
 func _process(delta:float) -> void:
+	if Input.is_action_pressed(&"accept"): _hold_time += delta
 	if video:
-		if Input.is_action_pressed(&"accept"): _hold_time += delta
 		if _hold_time >= 1:
 			_hold_time = 0
 			skipped.emit()
@@ -59,3 +61,6 @@ func _process(delta:float) -> void:
 			if video: video.queue_free()
 			# in case you have it set to auto delete after its finished somewhere
 			# just do a quick null check before we remove
+	else:
+		if max_time > 0 and _hold_time >= 1:
+			finished.emit()

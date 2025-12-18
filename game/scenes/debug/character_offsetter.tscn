@@ -83,13 +83,14 @@ scroll_fit_content_height = true
 [node name="Label" type="Label" parent="UILayer/ResPath"]
 layout_mode = 0
 offset_left = 3.0
-offset_top = -24.0
+offset_top = -33.0
 offset_right = 225.0
-offset_bottom = -1.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 13
-text = ".res File (starts in images/)"
+text = ".res File / Atlas Folder
+(starts in images/)"
+horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Main" type="ColorRect" parent="UILayer"]

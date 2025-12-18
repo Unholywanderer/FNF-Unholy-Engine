@@ -4,6 +4,9 @@ class_name AnimateSymbol extends Node2D
 ## Node that lets you play Adobe Animate Texture Atlases
 ## in Godot.
 
+signal finished
+signal symbol_changed(symbol: String)
+signal frame_changed
 
 ## The folder path to the atlas that is loaded.
 ## [br][br][b]Note[/b]: This automatically reloads the atlas when
@@ -70,10 +73,6 @@ var _collections: Array[SpriteCollection]
 var _animation: AtlasAnimation
 var _timer: float = 0.0
 var _current_transform: Transform2D = Transform2D.IDENTITY
-
-signal finished
-signal symbol_changed(symbol: String)
-signal frame_changed
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(_animation):

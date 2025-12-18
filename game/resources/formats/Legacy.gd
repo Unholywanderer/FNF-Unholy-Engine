@@ -22,7 +22,7 @@ const chart_format = {
 var p_v1:bool = false
 func _init(s:bool = false): p_v1 = s
 
-func parse_chart(data) -> Array:
+func parse_chart(data:Dictionary) -> Array:
 	for sec in data.notes:
 		for note in sec.sectionNotes:
 			if note[1] < 0: continue

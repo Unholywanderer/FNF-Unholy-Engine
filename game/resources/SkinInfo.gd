@@ -43,7 +43,7 @@ func load_skin(new_skin:String = 'default') -> void:
 		cur_skin = new_skin
 		var new_skin_data:SkinBase = load('res://'+ skin_to_check)
 		for field in get_property_list():
-			if get(field.name) == null or field.name.contains('script'):  continue
+			if get(field.name) == null or field.name.contains('script'): continue
 			if get(field.name) == new_skin_data.get(field.name): continue
 			set(field.name, new_skin_data.get(field.name))
 	else:

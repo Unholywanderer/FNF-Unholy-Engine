@@ -12,6 +12,4 @@ position_smoothing_enabled = true
 
 [node name="UI" parent="." instance=ExtResource("2_5ylyw")]
 
-[node name="Mark" type="Sprite2D" parent="UI"]
-
 [node name="OtherUI" type="CanvasLayer" parent="."]

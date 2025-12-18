@@ -164,6 +164,11 @@ func load_audio(path:String) -> AudioStreamOggVorbis:
 	#var file = FileAccess.open(path, FileAccess.READ)
 	return AudioStreamOggVorbis.load_from_file(path)
 
+func load_texture(path:String) -> Image:
+	#ImageTexture.create_from_image()
+	#load(path)
+	return Image.load_from_file(path)
+
 func get_closest_anim(frames:SpriteFrames, anim:String) -> String:
 	for i in frames.get_animation_names():
 		if anim.begins_with(i): return i
@@ -171,6 +176,7 @@ func get_closest_anim(frames:SpriteFrames, anim:String) -> String:
 
 func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:
 	if is_milli: secs = secs / 1000.0
+	secs = abs(secs) # hmm, i dont think theres much of a reason for negative times
 	var time_part1:String = str(int(secs / 60)) + ":"
 	var time_part2:int = int(secs) % 60
 	if time_part2 < 10:
@@ -195,7 +201,6 @@ class Shaker extends Node2D:
 		set(shake):
 			if cur_shake == shake: return
 			if shake <= 0:
-				print('fuck')
 				shake = 0
 				finished.emit()
 			cur_shake = shake

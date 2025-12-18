@@ -1,4 +1,4 @@
-class_name Strum_Line; extends Node2D;
+class_name Strum_Line; extends Control;
 # DO NOT ADD AS AN OBJECT TO SCENE, NEEDS TO BE INSTANTIATED
 
 #var SPLASH = preload('res://game/objects/note/note_splash.tscn')
@@ -9,12 +9,12 @@ var INIT_POS:PackedVector2Array = [Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vec
 @export var is_cpu:bool = true:
 	set(cpu):
 		is_cpu = cpu
-		for i in get_strums(): i.is_player = !cpu
+		for i in strums: i.is_player = !cpu
 
 @export var spacing:float = 110.0:
 	set(new_space):
 		spacing = new_space
-		for i in get_strums():
+		for i in strums:
 			i.position.x = spacing * i.dir
 
 var singer = null
@@ -22,16 +22,19 @@ var notes:Array[Note] = []
 
 func _ready():
 	for i in 4: # i can NOT be bothered to position these mfs manually
-		var cur_strum:Strum = get_strums()[i]
+		var cur_strum:Strum = strums[i]
 		cur_strum.dir = (i % 4)
 		cur_strum.downscroll = Prefs.scroll_type == 'down'
 
 		cur_strum.is_player = !is_cpu
-		cur_strum.position.x = spacing * (i % 4)
+		cur_strum.position.x = spacing * i
 		INIT_POS[i] = cur_strum.position
 
 func get_strums() -> Array[Strum]:
 	return [$Left, $Down, $Up, $Right]
+
+func add_strum() -> void:
+	pass
 
 func set_all_skins(skin:String = '') -> void:
 	for i in strums:
@@ -40,7 +43,7 @@ func set_all_skins(skin:String = '') -> void:
 func note_hit(note:Note) -> void:
 	strum_anim(note.dir, !is_cpu, !note.is_sustain)
 
-	if singer != null and !note.no_anim:
+	if singer and !note.no_anim:
 		match note.type:
 			'Hey':
 				singer.play_anim('hey', true)
@@ -60,7 +63,7 @@ func note_hit(note:Note) -> void:
 		spawn_splash(strums[note.dir])
 
 func note_miss(note:Note) -> void:
-	if singer != null:
+	if singer:
 		singer.sing(note.dir, 'miss')
 		if note.length > 0:
 			singer.anim_timer = 0.5 + (note.length / Conductor.step_crochet * 0.16)
@@ -69,7 +72,7 @@ var cur_sparks:Array = [null, null, null, null]
 var is_holding:Array = [false, false, false, false]
 func _process(_delta:float) -> void:
 	if !is_cpu:
-		for i in ['left', 'down', 'up', 'right'].size():
+		for i in cur_sparks.size():
 			is_holding[i] = Input.is_action_pressed('note_'+ ['left', 'down', 'up', 'right'][i])
 			if !is_holding[i] and cur_sparks[i] != null and !cur_sparks[i].animation.ends_with('_splash'):
 				cur_sparks[i].queue_free()
@@ -106,9 +109,6 @@ func spawn_hold_splash(strum:Strum, note:Note) -> void:
 		spark.anim_time = note.length / 1000 #+= get_process_delta_time()
 		add_child(spark)
 		cur_sparks[strum.dir] = spark
-
-func add_strum() -> void:
-	pass
 
 func strum_anim(dir:int = 0, player:bool = false, force:bool = true) -> void:
 	var strum:Strum = strums[dir]

@@ -4,7 +4,12 @@
 [ext_resource type="SpriteFrames" uid="uid://cwj3c82v68hde" path="res://assets/images/ui/skins/default/strums.res" id="2_surtv"]
 [ext_resource type="Script" uid="uid://c86ejc2uawybx" path="res://game/objects/note/Strum.gd" id="3_h255v"]
 
-[node name="Strum_Line" type="Node2D"]
+[node name="Strum_Line" type="Control"]
+layout_mode = 3
+anchor_right = 0.347
+anchor_bottom = 0.15300001
+offset_right = -0.16000366
+offset_bottom = -0.16001129
 script = ExtResource("1_6qhpl")
 
 [node name="Left" type="AnimatedSprite2D" parent="."]

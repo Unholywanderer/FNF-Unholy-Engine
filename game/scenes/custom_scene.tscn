@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://cx6mliqneap5q"]
+
+[sub_resource type="GDScript" id="GDScript_q4g3v"]
+resource_name = "Custom"
+script/source = "extends Node2D
+
+func _ready() -> void:
+	LuaHandler.call_func('post_ready')
+
+func _process(delta:float) -> void:
+	LuaHandler.call_func('process', [delta])
+
+func _unhandled_input(_event:InputEvent) -> void:
+	LuaHandler.call_func('input_recieved')
+
+func _exit_tree() -> void:
+	LuaHandler.call_func('exit')
+"
+
+[node name="CustomScene" type="Node2D"]
+script = SubResource("GDScript_q4g3v")

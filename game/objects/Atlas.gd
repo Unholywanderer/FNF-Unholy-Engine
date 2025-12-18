@@ -10,7 +10,8 @@ var cur_anim:StringName = '':
 			cur_anim = an
 			anim_changed.emit()
 
-func add_anim_by_frames(alias:String, frames:Array = [], fps:float = 24.0, loop:bool = false):
+func add_anim_by_frames(alias:String, frames:Array = [], fps:float = 24.0, loop:bool = false) -> void:
+	if atlas.is_empty(): return printerr('No Atlas Dummy!')
 	var new_anim := AnimData.new()
 	if frames.size() == 2:
 		var le_arr:Array[int] = []
@@ -25,6 +26,7 @@ func add_anim_by_frames(alias:String, frames:Array = [], fps:float = 24.0, loop:
 	_added_anims.set(alias, new_anim)
 
 func add_anim_by_symbol(alias:String, symb:String, frames:Array = [], fps:float = 24.0, loop:bool = false) -> void:
+	if atlas.is_empty(): return printerr('No Atlas Dummy!')
 	var new_anim := AnimData.new()
 	new_anim.anim = symb
 	if frames.size() == 2:
@@ -66,8 +68,7 @@ func pause() -> void: playing = false
 
 func _process(delta:float) -> void:
 	if not is_instance_valid(_animation):
-		if frame > 0:
-			frame = 0
+		frame = 0
 		return
 
 	if not playing: return
@@ -76,8 +77,8 @@ func _process(delta:float) -> void:
 
 	_timer += delta
 	var _le_data:AnimData = _added_anims[cur_anim]
-	if _timer >= 1.0 / _le_data.framerate:
-		_timer = 0.0
+	while _timer >= 1.0 / _le_data.framerate:
+		_timer -= 1.0 / _le_data.framerate
 		var symb_anim:bool = !symbol.is_empty()
 
 		if symb_anim and _le_data.frames.is_empty() and frame < _timeline.length - 1:

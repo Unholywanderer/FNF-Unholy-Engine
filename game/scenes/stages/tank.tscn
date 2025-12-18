@@ -123,10 +123,11 @@ centered = false
 [node name="CharGroup" type="Node2D" parent="."]
 
 [node name="Tanky" type="Node2D" parent="CharGroup"]
+visible = false
 z_index = 2
 script = ExtResource("13_737rp")
 atlas = "res://assets/images/stages/tank/cutscenes/tankman"
-frame = 226
+frame = 1276
 loop_mode = "Play Once"
 metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
 

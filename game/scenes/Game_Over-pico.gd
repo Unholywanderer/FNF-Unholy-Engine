@@ -164,7 +164,7 @@ func _process(delta):
 		cam.zoom.x = lerpf(cam.zoom.x, zoo, delta * 4)
 		cam.zoom.y = cam.zoom.x
 
-		if death_type == TYPES.NORMAL and retry.sprite_frames and pico.frame >= 35 and !retry.visible:
+		if death_type == TYPES.NORMAL and retry and pico.frame >= 35 and !retry.visible:
 			retry.visible = true
 			retry.play('loop')
 
@@ -196,6 +196,9 @@ func _process(delta):
 			Conductor.reset()
 			get_tree().paused = false
 			Game.switch_scene('menus/freeplay_classic', true)
+
+func add_over(obj:Variant) -> void:
+	$Overlay.add_child(obj)
 
 func follow_bg() -> void:
 	bg.scale = (Vector2.ONE / cam.zoom) + Vector2(0.05, 0.05)

@@ -6,11 +6,15 @@ signal song_start # technically countdown tick 4 is song start but why would you
 
 # probably gonna move some note shit in here
 @onready var score_txt:Label = $Score_Txt
-@onready var time_bar:HealthBar = $TimeBar
+
+@onready var time_circ:Control = $TimeCirc
+#@onready var time_bar:HealthBar = $TimeBar
+
 @onready var health_bar:HealthBar = $HealthBar
 @onready var icon_p1:Icon = $HealthBar/IconP1
 @onready var icon_p2:Icon = $HealthBar/IconP2
 @onready var mark:Sprite2D = $HealthBar/Mark
+@onready var mark_bg:Sprite2D = $HealthBar/MarkBG
 @onready var back:Node2D = $Back
 
 @onready var strum_groups:Dictionary = {
@@ -52,19 +56,19 @@ var zoom:float = 1.0:
 		scale = Vector2(zoom, zoom)
 
 func _ready():
-	time_bar.fill_mode = 0
-	time_bar.set_colors(Color(0, 0, 0.5), Color(0.25, 0.65, 0.95))
-
 	strums.append_array(opponent_strums)
 	strums.append_array(player_strums)
 
 	var downscroll:bool = Prefs.scroll_type == 'down'
 
-	var player = get_group('player')
-	var opponent = get_group('opponent')
+	var player:Strum_Line = get_group('player')
+	var opponent:Strum_Line = get_group('opponent')
 	# i am stupid they are a group i dont have to set the strums position manually just the group y pos
 	player.position.y = 560 if downscroll else 55
 	opponent.position.y = 560 if downscroll else 55
+
+	player.position.x = (Game.screen[0] / 2.0 + (player.spacing * 2)) - 15
+	opponent.position.x = 50 + (opponent.spacing / 2.0)
 
 	var can_center:bool = Prefs.center_strums
 	match Prefs.scroll_type:
@@ -97,7 +101,7 @@ func _ready():
 					strums[i].position.y = 560
 
 	if can_center:
-		time_bar.position.x = 214
+		#time_bar.position.x = 214
 		player.position.x = (Game.screen[0] / 2) - 180
 		if Prefs.scroll_type == 'middle':
 			player.position.y = (Game.screen[1] / 2) - 55
@@ -110,17 +114,19 @@ func _ready():
 	health_bar.position.x = (Game.screen[0] / 2.0) - health_bar.width / 2.0 # 340
 	health_bar.position.y = 85 if downscroll else 630
 	health_bar.z_index = -2
-	icon_p1.follow_spr = health_bar
-	icon_p2.follow_spr = health_bar
+	#icon_p1.follow_spr = health_bar
+	#icon_p2.follow_spr = health_bar
 
-	time_bar.position.y = 695 if downscroll else 25
+	time_circ.position.y = 570 if downscroll else 55
+	#time_bar.position.y = 695 if downscroll else 25
 	score_txt.position.x = (Game.screen[0] / 2) - (score_txt.size[0] / 2)
 	if downscroll:
 		score_txt.position.y = 130
 
 	mark.texture = load('res://assets/images/ui/skins/'+ cur_skin +'/auto.png')
 	mark.scale = SKIN.mark_scale
-	$HealthBar/MarkBG.scale = mark.scale
+	mark_bg.scale = mark.scale
+	$TimeCirc/Song.text = JsonHandler.SONG.song
 
 	#player.scale = Vector2(0.9, 0.9)
 	#opponent.scale = Vector2(0.9, 0.9)
@@ -138,18 +144,21 @@ var hp:float = 50.0:
 
 func _process(delta):
 	if finished_countdown:
-		time_bar.value = (abs(Conductor.song_pos / Conductor.song_length) * 100.0)
-		#$Elasped.text = str(Util.to_time(floor(Conductor.song_pos / Conductor.playback_rate)))
-		$Left.text = str(Util.to_time(abs(floor((Conductor.song_length - Conductor.song_pos) / Conductor.playback_rate))))
+		var time:float = Conductor.song_pos
+		var leng:float = Conductor.song_length
+		time_circ.value = (abs(time / leng) * 100.0)
+		#time_bar.value = (abs(time / leng) * 100.0)
+		#$Elasped.text = str(Util.to_time(floor(time / Conductor.playback_rate)))
+		$TimeCirc/Pos.text = Util.to_time(floor(time) / Conductor.playback_rate) +' / '+ Util.to_time(leng / Conductor.playback_rate)
 
 	#$Elasped.position = time_bar.position - Vector2($Elasped.size.x / 2, 30)
-	$Left.position = (time_bar.position + (time_bar.size / 2.0)) - Vector2($Left.size.x / 2, $Left.size.y / 2)
+	#$Left.position = (time_bar.position + (time_bar.size / 2.0)) - Vector2($Left.size.x / 2, $Left.size.y / 2)
 
 	health_bar.value = lerpf(hp, health_bar.value, exp(-delta * 8))
 
 	mark.scale = lerp(SKIN.mark_scale, mark.scale, exp(-delta * 10))
-	$HealthBar/MarkBG.visible = mark.visible
-	$HealthBar/MarkBG.rotation = mark.rotation
+	mark_bg.visible = mark.visible
+	mark_bg.rotation = mark.rotation
 
 	offset.x = (scale.x - 1.0) * -(Game.screen[0] * 0.5)
 	offset.y = (scale.y - 1.0) * -(Game.screen[1] * 0.5)
@@ -224,9 +233,7 @@ func add_group(group_name:String, singer:Character = null): # add a strum group 
 
 func get_group(group_name:String): # get an existing strum group
 	var grp:String = group_name.to_lower().strip_edges()
-	if strum_groups.has(grp):
-		return strum_groups[grp]
-	return null
+	return strum_groups.get(grp)
 
 func add_to_strum_group(item:Variant, group:String = 'player') -> void:
 	if item == null: return
@@ -235,7 +242,7 @@ func add_to_strum_group(item:Variant, group:String = 'player') -> void:
 	group_to_add.add_child(item)
 
 func add_behind(item) -> void:
-	$Back.add_child(item)
+	back.add_child(item)
 	item.z_index = -1
 	#move_child(item, 0) #layering would get fucked
 
@@ -255,7 +262,7 @@ func change_skin(new_skin:String = 'default') -> void: # change style of whole h
 	mark.scale = def_mark_scale
 
 func toggle_objects(vis:bool = true, tween:bool = false, twn_len:float = 0.5) -> void:
-	for i in [health_bar, $Strum_Group, $Score_Txt]:
+	for i in [health_bar, $Strum_Group, $Score_Txt, time_circ]:
 		if tween: Util.quick_tween(i, 'modulate:a', 1 if vis else 0, twn_len)
 		else: i.visible = vis
 

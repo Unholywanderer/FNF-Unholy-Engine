@@ -19,7 +19,7 @@ var gameplay = [
 	['epic_window',     'float', [15, 22.5], 0.1],
 	['sick_window',     'float', [15, 45], 0.1],
 	['good_window',     'float', [15, 90], 0.1],
-	['bad_window' ,     'float', [15, 135], 0.1]
+	['bad_window' ,     'float', [15, 135], 0.1],
 ]
 var visuals = [
 	['fps',             'int', [0, 240]],
@@ -33,7 +33,7 @@ var visuals = [
 	['rating_cam',    'array', ['game', 'hud', 'none']],
 	['auto_pause',     'bool'],
 	['chart_grid',     'bool'],
-	['daniel',         'bool']
+	['daniel',         'bool'],
 ]
 #var controls = []
 

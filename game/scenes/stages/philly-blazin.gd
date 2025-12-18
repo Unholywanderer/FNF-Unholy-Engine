@@ -3,7 +3,7 @@ extends StageBase
 var def_index
 func post_ready() -> void:
 	gf.z_index = -50
-	UI.time_bar.position.x = (Game.screen[0] / 2.0) - 400
+	UI.time_circ.position.x = (Game.screen[0] / 2.0) - 400
 
 	UI.health_bar.rotation = deg_to_rad(90)
 	UI.health_bar.scale = Vector2(0.90, 0.90)

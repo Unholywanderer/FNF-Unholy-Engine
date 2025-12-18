@@ -83,10 +83,28 @@ func game_over_start():
 		Main.GAME_OVER.death_type = Main.GAME_OVER.TYPES.NENE
 
 func game_over_idle():
-	Audio.volume = 0.4
-	var _death = Audio.return_sound('tank/jeffGameover-'+ str(randi_range(1, 25)))
-	_death.play()
-	_death.finished.connect(func(): Audio.volume = 1)
+	var pico:bool = SONG.player1.contains('pico')
+	var rand_line:String = str(randi_range(1, (10 if pico else 25)))
+	var sub:String = JsonHandler.parse('data/tank_subs')[rand_line + ('-pico' if pico else '')]
+
+	var ass = load('res://game/objects/ui/subtitle.tscn').instantiate() #Util.quick_label(sub)
+	ass.text = sub
+	ass.icon = 'tankman'
+	Main.GAME_OVER.add_over(ass)
+	Util.center_obj(ass)
+	ass.modulate.a = 0
+	Util.quick_tween(ass, 'modulate:a', 1, 0.15, 'quad', 'in')
+
+	ass.position.y += 250
+
+	Audio.volume = (0.4 if !pico else 0.2)
+	var died := Audio.return_sound('tank/gameover'+ ('-pico' if pico else '') +'/jeffGameover-'+ rand_line)
+	died.finished.connect(func():
+		Audio.volume = 1.0
+		Util.quick_tween(ass, 'position:y', 800, 0.6, 'circ', 'in').finished.connect(ass.queue_free)
+		Util.quick_tween(ass, 'modulate:a', 0, 0.53, 'quad', 'in')
+	)
+	died.play()
 
 class Tankmen extends AnimatedSprite2D:
 	var t_speed:float = 0.0

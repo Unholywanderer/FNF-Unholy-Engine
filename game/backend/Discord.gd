@@ -3,11 +3,10 @@ extends Node2D
 const INFO = [
 	{id = 1225971084998737952, l_img = 'deedee_phantonm', l_txt = 'out here unholy-ing baby'},
 	{id = 1227081103932657664, l_img = 'daniel', l_txt = 'I LOVE DANIEL'}
-	#'false': {id = 1225971084998737952, l_img = 'deedee_phantonm', l_txt = 'out here unholy-ing baby'}
 ]
 
 var initalized:bool = false
-var discord_exists:bool = true # aint this a bitch, it dont work, ill just make it true
+var discord_exists:bool = false # aint this a bitch, it dont work, ill just make it true
 
 var can_rpc:bool:
 	get: return Prefs.allow_rpc and discord_exists
@@ -62,7 +61,7 @@ func update(update_id:bool = false, disable:bool = false) -> void:
 	print('Updated')
 
 func _process(_delta):
-	if !discord_exists or !can_rpc: return
+	if !can_rpc: return
 	DiscordRPC.run_callbacks()
 
 func change_presence(main:String = 'Nutthin', sub:String = 'Check it') -> void:

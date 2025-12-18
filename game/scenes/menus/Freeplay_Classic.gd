@@ -25,7 +25,7 @@ func _ready():
 		Audio.play_music('freakyMenu', true, 0.7)
 	Discord.change_presence('Maining some Menus', 'In Freeplay')
 
-	added_weeks.append_array(Game.persist.week_list) # base stuff first~
+	added_weeks.append_array(Game.week_list) # base stuff first~
 	var other_weeks = []
 	for i in DirAccess.get_files_at('res://assets/data/weeks'): # then go through the weeks folder for any others
 		if !i.ends_with('.json') or added_weeks.has(i.replace('.json', '')): continue

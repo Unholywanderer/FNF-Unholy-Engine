@@ -38,7 +38,7 @@ var difficulty:int = 10:
 
 		difficulty = new_diff
 
-var char:String = 'bf':
+var icon:String = 'bf':
 	set(peep):
 		$CharIcon.change_icon(peep)
 		$CharIcon.scale += Vector2(1, 1)
@@ -50,7 +50,7 @@ var should_scroll:bool: # should be too many letters, so scroll to show the rest
 
 @onready var _song_txt:Label = $NameBox/Song
 func _ready() -> void:
-	char = 'bf'
+	icon = 'bf'
 	bpm = 100
 	difficulty = 10
 	week_num = 0
@@ -61,13 +61,13 @@ func _process(delta:float) -> void:
 		if _song_txt.position.x < -(_song_txt.size.x):
 			_song_txt.position.x = $NameBox.size.x
 
-func _unhandled_input(event: InputEvent) -> void:
+func _unhandled_input(_event:InputEvent) -> void:
 	if Input.is_key_pressed(KEY_W):
 		difficulty += 1
 	if Input.is_key_pressed(KEY_S):
 		difficulty -= 1
 
-func _get_frame(num:String, index:int) -> int:
+func _get_frame(num:String, _index:int) -> int:
 	var frame_int:int = int(num) - 1
 	if num == '0': frame_int = 9 # 0 is the last frame fuck ill change that later
 	return frame_int

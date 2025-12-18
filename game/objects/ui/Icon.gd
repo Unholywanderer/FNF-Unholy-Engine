@@ -2,8 +2,9 @@ class_name Icon; extends Sprite2D;
 
 @export var image:String = 'face'
 @export var is_player:bool = false
+@export var follow_spr:Node = null
+
 var is_menu:bool = false
-var follow_spr = null
 var center_offset:float = 12.0
 
 @export var default_scale:float = 1.0:
@@ -50,7 +51,6 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 
 func bump(to_scale:float = 1.2) -> void:
 	scale = Vector2(default_scale * to_scale, default_scale * to_scale)
-	await RenderingServer.frame_post_draw
 
 func _process(delta):
 	var scale_ratio:float = icon_speed / Conductor.step_crochet * 100.0

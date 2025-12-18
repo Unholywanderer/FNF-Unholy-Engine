@@ -1,6 +1,6 @@
 extends StageBase
 
-var tank_notes:Array = [] # for the fucks that run in and get shot
+#var tank_notes:Array = [] # for the fucks that run in and get shot
 var runnin_boys:Array = []
 func _ready():
 	$Clouds/Sprite.moving = true
@@ -9,16 +9,30 @@ func _ready():
 
 	$Tank.add_child(TankBG.new())
 
-func post_ready() -> void:
-	if true:
+func countdown_start() -> void:
+	if !Main.story_mode:
+		$CharGroup/Tanky.queue_free()
+		return
+
+	if !Game.persist.get('seen_cutscene'):
+		Game.persist.set('seen_cutscene', true)
 		dad.hide()
 		UI.toggle_objects(false)
 		UI.pause_countdown = true
+		Main.move_cam(false)
 		Main.can_pause = false
 		Main.lerp_zoom = false
 
 		Audio.play_music('DISTORTO')
-		var tank = $CharGroup/Tanky
+		var tank:Atlas = $CharGroup/Tanky
+		tank.show()
+		if tank._added_anims.is_empty():
+			tank.add_anim_by_frames('well', [0, 80])
+			tank.add_anim_by_frames('kill', [76, 226])
+			tank.add_anim_by_frames('bars', [227, 506])
+			tank.add_anim_by_frames('god', [507, 915])
+			tank.add_anim_by_frames('school', [916, 1276])
+
 		var cutscene := Cutscene.new()
 		cutscene.finished.connect(func():
 			Audio.stop_music(true)
@@ -26,17 +40,14 @@ func post_ready() -> void:
 			UI.start_countdown(true)
 			Main.can_pause = true
 			Main.lerp_zoom = true
-			tank.queue_free()
+			tank.hide()#queue_free()
 			dad.show()
 		)
+		tank.position = dad.position - Vector2(310, 830)
+
 		match SONG.song.to_lower():
 			'ugh':
 				cutscene.max_time = 12
-				tank.position = dad.position - Vector2(310, 830)
-				#tank.add_anim_by_symbol('well', 'TANK TALK 1 P1')
-				tank.add_anim_by_frames('well', [0, 80])
-				#tank.add_anim_by_symbol('kill', 'TANK TALK 2 P1')
-				tank.add_anim_by_frames('kill', [76, 226])
 
 				cutscene.add_timed_event(0.1, func():
 					Audio.play_sound('tank/cutscene/wellWellWell')
@@ -52,13 +63,96 @@ func post_ready() -> void:
 					Audio.play_sound('tank/cutscene/killYou')
 					tank.play_anim('kill', true)
 				)
-		pass
+			'guns':
+				cutscene.max_time = 11.5
+
+				tank.play_anim('bars', true)
+
+				Audio.play_sound('tank/cutscene/tankSong2')
+				var ne_z = Vector2(default_zoom * 1.2, default_zoom * 1.2)
+				Util.quick_tween(Main.cam, 'zoom', ne_z, 4, 'quad', 'inout').set_delay(0)
+				Util.quick_tween(Main.cam, 'zoom', ne_z * 1.2, 0.5, 'quad', 'inout').set_delay(4)
+				Util.quick_tween(Main.cam, 'zoom', ne_z, 1, 'quad', 'inout').set_delay(4.5)
+				cutscene.add_timed_event(4, func():	gf.play_anim('sad'))
+			'stress':
+				cutscene.max_time = 35.5
+				Main.speaker.frame = 4
+
+				boyfriend.hide()
+				gf.hide()
+				boyfriend.z_index = 2
+
+				var funny_bf = AnimatedSprite2D.new()
+				funny_bf.sprite_frames = load('res://assets/images/characters/bf/char.res')
+				funny_bf.centered = false
+				funny_bf.position = boyfriend.position + Vector2(5, 20)
+				funny_bf.play('idle')
+				funny_bf.frame = 13
+				$CharGroup.add_child(funny_bf)
+				funny_bf.z_index = 2
+
+				var pico := Atlas.new()
+				pico.atlas = 'res://assets/images/stages/tank/cutscenes/stressPico'
+				pico.position = gf.position + Vector2(180, 347)
+				$CharGroup.add_child(pico)
+
+				pico.add_anim_by_frames('dance', [0, 29], 24, true)
+				pico.add_anim_by_frames('dieBitch', [30, 82])
+				pico.add_anim_by_frames('picoAppears', [83, 154])
+				pico.add_anim_by_frames('picoEnd', [155, 182])
+
+				pico.play_anim('dance', true)
+				pico.frame_changed.connect(func():
+					if pico.frame == 87:
+						funny_bf.queue_free()
+						boyfriend.show()
+						boyfriend.play_anim('bfCatch')
+						await get_tree().create_timer(1.3, false).timeout
+						boyfriend.dance()
+						boyfriend.frame = 13
+				)
+				pico.finished.connect(func():
+					match pico.cur_anim:
+						'dieBitch': pico.play_anim('picoAppears')
+						'picoAppears': pico.play_anim('picoEnd')
+						'picoEnd':
+							pico.queue_free()
+							gf.show()
+							gf.play_anim('shootRight1-loop')
+							boyfriend.z_index = 0
+				)
+
+				Audio.stop_music()
+				Audio.play_sound('tank/cutscene/stressCutscene')
+				tank.play_anim('god', true)
+
+				cutscene.add_timed_event(15.2, func():
+					Util.quick_tween(Main.cam, 'position', Vector2(650, 300), 1, 'sine', 'out')
+					Util.quick_tween(Main.cam, 'zoom', Vector2(1.3, 1.3), 2.25, 'quad', 'inout')
+					if pico: pico.play_anim('dieBitch', true)
+				)
+
+				cutscene.add_timed_event(17.5, func():
+					Main.cam.position_smoothing_enabled = false
+					Main.cam.position = Vector2(630, 425)
+					Main.cam.zoom = Vector2(0.8, 0.8)
+				)
+
+				cutscene.add_timed_event(19.5, func(): tank.play_anim('school', true))
+				cutscene.add_timed_event(20, func():
+					Main.cam.position_smoothing_enabled = true
+					Main.cam.position = dad.get_cam_pos() + Vector2(100, 0)
+				)
+				cutscene.add_timed_event(31.2, func():
+					boyfriend.sing(0, 'miss')
+					boyfriend.special_anim = true
+				)
 
 func init_tankmen():
 	gf.chart = Chart.load_named_chart(JsonHandler.song_root, 'picospeaker', 'v_slice')
-	tank_notes = gf.chart.duplicate()
+	#tank_notes = gf.chart.duplicate()
 
-	for note in tank_notes:
+	for note in gf.chart:
 		if Util.rand_bool(16):
 			var tankyboy = Tankmen.new(Vector2(500, 240 + randi_range(10, 50)), note[1] < 2)
 			tankyboy.strum_time = note[0]
@@ -75,7 +169,7 @@ func beat_hit(_beat:int):
 
 func game_over_idle():
 	var rand_line:String = str(randi_range(1, 25))
-	var sub:String = JsonHandler.parse('data/tank-gameover_subs')[rand_line]
+	var sub:String = JsonHandler.parse('data/tank_subs')[rand_line]
 
 	var ass = load('res://game/objects/ui/subtitle.tscn').instantiate() #Util.quick_label(sub)
 	ass.text = sub
@@ -89,7 +183,7 @@ func game_over_idle():
 	ass.position.y += 250
 
 	Audio.volume = 0.4
-	var died := Audio.return_sound('tank/jeffGameover-'+ rand_line)
+	var died := Audio.return_sound('tank/gameover/jeffGameover-'+ rand_line)
 	died.finished.connect(func():
 		Audio.volume = 1.0
 		Util.quick_tween(ass, 'position:y', 800, 0.6, 'circ', 'in').finished.connect(ass.queue_free)
@@ -137,6 +231,7 @@ class Tankmen extends AnimatedSprite2D:
 		play('runIn')
 		frame = randi_range(0, sprite_frames.get_frame_count('runIn') - 1)
 		animation_finished.connect(queue_free)
+		hide()
 
 	func reset(pos:Vector2, right:bool) -> void:
 		position = pos
@@ -145,6 +240,7 @@ class Tankmen extends AnimatedSprite2D:
 		t_speed = randf_range(0.6, 1)
 
 	func _process(_delta:float) -> void:
+		visible = abs(Conductor.song_pos - strum_time) < (1000 / t_speed) or animation != 'runIn'
 		flip_h = facing_right
 
 		if animation == 'runIn':

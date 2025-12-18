@@ -43,7 +43,6 @@ func play_anim(thing:Character, anim:String = '') -> void:
 
 @onready var _ui = $UILayer
 func _ready() -> void:
-	Prefs.auto_pause = false
 	Game.set_mouse_visibility()
 	Audio.play_music('artisticExpression')
 
@@ -304,6 +303,7 @@ func ANIM(to_get:String): return _ui.get_node('Anim/'+ to_get)
 
 func new_pressed() -> void:
 	MAIN('Shadow/AnimSelect').get_popup().clear()
+	MAIN('CharName').text = '[NEW CHARACTER]'
 	cur_anim = ''
 	var new = UnholyFormat.CHAR_JSON.duplicate(true)
 
@@ -399,7 +399,7 @@ func add_anim() -> void:
 			for i in temp:
 				fixed_frames.append(int(i))
 
-	for i in char_json.animations:
+	for i:Dictionary in char_json.animations:
 		if i.name == anim_name: # Animation exists, just update it with new info
 			i.prefix = ANIM('Prefix').text
 			i.frames = fixed_frames

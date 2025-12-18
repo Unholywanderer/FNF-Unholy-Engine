@@ -1,0 +1,65 @@
+[gd_scene load_steps=3 format=3 uid="uid://u1iupwbqo2o"]
+
+[ext_resource type="Texture2D" uid="uid://umasyb0loq5v" path="res://assets/images/ui/circle.png" id="1_jx6sy"]
+
+[sub_resource type="GDScript" id="GDScript_txhn1"]
+resource_name = "Radial_Bar"
+script/source = "@tool
+class_name RadialBar extends Control
+
+@onready var bar:TextureProgressBar = $Circle
+
+@export var counter_clockwise:bool = false:
+	set(wise):
+		$Circle.fill_mode = $Circle.FILL_COUNTER_CLOCKWISE if wise else $Circle.FILL_CLOCKWISE
+		counter_clockwise = wise
+
+@export var value:float:
+	set(val): $Circle.value = val
+	get: return $Circle.value
+
+@export var bg_color:Color = Color.BLACK:
+	set(col): $Circle.tint_under = col
+	get: return $Circle.tint_under
+
+@export var fill_color:Color = Color.WHITE:
+	set(col): $Circle.tint_progress = col
+	get: return $Circle.tint_progress
+"
+
+[node name="RadialBar" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1280.0
+offset_bottom = -720.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_txhn1")
+
+[node name="Outline" type="Sprite2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(97.5, 97.5)
+scale = Vector2(1.1, 1.1)
+texture = ExtResource("1_jx6sy")
+
+[node name="Inline" type="Sprite2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(97.5, 97.5)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("1_jx6sy")
+
+[node name="Circle" type="TextureProgressBar" parent="."]
+layout_mode = 0
+offset_right = 195.0
+offset_bottom = 195.0
+step = 0.0
+fill_mode = 4
+stretch_margin_left = 48
+stretch_margin_top = 48
+stretch_margin_right = 48
+stretch_margin_bottom = 48
+texture_under = ExtResource("1_jx6sy")
+texture_progress = ExtResource("1_jx6sy")
+tint_under = Color(0, 0, 0, 1)

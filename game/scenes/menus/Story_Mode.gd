@@ -10,17 +10,23 @@ var diff_str:String = ''
 var characters:Array[MenuChar] = []
 
 var precache = {}
+
+@onready var diff_spr:Sprite2D = $Difficulty/DiffSpr
+@onready var diff_txt:Label = $Difficulty/DiffTxt # used if there is no difficulty sprite
+@onready var arrow_left:AnimatedSprite2D = $Difficulty/ArrowLeft
+@onready var arrow_right:AnimatedSprite2D = $Difficulty/ArrowRight
+
 func _ready():
 	if !Audio.playing_music:
 		Audio.play_music('freakyMenu', true, 0.7)
 	Discord.change_presence('I play FNF for the plot', 'Story Mode')
 
-	var to_add = Game.persist.week_list
+	var to_add = Game.week_list
 
 	for file in DirAccess.get_files_at('res://assets/data/weeks'):
 		var file_name = file.to_lower().strip_edges()
 		if to_add.has(file_name) or !file_name.ends_with('.json'): continue
-		to_add.append(file_name.replace('.json', ''))
+		to_add.append(file_name.get_basename())
 
 	for i in to_add.size():
 		if week_names.has(to_add[i]): continue
@@ -51,25 +57,25 @@ func _ready():
 	var last_week = weeks[cur_week]
 	cur_diff = clampi(cur_diff, 0, last_week.diff_list.size())
 	var should_load:String = last_week.diff_list[cur_diff]
-	$Diff.texture = load('res://assets/images/story_mode/difficulties/normal.png')
+	diff_spr.texture = load('res://assets/images/story_mode/difficulties/'+ should_load +'.png')
 
 	var def = ['dad', 'bf', 'gf']
-	#for i in 3:
-	#	var new_char = MenuChar.new()
-	#	new_char.dancer = (i == 2)
-	#	new_char.switch(precache[def[i]])
-	#	$CharBG.add_child(new_char)
-	#	new_char.position = Vector2(170 + (i * 450), 200)
-	#	characters.append(new_char)
+	for i in 3:
+		var new_char = MenuChar.new()
+		new_char.dancer = (i == 2)
+		#new_char.switch(precache[def[i]])
+		$CharBG.add_child(new_char)
+		new_char.position = Vector2(170 + (i * 450), 200)
+		characters.append(new_char)
 
 	update_list()
 
 	Conductor.beat_hit.connect(beat_hit)
 
 func _unhandled_key_input(event:InputEvent) -> void:
-	if Input.is_action_just_pressed('back'):
+	if event.is_action_pressed('back'):
 		Game.switch_scene('menus/main_menu')
-	if Input.is_action_just_pressed('accept'):
+	if event.is_action_pressed('accept'):
 		var week = weeks[cur_week]
 		Audio.stop_music()
 		Conductor.reset()
@@ -77,22 +83,19 @@ func _unhandled_key_input(event:InputEvent) -> void:
 		JsonHandler.parse_song(week.song_list[0], week.diff_list[cur_diff])
 		Game.switch_scene('Play_Scene')
 
-
-	if Input.is_action_just_pressed('menu_up'): update_list(-1)
-	if Input.is_action_just_pressed('menu_down'): update_list(1)
+	if event.is_action_pressed('menu_up'): update_list(-1)
+	if event.is_action_pressed('menu_down'): update_list(1)
 
 	if can_change:
-		if Input.is_action_just_pressed('menu_left'):
-			update_diff(-1)
-			$ArrowLeft.frame = 0
-			$ArrowLeft.play("left_push")
-		if Input.is_action_just_pressed('menu_right'):
-			update_diff(1)
-			$ArrowRight.frame = 0
-			$ArrowRight.play("right_push")
+		var change:int = int(Input.get_axis(&'menu_left', &'menu_right'))
+		update_diff(change)
+		if change != 0:
+			var arr = arrow_left if change == -1 else arrow_right
+			arr.frame = 0
+			arr.play(('left' if change == -1 else 'right') +"_push")
 
-		if Input.is_action_just_released('menu_left'): $ArrowLeft.play("left")
-		if Input.is_action_just_released('menu_right'): $ArrowRight.play("right")
+		if event.is_action_released('menu_left'): arrow_left.play("left")
+		if event.is_action_released('menu_right'): arrow_right.play("right")
 
 
 func beat_hit(_beat:int):
@@ -103,24 +106,26 @@ var diff_twn:Tween
 func update_diff(amount:int = 0):
 	var da_diffs = weeks[cur_week].diff_list
 	can_change = da_diffs.size() > 1
-	$ArrowLeft.modulate = Color.DIM_GRAY if !can_change else Color.WHITE
-	$ArrowRight.modulate = Color.DIM_GRAY if !can_change else Color.WHITE
+	arrow_left.modulate = Color.DIM_GRAY if !can_change else Color.WHITE
+	arrow_right.modulate = Color.DIM_GRAY if !can_change else Color.WHITE
 
 	cur_diff = wrapi(cur_diff + amount, 0, da_diffs.size())
 
 	var def_y:int = 572
-	var exist = ResourceLoader.exists('res://assets/images/story_mode/difficulties/'+ da_diffs[cur_diff] +'.png')
-	$Diff.visible = exist
-	$DiffTxt.visible = !$Diff.visible
+	var le_path:String = 'assets/images/story_mode/difficulties/'+ da_diffs[cur_diff] +'.png'
+	var exist:bool = ResourceLoader.exists('res://'+ le_path)
+	diff_spr.visible = exist
+	diff_txt.visible = !exist
 
-	var to_affect = $Diff if $Diff.visible else $DiffTxt
 	if exist:
-		$Diff.texture = load('res://assets/images/story_mode/difficulties/'+ da_diffs[cur_diff] +'.png')
+		diff_spr.texture = load('res://'+ le_path)
 	else:
 		def_y = 539
-		$DiffTxt.text = da_diffs[cur_diff].to_upper()
+		diff_txt.text = da_diffs[cur_diff].to_upper()
 
 	if diff_str != da_diffs[cur_diff]:
+		var to_affect = diff_spr if exist else diff_txt
+
 		diff_str = da_diffs[cur_diff]
 		to_affect.position.y = def_y - 15
 

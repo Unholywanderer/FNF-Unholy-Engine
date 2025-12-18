@@ -16,48 +16,51 @@ func add_script(script:String) -> void:
 
 	var SCENE = Game.scene
 	## Variables ##
-	lua.push_variant("Game", SCENE) # current scene
-	lua.push_variant("STOP", RET_TYPES.STOP)
-	lua.push_variant("CONTINUE", RET_TYPES.CONTINUE)
+	lua.add("Game", SCENE) # current scene
+	lua.add("STOP", RET_TYPES.STOP)
+	lua.add("CONTINUE", RET_TYPES.CONTINUE)
 
 	## Objects ##
-	lua.push_variant("Conductor", Conductor)
-	lua.push_variant("Character", Character)
-	lua.push_variant("Sprite", LuaSprite)
-	lua.push_variant("XMLSprite", LuaSparrowSprite) # WIP
-	lua.push_variant("ResSprite", LuaResSprite)
-	lua.push_variant("Chart", Chart)
+	lua.add("Conductor", Conductor)
+	lua.add("Character", Character)
+	lua.add("Sprite", LuaSprite)
+	lua.add("XMLSprite", LuaSparrowSprite) # WIP
+	lua.add("ResSprite", LuaResSprite)
+	lua.add("Chart", Chart)
 
 	if SCENE.name == "Play_Scene":
-		lua.push_variant("song_root", JsonHandler.song_root)
-		lua.push_variant("variant", JsonHandler.song_variant.substr(1))
-		lua.push_variant("move_cam", SCENE.move_cam)
-		lua.push_variant("UI", SCENE.ui)
-		lua.push_variant("boyfriend", SCENE.boyfriend)
-		lua.push_variant("gf", SCENE.gf)
-		lua.push_variant("dad", SCENE.dad)
+		lua.add("song_root", JsonHandler.song_root)
+		lua.add("variant", JsonHandler.song_variant.substr(1))
+		lua.add("move_cam", SCENE.move_cam)
+		lua.add("UI", SCENE.ui)
+		lua.add("boyfriend", SCENE.boyfriend)
+		lua.add("gf", SCENE.gf)
+		lua.add("dad", SCENE.dad)
 
-		lua.push_variant("add_char", add_character)
+		lua.add("add_char", add_character)
 
 	## Lua Functions ##
 	# Layering #
-	lua.push_variant("add", SCENE.add_child)
-	lua.push_variant("move", move_obj)
-	lua.push_variant("get_layer", get_layer)
+	lua.add("add", SCENE.add_child)
+	lua.add("move", move_obj)
+	lua.add("get_layer", get_layer)
 
 	# Helpers n random shit #
-	lua.push_variant("tween", lua_tween)
-	lua.push_variant("parse_json", parse_json)
-	lua.push_variant("play_sound", Audio.play_sound)
-	lua.push_variant("play_music", Audio.play_music)
-	lua.push_variant("cache", cache_file)
-	lua.push_variant("file_exists", file_exists)
-	lua.push_variant("get_cache", get_cached_file)
+	lua.add("tween", lua_tween)
+	lua.add("parse_json", parse_json)
+	lua.add("play_sound", Audio.play_sound)
+	lua.add("play_music", Audio.play_music)
+	lua.add("cache", cache_file)
+	lua.add("file_exists", file_exists)
+	lua.add("get_cache", get_cached_file)
+	lua.add("switch_scene", switch_scene)
+	lua.add("key_pressed", key_pressed)
+	lua.add("to_str", to_str)
 
 	# Shaders #
-	lua.push_variant("load_shader", load_shader)
-	lua.push_variant("set_shader", set_shader)
-	lua.push_variant("set_param", set_param)
+	lua.add("load_shader", load_shader)
+	lua.add("set_shader", set_shader)
+	lua.add("set_param", set_param)
 
 	#lua.push_variant("import", add_variant)
 
@@ -69,6 +72,7 @@ func add_script(script:String) -> void:
 
 func remove_all():
 	for lua in active_lua:
+		if lua.global: continue # dont remove global ones
 		lua.unreference()
 	active_lua.clear()
 	cached_items.clear()
@@ -95,8 +99,7 @@ func load_lua(lua:LuaEx, path:String, internal:bool = true) -> bool:
 	return true
 
 func call_func(_func:String, args:Array = []) -> RET_TYPES:
-	@warning_ignore("int_as_enum_without_cast")
-	if _func.length() == 0: return 1
+	if _func.length() == 0: return RET_TYPES.CONTINUE
 	var ret_val:RET_TYPES = RET_TYPES.CONTINUE
 	for i in active_lua:
 		if !i.function_exists(_func): continue
@@ -168,6 +171,18 @@ func lua_tween(obj:Variant, prop:String, to_val:Variant, dur:float, t:String = '
 	Util.quick_tween(obj, prop.replace('.', ':'), to_val, dur,\
 	 Util.trans_from_string(t), Util.ease_from_string(e))
 
+func key_pressed(key:String = '') -> bool:
+	if InputMap.has_action(key):
+		return Input.is_action_just_pressed(key)
+	var actual_key := OS.find_keycode_from_string(key.capitalize())
+	return Input.is_key_pressed(actual_key)
+
+func to_str(thing:Variant) -> String:
+	return str(thing)
+
+func switch_scene(new_scene:String = '', skip_trans:bool = false) -> void:
+	Game.switch_scene(new_scene, skip_trans)
+
 #func add_variant(variant:String):
 #	if !variant.is_empty():
 #		for lua in active_lua:
@@ -197,11 +212,13 @@ func parse_json(path:String) -> Dictionary:
 
 ## LUA OBJECTS
 class LuaSprite extends Sprite2D:
-	func _init(spr:String, pos:Vector2 = Vector2.ZERO):
-		load_texture(spr)
+	func _init(pos:Vector2 = Vector2.ZERO, spr:String = ''):
+		if !spr.is_empty():
+			load_texture(spr)
 		position = pos
 
 	func load_texture(spr:String):
+		if spr.is_empty(): return
 		texture = load('res://assets/images/'+ spr +'.png')
 
 class LuaResSprite extends AnimatedSprite2D:
@@ -234,6 +251,8 @@ class LuaEx extends LuaAPI:
 	var active:bool = false
 	var script_path:String = ''
 	func _notification(what:int) -> void:
-		match what:
-			NOTIFICATION_PREDELETE:
-				print("good-bye")
+		if what == NOTIFICATION_PREDELETE: print("good-bye")
+
+	func add(vari:String, item:Variant) -> void:
+		if vari.is_empty() or item == null: return printerr('COULD NOT ADD '+ vari)
+		push_variant(vari, item)

@@ -50,21 +50,23 @@ offset_right = 1280.0
 offset_bottom = 442.0
 color = Color(0.976471, 0.811765, 0.317647, 1)
 
-[node name="ArrowLeft" type="AnimatedSprite2D" parent="."]
+[node name="Difficulty" type="Node2D" parent="."]
+
+[node name="ArrowLeft" type="AnimatedSprite2D" parent="Difficulty"]
 position = Vector2(872, 572)
 sprite_frames = ExtResource("3_0xjby")
 animation = &"left"
 
-[node name="ArrowRight" type="AnimatedSprite2D" parent="."]
+[node name="ArrowRight" type="AnimatedSprite2D" parent="Difficulty"]
 position = Vector2(1248, 572)
 sprite_frames = ExtResource("3_0xjby")
 animation = &"right"
 
-[node name="Diff" type="Sprite2D" parent="."]
+[node name="DiffSpr" type="Sprite2D" parent="Difficulty"]
 position = Vector2(1059, 572)
 texture = ExtResource("4_g360v")
 
-[node name="DiffTxt" type="Label" parent="."]
+[node name="DiffTxt" type="Label" parent="Difficulty"]
 visible = false
 offset_left = 901.0
 offset_top = 539.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c0w7bffyud3s7"]
+[gd_scene load_steps=12 format=3 uid="uid://c0w7bffyud3s7"]
 
 [ext_resource type="Script" uid="uid://ccbusjji41o3e" path="res://game/objects/UI.gd" id="1_sa7x1"]
 [ext_resource type="PackedScene" uid="uid://cj2ryjlbhxh8b" path="res://game/objects/ui/strum_line.tscn" id="2_fxgad"]
@@ -9,6 +9,13 @@
 [ext_resource type="Texture2D" uid="uid://cqyoymkqgy4le" path="res://assets/images/ui/skins/default/practice_back.png" id="7_p16uu"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="8_1567e"]
 [ext_resource type="Script" uid="uid://ba5ivc6samb40" path="res://game/objects/ui/Icon.gd" id="8_ojola"]
+[ext_resource type="PackedScene" uid="uid://u1iupwbqo2o" path="res://game/objects/ui/radial_bar.tscn" id="10_oqvlv"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_75dfm"]
+font = ExtResource("8_1567e")
+font_size = 40
+outline_size = 9
+outline_color = Color(0, 0, 0, 1)
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_sa7x1")
@@ -26,13 +33,15 @@ offset_right = -4.80005
 offset_bottom = -3.35999
 metadata/_edit_lock_ = true
 
-[node name="IconP1" type="Sprite2D" parent="HealthBar"]
+[node name="IconP1" type="Sprite2D" parent="HealthBar" node_paths=PackedStringArray("follow_spr")]
 position = Vector2(345, 0)
 script = ExtResource("8_ojola")
+follow_spr = NodePath("..")
 
-[node name="IconP2" type="Sprite2D" parent="HealthBar"]
+[node name="IconP2" type="Sprite2D" parent="HealthBar" node_paths=PackedStringArray("follow_spr")]
 position = Vector2(256, 0)
 script = ExtResource("8_ojola")
+follow_spr = NodePath("..")
 
 [node name="MarkBG" type="Sprite2D" parent="HealthBar"]
 visible = false
@@ -58,52 +67,50 @@ show_behind_parent = true
 position = Vector2(0, -17.5)
 texture = ExtResource("7_p16uu")
 
-[node name="TimeBar" parent="." instance=ExtResource("7_e1wxe")]
-visible = false
-anchor_left = 0.315
-anchor_top = 0.032
-anchor_right = 0.777
-anchor_bottom = 0.047
-offset_left = -144.2
-offset_top = -8.04
-offset_right = -143.56
-offset_bottom = -7.84
+[node name="TimeCirc" parent="." instance=ExtResource("10_oqvlv")]
+offset_left = 591.25
+offset_top = 55.0
+offset_right = -688.75
+offset_bottom = -665.0
+scale = Vector2(0.5, 0.5)
+bg_color = Color(0, 0, 0.735357, 1)
+fill_color = Color(0.5370987, 0.735357, 0.9776916, 1)
 
-[node name="Elasped" type="Label" parent="."]
-visible = false
-offset_left = 503.0
-offset_top = 80.0
-offset_right = 725.0
-offset_bottom = 103.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("8_1567e")
-theme_override_font_sizes/font_size = 20
-text = "0:00"
+[node name="Song" type="Label" parent="TimeCirc"]
+layout_mode = 0
+offset_left = -168.5
+offset_top = 48.33333
+offset_right = 361.5
+offset_bottom = 84.33333
+text = "None"
+label_settings = SubResource("LabelSettings_75dfm")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Left" type="Label" parent="."]
-visible = false
-offset_left = 419.0
-offset_top = 10.0
-offset_right = 641.0
-offset_bottom = 33.0
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("8_1567e")
-theme_override_font_sizes/font_size = 25
+[node name="Pos" type="Label" parent="TimeCirc"]
+layout_mode = 0
+offset_left = -61.66658
+offset_top = 110.66666
+offset_right = 258.33344
+offset_bottom = 146.66666
 text = "0:00"
+label_settings = SubResource("LabelSettings_75dfm")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Strum_Group" type="CanvasGroup" parent="."]
 
 [node name="Opponent" parent="Strum_Group" instance=ExtResource("2_fxgad")]
-position = Vector2(95, 55)
+offset_left = 50.0
+offset_top = 55.0
+offset_right = 50.0
+offset_bottom = 55.0
 
 [node name="Player" parent="Strum_Group" instance=ExtResource("2_fxgad")]
-position = Vector2(795, 55)
+offset_left = 795.0
+offset_top = 55.0
+offset_right = 795.0
+offset_bottom = 55.0
 is_cpu = false
 
 [node name="Tally" type="RichTextLabel" parent="."]

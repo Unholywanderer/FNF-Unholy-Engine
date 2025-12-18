@@ -158,6 +158,7 @@ func _ready():
 		new_boy.scale *= 0.3
 		if peep.ends_with('-pixel'):
 			new_boy.scale += Vector2(-0.2, 0.2)
+
 		$ChartUI/Funkers.add_child(new_boy)
 		$ChartUI/Funkers.move_child(new_boy, 0)
 		funky_boys.append(new_boy)
@@ -196,7 +197,7 @@ func _ready():
 			tab('Song', 'Player2').get_popup().add_item(peep)
 			tab('Song', 'GF').get_popup().add_item(peep)
 
-	for i in [Game.persist.stage_list, DirAccess.get_files_at('res://game/scenes/stages')]:
+	for i in [Game.stage_list, DirAccess.get_files_at('res://game/scenes/stages')]:
 		for stage in i:
 			if stage_list.has(stage.replace('.tscn', '')) or !stage.ends_with('.tscn'): continue
 			stage = stage.replace('.tscn', '')

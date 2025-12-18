@@ -45,7 +45,7 @@
 				11,
 				12
 			],
-			"loop": false
+			"loop": true
 		}
 	],
 	"path": "characters/gf/tankmen/char",
