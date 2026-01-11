@@ -1,10 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://dpdpq5qvi21gx"]
+[gd_scene load_steps=8 format=3 uid="uid://dpdpq5qvi21gx"]
 
 [ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="1_40jmt"]
 [ext_resource type="Script" uid="uid://dmye3u0iv8kc0" path="res://game/scenes/menus/Credits.gd" id="1_xumlj"]
 [ext_resource type="Texture2D" uid="uid://c2r5ulxx1lb0t" path="res://assets/images/menuDark.png" id="3_dk6m8"]
 [ext_resource type="SpriteFrames" uid="uid://l7ix7jvj204r" path="res://assets/images/cow.res" id="4_24eg7"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="5_g0bmv"]
+[ext_resource type="FontFile" uid="uid://dgbxo5q4vbi80" path="res://assets/fonts/PM Full.ttf" id="6_342vr"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_r4xku"]
+font = ExtResource("6_342vr")
+font_size = 30
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 5
+shadow_color = Color(0, 0, 0, 1)
 
 [node name="Credits" type="Node2D"]
 script = ExtResource("1_xumlj")
@@ -45,5 +54,42 @@ theme_override_fonts/font = ExtResource("5_g0bmv")
 theme_override_font_sizes/font_size = 30
 text = "\"I'm a quote!\""
 horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="CredDesc" type="Label" parent="."]
+offset_left = 470.0
+offset_top = 595.0
+offset_right = 1223.0
+offset_bottom = 699.0
+text = "Blah blah blah, bloo bloo bloo, bleh bleh blee, abubububububububu"
+label_settings = SubResource("LabelSettings_r4xku")
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Heading" type="Label" parent="."]
+offset_left = 615.0
+offset_top = 5.0
+offset_right = 1270.0
+offset_bottom = 63.0
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("6_342vr")
+theme_override_font_sizes/font_size = 50
+text = "Main Fuckos"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="HeadingDesc" type="Label" parent="."]
+offset_left = 520.0
+offset_top = 65.0
+offset_right = 1273.0
+offset_bottom = 93.0
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("6_342vr")
+theme_override_font_sizes/font_size = 24
+text = "me me me i worked on this hi helelo!!!"
+horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 2

@@ -2,22 +2,24 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bs2cu877y3hq3"
-path="res://.godot/imported/daniel.png-6ab34c6c05c68f2b3e12cbfb514101ec.ctex"
+uid="uid://bdocvm5o040fj"
+path="res://.godot/imported/moonlight.png-30d3dfa10e8865e24ae314034f0e16f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/images/credits/daniel.png"
-dest_files=["res://.godot/imported/daniel.png-6ab34c6c05c68f2b3e12cbfb514101ec.ctex"]
+source_file="res://assets/images/icons/credit/moonlight.png"
+dest_files=["res://.godot/imported/moonlight.png-30d3dfa10e8865e24ae314034f0e16f7.ctex"]
 
 [params]
 
 compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
+compress/uastc_level=0
+compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
@@ -25,6 +27,10 @@ mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
+process/channel_remap/red=0
+process/channel_remap/green=1
+process/channel_remap/blue=2
+process/channel_remap/alpha=3
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false

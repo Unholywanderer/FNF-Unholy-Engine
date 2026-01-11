@@ -33,14 +33,13 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 	image = new_image
 
 	var icon_path:String = 'res://assets/images/icons/icon-%s.png'
-	if credit: icon_path = icon_path.replace('icons/', 'credits/').replace('icon-', '')
+	if credit: icon_path = icon_path.replace('icons/', 'icons/credit/').replace('icon-', '')
 	if !ResourceLoader.exists(icon_path % image):
 		icon_path = 'res://assets/images/icons/icon-%s.png'
 		image = 'face'
 	texture = load(icon_path % image)
 
 	antialiasing = !image.ends_with('-pixel')
-	#has_lose = texture.get_width() > MIN_WIDTH
 	has_lose = texture.get_width() > MIN_WIDTH
 	default_scale = default_scale if !image.ends_with('-pixel') else 5.0 # shhhh
 	if default_scale > 1:
