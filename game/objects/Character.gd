@@ -257,7 +257,7 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 func flip_char() -> void:
 	scale.x *= -1
 	position.x += width
-	focus_offsets.x -= width / 1.5
+	focus_offsets.x -= width / 1.2
 	swap_sing('singLEFT', 'singRIGHT')
 
 func swap_sing(anim1:String, anim2:String) -> void:

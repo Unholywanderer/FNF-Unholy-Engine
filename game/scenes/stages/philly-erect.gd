@@ -26,7 +26,7 @@ var blammin:bool = false:
 			boyfriend.material.set_shader_parameter('outline_color', Color.CYAN)
 			gf.material.set_shader_parameter('outline_color', Color.MAROON)
 			dad.material.set_shader_parameter('outline_color', Color.GREEN_YELLOW)
-			if Main.speaker.has_node('VizBG'):
+			if Main.speaker and Main.speaker.has_node('VizBG'):
 				Main.speaker.get_node('VizBG').modulate = Color.BLACK
 
 			#UI.icon_p1.material = boyfriend.material
@@ -36,7 +36,7 @@ var blammin:bool = false:
 				if i == null: continue
 				#i.material = last_mat
 
-			if Main.speaker.has_node('VizBG'):
+			if Main.speaker and Main.speaker.has_node('VizBG'):
 				Main.speaker.get_node('VizBG').modulate = Color.WHITE
 
 @onready var initial_points:Array = $Windows/Line.points

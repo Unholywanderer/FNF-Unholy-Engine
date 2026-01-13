@@ -14,7 +14,7 @@ func parse_chart(_data):
 				var hit_data = osu_file[i].split(',')
 				for n in hit_data.size():
 					if hit_data[n].contains(':'):
-						hit_data[n] = hit_data[n].split(':')[0]
+						hit_data[n] = hit_data[n].get_slice(':', 0)
 
 					hit_obj.append(int(hit_data[n]))
 
@@ -45,7 +45,7 @@ func get_time_points():
 
 func load_file(song:String) -> Dictionary:
 	var funny_data:Dictionary = {}
-	osu_file = FileAccess.open('res://assets/songs/'+ song +'/charts/hard.osu', FileAccess.READ).get_as_text().split('\n')
+	osu_file = FileAccess.get_file_as_string('res://assets/songs/'+ song +'/charts/hard.osu').split('\n')
 	if int(get_data('Mode')) != 3: return {}
 
 	var time_points = get_time_points()

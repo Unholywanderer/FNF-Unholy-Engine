@@ -13,7 +13,7 @@ var skin:SkinInfo = SkinInfo.new()
 @export var dir:int = 0:
 	set(new_dir):
 		dir = new_dir
-		play_anim(animation.split('_')[1])
+		play_anim(animation.get_slice('_', 1))
 
 @export var scroll:float = 90.0
 

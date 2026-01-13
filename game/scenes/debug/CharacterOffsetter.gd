@@ -35,6 +35,7 @@ var selected_id:int = 0:
 func play_anim(thing:Character, anim:String = '') -> void:
 	# this gets called a bit too often i think
 	if anim.is_empty(): anim = thing.get_anim()
+	if !thing.has_anim(anim): return
 	if thing.is_atlas:
 		thing.play_anim(anim, true)
 	else:

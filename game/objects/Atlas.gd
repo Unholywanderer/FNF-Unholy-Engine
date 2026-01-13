@@ -14,10 +14,7 @@ func add_anim_by_frames(alias:String, frames:Array = [], fps:float = 24.0, loop:
 	if atlas.is_empty(): return printerr('No Atlas Dummy!')
 	var new_anim := AnimData.new()
 	if frames.size() == 2:
-		var le_arr:Array[int] = []
-		for i in range(frames[0], frames[1]):
-			le_arr.append(i)
-		frames = le_arr
+		frames = range(frames[0], frames[1])
 
 	new_anim.frames = frames
 	new_anim.framerate = fps
@@ -30,10 +27,7 @@ func add_anim_by_symbol(alias:String, symb:String, frames:Array = [], fps:float 
 	var new_anim := AnimData.new()
 	new_anim.anim = symb
 	if frames.size() == 2:
-		var le_arr:Array[int] = []
-		for i in range(frames[0], frames[1]):
-			le_arr.append(i)
-		frames = le_arr
+		frames = range(frames[0], frames[1])
 
 	new_anim.frames = frames
 	new_anim.framerate = fps

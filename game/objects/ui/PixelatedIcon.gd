@@ -21,7 +21,7 @@ func _ready() -> void:
 func change_icon(new_image:String = 'bf') -> void:
 	if new_image.is_empty(): return
 	if new_image.contains('-'):
-		new_image = new_image.split('-', false)[0]
+		new_image = new_image.get_slice('-', 0)
 	image = new_image +'pixel'
 
 	var icon_path:String = 'res://assets/images/icons/freeplay/%s'

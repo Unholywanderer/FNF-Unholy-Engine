@@ -60,6 +60,7 @@ func _process(delta):
 			var bar_width:float = follow_spr.width
 			var remapped:float = remap(follow_spr.value, 0, 100, 100, 0) * 0.01
 			var cen:float = (((bar_width * remapped) - bar_width) + Game.screen[0] / 1.95) + center_offset
+			await RenderingServer.frame_pre_draw
 			if is_player:
 				position.x = cen + (150 * (scale.x / default_scale) - 150) / 2 - 26
 			else:

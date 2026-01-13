@@ -39,6 +39,8 @@ var credits:Array[Array] = [
 		Color('383657'), func(): Prefs.daniel = true],
 	['Kelsay', 'kelsey', 'Random!!\n(icon by withbolognese)',
 		Color('4A6C96'), func(): OS.shell_open('https://youtu.be/ysCO5pHe6GY')],
+	['SPG64', 'SPG64', 'my friend :) :3',
+		Color('682A80'), func(): OS.shell_open('https://x.com/SPG642')],
 
 	['drew me fnf bfs', 'yeaha babye!!'],
 	['Ashley', 'puta', 'drew a bf i think idk', \
@@ -75,6 +77,7 @@ var quotes:Dictionary = {
 	'theconcealedcow': ['who are you why are you in my house'],
 	'mae': ['waiter!, waiter! more shaders please!!'],
 	'kelsay': ['Death to Azure Temple Zone.'],
+	'spg64': ['unholy made me famous...'],
 }
 
 var heading_changes:Array = []

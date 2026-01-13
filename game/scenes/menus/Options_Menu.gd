@@ -54,9 +54,7 @@ func _ready():
 			if !shit.ends_with('.ogg'): continue
 			gameplay[idx][2].append(shit.replace('.ogg', ''))
 
-	var b = JSON.new()
-	b.parse(FileAccess.open('res://assets/data/prefInfo.json', FileAccess.READ).get_as_text())
-	descriptions = b.data
+	descriptions = JsonHandler.parse('data/prefInfo')
 	for i in catagories.size():
 		var item = catagories[i]
 		var text = Alphabet.new(item)
@@ -74,32 +72,31 @@ func _ready():
 	update_scroll()
 
 func _exit_tree() -> void: Audio.stop_all_sounds()
-func _unhandled_key_input(_event:InputEvent) -> void:
+func _unhandled_key_input(event:InputEvent) -> void:
 	if in_sub:
-		if Input.is_action_pressed('menu_up'): update_scroll(-1)
-		if Input.is_action_pressed('menu_down'): update_scroll(1)
+		if event.is_action_pressed('menu_up', true): update_scroll(-1)
+		if event.is_action_pressed('menu_down', true): update_scroll(1)
 
-		var da_pref = pref_list[sub_option]
+		var da_pref:Option = pref_list[sub_option]
 		if ['array', 'int', 'float'].has(da_pref.type):
-			var update = da_pref.step
-			if da_pref.type == 'float' and Input.is_key_pressed(KEY_CTRL): update *= 0.5
-			if Input.is_action_pressed('menu_left'): da_pref.update_option(-update)
-			if Input.is_action_pressed('menu_right'): da_pref.update_option(update)
+			var update:float = da_pref.step
+			if event.is_action_pressed('menu_left', true): da_pref.update_option(-update)
+			if event.is_action_pressed('menu_right', true): da_pref.update_option(update)
 		if da_pref.type == 'bool' and Input.is_action_just_pressed('accept'):
 			da_pref.update_option()
-		if Input.is_action_just_pressed('back'): show_main()
+		if event.is_action_pressed('back'): show_main()
 	else:
-		if Input.is_action_just_pressed('menu_left'): update_scroll(-1)
-		if Input.is_action_just_pressed('menu_right'): update_scroll(1)
+		if event.is_action_pressed('menu_left'): update_scroll(-1)
+		if event.is_action_pressed('menu_right'): update_scroll(1)
 
-		if Input.is_action_just_pressed('back'):
+		if event.is_action_pressed('back'):
 			Audio.play_sound('cancelMenu')
 			if from_play:
 				queue_free()
 			else:
 				Game.switch_scene('menus/main_menu')
 
-		if Input.is_action_just_pressed("accept"):
+		if event.is_action_pressed("accept"):
 			show_catagory(catagories[cur_option].to_lower())
 
 func show_main() -> void:
@@ -114,6 +111,8 @@ func show_main() -> void:
 	in_sub = false
 	$Options/SelectBox.visible = false
 	$Description/Text.text = 'Choose a Catagory'
+	$Description/Alert.hide()
+	$Description/AlertShift.hide()
 
 func show_catagory(catagory:String) -> void:
 	Audio.play_sound('confirmBrief')
@@ -174,7 +173,7 @@ func update_scroll(diff:int = 0) -> void:
 				pref_list.append(new_pref)
 				loops += 1
 
-
+@warning_ignore("missing_tool")
 class Option extends Alphabet:
 	var option:String = ''
 	var description:String = 'nothing'
@@ -208,7 +207,6 @@ class Option extends Alphabet:
 
 		if audio:
 			add_child(audio)
-		#color = Color.WHITE
 
 		match type:
 			'array':
@@ -220,7 +218,8 @@ class Option extends Alphabet:
 				max_val = option_array[2][1]
 				if option_array.size() == 4: step = option_array[3]
 				cur_val = Prefs.get(option)
-				vis.text = str(cur_val)
+				@warning_ignore("incompatible_ternary") # freak you buddy i hate decimals
+				vis.text = str((cur_val if type == 'float' else int(cur_val)))
 			_:
 				check = Checkbox.new()
 				add_child(check)
@@ -240,6 +239,7 @@ class Option extends Alphabet:
 					audio = Audio.return_sound('hitsounds/'+ choices[cur_op])
 					audio.play()
 			'int', 'float':
+				if type == 'float' and Input.is_key_pressed(KEY_CTRL): diff *= 0.5
 				if Input.is_key_pressed(KEY_SHIFT): diff *= 10
 				cur_val = snapped(clamp(cur_val + diff, min_val, max_val), 0.001)
 				Prefs.set(option, cur_val)
@@ -248,4 +248,6 @@ class Option extends Alphabet:
 				Prefs.set(option, !a_bool)
 				check.checked = !a_bool
 		if type != 'bool':
-			vis.text = str(Prefs.get(option)).capitalize()
+			var new_val = str(Prefs.get(option))
+			if type == 'array': new_val = new_val.capitalize()
+			vis.text = new_val

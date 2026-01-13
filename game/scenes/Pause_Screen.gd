@@ -5,15 +5,18 @@ var this = Game.scene
 @export var option_list:PackedStringArray = ['Resume', 'Restart Song', 'Change Difficulty', 'Options', 'Exit To Menu']
 var options = []
 var cur_option:int = 0
-var in_diff:bool = false
+var in_diff:bool = false:
+	set(dif):
+		in_diff = dif
+		toggle_diff_select(dif)
 
 var diffs:PackedStringArray = JsonHandler.song_diffs
-var break_text = [
+var break_text:Array[String] = [
 	'Havin a snack break', 'Stop fucking pinging me', 'Oop I fell down the stairs',
 	'Damn, I can\'t funk like this', 'Time to touch some grass', 'Shittin rn keep it down',
 	'pissing and shitting', 'who up straight up "funkin" it and by "it" i mean; the friday'
 ]
-func _ready():
+func _ready() -> void:
 	Discord.change_presence('Paused '+ this.SONG.song +' - '+ JsonHandler.get_diff.to_upper(), break_text.pick_random())
 	Conductor.paused = true
 
@@ -44,30 +47,26 @@ func _ready():
 	for i in option_list.size():
 		make_option(option_list[i], i)
 
-	#options = [$Option1, $Option2, $Option3]
 	change_selection()
 
-func _process(_delta):
-	if Input.is_action_just_pressed('menu_up'):
-		change_selection(-1)
-	if Input.is_action_just_pressed('menu_down'):
-		change_selection(1)
+func _process(_delta:float) -> void:
+	if Input.is_action_just_pressed('menu_up'): change_selection(-1)
+	if Input.is_action_just_pressed('menu_down'): change_selection(1)
 
 	if Input.is_action_just_pressed('accept'):
 		if in_diff:
-			var choice = options[cur_option].text
-			if diffs.has(choice.to_lower()):
-				var path = 'res://assets/songs/'+ Util.format_str(this.SONG.song) +'/charts/'
-				if ResourceLoader.exists(path + choice +'.json') or JsonHandler.SONG.notes.has(choice.to_lower()):
-					JsonHandler.parse_song(this.SONG.song, choice)
-					close()
-					Conductor.reset()
-					Game.reset_scene()
-				else:
-					Audio.play_sound('cancelMenu')
+			var choice:String = options[cur_option].text
+			in_diff = diffs.has(choice.to_lower())
+			if !in_diff: return
+
+			var path = 'res://assets/songs/'+ Util.format_str(this.SONG.song) +'/charts/'
+			if ResourceLoader.exists(path + choice +'.json') or JsonHandler.SONG.notes.has(choice.to_lower()):
+				JsonHandler.parse_song(this.SONG.song, choice)
+				close()
+				Conductor.reset()
+				Game.reset_scene()
 			else:
-				in_diff = false
-				toggle_diff_select(false)
+				Audio.play_sound('cancelMenu')
 		else:
 			match option_list[cur_option]:
 				'Resume':
@@ -81,9 +80,8 @@ func _process(_delta):
 					Game.reset_scene()
 				'Change Difficulty':
 					in_diff = true
-					toggle_diff_select(true)
-				'Options':
-					Audio.play_sound('cancelMenu')
+				#'Options':
+				#	Audio.play_sound('cancelMenu')
 					#var wah = OPT_MENU.instantiate()
 					#wah.from_play = true
 					#add_child(wah)
@@ -109,7 +107,7 @@ func close() -> void:
 	get_tree().paused = false
 
 var hold_this = []
-func toggle_diff_select(make_visible:bool = true):
+func toggle_diff_select(make_visible:bool = true) -> void:
 	if diffs.size() == 1: return # this shouldnt happen
 	cur_option = 0 if make_visible else 2
 	Util.remove_all([options], self)
@@ -123,7 +121,7 @@ func toggle_diff_select(make_visible:bool = true):
 
 	change_selection()
 
-func make_option(text:String, t_y:int = -1):
+func make_option(text:String, t_y:int = -1) -> void:
 	var option = Alphabet.new(text)
 	option.is_menu = true
 	option.target_y = t_y

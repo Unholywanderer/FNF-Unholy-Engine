@@ -25,7 +25,14 @@ func _init(s:bool = false): p_v1 = s
 func parse_chart(data:Dictionary) -> Array:
 	for sec in data.notes:
 		for note in sec.sectionNotes:
-			if note[1] < 0: continue
+			if note[1] < 0:
+				if note[1] == -1: # thats an event note, dont skip it
+					if !data.get('events'): data.set('events', [])
+					if data.events.has([note[0], [[note[2], note[3], note[4]]]]):
+						continue
+					data.events.append([note[0], [[note[2], note[3], note[4]]]])
+					print('got event..')
+				continue
 			var time:float = maxf(0, note[0])
 
 			if note[2] is String: continue
@@ -41,7 +48,7 @@ func parse_chart(data:Dictionary) -> Array:
 
 			add_note([time, n_data, is_sustain, sustain_len, must_hit, n_type])
 
-	return_notes.sort_custom(func(a, b): return a[0] < b[0])
+	return_notes.sort_custom(func(a, b): return a.strum_time < b.strum_time)
 	return return_notes
 
 static func fix_json(data:Dictionary) -> Dictionary:

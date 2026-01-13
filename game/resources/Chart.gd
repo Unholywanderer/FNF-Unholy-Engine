@@ -12,7 +12,7 @@ enum {
 }
 var format:int = LEGACY
 
-var return_notes:Array = []
+var return_notes:Array[NoteData] = []
 func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Array:
 	if data == null: return []
 	return_notes.clear()
@@ -38,15 +38,16 @@ static func load_named_chart(song:String, chart_name:String, chart_format:String
 	return []
 
 static func get_must_hits(chart_notes:Array, player_hit:bool = true) -> Array:
-	var notes:Array = []
-	for i in chart_notes:
-		if i[4] != player_hit: continue
-		notes.append(i)
-	return notes
+	return chart_notes.filter(func(n): return n.must_press == player_hit)
 
-func add_note(note_data:Array) -> void:
-	if note_data.size() > 0 and !return_notes.has(note_data): # skip adding a note that exists
-		return_notes.append(note_data)
+var _added_data:Array[Array] = [] # dupe note shit
+func add_note(new_note:Array) -> void:
+	if new_note.size() > 0 and !_added_data.has([new_note[0], new_note[1], new_note[4]]):
+		return_notes.append(NoteData.new(new_note))
+		_added_data.append([new_note[0], new_note[1], new_note[4]])
+		return
+	print('dupe note!')
+		#return_notes.append(note_data)
 
 func get_events(SONG:Dictionary) -> Array[EventData]:
 	var path_to_check:String = 'songs/%s/events.json' % Util.format_str(SONG.song)
@@ -56,11 +57,11 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 		events_found.append_array(SONG.events)
 
 	if format != V_SLICE:
-		if format == LEGACY:
-			for sec in SONG.notes: # check song json for any -1 event notes
-				for note in sec.sectionNotes:
-					if note[1] != -1: continue
-					events_found.append([note[0], [[note[2], note[3], note[4]]]])
+		#if format == LEGACY:
+			#for sec in SONG.notes: # check song json for any -1 event notes
+			#	for note in sec.sectionNotes:
+			#		if note[1] != -1: continue
+			#		events_found.append([note[0], [[note[2], note[3], note[4]]]])
 
 		# then check if there is a event json
 		if Util.file_exists(path_to_check):

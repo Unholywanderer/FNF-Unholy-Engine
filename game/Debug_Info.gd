@@ -13,6 +13,8 @@ var volume:int = 10:
 			pressed_key = false
 			if vol != 10 or volume != vol:
 				Audio.play_sound('vol/'+ ('up' if vol > volume else 'down'))
+				Prefs.saved_volume = vol
+				Prefs.save_prefs()
 			else:
 				$Volume/BarsBG/VolBar10.modulate = Color.RED
 				if max_tween: max_tween.kill()
@@ -23,8 +25,6 @@ var volume:int = 10:
 			_time_existed = 0
 		AudioServer.set_bus_volume_db(0, linear_to_db(vol / 10.0))
 		volume = vol
-		Prefs.saved_volume = vol
-		Prefs.save_prefs()
 
 func _ready():
 	volume = Prefs.saved_volume

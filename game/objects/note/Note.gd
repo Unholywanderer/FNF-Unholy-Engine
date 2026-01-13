@@ -54,8 +54,8 @@ var type:String = "":
 			'GF': gf = true
 			'Hurt':
 				should_hit = false
-				early_mod = 0.5
-				late_mod = 0.5
+				early_mod = 0.3
+				late_mod = 0.3
 				if is_sustain:
 					modulate = Color.BLACK
 				else:
@@ -88,7 +88,7 @@ var temp_len:float = 0.0 #if you dont immediately hold
 var offset_y:float = 0.0
 
 var holding:bool = false
-var min_len:float = 20.0 # before a sustain is counted as "hit"
+var min_len:float = 25.0 # before a sustain is counted as "hit"
 var drop_time:float = 0.0
 var dropped:bool = false:
 	set(drop):
@@ -154,8 +154,11 @@ func _ready() -> void:
 	else:
 		if ResourceLoader.exists(tex_path +'.res'):
 			note = AnimatedSprite2D.new()
-			note.sprite_frames = skin.cached_note_types['hurt']
-			note.play(COLORS[dir])
+			note.sprite_frames = ResourceLoader.load(tex_path +'.res') #skin.cached_note_types['hurt']
+			if note.sprite_frames.has_animation(COLORS[dir]):
+				note.play(COLORS[dir])
+			else:
+				note.play()
 		else:
 			note = Sprite2D.new()
 			var spr_path:String = tex_path + COLORS[dir] +'.png'
@@ -182,6 +185,7 @@ func _process(delta:float) -> void:
 		can_hit = true #!dropped
 		#if dropped: return
 		temp_len -= (1000 * delta) * Conductor.playback_rate
+		if !holding: drop_time += delta
 
 		if (holding or !must_press) and length != temp_len: #end piece kinda fucks off a bit every now and then
 			holding = true
@@ -244,7 +248,7 @@ func convert_type(t:String) -> String:
 		'censor': return 'Censor'
 		'no animation': return 'No Anim'
 		'gf sing': return 'GF'
-		'hurt note', '3.0', 'markov note', 'ebola', 'burger note', 'fart note': return 'Hurt'
+		'hurt note', '3.0': return 'Hurt'
 		'hey!', 'hey': return 'Hey'
 		_: return t
 

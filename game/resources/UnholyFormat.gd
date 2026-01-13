@@ -1,6 +1,9 @@
 class_name UnholyFormat; extends Resource;
 
 #region Character Json Format
+## Default character animation format for the character json.
+## [code]flip_x[/code] and [code]flip_y[/code] are optional,
+## only added when specified
 const CHAR_ANIM = {
 	'name': '',
 	'prefix': '',
@@ -11,6 +14,8 @@ const CHAR_ANIM = {
 	#'flip_y': false, #will only be added if it exists
 	'loop': false
 }
+
+## Default character json format
 const CHAR_JSON = {
 	'animations': [],
 	'path': 'characters/bf/char',
@@ -35,16 +40,29 @@ const SECTION_FORMAT = {
 	'beats': 4
 }
 
-const CHART_JSON = {
-	'variant': '',
-	'events': [],
+#const CHART_JSON = {
+#	'variant': '',
+#	'events': [],
+#	'notes': [],
+#	'sections': [],
+#	'player': 'bf',
+#	'opponent': 'dad',
+#	'gf': 'gf',
+	#'audio_offset': [0, 0],
+#	'speed': 1.0,
+#	'song': 'Test'
+#}
+
+## Chart format used for the Chart Editor. Should be converted back to another
+## chart type afterwards
+const EDITOR_CHART = {
 	'notes': [],
-	'sections': [],
+	'events': [],
+	'sections': [], # if the song has sections, hold them all here
 	'player': 'bf',
-	'opponent': 'dad',
 	'gf': 'gf',
-	'audio_offset': [0, 0],
+	'opponent': 'dad',
 	'speed': 1.0,
-	'song': 'Test'
+	'song': 'Bopeebo'
 }
 #endregion

@@ -4,11 +4,9 @@ signal countdown_start
 signal countdown_tick(tick:int) # 0 = 'three', 1 = 'two', 2 = 'one', 3 = 'go', 4 = song start
 signal song_start # technically countdown tick 4 is song start but why would you use that smh
 
-# probably gonna move some note shit in here
 @onready var score_txt:Label = $Score_Txt
 
 @onready var time_circ:Control = $TimeCirc
-#@onready var time_bar:HealthBar = $TimeBar
 
 @onready var health_bar:HealthBar = $HealthBar
 @onready var icon_p1:Icon = $HealthBar/IconP1
@@ -21,10 +19,6 @@ signal song_start # technically countdown tick 4 is song start but why would you
 	'player': $Strum_Group/Player,
 	'opponent': $Strum_Group/Opponent
 }
-
-#@onready var player_group:Strum_Line = $Strum_Group/Player
-#@onready var opponent_group:Strum_Line = $Strum_Group/Opponent
-#var gf_group:Strum_Line
 
 @onready var player_strums:Array = strum_groups.player.get_strums()
 @onready var opponent_strums:Array = strum_groups.opponent.get_strums()
@@ -49,7 +43,7 @@ var accuracy:float = -1.0
 var hit_count:Dictionary = {'epic': 0, 'sick': 0, 'good': 0, 'bad': 0, 'shit': 0, 'miss': 0}
 var grade:String = 'N/A'
 
-var def_mark_scale:Vector2 = Vector2(0.7, 0.7)
+var mark_scale:Vector2 = Vector2(0.7, 0.7)
 var zoom:float = 1.0:
 	set(new_zoom):
 		zoom = new_zoom
@@ -114,11 +108,10 @@ func _ready():
 	health_bar.position.x = (Game.screen[0] / 2.0) - health_bar.width / 2.0 # 340
 	health_bar.position.y = 85 if downscroll else 630
 	health_bar.z_index = -2
-	#icon_p1.follow_spr = health_bar
-	#icon_p2.follow_spr = health_bar
 
+	time_circ.modulate.a = 0
 	time_circ.position.y = 570 if downscroll else 55
-	#time_bar.position.y = 695 if downscroll else 25
+
 	score_txt.position.x = (Game.screen[0] / 2) - (score_txt.size[0] / 2)
 	if downscroll:
 		score_txt.position.y = 130
@@ -128,16 +121,7 @@ func _ready():
 	mark_bg.scale = mark.scale
 	$TimeCirc/Song.text = JsonHandler.SONG.song
 
-	#player.scale = Vector2(0.9, 0.9)
-	#opponent.scale = Vector2(0.9, 0.9)
-	#player.position.x += 80
-	#opponent.position.x -= 30
-
-	#gf_group = load('res://game/objects/ui/strum_line.tscn').instantiate()
-	#add_child(gf_group)
-	#gf_group.scale = Vector2(0.9, 0.9)
-	#gf_group.position = Vector2((Game.screen[0] / 2.0) - 170, 55)
-	#gf_strums = gf_group.get_strums()
+	update_score_txt()
 
 var hp:float = 50.0:
 	set(val): hp = clampf(val, 0, 100)
@@ -146,13 +130,8 @@ func _process(delta):
 	if finished_countdown:
 		var time:float = Conductor.song_pos
 		var leng:float = Conductor.song_length
-		time_circ.value = (abs(time / leng) * 100.0)
-		#time_bar.value = (abs(time / leng) * 100.0)
-		#$Elasped.text = str(Util.to_time(floor(time / Conductor.playback_rate)))
-		$TimeCirc/Pos.text = Util.to_time(floor(time) / Conductor.playback_rate) +' / '+ Util.to_time(leng / Conductor.playback_rate)
-
-	#$Elasped.position = time_bar.position - Vector2($Elasped.size.x / 2, 30)
-	#$Left.position = (time_bar.position + (time_bar.size / 2.0)) - Vector2($Left.size.x / 2, $Left.size.y / 2)
+		time_circ.value = Util.get_percent(time, leng)
+		$TimeCirc/Pos.text = Util.to_time(floor(time)) +' / '+ Util.to_time(leng)
 
 	health_bar.value = lerpf(hp, health_bar.value, exp(-delta * 8))
 
@@ -166,22 +145,12 @@ func _process(delta):
 	mark.position.x = max(613, (icon_p1.position.x) + 100)
 
 func update_score_txt() -> void:
-	if Game.scene.get('score'):
-		var stuff = [roundi(Game.scene.score), get_acc(), Game.scene.misses]
-		score_txt.text = 'Score: %s / Accuracy: [%s] \\ Misses: %s' % stuff
-
-	$Tally.text = '
-	[color=magenta]Epics: %s\n
-	[color=cyan]Sicks: %s\n
-	[color=green]Goods: %s\n
-	[color=yellow]Bads : %s\n
-	[color=red]Shits: %s' % [
-		hit_count.epic,
-		hit_count.sick,
-		hit_count.good,
-		hit_count.bad,
-		hit_count.shit
-	]
+	var data:Array = [roundi(Game.scene.get('score')), get_acc(), Game.scene.get('misses')]
+	var format:String = 'Score: %s / Accuracy: [%s] \\ Misses: %s'
+	if data[2] == 0:
+		data = [data[0], data[1]]
+		format = 'Score: %s | Accuracy: [%s]'
+	score_txt.text = format % data
 
 func get_acc() -> String:
 	var new_acc = clampf(note_percent / total_hit, 0, 1)
@@ -258,8 +227,8 @@ func change_skin(new_skin:String = 'default') -> void: # change style of whole h
 
 	mark.texture = load('res://assets/images/ui/skins/'+ cur_skin +'/auto.png')
 	mark.texture_filter = Util.get_alias(SKIN.antialiased)
-	def_mark_scale = (SKIN.strum_scale if SKIN.strum_scale.x <= 0.7 else SKIN.strum_scale / 1.5)
-	mark.scale = def_mark_scale
+	mark_scale = (SKIN.strum_scale if SKIN.strum_scale.x <= 0.7 else SKIN.strum_scale / 1.5)
+	mark.scale = mark_scale
 
 func toggle_objects(vis:bool = true, tween:bool = false, twn_len:float = 0.5) -> void:
 	for i in [health_bar, $Strum_Group, $Score_Txt, time_circ]:

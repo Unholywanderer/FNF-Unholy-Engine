@@ -21,5 +21,5 @@ func parse_chart(data) -> Array:
 
 			add_note([time, n_data, is_sustain, sustain_len, must_hit, n_type])
 
-	return_notes.sort_custom(func(a, b): return a[0] < b[0])
+	return_notes.sort_custom(func(a, b): return a.strum_time < b.strum_time)
 	return return_notes

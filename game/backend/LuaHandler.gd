@@ -1,6 +1,6 @@
 extends Node2D
 
-enum RET_TYPES {STOP, CONTINUE}
+enum RETURN_TYPE {STOP, CONTINUE}
 var cached_items:Dictionary = {}
 var active_lua:Array[LuaEx] = []
 var active:bool = true
@@ -11,14 +11,15 @@ func add_script(script:String) -> void:
 
 	#TODO maybe figure out way to do something like 'import'
 	var lua = LuaEx.new()
-	lua.script_path = script
+	lua.script_path = script.get_base_dir()
+	lua.script_name = script.get_file()
 	lua.bind_libraries(["base", "table", "string", "math"])
 
 	var SCENE = Game.scene
 	## Variables ##
-	lua.add("Game", SCENE) # current scene
-	lua.add("STOP", RET_TYPES.STOP)
-	lua.add("CONTINUE", RET_TYPES.CONTINUE)
+	lua.add("scene", SCENE) # current scene
+	lua.add("STOP", RETURN_TYPE.STOP)
+	lua.add("CONTINUE", RETURN_TYPE.CONTINUE)
 
 	## Objects ##
 	lua.add("Conductor", Conductor)
@@ -65,7 +66,7 @@ func add_script(script:String) -> void:
 	#lua.push_variant("import", add_variant)
 
 	if !load_lua(lua, script, !script.begins_with('C:/')): return
-	print(lua.script_path +' is loaded')
+	print(lua.script_path +': '+ lua.script_name +' is loaded')
 
 	if !active_lua.has(lua):
 		active_lua.append(lua)
@@ -83,29 +84,33 @@ func reload_scripts():
 
 func add_variant(vari_name:String, variant:Variant) -> void:
 	for i in active_lua:
-		i.push_variant(vari_name, variant)
+		i.add(vari_name, variant)
 
 func load_lua(lua:LuaEx, path:String, internal:bool = true) -> bool:
 	var lua_start:String = 'res://assets/' if internal else ''
 	var err = lua.do_file(lua_start + path)
 	if err is LuaError:
-		printerr(err.message)
-		var er_type = err.message.split(']')[0].replace('[', '').strip_edges()
-		var er_path = err.message.split('assets/')[1].strip_edges()
+		var msg:String = err.message
+		printerr(msg)
+		var er_type = msg.get_slice('\n', 0).remove_chars('[]') +'in '+ lua.script_name
+		var er_path = msg.get_slice('assets/', 1).strip_edges()
 		OS.alert('../'+ er_path, er_type +'!')
 		if active_lua.has(lua):
 			active_lua.remove_at(active_lua.find(lua))
-		return false
-	return true
+	return err is not LuaError
 
-func call_func(_func:String, args:Array = []) -> RET_TYPES:
-	if _func.length() == 0: return RET_TYPES.CONTINUE
-	var ret_val:RET_TYPES = RET_TYPES.CONTINUE
+func call_func(_func:String, args:Array = []) -> RETURN_TYPE:
+	if _func.length() == 0: return RETURN_TYPE.CONTINUE
+	var ret_val:RETURN_TYPE = RETURN_TYPE.CONTINUE
 	for i in active_lua:
 		if !i.function_exists(_func): continue
 		var new_val = i.call_function(_func, args)
-		if new_val is RET_TYPES: ret_val = new_val
+		if new_val is RETURN_TYPE: ret_val = new_val
 	return ret_val
+
+func load_scene_luas() -> void:
+	for i in DirAccess.get_files_at('res://assets/data/scripts/custom_scenes'):
+		pass
 
 ## FUNCTIONS FO LUA CRIPTS 😎😎
 func pain(x):
@@ -245,14 +250,16 @@ class LuaSparrowSprite extends SparrowSprite:
 	func _init(spr:String = '') -> void:
 		super(spr)
 
-
 class LuaEx extends LuaAPI:
 	var global:bool = false # later
 	var active:bool = false
-	var script_path:String = ''
+	var script_path:String = '' # path to the script, minus the actual file name
+	var script_name:String = ''
 	func _notification(what:int) -> void:
-		if what == NOTIFICATION_PREDELETE: print("good-bye")
+		if what == NOTIFICATION_PREDELETE:
+			print("good-bye")
 
 	func add(vari:String, item:Variant) -> void:
-		if vari.is_empty() or item == null: return printerr('COULD NOT ADD '+ vari)
+		if vari.is_empty() or item == null:
+			return printerr('COULD NOT ADD '+ vari)
 		push_variant(vari, item)

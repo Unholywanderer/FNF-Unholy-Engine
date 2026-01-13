@@ -9,7 +9,7 @@ var width:float:
 var height:float:
 	get: return $Bar.get_size()[1]
 
-var value:float = 50.0:
+@export var value:float = 50.0:
 	set(new_val):
 		value = new_val
 		$Bar.value = value

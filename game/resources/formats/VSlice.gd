@@ -12,7 +12,7 @@ func parse_chart(data) -> Array:
 
 		add_note([time, int(note.d), sustain_len > 0, sustain_len, note.d <= 3, n_type])
 
-	return_notes.sort_custom(func(a, b): return a[0] < b[0])
+	return_notes.sort_custom(func(a, b): return a.strum_time < b.strum_time)
 	return return_notes
 
 static func fix_json(data:Dictionary) -> Dictionary:

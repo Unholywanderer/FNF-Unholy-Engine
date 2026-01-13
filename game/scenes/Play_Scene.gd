@@ -166,8 +166,8 @@ func _ready():
 
 	Judge.skin = ui.SKIN
 	if Prefs.rating_cam == 'game':
-		Judge.rating_pos = boyfriend.get_cam_pos() + Vector2(boyfriend.width + 90, -40)
-		Judge.combo_pos = boyfriend.get_cam_pos() + Vector2(boyfriend.width - 40, 70)
+		Judge.rating_pos = boyfriend.get_cam_pos() - Vector2(120, 50)
+		Judge.combo_pos = boyfriend.get_cam_pos() - Vector2(260, -60)
 	elif Prefs.rating_cam == 'hud':
 		Judge.rating_pos = Vector2(580, 300)
 		Judge.combo_pos = Vector2(420, 420)
@@ -181,8 +181,6 @@ func _ready():
 	events = JsonHandler.song_events.duplicate(true)
 	for i in events:
 		if i.event != 'Change Character': continue
-		if JsonHandler.parse_type == 'codename':
-			i.values[0] = abs(i.values[0] - 1)
 		var peep = char_from_string(str(i.values[0]))
 		peep.cache_char(i.values[1])
 
@@ -196,22 +194,12 @@ func _ready():
 
 	Conductor.connect_signals(stage)
 
-	for i in DirAccess.get_files_at('res://assets/data/scripts'):
-		#ResourceLoader.list_directory('res://assets/data/scripts'):
-		if i.ends_with('.lua'): LuaHandler.add_script('data/scripts/'+ i)
-
-	for i in DirAccess.get_files_at('res://assets/songs/'+ JsonHandler.song_root):
-		#ResourceLoader.list_directory('res://assets/songs/'+ JsonHandler.song_root):
-		if i.ends_with('.lua'): LuaHandler.add_script('songs/'+ JsonHandler.song_root +'/'+ i)
-
-	if !OS.is_debug_build(): # scripts for exported builds
-		var folder:String = Game.exe_path +'mods/'
-		for i in DirAccess.get_files_at(folder +'/data/scripts'):
-			if i.ends_with('.lua'): LuaHandler.add_script(folder +'data/scripts/'+ i)
-
-		for i in DirAccess.get_files_at(folder +'songs/'+ JsonHandler.song_root):
-			if i.ends_with('.lua'):
-				LuaHandler.add_script(folder +'songs/'+ JsonHandler.song_root +'/'+ i)
+	var to_check:PackedStringArray = ['data/scripts', 'songs/'+ JsonHandler.song_root]
+	for i in to_check.size() * 2:
+		var folder:String = to_check[i % to_check.size()]
+		var prefix:String = 'res://assets/' if i < to_check.size() else Game.exe_path +'mods/'
+		for file in Util.only_get(folder, 'lua', prefix):
+			LuaHandler.add_script(folder +'/'+ file)
 
 	if GAME_OVER == null:
 		var char_suff = '-pico' if boyfriend.cur_char.contains('pico') else ''
@@ -234,26 +222,17 @@ func _notification(what:int) -> void:
 		GAME_OVER.queue_free()
 
 func _process(delta):
-	if LuaHandler.call_func('process', [delta]) == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('process', [delta]) == LuaHandler.RETURN_TYPE.STOP: return
 
-	if Input.is_key_pressed(KEY_R): ui.hp = 0
 	if ui.hp <= 0: try_death()
-
-	if Input.is_action_just_pressed("debug_1"):
-		await RenderingServer.frame_post_draw
-		Game.switch_scene('debug/Charting_Scene')
-
-	if Input.is_action_just_pressed("back"):
-		auto_play = !auto_play
-
-	if Input.is_action_just_pressed("accept") and can_pause:
+	if Input.is_action_just_pressed('accept') and can_pause:
 		get_tree().paused = true
 		other.add_child(load('res://game/scenes/pause_screen.tscn').instantiate())
 
-	if ui.finished_countdown:
+	if Prefs.allow_rpc and ui.finished_countdown:
 		Discord.change_presence('Playing '+ SONG.song +' - '+ JsonHandler.get_diff.to_upper(),\
 		 Util.to_time(Conductor.song_pos) +' / '+ Util.to_time(Conductor.song_length) +' | '+ \
-		  str(round(abs(Conductor.song_pos / Conductor.song_length) * 100.0)) +'% Complete')
+		  str(Util.get_percent(Conductor.song_pos, Conductor.song_length)) +'% Complete')
 
 	var scale_ratio:float = 5.0 / Conductor.step_crochet * 100.0
 	ui.zoom = lerpf(1.0, ui.zoom, exp(-delta * scale_ratio))
@@ -262,10 +241,10 @@ func _process(delta):
 		cam.zoom.y = cam.zoom.x
 
 	var fixed_time:float = (spawn_time / cur_speed)
-	while chart_notes.size() > 0 and chunk != chart_notes.size() and chart_notes[chunk][0] - Conductor.song_pos < fixed_time:
-		if chart_notes[chunk][0] - Conductor.song_pos > fixed_time: break # no notes to find, fuck off for now
+	while chunk < chart_notes.size() and chart_notes[chunk].strum_time - Conductor.song_pos < fixed_time:
+		if chart_notes[chunk].strum_time - Conductor.song_pos > fixed_time: break # no notes to find, fuck off for now
 
-		var new_note:Note = Note.new(NoteData.new(chart_notes[chunk]))
+		var new_note:Note = Note.new(chart_notes[chunk])
 		new_note.speed = cur_speed
 		notes.append(new_note)
 
@@ -274,7 +253,7 @@ func _process(delta):
 		var to_add:String = 'player' if new_note.must_press else 'opponent'
 		#if new_note.gf: to_add = 'gf'
 
-		if chart_notes[chunk][2]: # if it has a sustain
+		if chart_notes[chunk].length > 0: # if it has a sustain
 			var new_sustain:Note = Note.new(new_note, true)
 			new_sustain.speed = new_note.speed
 
@@ -292,24 +271,22 @@ func _process(delta):
 			note.follow_song_pos(ui.player_strums[note.dir] if note.must_press else ui.opponent_strums[note.dir])
 
 			if note.strum_time <= Conductor.song_pos:
-				var kill_zone = Conductor.song_pos - (300.0 / note.speed)
-				if note.is_sustain:
-					if note.can_hit and !note.was_good_hit:
-						if note.must_press:
-							note.holding = ((auto_play and note.should_hit) or Input.is_action_pressed(key_names[note.dir]))
+				if note.must_press:
+					var del_note:bool = note.strum_time < (Conductor.song_pos - (300.0 / note.speed))
+					if note.is_sustain:
+						if note.can_hit and !note.was_good_hit:
+							note.holding = (auto_play and note.should_hit) or Input.is_action_pressed(key_names[note.dir])
 							good_sustain_press(note)
-							if !auto_play and note.strum_time < kill_zone and !note.holding \
-								and note.should_hit: note_miss(note)
+							if !auto_play and del_note and !note.holding and note.should_hit: note_miss(note)
 					else:
-						opponent_sustain_press(note)
-					if note.temp_len <= 0: kill_note(note)
-				else:
-					if note.must_press:
 						if auto_play and note.should_hit:
 							good_note_hit(note)
-						if note.strum_time < kill_zone and !note.was_good_hit:
+						if del_note and !note.was_good_hit:
 							var note_func = note_miss if note.should_hit and !auto_play else kill_note
 							note_func.call(note)
+				else:
+					if note.is_sustain:
+						opponent_sustain_press(note)
 					else:
 						opponent_note_hit(note)
 
@@ -322,12 +299,12 @@ func _process(delta):
 	LuaHandler.call_func('post_process', [delta])
 
 func beat_dance(b:int) -> void:
+	ui.icon_p1.bump()
+	ui.icon_p2.bump()
 	for i in characters:
 		if !i.animation.begins_with('sing') and b % i.dance_beat == 0:
 			i.dance()
 	if speaker: speaker.bump()
-	ui.icon_p1.bump()
-	ui.icon_p2.bump()
 
 func countdown_start() -> void: pass
 
@@ -336,9 +313,11 @@ func countdown_tick(tick) -> void:
 
 func song_start() -> void:
 	Game.persist.seen_cutscene = true
+	if ui.time_circ.modulate.a == 0:
+		Util.quick_tween(ui.time_circ, 'modulate:a', 1, 0.3)
 
 func beat_hit(beat:int) -> void:
-	if LuaHandler.call_func('beat_hit', [beat]) == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('beat_hit', [beat]) == LuaHandler.RETURN_TYPE.STOP: return
 	beat_dance(beat)
 
 	if zoom_beat == 0: return
@@ -349,10 +328,10 @@ func beat_hit(beat:int) -> void:
 		ui.mark.scale += Vector2(0.1, 0.1)
 
 func step_hit(step) -> void:
-	if LuaHandler.call_func('step_hit', [step]) == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('step_hit', [step]) == LuaHandler.RETURN_TYPE.STOP: return
 
 func section_hit(section) -> void:
-	if LuaHandler.call_func('section_hit', [section]) == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('section_hit', [section]) == LuaHandler.RETURN_TYPE.STOP: return
 
 	if !['v_slice', 'codename', 'osu'].has(JsonHandler.parse_type) and SONG.notes.size() > section:
 		section_data = SONG.notes[section]
@@ -389,7 +368,14 @@ func move_cam(to_char:Variant) -> void:
 	focus_offset = Vector2.ZERO
 
 func _unhandled_key_input(event:InputEvent) -> void:
-	LuaHandler.call_func('input_recieved')
+	if Input.is_key_pressed(KEY_R): try_death()
+
+	if event.is_action_pressed("back"): auto_play = !auto_play
+
+	if event.is_action_pressed("debug_1"):
+		await RenderingServer.frame_post_draw
+		Game.switch_scene('debug/Charting_Scene')
+
 	if auto_play: return
 	for i in 4:
 		if event.is_action_pressed(key_names[i]): key_press(i)
@@ -411,18 +397,18 @@ func key_press(key:int = 0) -> void:
 	var note:Note = hittable_notes[0]
 
 	# side note you should throw this in note parsing instead :3 -rudy
-	if hittable_notes.size() > 1: # mmm idk anymore
-		for funny in hittable_notes: # temp dupe note thing killer bwargh i hate it
-			if note == funny: continue
-			if absf(funny.strum_time - note.strum_time) < 0.1:
-				kill_note(funny)
+	#if hittable_notes.size() > 1: # mmm idk anymore
+	#	for funny in hittable_notes: # temp dupe note thing killer bwargh i hate it
+	#		if note == funny: continue
+	#		if absf(funny.strum_time - note.strum_time) < 0.1:
+	#			kill_note(funny)
 	good_note_hit(note)
 
 func key_release(key:int = 0) -> void:
 	ui.player_strums[key].play_anim('static')
 
 func try_death() -> void:
-	if LuaHandler.call_func('on_death_start') == LuaHandler.RET_TYPES.STOP: return
+	if LuaHandler.call_func('on_death_start') == LuaHandler.RETURN_TYPE.STOP: return
 	Game.persist['deaths'] += 1
 	kill_all_notes()
 	boyfriend.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -430,7 +416,8 @@ func try_death() -> void:
 		gf.play_anim('sad')
 	get_tree().paused = true
 	stage.game_over_start()
-	add_child(GAME_OVER)
+	if GAME_OVER.get_parent() == null:
+		add_child(GAME_OVER)
 
 func _exit_tree() -> void:
 	Game.persist.set('seen_cutscene', false)
@@ -522,7 +509,7 @@ func char_from_string(peep:String) -> Character:
 var _cam_tween
 func event_hit(event:EventData) -> void:
 	var luad = LuaHandler.call_func('event_hit', [event.event, event.values])
-	if luad == LuaHandler.RET_TYPES.STOP: return
+	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	stage.event_hit(event)
 	print(event.event, event.values)
 	match event.event:
@@ -597,8 +584,8 @@ func event_hit(event:EventData) -> void:
 				if peep == dad: ui.icon_p2.change_icon(peep.icon)
 
 		'Set GF Speed':
-			var new_speed = int(event.values[0])
-			gf.dance_beat = new_speed if new_speed != null else 1
+			var new_speed:int = int(event.values[0])
+			gf.dance_beat = new_speed if event.values[0].is_valid_int() else 1
 		#endregion
 		'FocusCamera', 'Camera Movement':
 			var char_int = event.values[0] # a little fix
@@ -606,7 +593,6 @@ func event_hit(event:EventData) -> void:
 				char_int = char_int.char
 				#if event.values[0].has('x'): focus_offset.x = -event.values[0].x
 				if event.values[0].has('y'): focus_offset.y = float(event.values[0].y)
-			if event.event == 'Camera Movement': char_int = abs(char_int - 1)
 			move_cam(int(char_int))
 		'PlayAnimation':
 			var data = event.values[0]
@@ -617,30 +603,29 @@ func event_hit(event:EventData) -> void:
 				#peep.can_sing = !data.force
 		'SetCameraBop':
 			zoom_beat = event.values[0].rate
-			if event.values[0].intensity != 0:
-				zoom_add.game = event.values[0].intensity / 25.0
-			else:
-				zoom_add.game = 0
+			zoom_add.game = event.values[0].intensity / (1.0 if event.values[0].intensity == 0 else 25.0)
 		'ZoomCamera':
-			var data = event.values[0]
-			var zoom_mode = 'direct'
-			if data.has('mode'): zoom_mode = data.mode
+			var data:Dictionary = event.values[0]
+			var zoom_mode:String = data.get('mode', 'direct')
 			var new_zoom:float = data.zoom if zoom_mode == 'direct' else stage.default_zoom * data.zoom
-			var dur:float = 0.0
+			var dur:float = 4.0
 			if data.has('duration'):
-				dur = Conductor.step_crochet * data.duration / 1000.0
+				dur = (Conductor.step_crochet / 1000.0) * data.duration
 
 			default_zoom = new_zoom
-			if dur > 0:
-				_cam_tween = create_tween()
-				_cam_tween.tween_property($Camera, 'zoom', Vector2(new_zoom, new_zoom), dur)
-				_cam_tween.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-				_cam_tween.finished.connect(func(): _cam_tween = null)
+			if dur <= 0 or data.ease == 'INSTANT':
+				cam.zoom = Vector2(new_zoom, new_zoom)
 			else:
-				$Camera.zoom = Vector2(new_zoom, new_zoom)
+				var ease_shit:Array = data.ease.to_snake_case().split('_')
+				if data.has('easeDir'): ease_shit.append(data.easeDir)
+				_cam_tween = create_tween()
+				_cam_tween.tween_property(cam, 'zoom', Vector2(new_zoom, new_zoom), dur)
+				_cam_tween.set_trans(Util.trans_from_string(ease_shit[0])).set_ease(Util.ease_from_string(ease_shit[1]))
+				_cam_tween.finished.connect(func(): _cam_tween = null)
+
 		'SetHealthIcon':
-			if int(event.values[0].char) == 1: ui.icon_p2.change_icon(event.values[0].id)
-			if int(event.values[0].char) == 0: ui.icon_p1.change_icon(event.values[0].id)
+			var ic_id:int = int(event.values[0].char)
+			ui.get('icon_p'+ str(ic_id + 1)).change_icon(event.values[0].id, ic_id == 0)
 
 		'ChangeBPM', 'BPM Change':
 			Conductor.bpm = event.values[0]
@@ -648,8 +633,8 @@ func event_hit(event:EventData) -> void:
 
 func good_note_hit(note:Note) -> void:
 	if note.type.length() > 0: print(note.type, ' bf')
-	var luad = LuaHandler.call_func('good_note_hit', [notes.find(note), note.dir, note.type]) # making it take the note itself would crash
-	if luad == LuaHandler.RET_TYPES.STOP: return
+	var luad = LuaHandler.call_func('good_note_hit', [notes.find(note), note.dir, note.type])
+	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	if !note.should_hit:
 		return note_miss(note)
 
@@ -694,12 +679,12 @@ func good_note_hit(note:Note) -> void:
 var time_dropped:float = 0
 func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hit and sustain_press funcs
 	var luad = LuaHandler.call_func('good_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
-	if luad == LuaHandler.RET_TYPES.STOP: return
+	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	if !auto_play and Input.is_action_just_released(key_names[sustain.dir]) and !sustain.was_good_hit:
 		#sustain.dropped = true
 		sustain.strum_time = Conductor.song_pos
 		sustain.holding = false
-		sustain.drop_time += get_process_delta_time() #testing something
+		#sustain.drop_time += get_process_delta_time() #testing something
 		if sustain.drop_time >= 0.15:
 			note_miss(sustain)
 		return
@@ -726,10 +711,11 @@ func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hi
 				score += (550 * get_process_delta_time()) * Conductor.playback_rate
 			ui.hp += (4 * get_process_delta_time())
 			ui.update_score_txt()
+			if sustain.temp_len <= 0: kill_note(sustain)
 
 func opponent_note_hit(note:Note) -> void:
 	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(note), note.dir, note.type, false])
-	if luad == LuaHandler.RET_TYPES.STOP: return
+	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	if note.type.length() > 0: print(note.type, ' dad')
 
 	if section_data:
@@ -751,7 +737,7 @@ func opponent_note_hit(note:Note) -> void:
 
 func opponent_sustain_press(sustain:Note) -> void:
 	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
-	if luad == LuaHandler.RET_TYPES.STOP: return
+	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	if Conductor.vocals:
 		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
 
@@ -767,12 +753,13 @@ func opponent_sustain_press(sustain:Note) -> void:
 	#if sustain.gf: group = ui.get_group('gf')
 	group.singer = gf if sustain.gf else dad
 	group.note_hit(sustain)
+	if sustain.temp_len <= 0: kill_note(sustain)
 
 var grace:bool = true
 func note_miss(note:Note) -> void:
 	var le_call = [] if note == null else [notes.find(note), note.dir, note.type]
 	var luad = LuaHandler.call_func('note_miss', le_call)
-	if luad == LuaHandler.RET_TYPES.STOP: return
+	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
 	stage.note_miss(note)
 
@@ -809,11 +796,10 @@ func note_miss(note:Note) -> void:
 
 func ghost_tap(dir:int) -> void:
 	var luad = LuaHandler.call_func('on_ghost_tap', [dir])
-	if luad == LuaHandler.RET_TYPES.STOP: return
+	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
 	stage.ghost_tap(dir)
 	if Prefs.ghost_tapping == 'insta-kill':
-		ui.hp = 0
 		return try_death()
 
 	#misses += 1

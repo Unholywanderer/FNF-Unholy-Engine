@@ -28,4 +28,7 @@ func _init(new_event, type:String = 'psych') -> void:
 			strum_time = new_event.time
 			event = new_event.name
 			values.append_array(new_event.params)
+			if event == 'Change Character' or event == 'Camera Movement':
+				values[0] = abs(values[0] - 1) # flip it, since bf is 0 and dad is 1 here
+
 			#print([event, strum_time, values])

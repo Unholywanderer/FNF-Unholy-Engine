@@ -27,7 +27,7 @@ func _process(_delta):
 	#var an = lol.pick_random()
 	#dad.play_anim(an, true)
 	#Main.move_child(dad, boyfriend.get_index() + 1)
-	#boyfriend.play_anim('hit'+ an.replace('punch', '').replace('1', '').replace('2', ''), true)
+	#boyfriend.play_anim('hit'+ an.remove('punch12', ''), true)
 	#Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.1)
 	#UI.hp -= 10 * delta
 
@@ -69,9 +69,7 @@ func pico_anim(note:String, missed:bool = false):
 			'picouppercutprep': boyfriend.play_anim('uppercutPrep', true)
 			'picouppercut': boyfriend.play_anim('uppercut', true)
 			'darnelluppercutprep': boyfriend.play_anim('idle', true)
-			'darnelluppercut':
-				boyfriend.play_anim('uppercutHit', true)
-				boyfriend.flip_h = true
+			'darnelluppercut': boyfriend.play_anim('uppercutHit', true)
 			'idle': boyfriend.play_anim('idle', true)
 			'fakeout': boyfriend.play_anim('fakeout', true)
 			'taunt': if boyfriend.get_anim() == 'fakeout': boyfriend.play_anim('taunt', true)
@@ -93,9 +91,7 @@ func pico_anim(note:String, missed:bool = false):
 			'picouppercutprep': boyfriend.play_anim('uppercutPrep', true)
 			'picouppercut': boyfriend.play_anim('uppercut', true)
 			'darnelluppercutprep': boyfriend.play_anim('idle', true)
-			'darnelluppercut':
-				boyfriend.play_anim('uppercutHit', true)
-				boyfriend.flip_h = true
+			'darnelluppercut': boyfriend.play_anim('uppercutHit', true)
 			'idle': boyfriend.play_anim('idle', true)
 			'fakeout': boyfriend.play_anim('fakeout', true)
 			'taunt': if boyfriend.get_anim() == 'fakeout': boyfriend.play_anim('taunt', true)
@@ -103,12 +99,7 @@ func pico_anim(note:String, missed:bool = false):
 			'reversefakeout': boyfriend.play_anim('idle', true)
 
 	if note.contains('hit') and !missed: UI.hp -= 3
-	if front_anims.has(boyfriend.get_anim()):
-		boyfriend.z_index = 100
-		#$CharGroup.move_child(boyfriend, 2)
-	else:
-		boyfriend.z_index = 0
-		#$CharGroup.move_child(boyfriend, 1)
+	boyfriend.z_index = 100 if front_anims.has(boyfriend.get_anim()) else 0
 
 func darnell_anim(note, missed:bool = false):
 	dad.can_dance = false
@@ -171,12 +162,8 @@ func darnell_anim(note, missed:bool = false):
 			'taunt': dad.play_anim('pissed', true)
 			'tauntforce': dad.play_anim('pissed', true)
 			'reversefakeout': dad.play_anim('fakeout', true)
-	if front_anims.has(dad.get_anim()):
-		dad.z_index = 100
-		#$CharGroup.move_child(dad, 2)
-	else:
-		dad.z_index = 0
-		#$CharGroup.move_child(dad, 1)
+
+	dad.z_index = 100 if front_anims.has(dad.get_anim()) else 0
 
 func alter(a:String):
 	set(a, !get(a))

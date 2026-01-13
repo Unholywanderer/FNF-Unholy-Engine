@@ -151,8 +151,8 @@ func get_anim(item) -> String:
 
 func offset_letter(item) -> Vector2:
 	match item:
-		'-': return Vector2(0, 25)
-		'_': return Vector2(0, 40)
+		'-': return Vector2(0, 25 if bold else -20)
+		'_': return Vector2(0, 40 if bold else 5)
 		'!': return Vector2(0, -5)
 		':': return Vector2(0, 7)
 		"'": return Vector2(0, -5)

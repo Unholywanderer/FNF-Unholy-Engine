@@ -58,7 +58,10 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			SONG.gfVersion = meta.playData['characters'].get('girlfriend')
 			SONG.player2 = meta.playData['characters'].opponent
 			SONG.stage = stage_to(meta.playData.stage)
-			SONG.song = meta.songName
+			var song_name:String = meta.songName
+			if FileAccess.file_exists('res://assets/'+ meta_path % 'manifest'):
+				song_name = parse(meta_path % 'manifest').songId
+			SONG.song = song_name
 			SONG.bpm = meta.timeChanges[0].bpm
 			if meta.timeChanges.size() > 1:
 				var times = meta.timeChanges.duplicate(true)
@@ -154,8 +157,7 @@ func get_character(Char:String = 'bf'):
 	if !ResourceLoader.exists(json_path):
 		printerr('JSON: get_character | [%s.json] COULD NOT BE FOUND' % Char);
 		return null
-	var file = FileAccess.get_file_as_string(json_path)
-	return_json = JSON.parse_string(file)
+	return_json = JSON.parse_string(FileAccess.get_file_as_string(json_path))
 	return return_json
 
 func parse_week(week:String = 'week1') -> Dictionary: # in week folder

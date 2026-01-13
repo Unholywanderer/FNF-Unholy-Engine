@@ -12,7 +12,7 @@ func center_obj(obj = null, axis:String = 'xy') -> void:
 
 func format_str(string:String = '') -> String:
 	const change:String = ' ~&;:<>#' # replace with dashes
-	const clear:String = '.,\'"%?!' # remove completely
+	const clear:String = '.,\'"%?' # remove completely
 
 	string = string.replace_chars(change, '-'.unicode_at(0))
 	for i in clear.split(): string = string.replace(i, '')
@@ -26,6 +26,9 @@ func round_d(num:float, digit:int) -> float: # bowomp
 
 func rand_bool(chance:float = 50.0) -> bool:
 	return (randi() % 100) < chance
+
+func get_percent(val:float, of:float) -> float:
+	return abs(val / of) * 100.0
 
 func remove_all(array:Array[Array], node:Node = null) -> void:
 	if node == null: node = Game.scene
@@ -104,7 +107,7 @@ func trans_from_string(trans:StringName = &'linear') -> Tween.TransitionType:
 		&'quart'  : return Tween.TRANS_QUART
 		&'quint'  : return Tween.TRANS_QUINT
 		&'sine'   : return Tween.TRANS_SINE
-		&'spring' : return Tween.TRANS_SPRING
+		&'smooth' : return Tween.TRANS_SPRING
 		_: return Tween.TRANS_LINEAR
 
 func shake_cam(cam:Camera2D, _power:float = 0.05, _axis:String = 'xy', _length:float = 0.5) -> void:
@@ -153,6 +156,18 @@ func dir_exists(path:String) -> bool:
 	path = path.replace('res://', '').replace(Game.exe_path, '')
 	return DirAccess.dir_exists_absolute('res://'+ path) or \
 	  DirAccess.dir_exists_absolute(Game.exe_path + path)
+
+## Like [code]DirAccess.get_files_at()[/code], except it only returns an array with
+## the files that match the specified file extension. Use the [code]root[/code] param to
+## get files outside of the "res://" folder
+func only_get(path:String, ext:String, root:String = 'res://assets/') -> PackedStringArray:
+	if !DirAccess.dir_exists_absolute(root + path): return []
+	var found_files:PackedStringArray = []
+	for i in DirAccess.get_files_at(root + path):
+		if i.ends_with('.'+ ext):
+			found_files.append(i)
+
+	return found_files
 
 func file_exists(path:String) -> bool:
 	path = path.replace('res://assets/', '').replace(Game.exe_path, '')
