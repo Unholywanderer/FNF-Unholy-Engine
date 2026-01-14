@@ -7,8 +7,10 @@ var options = []
 var cur_option:int = 0
 var in_diff:bool = false:
 	set(dif):
+		if dif != in_diff:
+			toggle_diff_select(dif)
 		in_diff = dif
-		toggle_diff_select(dif)
+
 
 var diffs:PackedStringArray = JsonHandler.song_diffs
 var break_text:Array[String] = [
