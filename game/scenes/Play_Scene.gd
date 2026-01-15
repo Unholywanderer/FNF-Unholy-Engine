@@ -251,7 +251,6 @@ func _process(delta):
 		if new_note.must_press and new_note.should_hit: note_count += 1
 
 		var to_add:String = 'player' if new_note.must_press else 'opponent'
-		#if new_note.gf: to_add = 'gf'
 
 		if chart_notes[chunk].length > 0: # if it has a sustain
 			var new_sustain:Note = Note.new(new_note, true)
@@ -259,10 +258,8 @@ func _process(delta):
 
 			notes.append(new_sustain)
 			ui.add_to_strum_group(new_sustain, to_add)
-			#LuaHandler.call_func('note_added', [new_sustain])
 
 		ui.add_to_strum_group(new_note, to_add)
-		#LuaHandler.call_func('note_added', [new_note])
 		chunk += 1
 
 	if !notes.is_empty():
@@ -278,6 +275,7 @@ func _process(delta):
 							note.holding = (auto_play and note.should_hit) or Input.is_action_pressed(key_names[note.dir])
 							good_sustain_press(note)
 							if !auto_play and del_note and !note.holding and note.should_hit: note_miss(note)
+						if note.temp_len <= 0: kill_note(note)
 					else:
 						if auto_play and note.should_hit:
 							good_note_hit(note)
@@ -287,6 +285,7 @@ func _process(delta):
 				else:
 					if note.is_sustain:
 						opponent_sustain_press(note)
+						if note.temp_len <= 0: kill_note(note)
 					else:
 						opponent_note_hit(note)
 
@@ -396,12 +395,7 @@ func key_press(key:int = 0) -> void:
 
 	var note:Note = hittable_notes[0]
 
-	# side note you should throw this in note parsing instead :3 -rudy
-	#if hittable_notes.size() > 1: # mmm idk anymore
-	#	for funny in hittable_notes: # temp dupe note thing killer bwargh i hate it
-	#		if note == funny: continue
-	#		if absf(funny.strum_time - note.strum_time) < 0.1:
-	#			kill_note(funny)
+	# side note you should throw this in note parsing instead :3 -rudy # im keeping this here, i dont care
 	good_note_hit(note)
 
 func key_release(key:int = 0) -> void:
@@ -680,18 +674,18 @@ var time_dropped:float = 0
 func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hit and sustain_press funcs
 	var luad = LuaHandler.call_func('good_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
 	if luad == LuaHandler.RETURN_TYPE.STOP: return
-	if !auto_play and Input.is_action_just_released(key_names[sustain.dir]) and !sustain.was_good_hit:
+	if !auto_play and !Input.is_action_pressed(key_names[sustain.dir]) and !sustain.was_good_hit:
 		#sustain.dropped = true
 		sustain.strum_time = Conductor.song_pos
 		sustain.holding = false
 		#sustain.drop_time += get_process_delta_time() #testing something
-		if sustain.drop_time >= 0.15:
+		if sustain.drop_time >= 0.2:
 			note_miss(sustain)
 		return
 
 	if sustain.holding:
 		if !sustain.should_hit:
-			note_miss(null)
+			note_miss(sustain)
 		else:
 			if Conductor.vocals:
 				Conductor.audio_volume(1, 1.0)
@@ -711,7 +705,7 @@ func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hi
 				score += (550 * get_process_delta_time()) * Conductor.playback_rate
 			ui.hp += (4 * get_process_delta_time())
 			ui.update_score_txt()
-			if sustain.temp_len <= 0: kill_note(sustain)
+			#if sustain.temp_len <= 0: kill_note(sustain)
 
 func opponent_note_hit(note:Note) -> void:
 	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(note), note.dir, note.type, false])
@@ -753,11 +747,11 @@ func opponent_sustain_press(sustain:Note) -> void:
 	#if sustain.gf: group = ui.get_group('gf')
 	group.singer = gf if sustain.gf else dad
 	group.note_hit(sustain)
-	if sustain.temp_len <= 0: kill_note(sustain)
+	#if sustain.temp_len <= 0: kill_note(sustain)
 
 var grace:bool = true
 func note_miss(note:Note) -> void:
-	var le_call = [] if note == null else [notes.find(note), note.dir, note.type]
+	var le_call = [] if !note else [notes.find(note), note.dir, note.type]
 	var luad = LuaHandler.call_func('note_miss', le_call)
 	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
@@ -765,7 +759,7 @@ func note_miss(note:Note) -> void:
 
 	misses += 1
 	ui.hit_count['miss'] = misses
-	if note != null:
+	if note:
 		if !note.no_anim:
 			ui.get_group('player').note_miss(note)
 		var away = floor(note.length * 2) if note.is_sustain else int(30 + (15 * floor(misses / 3.0)))
@@ -779,7 +773,9 @@ func note_miss(note:Note) -> void:
 			hp_diff = ui.hp - 0.1
 
 		ui.hp -= hp_diff
-		#if !note.is_sustain:
+
+		ui.player_strums[note.dir].play_anim('press', true)
+		ui.player_strums[note.dir].reset_timer = 0.15
 		kill_note(note)
 
 	var be_sad:bool = combo >= 10

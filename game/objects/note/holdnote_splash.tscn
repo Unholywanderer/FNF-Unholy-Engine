@@ -1,13 +1,12 @@
 [gd_scene load_steps=3 format=3 uid="uid://blkbp71fr4vjs"]
 
-[ext_resource type="SpriteFrames" uid="uid://f7spw2q6vdac" path="res://assets/images/ui/notesplashes/hold_cover.res" id="1_ijov6"]
+[ext_resource type="SpriteFrames" uid="uid://dbscx8tf1tp4s" path="res://assets/images/ui/notesplashes/vis_cover.res" id="1_auqql"]
 [ext_resource type="Script" uid="uid://c2mel7lugequw" path="res://game/objects/note/HoldNote_splash.gd" id="2_sfdvs"]
 
 [node name="HoldNote_Splash" type="AnimatedSprite2D"]
 scale = Vector2(0.7, 0.7)
-sprite_frames = ExtResource("1_ijov6")
-animation = &"start"
-autoplay = "start"
+sprite_frames = ExtResource("1_auqql")
+animation = &"blue_start"
 offset = Vector2(-12, 45)
 script = ExtResource("2_sfdvs")
 
