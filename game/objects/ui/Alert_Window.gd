@@ -67,11 +67,11 @@ func _process(delta:float) -> void:
 	if life_time <= 0 and can_die:
 		if leaving: return
 		leaving = true
-		var outta_here = create_tween()
-		Alert.all_alerts.erase(self.name)
-		outta_here.tween_property(self, 'position:x', -size.x * 1.15, 0.7).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN_OUT)
-		outta_here.finished.connect(remove)
+		var leave_tween = create_tween().tween_property(self, 'position:x', -size.x * 1.15, 0.7)\
+			.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN_OUT)
+		leave_tween.finished.connect(remove)
 
 func remove() -> void:
 	on_leave.emit()
+	Alert.all_alerts.erase(self.name)
 	queue_free()

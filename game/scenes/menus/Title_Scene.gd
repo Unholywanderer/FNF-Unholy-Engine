@@ -6,11 +6,18 @@ var finished_intro:bool = false
 var added_text:Array = []
 
 var flash = ColorRect.new()
-var show_cow:bool = Util.rand_bool(5)
+var show_cow:bool = false #Util.rand_bool(5)
 var blurb:Array = []
 func _ready():
 	Discord.change_presence('Title Screen', 'Welcome to the Funkin')
 	Audio.sync_conductor = true
+	Audio.volume = 0
+	Conductor.bpm = 102
+	Conductor.beat_hit.connect(beat_hit)
+
+	Conductor.song_started = true
+	Audio.play_music('freakyMenu', true, 0)
+
 	add_child(flash)
 	move_child(flash, 4)
 	flash.color = Color.BLACK
@@ -23,10 +30,6 @@ func _ready():
 
 	Util.center_obj($GodotLogo)
 	$GodotLogo.position.y += 75
-	Audio.volume = 0
-	Conductor.bpm = 102
-	Conductor.beat_hit.connect(beat_hit)
-	Conductor.song_started = true
 	if Game.persist.prev_scene != null:
 		finish_intro()
 
@@ -40,7 +43,7 @@ func beat_hit(beat) -> void:
 	if !finished_intro:
 		match beat:
 			1:
-				Audio.play_music('freakyMenu') # restart song so it sync
+				#Audio.play_music('freakyMenu') # restart song so it sync
 				create_tween().tween_property(Audio, 'volume', 0.7, 4)
 				make_funny(['Stupid ass engine by'], 40)
 			3: add_funny('unholywanderer', 40)
@@ -55,7 +58,7 @@ func beat_hit(beat) -> void:
 			9:
 				if show_cow:
 					$cow.visible = true
-					$cow.play('cow')
+					$cow.play()
 					$cow.frame = 0
 					Audio.volume = 0
 					Conductor.song_started = false
@@ -75,7 +78,7 @@ func beat_hit(beat) -> void:
 var accepted:bool = false
 var funk_sin:float = 0.0
 var time_lerped:float = 0.0
-var fls_twen
+var flash_tween
 func _process(delta):
 	funk_sin += delta
 	$Funkin.rotation = sin(funk_sin * 2) / 8.0
@@ -83,7 +86,6 @@ func _process(delta):
 	$Funkin.scale.y = $Funkin.scale.x
 
 	#Conductor.song_pos = Audio.pos #im lazy dont judge me
-
 	if !accepted:
 		time_lerped += delta
 		if time_lerped >= 1.5:
@@ -102,7 +104,7 @@ func _process(delta):
 				$PressEnter.modulate = Color.WHITE
 				$PressEnter.play('ENTER PRESSED')
 
-				if fls_twen: fls_twen.kill()
+				if flash_tween: flash_tween.kill()
 				if flash.modulate.a >= 0:
 					flash.modulate.a = 1
 					create_tween().tween_property(flash, 'modulate:a', 0, 1)
@@ -120,13 +122,12 @@ func finish_intro() -> void:
 
 	if !Audio.playing_music: #or Audio.volume < 0.7:
 		Audio.play_music('freakyMenu', true, 0.7)
-	elif Audio.volume < 0.7:
-		Audio.volume = 0.7
-	#Audio.Player.seek(10) # skip it to the good part,,,
+	Audio.volume = 0.7
+	#Audio.seek(10_000) # skip it to the good part,,,
 
 	flash.color = Color.WHITE
-	fls_twen = create_tween()
-	fls_twen.tween_property(flash, 'modulate:a', 0, 4)
+	flash_tween = create_tween()
+	flash_tween.tween_property(flash, 'modulate:a', 0, 4)
 
 func make_funny(text:Array, offset:int = 0) -> void:
 	for i in text.size():

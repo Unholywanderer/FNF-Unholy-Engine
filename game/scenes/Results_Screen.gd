@@ -158,10 +158,10 @@ func _ready() -> void:
 	get_tree().create_timer(delays.music, false).timeout.connect(func():
 		Audio.play_music('results/'+ player +'/'+ le_song, !has_intro)
 
-		Audio.Player.finished.connect(func():
+		Audio.on_finish = func():
 			if Audio.music.ends_with('-intro'):
 				Audio.play_music(Audio.music.replace('-intro', ''))
-		)
+
 	)
 
 func _exit_tree() -> void:

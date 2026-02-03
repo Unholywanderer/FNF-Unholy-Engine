@@ -22,7 +22,7 @@ var gameplay = [
 	['bad_window' ,     'float', [15, 135], 0.1],
 ]
 var visuals = [
-	['fps',             'int', [0, 240]],
+	['fps',             'int', [0, 480]],
 	['skip_transitions', 'bool'],
 	['allow_rpc',      'bool'],
 	['basic_play',     'bool'],

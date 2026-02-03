@@ -62,8 +62,8 @@ func init_tankmen():
 
 	for note in tank_notes:
 		if Util.rand_bool(16):
-			var tankyboy = Tankmen.new(Vector2(500, 100), note[1] < 2)
-			tankyboy.strum_time = note[0]
+			var tankyboy = Tankmen.new(Vector2(500, 100), note.dir < 2)
+			tankyboy.strum_time = note.strum_time
 			$RunMen.add_child(tankyboy)
 			runnin_boys.append(tankyboy)
 

@@ -100,10 +100,8 @@ func _ready():
 			death_delay = 1.55
 			sound_suff += '-explode'
 			death_music += '-explode'
-			Audio.Player.finished.connect(func():
-				if Audio.music.ends_with('-explode'):
-					Audio.play_music('skins/'+ this.cur_skin +'/gameOver-pico')
-			)
+			Audio.on_finish = func(): Audio.play_music('skins/'+ this.cur_skin +'/gameOver-pico')
+
 		TYPES.PUNCH:
 			sound_suff += '-gutpunch'
 			death_delay = -1

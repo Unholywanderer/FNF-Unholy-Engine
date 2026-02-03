@@ -74,7 +74,7 @@ func _process(_delta:float) -> void:
 	if !is_cpu:
 		for i in cur_sparks.size():
 			is_holding[i] = Input.is_action_pressed('note_'+ ['left', 'down', 'up', 'right'][i])
-			if !is_holding[i] and cur_sparks[i] != null and !cur_sparks[i].animation.ends_with('_splash'):
+			if !is_holding[i] and cur_sparks[i] and !cur_sparks[i].animation.ends_with('_splash'):
 				cur_sparks[i].queue_free()
 				remove_child(cur_sparks[i])
 				cur_sparks[i] = null
@@ -98,17 +98,16 @@ func spawn_splash(strum:Strum) -> void:
 
 func spawn_hold_splash(strum:Strum, note:Note) -> void:
 	if cur_sparks[strum.dir] and !cur_sparks[strum.dir].animation.contains('_splash'):
-		pass
+		return
 		#cur_sparks[strum.dir].anim_time += get_process_delta_time()
-	else:
-		var spark:AnimatedSprite2D = SPARK.instantiate()
-		spark.strum = strum
-		spark.z_index = 1
+	var spark:AnimatedSprite2D = SPARK.instantiate()
+	spark.strum = strum
+	spark.z_index = 1
 
-		spark.player = note.must_press
-		spark.anim_time = note.length / 1000 #+= get_process_delta_time()
-		add_child(spark)
-		cur_sparks[strum.dir] = spark
+	spark.player = note.must_press
+	spark.anim_time = note.length / 1000 #+= get_process_delta_time()
+	add_child(spark)
+	cur_sparks[strum.dir] = spark
 
 func strum_anim(dir:int = 0, player:bool = false, force:bool = true) -> void:
 	var strum:Strum = strums[dir]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dpdpq5qvi21gx"]
+[gd_scene format=3 uid="uid://dpdpq5qvi21gx"]
 
 [ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="1_40jmt"]
 [ext_resource type="Script" uid="uid://dmye3u0iv8kc0" path="res://game/scenes/menus/Credits.gd" id="1_xumlj"]
@@ -15,36 +15,36 @@ outline_color = Color(0, 0, 0, 1)
 shadow_size = 5
 shadow_color = Color(0, 0, 0, 1)
 
-[node name="Credits" type="Node2D"]
+[node name="Credits" type="Node2D" unique_id=253562848]
 script = ExtResource("1_xumlj")
 
-[node name="BG" type="Sprite2D" parent="."]
+[node name="BG" type="Sprite2D" parent="." unique_id=157133103]
 position = Vector2(640, 360)
 texture = ExtResource("1_40jmt")
 
-[node name="BG2" type="Polygon2D" parent="."]
+[node name="BG2" type="Polygon2D" parent="." unique_id=1201305076]
 position = Vector2(-2, -5)
 texture = ExtResource("3_dk6m8")
 polygon = PackedVector2Array(622, -2, 290, 735, 887, 737, 1284, 736, 1285, 372, 1285, -2)
 
-[node name="CreditImage" type="Sprite2D" parent="."]
+[node name="CreditImage" type="Sprite2D" parent="." unique_id=256829802]
 position = Vector2(985, 365)
 scale = Vector2(0.6, 0.6)
 
-[node name="cow" type="AnimatedSprite2D" parent="."]
+[node name="cow" type="AnimatedSprite2D" parent="." unique_id=1448187243]
 visible = false
 position = Vector2(854, 324)
 sprite_frames = ExtResource("4_24eg7")
 animation = &"cow"
 
-[node name="DetailsBox" type="ColorRect" parent="."]
+[node name="DetailsBox" type="ColorRect" parent="." unique_id=1790966587]
 offset_left = 470.0
 offset_top = 595.0
 offset_right = 1223.0
 offset_bottom = 699.0
 color = Color(0.501407, 0.501406, 0.501406, 0.627451)
 
-[node name="Quote" type="Label" parent="."]
+[node name="Quote" type="Label" parent="." unique_id=367027389]
 offset_left = 471.0
 offset_top = 511.0
 offset_right = 1224.0
@@ -57,7 +57,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="CredDesc" type="Label" parent="."]
+[node name="CredDesc" type="Label" parent="." unique_id=2032189732]
 offset_left = 470.0
 offset_top = 595.0
 offset_right = 1223.0
@@ -68,7 +68,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Heading" type="Label" parent="."]
+[node name="Heading" type="Label" parent="." unique_id=1214105317]
 offset_left = 615.0
 offset_top = 5.0
 offset_right = 1270.0
@@ -81,7 +81,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="HeadingDesc" type="Label" parent="."]
+[node name="HeadingDesc" type="Label" parent="." unique_id=371402402]
 offset_left = 520.0
 offset_top = 65.0
 offset_right = 1273.0

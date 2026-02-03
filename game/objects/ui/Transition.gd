@@ -23,12 +23,13 @@ func trans_in(speed:float = 0.7, call_func:bool = false) -> void:
 	start()
 
 	tween.tween_property(hole, 'scale', Vector2(15, 15), speed)
-	await tween.finished
-	in_progress = false
-	finished.emit(1)
+	get_tree().create_timer(speed, false).timeout.connect(func():
+		in_progress = false
+		finished.emit(1)
 
-	if call_func:
-		on_finish.call()
+		if call_func:
+			on_finish.call()
+	)
 
 func trans_out(speed:float = 0.7, call_func:bool = false) -> void:
 	hole.scale = Vector2(15, 15)
@@ -58,6 +59,7 @@ func start() -> void:
 
 	if tween: tween.kill()
 	tween = create_tween()
+	#tween.set_pause_mode(Tween.TWEEN_PAUSE_STOP)
 
 	Util.center_obj(hole)
 	black.scale = Vector2(1300, 730)

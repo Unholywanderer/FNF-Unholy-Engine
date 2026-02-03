@@ -28,7 +28,7 @@ func rand_bool(chance:float = 50.0) -> bool:
 	return (randi() % 100) < chance
 
 func get_percent(val:float, of:float) -> float:
-	return abs(val / of) * 100.0
+	return round_d(abs(val / of) * 100.0, 2)
 
 func remove_all(array:Array[Array], node:Node = null) -> void:
 	if node == null: node = Game.scene

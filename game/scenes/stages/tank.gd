@@ -154,8 +154,8 @@ func init_tankmen():
 
 	for note in gf.chart:
 		if Util.rand_bool(16):
-			var tankyboy = Tankmen.new(Vector2(500, 240 + randi_range(10, 50)), note[1] < 2)
-			tankyboy.strum_time = note[0]
+			var tankyboy = Tankmen.new(Vector2(500, 240 + randi_range(10, 50)), note.dir < 2)
+			tankyboy.strum_time = note.strum_time
 			$RunMen.add_child(tankyboy)
 			runnin_boys.append(tankyboy)
 

@@ -46,6 +46,8 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 		has_lose = texture.get_width() > MIN_WIDTH / default_scale
 
 	hframes = 2 if has_lose else 1
+	if texture.get_width() >= MIN_WIDTH * 3:
+		hframes = 3
 	flip_h = is_player
 
 func bump(to_scale:float = 1.2) -> void:
@@ -60,7 +62,7 @@ func _process(delta):
 			var bar_width:float = follow_spr.width
 			var remapped:float = remap(follow_spr.value, 0, 100, 100, 0) * 0.01
 			var cen:float = (((bar_width * remapped) - bar_width) + Game.screen[0] / 1.95) + center_offset
-			await RenderingServer.frame_pre_draw
+			#await RenderingServer.frame_pre_draw
 			if is_player:
 				position.x = cen + (150 * (scale.x / default_scale) - 150) / 2 - 26
 			else:

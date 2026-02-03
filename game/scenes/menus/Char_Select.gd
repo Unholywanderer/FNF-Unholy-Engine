@@ -20,11 +20,10 @@ func _ready() -> void:
 	bop_play = true
 	$Cam.position.y = 0
 	Audio.play_music('stayFunky-intro')
-	Audio.Player.finished.connect(func():
-		if Audio.music.contains('stayFunky'):
-			if Audio.music.ends_with('-intro'):
-				Conductor.reset_beats()
-				Audio.play_music('stayFunky'))
+	Audio.on_finish = func():
+		Conductor.reset_beats()
+		Audio.play_music('stayFunky')
+
 	Audio.sync_conductor = true
 	Conductor.reset_beats()
 	Conductor.bpm = 90
@@ -149,13 +148,13 @@ class DipshitPlayer extends Atlas:
 	}
 	var anim_data = {
 		# this works fine for now since only 2 chars but, this isnt very customizable is it
-		#'bf': {
-		#	'idle': [0, 9],
-		#	'confirm': [16, 28],
-		#	'unconfirm': [29, 46],
-		#	'slideIn': [50, 57],
-		#	'slideOut': [48, 49]
-		#},
+		'bf': {
+			'idle': [0, 9],
+			'confirm': [16, 28],
+			'unconfirm': [29, 46],
+			'slideIn': [50, 57],
+			'slideOut': [48, 49]
+		},
 		'pico': {
 			'idle': [0, 11],
 			'confirm': [16, 22],
@@ -166,13 +165,13 @@ class DipshitPlayer extends Atlas:
 		},
 		'locked': {'idle': [0, 26], 'unlock': [27, 108]},
 
-		'bf': {
-			'idle': 'bf cs idle',
-			'confirm': 'bf cs confirm',
-			'unconfirm': 'bf cs deselect',
-		 	'slideIn': 'bf slide in',
-			'slideOut': 'bf slide out'
-		},
+		#'bf': {
+		#	'idle': 'bf cs idle',
+		#	'confirm': 'bf cs confirm',
+		#	'unconfirm': 'bf cs deselect',
+		 #	'slideIn': 'bf slide in',
+		#	'slideOut': 'bf slide out'
+		#},
 	#	'pico': {'idle': 'bf cs idle', 'confirm': 'bf cs confirm', 'unconfirm': 'bf cs deselect',
 	#	 'slideIn': 'bf slide in', 'slideOut': 'bf slide out'}
 	}

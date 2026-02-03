@@ -8,7 +8,7 @@ var credits:Array[Array] = [
 		Color('E0E0E0'), func():
 			$cow.visible = true
 			$cow.play()],
-	['Ashley', 'puta', 'Artist, Created assets\n(Note/Hold Splashes, "Epic!!/Miss" sprites, etc.)', \
+	['Ashley', 'vi', 'Artist, Created assets\n(Note/Hold Splashes, "Epic!!/Miss" sprites, etc.)', \
 		Color.CYAN, func(): pass],
 
 	['People I Stole From', 'i love stealing code'],
@@ -16,6 +16,10 @@ var credits:Array[Array] = [
 		Color.DIM_GRAY, func(): OS.shell_open('https://github.com/ShadowMario')],
 	['Rudyrue', 'rudy', 'Better Conductor Sync and Note Offset PR\nmy cute and talented friend', \
 		Color('75471f'), func(): OS.shell_open('https://bsky.app/profile/rudyrue.bsky.social')],
+
+	['Cherry', 'based', 'GDAnimate, xml to .res Converter, and some other code', \
+		Color('FF87B1'), func(): OS.shell_open('https://goddess.nekoweb.org/')],
+
 	['Zyflx', 'zyflx', 'Used their note handling and some other things', \
 		Color('3DC74A'), func(): OS.shell_open('https://www.youtube.com/@Zyflx')],
 
@@ -78,6 +82,7 @@ var quotes:Dictionary = {
 	'mae': ['waiter!, waiter! more shaders please!!'],
 	'kelsay': ['Death to Azure Temple Zone.'],
 	'spg64': ['unholy made me famous...'],
+	'cherry': ['meow'],
 }
 
 var heading_changes:Array = []

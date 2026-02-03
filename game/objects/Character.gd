@@ -182,7 +182,6 @@ func load_char(new_char:String = 'bf') -> void:
 		_:
 			dance_beat = 1 if dance_idle else 2
 			sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
-			#frame = sprite_frames.get_frame_count('shootRight1') - 4
 
 	dance()
 	set_stuff()
@@ -218,12 +217,12 @@ func _process(delta):
 
 	if !chart.is_empty():
 		for i in chart: # [0] = strum time, [1] = direction, [2] = is sustain, [3] = length
-			var dir:int = int(i[1]) % 4
-			if i[0] <= Conductor.song_pos:
+			var is_hold:bool = i.length > 0
+			if i.strum_time <= Conductor.song_pos:
 				var suff = str(randi_range(1, 2)) if cur_char.ends_with('-speaker') else ''
-				if !i[2] or i[0] + i[3] > Conductor.song_pos:
-					sing(dir, suff, (true if !i[2] else !get_anim().contains('sing')))
-				if !i[2] or i[0] + i[3] < Conductor.song_pos: #if not sustain or sustain is finished
+				if !is_hold or i[0] + i[3] > Conductor.song_pos:
+					sing(i.dir, suff, (true if !is_hold else !get_anim().contains('sing')))
+				if !is_hold or i.strum_time + i.length < Conductor.song_pos: #if not sustain or sustain is finished
 					chart.remove_at(chart.find(i))
 
 func dance(forced:bool = false) -> void:

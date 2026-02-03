@@ -11,9 +11,12 @@ var alert_count:int:
 func make_alert(id:String = '', type:int = CHECK) -> AlertWindow:
 	print(alert_count)
 	if all_alerts.has(id):
-		var old_alert = all_alerts[id]
-		old_alert.life_time = 4.0
-		return old_alert
+		if all_alerts[id] == null:
+			all_alerts.erase(id)
+		else:
+			var old_alert = all_alerts[id]
+			old_alert.life_time = 4.0
+			return old_alert
 
 	var new_alert = ALERT.instantiate()
 	var type_str:String = 'ERROR'

@@ -80,7 +80,7 @@ func post_ready() -> void:
 
 				cutscene.add_timed_event(0.7, func():
 					Audio.play_music('darnellCanCutscene', false)
-					cutscene.add_timed_event(Audio.Player.stream.get_length(), func():
+					cutscene.add_timed_event(Audio.track_length, func():
 						UI.toggle_objects()
 						create_tween().tween_property(Main.cam, 'zoom', Vector2(0.77, 0.77), 2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)\
 						 .finished.connect(func(): Main.lerp_zoom = true)

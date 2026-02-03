@@ -1,17 +1,20 @@
 extends Node2D
 
-const EDITORS = [
-	'Charting Scene', 'Character Offsetter', 'Week Maker', 'Note Skin Editor', 'XML Converter', 'TXT Converter'
+const EDITORS = [ # thing name, path to scene
+	['Charting Scene', 'debug/charting_scene'],
+	['Character Offsetter', 'debug/character_offsetter'],
+	['XML Converter', 'tools/Sparrow Converter'],
+	['Week Maker', ''],
+	['Note Skin Editor', ''],
+	#['TXT Converter', 'tools/TXT Converter'], # actually i dont know if this is useful currently
 ]
-const PATHS = [
-	'debug/charting_scene', 'debug/character_offsetter', null, null, 'tools/Sparrow Converter', 'tools/TXT Converter'
-]
+
 var items:Array[Alphabet] = []
 var cur_item:int = 0
 
 func _ready() -> void:
 	for i in EDITORS.size():
-		var new_item = Alphabet.new(EDITORS[i])
+		var new_item = Alphabet.new(EDITORS[i][0])
 		new_item.is_menu = true
 		new_item.target_y = i
 		add_child(new_item)
@@ -20,15 +23,16 @@ func _ready() -> void:
 
 var changing:bool = false
 func _input(event:InputEvent) -> void:
+	if changing: return
 	update_scroll(int(Input.get_axis("menu_up", "menu_down")))
 
 	if event.is_action_pressed('back'):
 		queue_free()
 		Game.scene.in_time = 0
 		get_tree().paused = false
-	if event.is_action_pressed("accept") and not changing:
-		var le_scene = PATHS[cur_item]
-		if le_scene == null: return Alert.make_alert('Whoops no scene', Alert.ERROR)
+	if event.is_action_pressed("accept"):
+		var le_scene:String = EDITORS[cur_item][1]
+		if le_scene.is_empty(): return Alert.make_alert('Whoops no scene', Alert.ERROR)
 		if le_scene.begins_with('tools'): le_scene = '../'+ le_scene
 		changing = true
 		Game.switch_scene(le_scene)
