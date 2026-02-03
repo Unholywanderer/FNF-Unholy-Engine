@@ -12,17 +12,12 @@ var source_file: String = ''
 func _ready() -> void:
 	Game.set_mouse_visibility(true)
 	Audio.play_music('artisticExpression')
-	Prefs.auto_pause = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"back"): Game.switch_scene('menus/main_menu')
 
-func _exit_tree() -> void:
-	Prefs.auto_pause = true
-
 func _set_offsets(value: bool) -> void:
 	use_offsets = value
-
 
 func _set_looped(value: bool) -> void:
 	animations_looped = value

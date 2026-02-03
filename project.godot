@@ -8,16 +8,24 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="FNF-Unholy Engine"
 config/description="A stupid FNF Engine made in Godot (for the 1,000,000th time)"
 config/tags=PackedStringArray("audio")
 run/main_scene="res://game/scenes/menus/title_scene.tscn"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 run/max_fps=60
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"
+
+[audio]
+
+buses/default_bus_layout="uid://cif8qi0jvpxhy"
 
 [autoload]
 
@@ -50,7 +58,7 @@ export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/discord-rpc-gd/plugin.cfg", "res://addons/gdanimate/plugin.cfg")
+enabled=PackedStringArray("res://addons/discord-rpc-gd/plugin.cfg")
 
 [file_customization]
 
@@ -58,7 +66,8 @@ folder_colors={
 "res://assets/": "red",
 "res://game/": "green",
 "res://game/resources/": "blue",
-"res://game/tools/": "yellow"
+"res://game/tools/": "yellow",
+"res://mods/": "gray"
 }
 
 [input]

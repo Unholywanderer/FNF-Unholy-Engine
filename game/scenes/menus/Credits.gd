@@ -20,6 +20,9 @@ var credits:Array[Array] = [
 	['Cherry', 'based', 'GDAnimate, xml to .res Converter, and some other code', \
 		Color('FF87B1'), func(): OS.shell_open('https://goddess.nekoweb.org/')],
 
+	['Ralty', 'ralt', 'Some funny credit icons', \
+		Color('D2D2D2'), func(): OS.shell_open('https://twitter.com/raltyro')],
+
 	['Zyflx', 'zyflx', 'Used their note handling and some other things', \
 		Color('3DC74A'), func(): OS.shell_open('https://www.youtube.com/@Zyflx')],
 
@@ -83,6 +86,7 @@ var quotes:Dictionary = {
 	'kelsay': ['Death to Azure Temple Zone.'],
 	'spg64': ['unholy made me famous...'],
 	'cherry': ['meow'],
+	'ralty': ['i like gay furries'],
 }
 
 var heading_changes:Array = []
