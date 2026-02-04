@@ -17,7 +17,7 @@ var cur_char:String = ''
 var cur_anim:String = ''
 var selected_id:int = 0:
 	set(new_id):
-		if char_json.animations.is_empty(): return # no reason to update id if no animations
+		if no_anims: return # no reason to update id if no animations
 		if new_id < anim_list.size():
 			anim_list[selected_id % anim_list.size()].modulate = Color.WHITE
 			anim_list[new_id].modulate = Color.YELLOW
@@ -31,6 +31,8 @@ var selected_id:int = 0:
 		character.flip_h = flipped.get(cur_anim, false)
 
 		#_anim_chosen(selected_id) #ANIM('AllAnims').selected = -1
+var no_anims:bool:
+	get: return char_json.animations.is_empty()
 
 func play_anim(thing:Character, anim:String = '') -> void:
 	# this gets called a bit too often i think
@@ -41,8 +43,8 @@ func play_anim(thing:Character, anim:String = '') -> void:
 	else:
 		thing.play(anim)
 
-
 @onready var _ui = $UILayer
+@onready var cam = $Cam
 func _ready() -> void:
 	Game.set_mouse_visibility()
 	Audio.play_music('artisticExpression')
@@ -92,16 +94,11 @@ func _ready() -> void:
 		var heh = cur_char
 		cur_char = ''
 		change_char(heh)
+		_res_path_updated() # call it manually, so it updates
 	)
-	$Cam.position = get_viewport_rect().size / 2.0
+	cam.position = get_viewport_rect().size / 2.0
 
-	var grab:PackedStringArray = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
-	grab.append_array(ResourceLoader.list_directory('res://assets/data/characters'))
-	for i in grab:
-		i = i.replace('.json', '')
-		if !char_list.has(i):
-			char_list.append(i)
-			MAIN('CharacterSelect').get_popup().add_item(i)
+	update_char_list()
 
 	for i in ResourceLoader.list_directory('res://assets/images/icons'):
 		if !i.ends_with('.png'): continue
@@ -112,11 +109,10 @@ func _ready() -> void:
 
 func _process(_delta:float) -> void:
 	if MAIN('Cam/Lock').button_pressed:
-		$Cam.position = $Point.position
-	$Backdrop.scale = Vector2.ONE / $Cam.zoom
-	$Backdrop.position = $Cam.position
+		cam.position = $Point.position
+	$Backdrop.scale = Vector2.ONE / cam.zoom
+	$Backdrop.position = cam.position
 
-	#character.speed_scale = $UILayer/Anim/AnimSpeed.value
 	var sc:float = MAIN('ScaleBox').value
 	character.scale = Vector2(sc, sc)
 	shadow.scale = character.scale
@@ -134,7 +130,6 @@ func _unhandled_input(event:InputEvent) -> void:
 	if event is InputEventMouse: return
 
 	if event.is_action_pressed('back'):
-		Prefs.auto_pause = true
 		Game.switch_scene('menus/Main_Menu')
 
 	if event.is_pressed(): press_time += get_process_delta_time()
@@ -143,16 +138,16 @@ func _unhandled_input(event:InputEvent) -> void:
 	#var ctrl:bool = Input.is_key_pressed(KEY_CTRL)
 	var shift:bool = Input.is_key_pressed(KEY_SHIFT)
 
-	var replay_anim:bool = false
+	var replay:bool = false
 	match event.keycode:
 		## CAMERA ZOOM
-		KEY_U: $Cam.zoom -= Vector2(0.01, 0.01)
-		KEY_O: $Cam.zoom += Vector2(0.01, 0.01)
+		KEY_U: cam.zoom -= Vector2(0.01, 0.01)
+		KEY_O: cam.zoom += Vector2(0.01, 0.01)
 		## CAMERA MOVE
-		KEY_J: $Cam.position.x -= 5 * (5 if shift else 1)
-		KEY_L: $Cam.position.x += 5 * (5 if shift else 1)
-		KEY_I: $Cam.position.y -= 5 * (5 if shift else 1)
-		KEY_K: $Cam.position.y += 5 * (5 if shift else 1)
+		KEY_J: cam.position.x -= 5 * (5 if shift else 1)
+		KEY_L: cam.position.x += 5 * (5 if shift else 1)
+		KEY_I: cam.position.y -= 5 * (5 if shift else 1)
+		KEY_K: cam.position.y += 5 * (5 if shift else 1)
 
 		KEY_W: selected_id = wrapi(selected_id - 1, 0, anim_list.size())
 		KEY_S: selected_id = wrapi(selected_id + 1, 0, anim_list.size())
@@ -164,14 +159,13 @@ func _unhandled_input(event:InputEvent) -> void:
 			character.frame += 1 if event.keycode == KEY_E else -1
 
 		## CHARACTER OFFSETTING
-		KEY_LEFT : offsets[cur_anim][0] -= (1 if !shift else 10); replay_anim = true
-		KEY_RIGHT: offsets[cur_anim][0] += (1 if !shift else 10); replay_anim = true
-		KEY_UP   : offsets[cur_anim][1] -= (1 if !shift else 10); replay_anim = true
-		KEY_DOWN : offsets[cur_anim][1] += (1 if !shift else 10); replay_anim = true
+		KEY_LEFT  when offsets.has(cur_anim): offsets[cur_anim][0] -= (1 if !shift else 10); replay = true
+		KEY_RIGHT when offsets.has(cur_anim): offsets[cur_anim][0] += (1 if !shift else 10); replay = true
+		KEY_UP    when offsets.has(cur_anim): offsets[cur_anim][1] -= (1 if !shift else 10); replay = true
+		KEY_DOWN  when offsets.has(cur_anim): offsets[cur_anim][1] += (1 if !shift else 10); replay = true
+		KEY_SPACE: replay = true
 
-		KEY_SPACE: replay_anim = true
-
-	if replay_anim:
+	if replay and offsets.has(cur_anim):
 		character.frame = 0
 		anim_list[selected_id].text = cur_anim +' '+ str(offsets[cur_anim])
 		character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
@@ -227,7 +221,8 @@ func change_char(new_char:String = 'bf') -> void:
 
 	change_icon(char_json.icon)
 	play_anim(character, cur_anim) # play first loaded anim to fix offsets
-	character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
+	if offsets.has(cur_anim):
+		character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
 
 	cur_cam_offset.assign(char_json.cam_offset)
 	cur_pos_offset.assign(char_json.pos_offset)
@@ -241,7 +236,7 @@ func change_char(new_char:String = 'bf') -> void:
 	MAIN('Cam/Y').value = int(char_json.cam_offset[1])
 
 	if !MAIN('Cam/Lock').button_pressed:
-		$Cam.position = character.position + Vector2(character.width / 2.0, character.height / 2.5)
+		cam.position = character.position + Vector2(character.width / 2.0, character.height / 2.5)
 
 	# then update the shadow
 	shadow.copy(character)
@@ -290,6 +285,17 @@ func reload_list(anims:Array) -> void:
 		selected_id = 0
 		anim_list[0].modulate = Color.YELLOW
 		ANIM('AllAnims').selected = _last_id
+
+func update_char_list() -> void:
+	char_list.clear()
+	MAIN('CharacterSelect').get_popup().clear()
+	var grab:PackedStringArray = FileAccess.get_file_as_string('res://assets/data/order.txt').split(',')
+	grab.append_array(ResourceLoader.list_directory('res://assets/data/characters'))
+	for i:String in grab:
+		i = i.replace('.json', '')
+		if char_list.has(i): continue
+		char_list.append(i)
+		MAIN('CharacterSelect').get_popup().add_item(i)
 
 func make_label() -> Label:
 	var lab = Label.new()
@@ -352,6 +358,7 @@ func save_pressed() -> void:
 	$UILayer/Notice.text = 'Successfully saved JSON at "../data/characters/%s.json"' % [to_check]
 	$UILayer/Notice.modulate.a = 1.0
 	Util.quick_tween($UILayer/Notice, 'modulate:a', 0, 0.75).set_delay(1.7)
+	if !char_list.has(to_check): update_char_list()
 
 func _res_path_updated() -> void:
 	var new_path:String = _ui.get_node('ResPath').text
@@ -369,6 +376,7 @@ func _res_path_updated() -> void:
 func _anim_chosen(index:int) -> void:
 	ANIM('AllAnims').selected = index # just in case
 
+	if no_anims: return
 	var doop:Dictionary = char_json.animations[index]
 
 	ANIM('Name').text = doop.name
@@ -445,6 +453,7 @@ func remove_anim() -> void:
 			return
 
 func shadow_anim_change(id:int) -> void:
+	if no_anims: return
 	var new_anim:String = char_json.animations[id].name
 	var frame_lim:int = shadow.get_frame_count(new_anim) - 1
 	MAIN('Shadow/Anim').text = new_anim

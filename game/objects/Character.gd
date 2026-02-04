@@ -355,6 +355,7 @@ static func get_closest(char_name:String = 'bf') -> String: # if theres no chara
 	return 'bf'
 
 func get_frame_count(anim:String) -> int:
+	if !has_anim(anim): return 0
 	return sprite_frames.get_frame_count(anim) if !is_atlas else atlas.get_frame_count(anim)
 
 func cache_char(to_cache:String) -> void:
