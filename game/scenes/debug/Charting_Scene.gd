@@ -314,7 +314,7 @@ func _ready():
 
 	$ChartLine/Line/Square.modulate = quant_colors[cur_quant]
 	update_text()
-	tab('Chart', 'ToggleGrid').button_pressed = Prefs.chart_grid
+	#tab('Chart', 'ToggleGrid').button_pressed = Prefs.chart_grid
 	tab('Chart', 'ToggleGrid').toggled.connect(_toggle_grid)
 	_toggle_grid(tab('Chart', 'ToggleGrid').button_pressed) # update the visibility before we get goin
 	#regen_notes()
