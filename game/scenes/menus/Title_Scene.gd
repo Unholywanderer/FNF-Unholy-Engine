@@ -81,7 +81,7 @@ var time_lerped:float = 0.0
 var flash_tween
 func _process(delta):
 	funk_sin += delta
-	$Funkin.rotation = sin(funk_sin * 2) / 8.0
+	$Funkin.rotation = sin(Conductor.cur_beat) / 8.0
 	$Funkin.scale.x = lerpf($Funkin.scale.x, 1, delta * 7)
 	$Funkin.scale.y = $Funkin.scale.x
 

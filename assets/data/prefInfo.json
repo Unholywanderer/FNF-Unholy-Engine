@@ -13,6 +13,7 @@
     "sick_window"     : "How tight the \n\"Sick\"\nwindow is to hit",
     "good_window"     : "How tight the \n\"Good\"\nwindow is to hit",
     "bad_window"      : "How tight the \n\"Bad\"\nwindow is to hit",
+    "safe_zone"       : "The area of time when the notes can start being hittable.",
     "fps"             : "im sure you can guess\n0 = No Limit (Can be intensive!)",
     "allow_rpc"       : "Show the \"Now Playing\" activity on your discord",
     "basic_play"      : "If checked, only the strums and notes will load, with no stage elements",
@@ -22,6 +23,5 @@
     "hold_splash"     : "Change how the hold splashes are played",
     "behind_strums"   : "Layer the sustains behind the strums",
     "rating_cam"      : "Which camera should the ratings and combo appear on?\n(None = Disable)",
-    "chart_grid"      : "The default option for the \"Show Chart Grid\" in the chart editor",
     "daniel"          : "Daniel"
 }

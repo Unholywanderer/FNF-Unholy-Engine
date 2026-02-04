@@ -1,6 +1,8 @@
 extends Node2D
 
-var saved_prefs:ConfigFile = ConfigFile.new()
+var _saved_prefs:ConfigFile = ConfigFile.new()
+var _default_prefs:Dictionary = {}
+var _LIST:Array[Dictionary] = []
 ## GAMEPLAY ##
 var auto_play:bool = false
 var ghost_tapping:String = 'on'
@@ -18,6 +20,7 @@ var epic_window:float = 22.5
 var sick_window:float = 45.0
 var good_window:float = 90.0
 var bad_window:float = 135.0
+var safe_zone:float = 166.0
 
 ## VISUALS ##
 var fps:int = 60:
@@ -39,7 +42,6 @@ var hold_splash:String = 'cover/splash'
 
 var behind_strums:bool = false
 var rating_cam:String = 'game'
-var chart_grid:bool = true
 var femboy:bool = false
 
 var daniel:bool = false: # if you switch too much, it'll break lol
@@ -59,6 +61,9 @@ var ui_keys:Array = [
 
 func _ready():
 	Discord.init_discord()
+	update_list()
+	for i in _LIST:
+		_default_prefs.set(i.name, get(i.name))
 	check_prefs()
 	set_keybinds()
 	DebugInfo.volume = saved_volume
@@ -67,11 +72,11 @@ func set_keybinds() -> void:
 	var key_names:Array[String] = ['note_left', 'note_down', 'note_up', 'note_right']
 
 	for i in key_names.size():
-		var key = key_names[i]
-		if !InputMap.has_action(key):
-			InputMap.add_action(key)
-		else:
+		var key:String = key_names[i]
+		if InputMap.has_action(key):
 			InputMap.action_erase_events(key)
+		else:
+			InputMap.add_action(key)
 
 		var new_bind:Array[InputEventKey] = [InputEventKey.new(), InputEventKey.new()]
 		for k in 2:
@@ -81,49 +86,46 @@ func set_keybinds() -> void:
 
 	print('updated keybinds')
 
-func get_list() -> Array:
-	var list = get_script().get_script_property_list()
-	list.remove_at(0); list.remove_at(0)
-
-	#for i in list: print(i.name)
-	return list
+func update_list() -> void:
+	_LIST = get_script().get_script_property_list()
+	for i:int in 4: _LIST.remove_at(0)
+	# remove "Prefs.gd" and the variables "_saved_prefs", "_default_prefs", and "_LIST"
+	#for i in _LIST: print(i.name)
 
 func save_prefs() -> void:
-	if saved_prefs == null:
+	if _saved_prefs == null:
 		printerr('CONFIG FILE is NOT loaded, couldn\'t save')
 		return
 
-	#fps = DisplayServer.screen_get_refresh_rate()
-	for i in get_list():
-		saved_prefs.set_value('Preferences', i.name, get(i.name))
+	for i in _LIST:
+		_saved_prefs.set_value('Preferences', i.name, get(i.name))
 
-	saved_prefs.save('user://data.cfg')
+	_saved_prefs.save('user://prefs.cfg')
 	#set_keybinds()
 	print('Saved Preferences')
 
 func load_prefs() -> ConfigFile:
 	var saved_cfg = ConfigFile.new()
-	saved_cfg.load('user://data.cfg')
+	saved_cfg.load('user://prefs.cfg')
 	if saved_cfg.has_section('Preferences'):
-		for pref in get_list():
+		for pref in _LIST:
 			set(pref.name, saved_cfg.get_value('Preferences', pref.name, null))
 	return saved_cfg
 
 func check_prefs():
-	var list = get_list()
-	var config_exists = FileAccess.file_exists('user://data.cfg')
+	var config_exists = FileAccess.file_exists('user://prefs.cfg')
 
 	if config_exists:
 		var prefs_changed:bool = false
-		saved_prefs.load('user://data.cfg')
-		for pref in list:
-			if !saved_prefs.has_section_key('Preferences', pref.name):
+		_saved_prefs.load('user://prefs.cfg')
+		for pref in _LIST:
+			if !_saved_prefs.has_section_key('Preferences', pref.name):
 				prefs_changed = true
-				saved_prefs.set_value('Preferences', pref.name, get(pref.name))
+				_saved_prefs.set_value('Preferences', pref.name, get(pref.name))
 		if prefs_changed: # if a pref was added, resave the cfg file
 			print('prefs changed, updating')
-			saved_prefs.save('user://data.cfg')
+			_saved_prefs.save('user://prefs.cfg')
 
-		saved_prefs = load_prefs()
+		_saved_prefs = load_prefs()
 	else:
 		save_prefs()

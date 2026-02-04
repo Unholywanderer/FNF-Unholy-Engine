@@ -13,9 +13,9 @@ var SONG:
 	get: return Game.scene.SONG
 
 var cur_beat:int:
-	get: return Conductor.cur_beat
+	get: return int(Conductor.cur_beat)
 var cur_step:int:
-	get: return Conductor.cur_step
+	get: return int(Conductor.cur_step)
 var cur_section:int:
 	get: return Conductor.cur_section
 

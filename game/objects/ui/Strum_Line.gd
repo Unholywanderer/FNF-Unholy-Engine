@@ -105,7 +105,7 @@ func spawn_hold_splash(strum:Strum, note:Note) -> void:
 	spark.z_index = 1
 
 	spark.player = note.must_press
-	spark.anim_time = note.length / 1000 #+= get_process_delta_time()
+	spark.anim_time = (note.length - Note.min_len) / 1000.0 #+= get_process_delta_time()
 	add_child(spark)
 	cur_sparks[strum.dir] = spark
 

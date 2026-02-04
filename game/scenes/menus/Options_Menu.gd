@@ -20,6 +20,7 @@ var gameplay = [
 	['sick_window',     'float', [15, 45], 0.1],
 	['good_window',     'float', [15, 90], 0.1],
 	['bad_window' ,     'float', [15, 135], 0.1],
+	['safe_zone'  ,     'float', [50, 166], 0.1],
 ]
 var visuals = [
 	['fps',             'int', [0, 480]],
@@ -32,7 +33,6 @@ var visuals = [
 	['behind_strums',  'bool'],
 	['rating_cam',    'array', ['game', 'hud', 'none']],
 	['auto_pause',     'bool'],
-	['chart_grid',     'bool'],
 	['daniel',         'bool'],
 ]
 #var controls = []

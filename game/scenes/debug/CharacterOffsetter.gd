@@ -226,7 +226,7 @@ func change_char(new_char:String = 'bf') -> void:
 	$Point.position = character.get_cam_pos()
 
 	change_icon(char_json.icon)
-	character.play(cur_anim) # play first loaded anim to fix offsets
+	play_anim(character, cur_anim) # play first loaded anim to fix offsets
 	character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
 
 	cur_cam_offset.assign(char_json.cam_offset)
@@ -324,7 +324,7 @@ func save_pressed() -> void:
 
 	var save_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
 	for i in char_json.animations:
-		var new_anim = UnholyFormat.CHAR_ANIM.duplicate(true)
+		var new_anim:Dictionary = UnholyFormat.CHAR_ANIM.duplicate(true)
 		new_anim.offsets = offsets[i.name]
 		new_anim.name = i.name
 		new_anim.framerate = i.framerate
@@ -346,7 +346,7 @@ func save_pressed() -> void:
 	#	save_json.speaker = old_json.speaker
 
 	var file:FileAccess = FileAccess.open("res://assets/data/characters/"+ to_check +".json", FileAccess.WRITE)
-	file.resize(0) # clear the file, if it has stuff in it
+	#file.resize(0) # clear the file, if it has stuff in it
 	file.store_string(JSON.stringify(save_json, '\t', false))
 	file.close()
 	$UILayer/Notice.text = 'Successfully saved JSON at "../data/characters/%s.json"' % [to_check]
@@ -448,7 +448,7 @@ func shadow_anim_change(id:int) -> void:
 	var new_anim:String = char_json.animations[id].name
 	var frame_lim:int = shadow.get_frame_count(new_anim) - 1
 	MAIN('Shadow/Anim').text = new_anim
-	shadow.play(new_anim)
+	play_anim(shadow, new_anim)
 	shadow.pause()
 	MAIN('Shadow/Frame').max_value = frame_lim
 	MAIN('Shadow/Frame').value = frame_lim

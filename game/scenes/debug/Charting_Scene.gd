@@ -1,6 +1,10 @@
 extends Node2D
 
+var chart_type:String = 'legacy'
 var cur_section:int = 0
+## Array that holds all the section times, updates when you first load in,
+## and when bpm changes are added/removed
+var section_times:Array[float] = [0]
 ## Section that you actually clicked on, compared to the current section
 var clicked_section:int = 0
 
@@ -50,7 +54,11 @@ var events:Array[EventData] = []
 
 var funky_boys:Array[Character] = []
 
-var section_based:bool = true
+var section_based:bool = true:
+	set(sec_bas):
+		$ChartUI/Tabs.set_tab_disabled(3, !sec_bas)
+		section_based = sec_bas
+
 var char_list:Array = []
 var stage_list:Array = []
 var SONG:Dictionary = {}
@@ -90,18 +98,23 @@ func _ready():
 	SONG = JsonHandler.SONG.duplicate(true)
 	events = JsonHandler.song_events.duplicate(true)
 
-	if JsonHandler.parse_type == 'v_slice':
+	chart_type = JsonHandler.parse_type
+	if chart_type == 'v_slice':
 		section_based = false
 		note_list = SONG.notes[JsonHandler.get_diff]
-	if JsonHandler.parse_type == 'codename':
+	if chart_type == 'codename':
 		section_based = false # prevent crash
-
-	$ChartUI/Tabs.set_tab_disabled(3, !section_based)
+		#SONG = Codename.convert_to_simple(JsonHandler.SONG)
 
 	Discord.change_presence('Charting '+ SONG.song.capitalize(), 'One must imagine a charter happy')
 
+	Conductor.add_bpm_changes(SONG)
 	Conductor.load_song(SONG.song)
 	Conductor.connect_signals()
+
+	update_section_times()
+	print(section_times, '\nThere are %s sections?' % section_times.size())
+
 	Conductor.bpm = SONG.bpm
 	Conductor.paused = true
 
@@ -335,7 +348,7 @@ func _process(delta):
 		bg_colors[1] = Color(randf(), randf(), randf())
 	$BG.modulate = bg_colors[0].lerp(bg_colors[1], time_lerped / 2.0)
 
-	song_pos.text = str(floor(int(Conductor.song_pos)))
+	song_pos.text = str(floori(Conductor.song_pos))
 	#var strum_y = round(get_y_from_time(fmod(Conductor.song_pos - get_section_time(), Conductor.step_crochet * 16.0)))
 	chart_line.position.x = (grids[1].position.x / 7.0) - 0.5
 	chart_line.position.y = round(get_y_from_time(fmod(Conductor.song_pos - get_section_time(), Conductor.step_crochet * 16.0)))
@@ -394,8 +407,10 @@ func _process(delta):
 		pass
 
 	if Input.is_action_just_pressed("back"):
-		Conductor.reset_beats()
-		Game.reset_scene()
+		Conductor.reset()
+		Game.switch_scene('menus/freeplay_classic', true)
+
+	update_text()
 
 func event_hit(event:EventNote):
 	var le_values = event.raw_data.values
@@ -406,8 +421,8 @@ func event_hit(event:EventNote):
 				ev_val = ev_val.char
 			var char_int:int = int(ev_val)
 			$ChartLine/Highlight.position = icons[int(char_int == 0)].position - Vector2(37.5, 37.5)
-		'ChangeBPM':
-			Conductor.bpm = le_values[0]
+		#'ChangeBPM':
+		#	Conductor.bpm = le_values[0]
 
 func make_note(info, must_hit:bool = true):
 	var new_note:BasicNote
@@ -424,7 +439,7 @@ func make_note(info, must_hit:bool = true):
 		if info[2] is not float: info[2] = 0
 
 		var must_press:bool = (must_hit and info[1] <= 3) or (!must_hit and info[1] > 3)
-		if JsonHandler.parse_type == 'psych_v1': must_press = info[1] <= 3
+		if chart_type == 'psych_v1': must_press = info[1] <= 3
 		var type:String = (str(info[3]) if info.size() > 3 else '')
 		sus_len = info[2]
 		new_note = BasicNote.new([info[0], info[1], null, info[2], must_press, type], false)
@@ -503,12 +518,13 @@ func beat_hit(beat:int) -> void:
 
 func section_hit(_sec:int): pass
 func step_hit(_step:int) -> void:
-	update_text()
+	pass
 
 func song_end():
 	Conductor.reset_beats()
 	Conductor.start(0)
 	#Conductor.paused = true
+	#Conductor.song_pos = Conductor.song_length
 	load_section(0, true)
 
 func tab(da_tab:String, node:String) -> Node:
@@ -516,7 +532,7 @@ func tab(da_tab:String, node:String) -> Node:
 
 func load_section(section:int = 0, force_time:bool = false) -> void:
 	if section_based:
-		if SONG.notes.size() <= section:
+		if SONG.notes.size() - 1 <= section:
 			SONG.notes.append({
 				'sectionNotes': [],
 				'mustHitSection': false,
@@ -540,41 +556,11 @@ func load_section(section:int = 0, force_time:bool = false) -> void:
 
 	if force_time:
 		Conductor.paused = true
-		#var temp_time:float = 0
-		var temp = {'beat': 0, 'beat_t': 0, 'step': 0, 'step_t': 0}
-		var temp_croch = (60.0 / SONG.bpm) * 1000.0
-		var last_bpm:float = SONG.bpm
-		for i in cur_section:
-			var bpm = last_bpm
-			var da_sec = SONG.notes[i] if section_based else {}
-			if da_sec.get('changeBPM', false):
-				bpm = max(da_sec.bpm, 1)
-				last_bpm = bpm
-				temp_croch = (60.0 / bpm) * 1000.0
-
-			# set beats and steps back to what they would be
-			var le_beats:int = int(da_sec.get('sectionBeats', 4))
-			for j in le_beats * 4:
-				temp.step_t += (temp_croch / 4.0)
-				temp.step += 1
-				if j % 4 == 0:
-					temp.beat_t += (60.0 / bpm) * 1000.0
-					temp.beat += 1
-
-			#temp_time += (60.0 / bpm) * 4000.0
-
-		Conductor.cur_beat = temp.beat
-		Conductor.beat_time = temp.beat_t
-
-		Conductor.cur_step = temp.step
-		Conductor.step_time = temp.step_t
-
-		Conductor.cur_section = section
 		Conductor.seek(get_section_time(section))
-		#Conductor.resync_audio()
 		update_text()
 
 	# (Conductor.crochet / 1.95) * section | this works but only for songs with no bpm changes
+	#print(Conductor.get_beats_at(5000), ' bah!')
 	if waveform.visible:
 		waveform.time = ((get_step_time(cur_section)) / 7.8)
 		waveform.is_dirty = true
@@ -590,7 +576,7 @@ func get_step_time(sec:int) -> float:
 			bpm = max(da_sec.bpm, 1)
 			temp_croch = (60.0 / bpm) * 1000.0
 
-		for j in int(da_sec.get('sectionBeats', 4)) * 4:
+		for j in da_sec.get('sectionBeats', 4) * 4:
 			step_time += (temp_croch / 4.0)
 	return step_time
 
@@ -689,8 +675,10 @@ func _unhandled_input(event:InputEvent): # this is better | no you fucking idiot
 		if Input.is_key_pressed(KEY_A): load_section(cur_section - 1, true)
 		if Input.is_key_pressed(KEY_D): load_section(cur_section + 1, true)
 
-		if Input.is_key_pressed(KEY_W): pass
-		if Input.is_key_pressed(KEY_S): pass
+		if Input.is_key_pressed(KEY_W):
+			Conductor.seek((-3500 if holding_shift else -1000) * get_process_delta_time(), true, true)
+		if Input.is_key_pressed(KEY_S):
+			Conductor.seek((3500 if holding_shift else 1000) * get_process_delta_time(), true, true)
 		if Input.is_key_pressed(KEY_LEFT): cur_quant -= 1
 		if Input.is_key_pressed(KEY_RIGHT): cur_quant += 1
 
@@ -702,15 +690,15 @@ func regen_notes(_skip_remake:bool = false, _only_current:bool = false) -> void:
 	if section_based:
 		$ChartLine/Highlight.position = icons[int(SONG.notes[cur_section].get('mustHitSection', false))].position - Vector2(37.5, 37.5)
 
-		if SONG.notes[cur_section].get('changeBPM', false):
-			Conductor.bpm = max(SONG.notes[cur_section].bpm, 1)
-		else:
+		#if SONG.notes[cur_section].get('changeBPM', false):
+		#	Conductor.bpm = max(SONG.notes[cur_section].bpm, 1)
+		#else:
 			# get last bpm
-			var last_bpm:float = SONG.bpm
-			for i in cur_section:
-				if SONG.notes[i].get('changeBPM', false):
-					last_bpm = max(SONG.notes[i].bpm, 1)
-			Conductor.bpm = last_bpm
+		#	var last_bpm:float = SONG.bpm
+		#	for i in cur_section:
+		#		if SONG.notes[i].get('changeBPM', false):
+		#			last_bpm = max(SONG.notes[i].bpm, 1)
+		#	Conductor.bpm = last_bpm
 
 	$ChartLine/BPMTxt.text = str(Conductor.bpm) +' BPM'
 
@@ -724,8 +712,8 @@ func regen_notes(_skip_remake:bool = false, _only_current:bool = false) -> void:
 	for i in note_chunks.keys():
 		note_chunks[i].clear()
 
-	var min_time:float = get_section_time(cur_section - 1)
-	var max_time:float = get_section_time(cur_section + 2)
+	var min_time:int = roundi(get_section_time(cur_section - 1))
+	var max_time:int = roundi(get_section_time(cur_section + 2))
 	if section_based:
 		if SONG.notes is not Array: return
 		grids[2].visible = cur_section < SONG.notes.size() - 1
@@ -744,7 +732,7 @@ func regen_notes(_skip_remake:bool = false, _only_current:bool = false) -> void:
 					make_note(note, SONG.notes[cur_section + int(chunk)].mustHitSection)
 	else:
 		for note in note_list:
-			if note.t >= min_time and note.t < max_time:
+			if roundi(note.t) >= min_time and roundi(note.t) < max_time:
 				make_note(note, true)
 
 	if events.size() > 0:
@@ -798,7 +786,7 @@ func check_note() -> void:
 func add_note() -> void:
 	if !section_based: return
 	var time:float = get_time_from_y(selected.position.y) + get_section_time()
-	var dir_edit:int = 0 if JsonHandler.parse_type == 'psych_v1' else (-4 if SONG.notes[cur_section].mustHitSection else 0)
+	var dir_edit:int = 0 if chart_type == 'psych_v1' else (-4 if SONG.notes[cur_section].mustHitSection else 0)
 	var direct:int = (abs(int(mouse_pos.x / GRID_SIZE)) - (5 + dir_edit)) % 8 # no need to go above 7
 
 	print('adding note ('+ str(direct) +' ['+ str(time) +'])')
@@ -834,8 +822,8 @@ func remove_note(note:BasicNote) -> void:
 
 func update_text() -> void:
 	$ChartUI/Info.text = \
-		"Beat: "+ str(Conductor.cur_beat) +"\n"+ \
-		"Step: "+ str(Conductor.cur_step) +"\n"+ \
+		"Beat: "+ str(Conductor.cur_beat).pad_decimals(1) +"\n"+ \
+		"Step: "+ str(Conductor.cur_step).pad_decimals(1) +"\n"+ \
 		"Sect: "+ str(cur_section)      +"\n\n"+ \
 		"Snap: "+ str(note_snap) +"th"
 
@@ -856,7 +844,7 @@ func progress_dragged(value_changed:bool) -> void:
 	being_dragged = false
 	if value_changed:
 		# abs(Conductor.song_pos / Conductor.song_length) * 100.0
-		var new_time:float = ($ChartUI/SongInfo/Progress.value / 100.0) * Conductor.song_length
+		var new_time:float = ($ChartUI/SongProgress.value / 100.0) * Conductor.song_length
 		Conductor.seek(new_time)
 		load_section(Conductor.cur_section)
 
@@ -892,17 +880,41 @@ func get_time_from_y(y_pos:float) -> float:
 
 func get_section_time(this_sec:int = -1) -> float:
 	if this_sec < 0: this_sec = cur_section
+	return section_times[min(this_sec, section_times.size() - 1)]
+	#if section_based:
+	#	this_sec = min(this_sec, SONG.notes.size())
+	#var pos:float = 0
+	#var bpm:float = SONG.bpm
+	#for i in this_sec:
+		#var da_sec:Dictionary = SONG.notes[i] if section_based else {}
+		#if da_sec.get('changeBPM', false):
+			#bpm = max(da_sec.bpm, 1)
+		#var le_beat:int = da_sec.get('sectionBeats', 4)
+		#pos += le_beat * (1000.0 * 60.0 / bpm)
+	#return pos
+
+## Update the [code]section_times[\code] array
+## Call when bpms are changed
+func update_section_times(from:int = -1) -> void:
+	if from < 0: from = cur_section
 	if section_based:
-		this_sec = min(this_sec, SONG.notes.size())
-	var pos:float = 0
+		from = min(from, SONG.notes.size())
+
+	var pos:float = 0.0
 	var bpm:float = SONG.bpm
-	for i in this_sec:
+
+	var i:int = max(from, 0)
+	while true:
 		var da_sec:Dictionary = SONG.notes[i] if section_based else {}
-		if da_sec.get('changeBPM', false):
-			bpm = max(da_sec.bpm, 1)
 		var le_beat:int = da_sec.get('sectionBeats', 4)
-		pos += le_beat * (1000.0 * 60.0 / bpm)
-	return pos
+		for change in Conductor.bpm_changes:
+			if change.time > pos: break
+			bpm = change.bpm
+
+		pos += roundi(((60.0 / bpm) * 1000.0) * le_beat) # maybe i can floor this
+		if int(pos) > Conductor.song_length: break
+		section_times.append(pos)
+		i += 1
 
 class EventNote extends BasicNote:
 	var ev_name:String = 'Nothing!'

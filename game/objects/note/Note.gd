@@ -69,9 +69,9 @@ var should_hit:bool = true
 var can_hit:bool:
 	get:
 		if !must_press: return false
-		if is_sustain: return strum_time <= Conductor.song_pos #and !dropped
-		return (strum_time > Conductor.song_pos - (Conductor.safe_zone * late_mod) and \
-		 strum_time < Conductor.song_pos + (Conductor.safe_zone * early_mod))
+		if is_sustain: return strum_time <= Conductor.song_pos and !dropped
+		return (strum_time > Conductor.song_pos - (Prefs.safe_zone * late_mod) and \
+		 strum_time < Conductor.song_pos + (Prefs.safe_zone * early_mod))
 
 var early_mod:float = 0.8
 var late_mod:float = 1.0
@@ -79,16 +79,16 @@ var rating:String = ''
 var was_good_hit:bool = false:
 	get: return not must_press and strum_time <= Conductor.song_pos
 var too_late:bool = false:
-	get: return strum_time < Conductor.song_pos - Conductor.safe_zone and !was_good_hit
+	get: return strum_time < Conductor.song_pos - Prefs.safe_zone and !was_good_hit
 
 var is_sustain:bool = false
 var is_event:bool = false
 var length:float = 0.0
-var temp_len:float = 0.0 #if you dont immediately hold
+var visual_len:float = 0.0 #if you dont immediately hold
 var offset_y:float = 0.0
 
+static var min_len:float = 50.0 # before a sustain is counted as "hit"
 var holding:bool = false
-var min_len:float = 25.0 # before a sustain is counted as "hit"
 var drop_time:float = 0.0
 var dropped:bool = false:
 	set(drop):
@@ -110,7 +110,7 @@ func _init(data = null, sustain_:bool = false) -> void:
 	is_sustain = (sustain_ and data is Note)
 	copy_from(data)
 	if is_sustain:
-		temp_len = length
+		visual_len = length
 
 func _ready() -> void:
 	spawned = true
@@ -184,12 +184,13 @@ func _process(delta:float) -> void:
 	if is_sustain and strum_time <= Conductor.song_pos:
 		can_hit = true #!dropped
 		#if dropped: return
-		temp_len -= (1000 * delta) * Conductor.playback_rate
+		#print(visual_len)
 		if !holding: drop_time += delta
 
-		if (holding or !must_press) and length != temp_len: #end piece kinda fucks off a bit every now and then
+		if (holding or !must_press): #and length != visual_len: #end piece kinda fucks off a bit every now and then
 			holding = true
-			length = temp_len
+			visual_len = max((strum_time + length) - Conductor.song_pos, 0) #(1000 * delta) * Conductor.playback_rate
+			#length = visual_len
 			resize_hold()
 
 		was_good_hit = roundi(length) <= min_len
@@ -222,7 +223,7 @@ func load_skin(_new_skin:String) -> void:
 
 func resize_hold(update_control:bool = false) -> void:
 	if !spawned: return
-	hold_group.size.y = ((length * 0.63) * speed)
+	hold_group.size.y = ((visual_len * 0.63) * speed)
 	var rounded_scale:float = Util.round_d(skin.note_scale.y, 1)
 	if rounded_scale > 0.7:
 		hold_group.size.y /= (rounded_scale + (rounded_scale / 2.0))

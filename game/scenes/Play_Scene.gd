@@ -84,6 +84,8 @@ func _ready():
 		var it_exists = ResourceLoader.exists('res://assets/data/characters/'+ try +'.json')
 		SONG.player1 = try if it_exists else 'bf-girl'
 
+	#if JsonHandler.parse_type == 'legacy':
+	Conductor.add_bpm_changes(SONG)
 	Conductor.load_song(SONG.song)
 	Conductor.bpm = SONG.bpm
 
@@ -186,7 +188,7 @@ func _ready():
 
 	print(SONG.song +' '+ JsonHandler.get_diff.to_upper())
 	print('TOTAL EVENTS: '+ str(events.size()))
-
+	print('%s Stacked Notes' % JsonHandler.dupe_notes)
 	for i in [self, stage]:
 		ui.countdown_start.connect(Callable(i, 'countdown_start'))
 		ui.countdown_tick.connect(Callable(i, 'countdown_tick'))
@@ -274,8 +276,8 @@ func _process(delta):
 						if note.can_hit and !note.was_good_hit:
 							note.holding = (auto_play and note.should_hit) or Input.is_action_pressed(key_names[note.dir])
 							good_sustain_press(note)
-							if !auto_play and del_note and !note.holding and note.should_hit: note_miss(note)
-						if note.temp_len <= 0: kill_note(note)
+							#if !auto_play and del_note and note.should_hit and !note.holding: note_miss(note)
+						if !note.should_hit and !note.holding and del_note: kill_note(note) # probably gonna change this
 					else:
 						if auto_play and note.should_hit:
 							good_note_hit(note)
@@ -285,7 +287,7 @@ func _process(delta):
 				else:
 					if note.is_sustain:
 						opponent_sustain_press(note)
-						if note.temp_len <= 0: kill_note(note)
+						if note.visual_len <= 0: kill_note(note)
 					else:
 						opponent_note_hit(note)
 
@@ -342,9 +344,9 @@ func section_hit(section) -> void:
 			point_at = 'gf'
 
 		move_cam(point_at)
-		if section_data.get('changeBPM') and Conductor.bpm != section_data.get('bpm', Conductor.bpm):
-			Conductor.bpm = section_data.bpm
-			print('Changed BPM: ' + str(section_data.bpm))
+		#if section_data.get('changeBPM') and Conductor.bpm != section_data.get('bpm', Conductor.bpm):
+		#	Conductor.bpm = section_data.bpm
+		#	print('Changed BPM: ' + str(section_data.bpm))
 
 var focus_offset:Vector2 = Vector2.ZERO
 func move_cam(to_char:Variant) -> void:
@@ -604,7 +606,7 @@ func event_hit(event:EventData) -> void:
 			var new_zoom:float = data.zoom if zoom_mode == 'direct' else stage.default_zoom * data.zoom
 			var dur:float = 4.0
 			if data.has('duration'):
-				dur = (Conductor.step_crochet / 1000.0) * data.duration
+				dur = (Conductor.step_crochet * data.duration / 1000.0)
 
 			default_zoom = new_zoom
 			if dur <= 0 or data.ease == 'INSTANT':
@@ -614,16 +616,21 @@ func event_hit(event:EventData) -> void:
 				if data.has('easeDir'): ease_shit.append(data.easeDir)
 				_cam_tween = create_tween()
 				_cam_tween.tween_property(cam, 'zoom', Vector2(new_zoom, new_zoom), dur)
-				_cam_tween.set_trans(Util.trans_from_string(ease_shit[0])).set_ease(Util.ease_from_string(ease_shit[1]))
+				_cam_tween.set_trans(Util.trans_from_string(ease_shit[0]))
+				if ease_shit.size() > 1:
+					_cam_tween.set_ease(Util.ease_from_string(ease_shit[1]))
 				_cam_tween.finished.connect(func(): _cam_tween = null)
 
 		'SetHealthIcon':
 			var ic_id:int = int(event.values[0].char)
 			ui.get('icon_p'+ str(ic_id + 1)).change_icon(event.values[0].id, ic_id == 0)
 
-		'ChangeBPM', 'BPM Change':
-			Conductor.bpm = event.values[0]
-			print('Changed BPM: '+ str(Conductor.bpm))
+		'ChangeBPM', 'BPM Change': pass
+			#var fun:Conductor.BPMChange = Conductor.BPMChange.new()
+			#fun.time = event.strum_time
+			#fun.bpm = event.values[0]
+			#Conductor.bpm_changes.append(fun)
+			#print('Changed BPM: '+ str(Conductor.bpm))
 
 func good_note_hit(note:Note) -> void:
 	if note.type.length() > 0: print(note.type, ' bf')
@@ -654,7 +661,7 @@ func good_note_hit(note:Note) -> void:
 	max_combo = max(combo, max_combo)
 	grace = combo > 10
 	pop_up_combo([note.rating, combo, time])
-	var to_add = int(300 * (((1.0 + exp(-0.08 * (abs(time) - 40))) + 66.3)) / (55.0 / judge_info[2])) # good enough im happy
+	var to_add = int(300 * (((1.0 + exp(-0.08 * (abs(time) - 40))) + 66.3)) / (55.0 / judge_info[2]))
 	# 500 is the perfect hit score amount
 
 	score += judge_info[0] if Prefs.legacy_score else to_add
@@ -670,16 +677,14 @@ func good_note_hit(note:Note) -> void:
 	if Prefs.hitsound_volume > 0:
 		Audio.play_sound('hitsounds/'+ Prefs.hitsound, Prefs.hitsound_volume / 100.0)
 
-var time_dropped:float = 0
 func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hit and sustain_press funcs
 	var luad = LuaHandler.call_func('good_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
 	if luad == LuaHandler.RETURN_TYPE.STOP: return
-	if !auto_play and !Input.is_action_pressed(key_names[sustain.dir]) and !sustain.was_good_hit:
-		#sustain.dropped = true
-		sustain.strum_time = Conductor.song_pos
+	if !auto_play and !Input.is_action_pressed(key_names[sustain.dir]) and !sustain.was_good_hit and sustain.should_hit:
+		sustain.strum_time = Conductor.song_pos + sustain.visual_len
 		sustain.holding = false
-		#sustain.drop_time += get_process_delta_time() #testing something
-		if sustain.drop_time >= 0.2:
+		if sustain.drop_time >= 0.1:
+			print(sustain.length, ' MISS')
 			note_miss(sustain)
 		return
 
@@ -705,7 +710,7 @@ func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hi
 				score += (550 * get_process_delta_time()) * Conductor.playback_rate
 			ui.hp += (4 * get_process_delta_time())
 			ui.update_score_txt()
-			#if sustain.temp_len <= 0: kill_note(sustain)
+			if sustain.visual_len <= 0: kill_note(sustain)
 
 func opponent_note_hit(note:Note) -> void:
 	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(note), note.dir, note.type, false])
@@ -737,7 +742,7 @@ func opponent_sustain_press(sustain:Note) -> void:
 
 	stage.opponent_note_hit(sustain)
 
-	if section_data != null:
+	if section_data:
 		if section_data.get('altAnim', false):
 			sustain.alt = '-alt'
 		if section_data.get('gfSection', false) and !section_data.mustHitSection:
@@ -762,8 +767,8 @@ func note_miss(note:Note) -> void:
 	if note:
 		if !note.no_anim:
 			ui.get_group('player').note_miss(note)
-		var away = floor(note.length * 2) if note.is_sustain else int(30 + (15 * floor(misses / 3.0)))
-		score -= 10 if Prefs.legacy_score else away
+		var away:float = floor(note.length * 2) if note.is_sustain else int(30 + (15 * floor(misses / 3.0)))
+		score -= 10.0 if Prefs.legacy_score else away
 		#print(int(30 + (15 * floor(misses / 3))))
 		ui.total_hit += 1
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://deksi37bicvb3"]
+[gd_scene format=3 uid="uid://deksi37bicvb3"]
 
 [ext_resource type="Script" uid="uid://dt4t8ibp485bx" path="res://game/scenes/debug/Charting_Scene.gd" id="1_li1ut"]
 [ext_resource type="Texture2D" uid="uid://c2r5ulxx1lb0t" path="res://assets/images/menuDark.png" id="2_g7jes"]
@@ -25,26 +25,26 @@ thickness = 14
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hhfsi"]
 expand_margin_bottom = 4.0
 
-[node name="Charting_Scene" type="Node2D"]
+[node name="Charting_Scene" type="Node2D" unique_id=1858404945]
 script = ExtResource("1_li1ut")
 
-[node name="BG" type="Sprite2D" parent="."]
+[node name="BG" type="Sprite2D" parent="." unique_id=382576752]
 position = Vector2(639, 362)
 texture = ExtResource("2_g7jes")
 
-[node name="Notes" type="Node2D" parent="."]
+[node name="Notes" type="Node2D" parent="." unique_id=376548851]
 
-[node name="ChartLine" parent="." instance=ExtResource("3_nef5n")]
+[node name="ChartLine" parent="." unique_id=2008567642 instance=ExtResource("3_nef5n")]
 position = Vector2(390, 320)
 
-[node name="Cam" type="Camera2D" parent="."]
+[node name="Cam" type="Camera2D" parent="." unique_id=1380809085]
 position = Vector2(640, 360)
 
-[node name="ChartUI" type="CanvasLayer" parent="."]
+[node name="ChartUI" type="CanvasLayer" parent="." unique_id=1969960010]
 
-[node name="Funkers" type="Node2D" parent="ChartUI"]
+[node name="Funkers" type="Node2D" parent="ChartUI" unique_id=433262736]
 
-[node name="WaveformToggle" type="OptionButton" parent="ChartUI"]
+[node name="WaveformToggle" type="OptionButton" parent="ChartUI" unique_id=485085985]
 offset_left = 1009.0
 offset_top = 284.0
 offset_right = 1215.0
@@ -56,7 +56,7 @@ item_count = 1
 popup/item_0/text = "None"
 popup/item_0/id = 0
 
-[node name="Info" type="Label" parent="ChartUI"]
+[node name="Info" type="Label" parent="ChartUI" unique_id=1860893881]
 offset_left = 840.0
 offset_top = 75.0
 offset_right = 1222.0
@@ -69,7 +69,7 @@ Sect: %s
 
 Snap: 16th"
 
-[node name="Buttons" type="Control" parent="ChartUI"]
+[node name="Buttons" type="Control" parent="ChartUI" unique_id=1752741198]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 980.0
@@ -77,13 +77,13 @@ offset_right = 1280.0
 offset_bottom = 31.0
 theme = ExtResource("5_7uqx1")
 
-[node name="View" type="Button" parent="ChartUI/Buttons"]
+[node name="View" type="Button" parent="ChartUI/Buttons" unique_id=1426377627]
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 30.0
 text = "View"
 
-[node name="Menu" type="Control" parent="ChartUI/Buttons/View"]
+[node name="Menu" type="Control" parent="ChartUI/Buttons/View" unique_id=1531958189]
 visible = false
 show_behind_parent = true
 clip_contents = true
@@ -92,7 +92,7 @@ offset_top = 30.0
 offset_right = 100.0
 offset_bottom = 225.0
 
-[node name="BG" type="ColorRect" parent="ChartUI/Buttons/View/Menu"]
+[node name="BG" type="ColorRect" parent="ChartUI/Buttons/View/Menu" unique_id=1590287655]
 visible = false
 layout_mode = 0
 offset_top = -31.0
@@ -100,14 +100,14 @@ offset_right = 100.0
 offset_bottom = 229.0
 color = Color(0.11858138, 0.11858138, 0.11858138, 1)
 
-[node name="BoysToggle" type="Button" parent="ChartUI/Buttons/View/Menu"]
+[node name="BoysToggle" type="Button" parent="ChartUI/Buttons/View/Menu" unique_id=2011635946]
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 30.0
 focus_mode = 0
 text = "Funky Boys"
 
-[node name="GridToggle" type="Button" parent="ChartUI/Buttons/View/Menu"]
+[node name="GridToggle" type="Button" parent="ChartUI/Buttons/View/Menu" unique_id=1641246484]
 layout_mode = 0
 offset_top = 30.0
 offset_right = 100.0
@@ -115,7 +115,7 @@ offset_bottom = 60.0
 focus_mode = 0
 text = "Chart Grid"
 
-[node name="Waveform" type="OptionButton" parent="ChartUI/Buttons/View/Menu"]
+[node name="Waveform" type="OptionButton" parent="ChartUI/Buttons/View/Menu" unique_id=265860842]
 layout_mode = 0
 offset_top = 60.0
 offset_right = 100.0
@@ -130,14 +130,14 @@ popup/item_0/separator = true
 popup/item_1/text = "None"
 popup/item_1/id = 0
 
-[node name="Data" type="Button" parent="ChartUI/Buttons"]
+[node name="Data" type="Button" parent="ChartUI/Buttons" unique_id=1734894602]
 layout_mode = 0
 offset_left = 100.0
 offset_right = 200.0
 offset_bottom = 30.0
 text = "Data"
 
-[node name="Menu" type="Control" parent="ChartUI/Buttons/Data"]
+[node name="Menu" type="Control" parent="ChartUI/Buttons/Data" unique_id=1734175887]
 visible = false
 show_behind_parent = true
 clip_contents = true
@@ -147,28 +147,28 @@ offset_right = 100.0
 offset_bottom = 225.0
 mouse_default_cursor_shape = 2
 
-[node name="BG" type="ColorRect" parent="ChartUI/Buttons/Data/Menu"]
+[node name="BG" type="ColorRect" parent="ChartUI/Buttons/Data/Menu" unique_id=659629297]
 visible = false
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 230.0
 color = Color(0.11858138, 0.11858138, 0.11858138, 1)
 
-[node name="TypeChange" type="Button" parent="ChartUI/Buttons/Data/Menu"]
+[node name="TypeChange" type="Button" parent="ChartUI/Buttons/Data/Menu" unique_id=2004048242]
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 30.0
 focus_mode = 0
 text = "Chart Type..."
 
-[node name="Edit" type="Button" parent="ChartUI/Buttons"]
+[node name="Edit" type="Button" parent="ChartUI/Buttons" unique_id=493905106]
 layout_mode = 0
 offset_left = 200.0
 offset_right = 300.0
 offset_bottom = 30.0
 text = "Edit"
 
-[node name="Menu" type="Control" parent="ChartUI/Buttons/Edit"]
+[node name="Menu" type="Control" parent="ChartUI/Buttons/Edit" unique_id=1321528904]
 visible = false
 show_behind_parent = true
 clip_contents = true
@@ -177,21 +177,21 @@ offset_top = 30.0
 offset_right = 100.0
 offset_bottom = 225.0
 
-[node name="BG" type="ColorRect" parent="ChartUI/Buttons/Edit/Menu"]
+[node name="BG" type="ColorRect" parent="ChartUI/Buttons/Edit/Menu" unique_id=399682693]
 visible = false
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 230.0
 color = Color(0.11858138, 0.11858138, 0.11858138, 1)
 
-[node name="Convert" type="Button" parent="ChartUI/Buttons/Edit/Menu"]
+[node name="Convert" type="Button" parent="ChartUI/Buttons/Edit/Menu" unique_id=1380813364]
 layout_mode = 0
 offset_right = 100.0
 offset_bottom = 30.0
 focus_mode = 0
 text = "Convert..."
 
-[node name="Tabs" type="TabContainer" parent="ChartUI"]
+[node name="Tabs" type="TabContainer" parent="ChartUI" unique_id=1266991699]
 offset_left = 850.0
 offset_top = 348.0
 offset_right = 1230.0
@@ -202,40 +202,41 @@ tab_alignment = 1
 current_tab = 0
 tab_focus_mode = 0
 
-[node name="Chart" parent="ChartUI/Tabs" instance=ExtResource("5_s5ygp")]
+[node name="Chart" parent="ChartUI/Tabs" unique_id=534250159 instance=ExtResource("5_s5ygp")]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Events" parent="ChartUI/Tabs" instance=ExtResource("6_b5b73")]
+[node name="Events" parent="ChartUI/Tabs" unique_id=1919466669 instance=ExtResource("6_b5b73")]
 visible = false
 layout_mode = 2
 
-[node name="Notes" parent="ChartUI/Tabs" instance=ExtResource("7_p04ox")]
+[node name="Notes" parent="ChartUI/Tabs" unique_id=777972414 instance=ExtResource("7_p04ox")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="Section" parent="ChartUI/Tabs" instance=ExtResource("8_dlht4")]
+[node name="Section" parent="ChartUI/Tabs" unique_id=1990992094 instance=ExtResource("8_dlht4")]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
-[node name="Song" parent="ChartUI/Tabs" instance=ExtResource("9_hxyvv")]
+[node name="Song" parent="ChartUI/Tabs" unique_id=671214076 instance=ExtResource("9_hxyvv")]
 visible = false
 layout_mode = 2
 
-[node name="SongProgress" type="HSlider" parent="ChartUI"]
+[node name="SongProgress" type="HSlider" parent="ChartUI" unique_id=227592531]
 offset_top = 692.0
 offset_right = 1280.0
 offset_bottom = 734.0
 focus_mode = 0
+mouse_default_cursor_shape = 15
 theme_override_styles/slider = SubResource("StyleBoxLine_irmsa")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_7uqx1")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_hhfsi")
 step = 0.0
 value = 50.0
 
-[node name="Time" type="Label" parent="ChartUI/SongProgress"]
+[node name="Time" type="Label" parent="ChartUI/SongProgress" unique_id=726722803]
 layout_mode = 0
 offset_left = 5.0
 offset_top = -12.0
@@ -246,7 +247,7 @@ theme_override_fonts/font = ExtResource("5_85d4d")
 theme_override_font_sizes/font_size = 22
 text = "0:00"
 
-[node name="Length" type="Label" parent="ChartUI/SongProgress"]
+[node name="Length" type="Label" parent="ChartUI/SongProgress" unique_id=1826731880]
 layout_mode = 0
 offset_left = 1160.0
 offset_top = -12.0
@@ -257,3 +258,6 @@ theme_override_fonts/font = ExtResource("5_85d4d")
 theme_override_font_sizes/font_size = 22
 text = "0:00"
 horizontal_alignment = 2
+
+[connection signal="drag_ended" from="ChartUI/SongProgress" to="." method="progress_dragged"]
+[connection signal="drag_started" from="ChartUI/SongProgress" to="." method="progress_drag_start"]

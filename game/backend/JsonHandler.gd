@@ -5,15 +5,18 @@ var song_diffs:PackedStringArray = []
 var get_diff:String
 
 var SONG:Dictionary = {} # change name of this to like SONG_DATA or something
+var META:Dictionary = {}
 var song_variant:String = '' # (erect, pico mix and whatnot)
 var song_root:String = ''
 
 var chart_notes:Array = [] # keep loaded chart and events for restarting songs
 var song_events:Array[EventData] = []
+var dupe_notes:int = 0
 
 var parse_type:String = ''
 func parse_song(song:String, diff:String, variant:String = '', auto_create:bool = true) -> void:
 	SONG.clear()
+	META.clear()
 	song_root = ''
 	song_variant = ''
 	parse_type = 'legacy'
@@ -49,31 +52,32 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	if SONG.has('players'): parse_type = 'maru'
 
 	var meta_path:String = 'songs/'+ song +'/%s.json'
-	var meta:Dictionary = {}
 	match parse_type:
 		'v_slice':
-			meta = parse(Util.check_path(meta_path % ['metadata'+ song_variant]))
+			META = parse(Util.check_path(meta_path % ['metadata'+ song_variant]))
 			SONG.speed = SONG.scrollSpeed.get(diff, SONG.scrollSpeed.get('default', 1))
-			SONG.player1 = meta.playData['characters'].player
-			SONG.gfVersion = meta.playData['characters'].get('girlfriend')
-			SONG.player2 = meta.playData['characters'].opponent
-			SONG.stage = stage_to(meta.playData.stage)
-			var song_name:String = meta.songName
+			SONG.player1 = META.playData['characters'].player
+			SONG.gfVersion = META.playData['characters'].get('girlfriend')
+			SONG.player2 = META.playData['characters'].opponent
+			SONG.stage = stage_to(META.playData.stage)
+			var song_name:String = META.songName
 			if FileAccess.file_exists('res://assets/'+ meta_path % 'manifest'):
 				song_name = parse(meta_path % 'manifest').songId
 			SONG.song = song_name
-			SONG.bpm = meta.timeChanges[0].bpm
-			if meta.timeChanges.size() > 1:
-				var times = meta.timeChanges.duplicate(true)
-				times.remove_at(0) # remove first one
-				for i in times:
-					SONG.events.append({'t': i.t, 'e': 'ChangeBPM', 'v': i.bpm})
+			SONG.bpm = META.timeChanges[0].bpm
+			META.timeChanges.remove_at(0)
+			#for i in META.timeChanges:
+			#	var new_change:Conductor.BPMChange = Conductor.BPMChange.new()
+			#	new_change.time = i.t
+			#	new_change.bpm = i.bpm
+			#	Conductor.bpm_changes.append(new_change)
+				#SONG.events.append({'t': i.t, 'e': 'ChangeBPM', 'v': i.bpm})
 		'maru':
 			SONG.player1 = SONG.players[0]
 			SONG.player2 = SONG.players[1]
 			SONG.gfVersion = SONG.players[2]
 		'codename':
-			meta = parse(meta_path % ['meta'])
+			var meta = parse(meta_path % ['meta'])
 			SONG.speed = SONG.scrollSpeed
 			SONG.song = meta.name
 			SONG.bpm = meta.bpm
@@ -145,7 +149,7 @@ func generate_chart(data, keep_loaded:bool = true) -> Array:
 	var chart = Chart.new()
 	var _notes := chart.load_chart(data, parse_type, get_diff) # get diff here only matters for base game as of now
 	song_events = chart.get_events(data) # load events whenever chart is made
-
+	dupe_notes = chart.dupes
 	if keep_loaded:
 		chart_notes = _notes.duplicate(true)
 

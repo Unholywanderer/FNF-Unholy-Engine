@@ -48,6 +48,8 @@ var credits:Array[Array] = [
 		Color('4A6C96'), func(): OS.shell_open('https://youtu.be/ysCO5pHe6GY')],
 	['SPG64', 'SPG64', 'my friend :) :3',
 		Color('682A80'), func(): OS.shell_open('https://x.com/SPG642')],
+	['Doggo', 'doggo', 'random ass guy',
+		Color.HOT_PINK, stupid_fucking_credit_thing],
 
 	['drew me fnf bfs', 'yeaha babye!!'],
 	['Ashley', 'puta', 'drew a bf i think idk', \
@@ -87,6 +89,7 @@ var quotes:Dictionary = {
 	'spg64': ['unholy made me famous...'],
 	'cherry': ['meow'],
 	'ralty': ['i like gay furries'],
+	'doggo': ['✨ The people are watching you'],
 }
 
 var heading_changes:Array = []
@@ -176,7 +179,21 @@ func update_selection(amount:int = 0) -> void:
 	for i in credits.size():
 		var item = cred_group[i]
 		item.target_y = i - cur_select
-		#item.modulate.a = (1.0 if i == cur_select else 1.0 - (abs(item.target_y) / 3.0))
+
+func stupid_fucking_credit_thing() -> void: # god why must i be like this
+	var dawg = Sprite2D.new()
+	Audio.play_sound('howl', 1, false, 'mp3')
+	Audio.volume = 0.2
+	dawg.texture = Util.load_texture('res://assets/images/silly/awoo.jpg')
+	add_child(dawg)
+	move_child(dawg, $BG2.get_index() + 1)
+	dawg.position = Vector2(900, 400)
+	dawg.scale = Vector2(0.7, 0.7)
+	dawg.modulate.a = 0
+	Util.quick_tween(dawg, 'modulate:a', 1, 2).finished.connect(func():
+		Audio.volume = 0.7
+		Util.quick_tween(dawg, 'modulate:a', 0, 3).finished.connect(dawg.queue_free)
+	)
 
 @warning_ignore("missing_tool")
 class Credit extends Alphabet:

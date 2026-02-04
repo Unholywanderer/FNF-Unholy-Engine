@@ -179,10 +179,10 @@ func load_audio(path:String) -> AudioStreamOggVorbis:
 	#var file = FileAccess.open(path, FileAccess.READ)
 	return AudioStreamOggVorbis.load_from_file(path)
 
-func load_texture(path:String) -> Image:
-	#ImageTexture.create_from_image()
-	#load(path)
-	return Image.load_from_file(path)
+func load_texture(path:String) -> ImageTexture:
+	var img := Image.load_from_file(path)
+	return ImageTexture.create_from_image(img)
+
 
 func get_closest_anim(frames:SpriteFrames, anim:String) -> String:
 	for i in frames.get_animation_names():
