@@ -1,6 +1,5 @@
 class_name Counters; extends Resource;
 ## Class that holds those tally counters and shit
-# Put here so it can be used anywhere
 
 class ClearPercent extends Node2D:
 	var width:float = 0
@@ -18,8 +17,7 @@ class ClearPercent extends Node2D:
 		cur_num = start_num
 		is_small = small
 
-		#hmm color shader does exist i guess i should make it
-
+		# hmm color shader does exist i guess i should make it
 		var le_sma:String = 'Text'+ ('Small' if small else '')
 		var per_txt:Sprite2D = Sprite2D.new()
 		per_txt.centered = false
@@ -36,7 +34,7 @@ class ClearPercent extends Node2D:
 	func flash(yes:bool = true) -> void:
 		for i in numbers:
 			if yes: i.modulate.v = 10
-			else: create_tween().tween_property(i, 'modulate:v', 1, 0.35).set_trans(Tween.TRANS_QUAD)
+			else: Util.quick_tween(i, 'modulate:v', 1, 0.35, 'quad')
 
 	func num_me_harder() -> void:
 		num_changed = false
@@ -82,14 +80,12 @@ class Score extends Node2D:
 		for i in 10:
 			var new_num = ScoreNum.new(pos + Vector2(65 * i, 0))
 			add_child(new_num)
-			@warning_ignore("incompatible_ternary")
-			new_num.final_digit = le_num[i] if le_num[i] != '-' else 10
+			new_num.final_digit = int(le_num[i]) if le_num[i] != '-' else 10
 			nums.append(new_num)
+
 	func shuffle() -> void:
 		for i:int in nums.size():
-			Game.scene.get_tree().create_timer((i - 1.0) / 24.0).timeout.connect(func():
-				nums[i].shuffle()
-			)
+			Game.scene.get_tree().create_timer((i - 1.0) / 24.0).timeout.connect(nums[i].shuffle)
 
 class ScoreNum extends AnimatedSprite2D:
 	const num_to_string:Array = [
@@ -113,10 +109,12 @@ class ScoreNum extends AnimatedSprite2D:
 
 	var final_delay:float = 0.0
 
+	var shuffle_timer:Timer = Timer.new()
 	func _init(pos:Vector2) -> void:
 		sprite_frames = load('res://assets/images/results_screen/score-digital-numbers.res')
 		centered = false
 		position = pos
+		Game.scene.add_child(shuffle_timer)
 		play('DISABLED')
 
 	func shuffle_tween_finish() -> void:
@@ -134,12 +132,9 @@ class ScoreNum extends AnimatedSprite2D:
 			)
 		)
 
-	var shuffle_timer:Timer = Timer.new()
 	var loops:int = 0
 	func shuffle() -> void:
 		if final_digit == 10: return
-		if shuffle_timer.get_parent() == null:
-			Game.scene.add_child(shuffle_timer)
 		shuffle_timer.start(1.0 / 24.0)
 		shuffle_timer.timeout.connect(func():
 			loops += 1
@@ -150,7 +145,6 @@ class ScoreNum extends AnimatedSprite2D:
 				frame = 0
 				play()
 		)
-
 
 class Tally extends Node2D:
 	var nums:Array[AnimatedSprite2D] = [] # i could just iterate over the children in the node but ehh
@@ -178,9 +172,8 @@ class Tally extends Node2D:
 		var split_shit:Array = str(cur_num).split()
 		for i in split_shit.size():
 			if i >= nums.size():
-				var _x = 43 * i
 				var num = make_num(int(split_shit[i]))
-				num.position.x = _x
+				num.position.x = 43 * i
 				add_child(num)
 			else:
 				nums[i].play(split_shit[i] +' small')
