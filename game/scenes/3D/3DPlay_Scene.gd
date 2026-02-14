@@ -182,7 +182,7 @@ func _ready():
 	chart_notes = JsonHandler.chart_notes.duplicate()
 	events = JsonHandler.song_events.duplicate()
 
-	print(SONG.song +' '+ JsonHandler.get_diff.to_upper())
+	print(SONG.song +' '+ JsonHandler.cur_diff.to_upper())
 	print('TOTAL EVENTS: '+ str(events.size()))
 
 	for i in [self]:#, stage]:
@@ -228,7 +228,7 @@ func _process(delta):
 		other.add_child(load('res://game/scenes/pause_screen.tscn').instantiate())
 
 	if ui.finished_countdown:
-		Discord.change_presence('Playing '+ SONG.song +' - '+ JsonHandler.get_diff.to_upper(),\
+		Discord.change_presence('Playing '+ SONG.song +' - '+ JsonHandler.cur_diff.to_upper(),\
 		 Util.to_time(Conductor.song_pos) +' / '+ Util.to_time(Conductor.song_length) +' | '+ \
 		  str(round(abs(Conductor.song_pos / Conductor.song_length) * 100.0)) +'% Complete')
 
@@ -419,10 +419,10 @@ func _exit_tree() -> void:
 func song_end() -> void:
 	if should_save and JsonHandler.song_variant == '':
 		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
-		var saved_score = HighScore.get_score(SONG.song, JsonHandler.get_diff)
+		var saved_score = HighScore.get_score(SONG.song, JsonHandler.cur_diff)
 
 		if save_data[0] > saved_score:
-			HighScore.set_score(SONG.song, JsonHandler.get_diff, save_data)
+			HighScore.set_score(SONG.song, JsonHandler.cur_diff, save_data)
 
 	Conductor.reset()
 	if playlist.is_empty() or song_idx >= playlist.size() - 1:
@@ -431,7 +431,7 @@ func song_end() -> void:
 		Game.switch_scene("menus/"+ back_to)
 	else:
 		song_idx += 1
-		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
+		JsonHandler.parse_song(playlist[song_idx], JsonHandler.cur_diff, JsonHandler.song_variant)
 		SONG = JsonHandler.SONG
 		cur_speed = SONG.speed
 		Conductor.load_song(SONG.song)
