@@ -11,6 +11,8 @@ var bf:Character
 var this := Game.scene
 var cam:Camera2D = this.cam #get_viewport().get_camera_2d()
 
+var is_fakeout:bool = false
+
 @export var death_char:String = this.boyfriend.death_char
 @export var death_delay:float = 0.0
 @export var death_sound:String = 'fnf_loss_sfx'
@@ -61,7 +63,7 @@ func _ready():
 	Conductor.paused = true
 
 	Game.focus_change.connect(focus_change)
-	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'MOTHER FUCK')
+	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.cur_diff.to_upper(), 'MOTHER FUCK')
 	follow_bg()
 
 	on_game_over.connect(this.stage.game_over_start)

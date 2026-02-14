@@ -53,10 +53,6 @@ func _init(init_text:String = '', is_bold:bool = true):
 	if init_text.length() > 0:
 		text = init_text
 
-#var first_snap:bool = false
-#func _ready() -> void:
-	#position = Vector2((target_y * 35) + 100, (remap(target_y, 0, 1, 0, 1.1) * spacing) + (Game.screen[0] * 0.28))
-
 func make_text(tx:String) -> void:
 	all_letters.clear()
 	var letters_made:Array[Letter] = []
@@ -157,7 +153,7 @@ func offset_letter(item) -> Vector2:
 		':': return Vector2(0, 7)
 		"'": return Vector2(0, -5)
 		",": return Vector2(0, 10)
-		_: return Vector2.ZERO
+		_  : return Vector2.ZERO
 
 class Letter extends AnimatedSprite2D:
 	const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'

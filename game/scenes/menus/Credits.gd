@@ -75,7 +75,9 @@ var credits:Array[Array] = [
 ]
 
 var quotes:Dictionary = {
-	'unholywanderer04': ['wee wee whaha yahoo yippee yay!!', 'i am a femboy!1!', 'guh!!!', 'balls', ':AINT_NO_WAY:'], # ill end your life with my own hands
+	'unholywanderer04': ['wee wee whaha yahoo yippee yay!!', 'i am a femboy!1!', 'guh!!!', 'balls', ':AINT_NO_WAY:',
+	'Every single bit of programming in this mod has been implemented via soft-coding in my own personal psych engine fork entitled NightmareVision that I have been developing over the past few years alongside Data5. Working on this mod in my own framework has led to insane developments in said engine and I am
+absolutely astonished with the strides'], # ill end your life with my own hands
 	'shadow mario': ['WikiHow: How to handle fame'],
 	'zyflx': ['i still dont know what i want my quote to be, i have no ideas', 'i  love boobies'],
 	'rudyrue': ['i make things !!'],

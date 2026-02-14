@@ -32,6 +32,7 @@ func add_script(script:String) -> void:
 	if SCENE.name == "Play_Scene":
 		lua.add("song_root", JsonHandler.song_root)
 		lua.add("variant", JsonHandler.song_variant.substr(1))
+		lua.add('camera', SCENE.cam)
 		lua.add("move_cam", SCENE.move_cam)
 		lua.add("UI", SCENE.ui)
 		lua.add("boyfriend", SCENE.boyfriend)
@@ -257,7 +258,7 @@ class LuaEx extends LuaAPI:
 	var script_name:String = ''
 	func _notification(what:int) -> void:
 		if what == NOTIFICATION_PREDELETE:
-			print("good-bye")
+			print("removing "+ script_name)
 
 	func add(vari:String, item:Variant) -> void:
 		if vari.is_empty() or item == null:

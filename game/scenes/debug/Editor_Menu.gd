@@ -32,7 +32,9 @@ func _input(event:InputEvent) -> void:
 		get_tree().paused = false
 	if event.is_action_pressed("accept"):
 		var le_scene:String = EDITORS[cur_item][1]
-		if le_scene.is_empty(): return Alert.make_alert('Whoops no scene', Alert.ERROR)
+		if le_scene.is_empty():
+			Alert.make_alert('Whoops no scene', Alert.ERROR).max_time = 1
+			return
 		if le_scene.begins_with('tools'): le_scene = '../'+ le_scene
 		changing = true
 		Game.switch_scene(le_scene)

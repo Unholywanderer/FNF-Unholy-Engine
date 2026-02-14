@@ -1,6 +1,6 @@
+## Class for stages. Make sure that if you're adding one, it extends this script.
 class_name StageBase extends Node2D
 
-# things all stages will have
 @export var default_zoom:float = 0.8
 @export var cam_speed:float = 4.0
 
@@ -20,11 +20,11 @@ var cur_section:int:
 	get: return Conductor.cur_section
 
 var boyfriend:Character:
-	get: return Game.scene.boyfriend
+	get: return Game.scene.get('boyfriend')
 var dad:Character:
-	get: return Game.scene.dad
+	get: return Game.scene.get('dad')
 var gf:Character:
-	get: return Game.scene.gf
+	get: return Game.scene.get('gf')
 
 # initial positions the characters will take
 @export var bf_pos:Vector2 = Vector2(770, 100)

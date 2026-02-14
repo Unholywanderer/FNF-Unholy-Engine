@@ -19,14 +19,14 @@ var break_text:Array[String] = [
 	'pissing and shitting', 'who up straight up "funkin" it and by "it" i mean; the friday'
 ]
 func _ready() -> void:
-	Discord.change_presence('Paused '+ this.SONG.song +' - '+ JsonHandler.get_diff.to_upper(), break_text.pick_random())
+	Discord.change_presence('Paused '+ this.SONG.song +' - '+ JsonHandler.cur_diff.to_upper(), break_text.pick_random())
 	Conductor.paused = true
 
 	$SongName.text = JsonHandler.SONG.song
 	$SongName.modulate.a = 0
 	create_tween().tween_property($SongName, 'modulate:a', 1, 0.3)
 
-	$Diff.text = JsonHandler.get_diff.to_upper()
+	$Diff.text = JsonHandler.cur_diff.to_upper()
 	$Diff.modulate.a = 0
 	create_tween().tween_property($Diff, 'modulate:a', 1, 0.3).set_delay(0.15)
 

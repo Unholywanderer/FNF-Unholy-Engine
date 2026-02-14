@@ -56,7 +56,7 @@ func _ready():
 		if JsonHandler.song_root != '':
 			last_loaded.song = JsonHandler.song_root
 			last_loaded.variant = JsonHandler.song_variant.substr(1)
-		last_loaded.diff = JsonHandler.get_diff
+		last_loaded.diff = JsonHandler.cur_diff
 		cur_song = added_songs.find(last_loaded.song)
 		diff_int = songs[cur_song].diff_list.find(last_loaded.diff)
 		if last_loaded.variant != '':

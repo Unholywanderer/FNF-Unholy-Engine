@@ -65,7 +65,7 @@ func _ready():
 	Conductor.paused = true
 
 	Game.focus_change.connect(focus_change)
-	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.get_diff.to_upper(), 'I\'ll get it next time maybe')
+	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.cur_diff.to_upper(), 'I\'ll get it next time maybe')
 
 	follow_bg()
 	cam.process_mode = Node.PROCESS_MODE_ALWAYS

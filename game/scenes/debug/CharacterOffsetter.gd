@@ -392,7 +392,7 @@ func add_anim() -> void:
 
 	var anim_name:String = ANIM('Name').text.strip_edges()
 	if anim_name.is_empty():
-		Alert.make_alert('ADD ANIMATION NAME!', Alert.WARN)
+		Alert.make_alert('ADD ANIMATION NAME!', Alert.WARN).max_time = 0.7
 		return
 
 	var fixed_frames:Array[int] = []

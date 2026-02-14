@@ -1,27 +1,26 @@
-[gd_scene load_steps=5 format=3 uid="uid://1ug712tid640"]
+[gd_scene format=3 uid="uid://1ug712tid640"]
 
 [ext_resource type="Script" uid="uid://ulnoidha3rn8" path="res://game/scenes/menus/Freeplay_Classic.gd" id="1_mvyie"]
 [ext_resource type="Texture2D" uid="uid://cpmw74f4madb6" path="res://assets/images/menuDesat.png" id="2_yfi8s"]
 [ext_resource type="FontFile" uid="uid://dnssbi7hjccim" path="res://assets/fonts/vcr.ttf" id="3_sinql"]
-[ext_resource type="PackedScene" uid="uid://dcc3n6k7cac8y" path="res://game/objects/music_player.tscn" id="4_hsa3g"]
 
-[node name="Freeplay" type="Node2D"]
+[node name="Freeplay" type="Node2D" unique_id=440462508]
 script = ExtResource("1_mvyie")
 
-[node name="MenuBG" type="Sprite2D" parent="."]
+[node name="MenuBG" type="Sprite2D" parent="." unique_id=1617744090]
 position = Vector2(640, 360)
 texture = ExtResource("2_yfi8s")
 
-[node name="SongInfo" type="CanvasLayer" parent="."]
+[node name="SongInfo" type="CanvasLayer" parent="." unique_id=79851388]
 
-[node name="ScoreBG" type="ColorRect" parent="SongInfo"]
+[node name="ScoreBG" type="ColorRect" parent="SongInfo" unique_id=113865126]
 self_modulate = Color(1, 1, 1, 0.6)
 offset_left = 937.0
 offset_right = 1280.0
 offset_bottom = 66.0
 color = Color(0, 0, 0, 1)
 
-[node name="Score" type="Label" parent="SongInfo"]
+[node name="Score" type="Label" parent="SongInfo" unique_id=1115190680]
 layout_direction = 3
 offset_left = 34.0
 offset_top = 5.0
@@ -34,7 +33,7 @@ theme_override_font_sizes/font_size = 32
 text = "Best Score: 0"
 horizontal_alignment = 2
 
-[node name="Difficulty" type="Label" parent="SongInfo"]
+[node name="Difficulty" type="Label" parent="SongInfo" unique_id=1016858898]
 offset_left = 1039.0
 offset_top = 39.0
 offset_right = 1151.0
@@ -47,7 +46,7 @@ text = "< NORMAL >"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VariantTxt" type="RichTextLabel" parent="SongInfo"]
+[node name="VariantTxt" type="RichTextLabel" parent="SongInfo" unique_id=478461984]
 clip_contents = false
 offset_left = 938.0
 offset_top = 71.0
@@ -63,7 +62,7 @@ autowrap_mode = 0
 deselect_on_focus_loss_enabled = false
 drag_and_drop_selection_enabled = false
 
-[node name="Notice" type="Label" parent="SongInfo/VariantTxt"]
+[node name="Notice" type="Label" parent="SongInfo/VariantTxt" unique_id=1848257408]
 layout_mode = 0
 offset_left = 50.0
 offset_top = 61.0
@@ -76,7 +75,4 @@ text = "Press Ctrl to change"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PlaybackInfo" type="CanvasLayer" parent="."]
-
-[node name="MusicPlayer" parent="." instance=ExtResource("4_hsa3g")]
-visible = false
+[node name="PlaybackInfo" type="CanvasLayer" parent="." unique_id=1846131430]

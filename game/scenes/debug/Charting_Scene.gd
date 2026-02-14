@@ -101,10 +101,10 @@ func _ready():
 	chart_type = JsonHandler.parse_type
 	if chart_type == 'v_slice':
 		section_based = false
-		note_list = SONG.notes[JsonHandler.get_diff]
+		note_list = SONG.notes[JsonHandler.cur_diff]
 	if chart_type == 'codename':
 		section_based = false # prevent crash
-		#SONG = Codename.convert_to_simple(JsonHandler.SONG)
+		Codename.convert_to_simple(JsonHandler.SONG)
 
 	Discord.change_presence('Charting '+ SONG.song.capitalize(), 'One must imagine a charter happy')
 
@@ -251,7 +251,7 @@ func _ready():
 					sec.sectionNotes.clear()
 			else:
 				note_list.clear()
-				SONG.notes[JsonHandler.get_diff].clear()
+				SONG.notes[JsonHandler.cur_diff].clear()
 
 		if _event.button_pressed:
 			if SONG.has('events'): SONG.events.clear()

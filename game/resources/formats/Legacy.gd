@@ -28,10 +28,8 @@ func parse_chart(data:Dictionary) -> Array:
 			if note[1] < 0:
 				if note[1] == -1: # thats an event note, dont skip it
 					if !data.get('events'): data.set('events', [])
-					if data.events.has([note[0], [[note[2], note[3], note[4]]]]):
-						continue
+					if data.events.has([note[0], [[note[2], note[3], note[4]]]]): continue
 					data.events.append([note[0], [[note[2], note[3], note[4]]]])
-					print('got event..')
 				continue
 			var time:float = maxf(0, note[0])
 

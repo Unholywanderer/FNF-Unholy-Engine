@@ -24,7 +24,7 @@ func add_timed_event(time:float, event:Callable) -> void:
 	Game.scene.get_tree().create_timer(abs(time), false).timeout.connect(event)
 
 @warning_ignore("unused_parameter")
-func start_dialogue(file:String = 'dialogue', on_finish:Callable = func(): pass, delay:float = 0) -> void:
+static func start_dialogue(file:String = 'dialogue', on_finish:Callable = func(): pass, delay:float = 0) -> void:
 	var dia = load("res://game/objects/ui/dialogue_box.tscn").instantiate()
 	dia.load_legacy(file)
 	dia.dialogue_finished.connect(on_finish)

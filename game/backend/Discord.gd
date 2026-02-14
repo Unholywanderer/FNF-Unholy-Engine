@@ -6,7 +6,7 @@ const INFO = [
 ]
 
 var initalized:bool = false
-var discord_exists:bool = true # aint this a bitch, it dont work, ill just make it true
+var discord_exists:bool = DiscordRPC.get_is_discord_working() # aint this a bitch, it dont work, ill just make it true
 
 var can_rpc:bool:
 	get: return Prefs.allow_rpc and discord_exists

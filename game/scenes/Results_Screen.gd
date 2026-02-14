@@ -1,7 +1,7 @@
 extends Node2D
 
 var from_story:bool = false
-var score_data:ScoreData = Game.persist.scoring if Game.persist.scoring else ScoreData.new()
+var score_data:ScoreData = Game.persist.get('scoring', ScoreData.new())
 var rank:String = score_data.rank
 var player:String = 'bf'
 
@@ -66,7 +66,7 @@ func _ready() -> void:
 	get_tree().create_timer(36.0 / 24.0, false).timeout.connect(func(): lol.call($Score))
 	get_tree().create_timer(37.0 / 24.0, false).timeout.connect(start_tally)
 
-	var tex = load('res://assets/images/results_screen/diff_'+ JsonHandler.get_diff +'.png')
+	var tex = load('res://assets/images/results_screen/diff_'+ JsonHandler.cur_diff +'.png')
 	if tex == null: tex = load('res://assets/images/results_screen/diff_normal.png')
 	$Difficulty.texture = tex
 
@@ -161,7 +161,6 @@ func _ready() -> void:
 		Audio.on_finish = func():
 			if Audio.music.ends_with('-intro'):
 				Audio.play_music(Audio.music.replace('-intro', ''))
-
 	)
 
 func _exit_tree() -> void:
@@ -257,7 +256,6 @@ func timer_and_song(timer_len:float = 3.0, auto_scroll:bool = true) -> void:
 		move_song_stuff = auto_scroll
 	)
 
-
 func display_rank_shit() -> void:
 	$Flash.color.a = 1
 	create_tween().tween_property($Flash, "color:a", 0, 14.0 / 24.0)
@@ -325,7 +323,7 @@ func get_delays() -> Dictionary:
 
 	return delays
 
-func getFreeplayRankIconAsset() -> String:
+func get_freeplay_icon() -> String:
 	match rank:
 		'perfect_gold': return 'PERFECTSICK'
 		'perfect'     : return 'PERFECT'

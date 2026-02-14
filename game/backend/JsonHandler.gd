@@ -2,7 +2,7 @@ extends Node2D;
 
 const base_diffs:PackedStringArray = ['easy', 'normal', 'hard']
 var song_diffs:PackedStringArray = []
-var get_diff:String
+var cur_diff:String
 
 var SONG:Dictionary = {} # change name of this to like SONG_DATA or something
 var META:Dictionary = {}
@@ -38,7 +38,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 	if FileAccess.file_exists('res://assets/songs/'+ song +'/charts/'+ diff +'.osu'):
 		parse_type = 'osu'
 
-	get_diff = diff.to_lower()
+	cur_diff = diff.to_lower()
 	if parse_type != 'osu':
 		SONG = get_song_data(song)
 	else:
@@ -108,7 +108,7 @@ func get_song_data(song:String) -> Dictionary:
 
 func you_WILL_get_a_json(song:String) -> String:
 	var path:String = 'res://assets/songs/%s/charts/' % song
-	var returned:String = path + get_diff +'.json'
+	var returned:String = path + cur_diff +'.json'
 
 	if parse_type == 'v_slice':
 		returned = path.replace('charts/', '') +'chart'+ song_variant +'.json'
@@ -118,7 +118,7 @@ func you_WILL_get_a_json(song:String) -> String:
 			returned = returned.replace('res://assets/', Game.exe_path +'mods/')
 		else:
 			var err_path = returned.replace('res://assets/songs/', '../')
-			Alert.make_alert('"%s" has no %s\n%s' % [song, get_diff.to_upper(), err_path], Alert.ERROR)
+			Alert.make_alert('"%s" has no %s\n%s' % [song, cur_diff.to_upper(), err_path], Alert.ERROR)
 			return ''
 
 	#ResourceLoader.load_threaded_request(path)
@@ -147,7 +147,7 @@ func generate_chart(data, keep_loaded:bool = true) -> Array:
 	if data == null: return []
 
 	var chart = Chart.new()
-	var _notes := chart.load_chart(data, parse_type, get_diff) # get diff here only matters for base game as of now
+	var _notes := chart.load_chart(data, parse_type, cur_diff) # get diff here only matters for base game as of now
 	song_events = chart.get_events(data) # load events whenever chart is made
 	dupe_notes = chart.dupes
 	if keep_loaded:

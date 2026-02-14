@@ -186,7 +186,7 @@ func _ready():
 		var peep = char_from_string(str(i.values[0]))
 		peep.cache_char(i.values[1])
 
-	print(SONG.song +' '+ JsonHandler.get_diff.to_upper())
+	print(SONG.song +' '+ JsonHandler.cur_diff.to_upper())
 	print('TOTAL EVENTS: '+ str(events.size()))
 	print('%s Stacked Notes' % JsonHandler.dupe_notes)
 	for i in [self, stage]:
@@ -232,7 +232,7 @@ func _process(delta):
 		other.add_child(load('res://game/scenes/pause_screen.tscn').instantiate())
 
 	if Prefs.allow_rpc and ui.finished_countdown:
-		Discord.change_presence('Playing '+ SONG.song +' - '+ JsonHandler.get_diff.to_upper(),\
+		Discord.change_presence('Playing '+ SONG.song +' - '+ JsonHandler.cur_diff.to_upper(),\
 		 Util.to_time(Conductor.song_pos) +' / '+ Util.to_time(Conductor.song_length) +' | '+ \
 		  str(Util.get_percent(Conductor.song_pos, Conductor.song_length)) +'% Complete')
 
@@ -318,6 +318,7 @@ func song_start() -> void:
 		Util.quick_tween(ui.time_circ, 'modulate:a', 1, 0.3)
 
 func beat_hit(beat:int) -> void:
+	#Audio.play_sound('tick')
 	if LuaHandler.call_func('beat_hit', [beat]) == LuaHandler.RETURN_TYPE.STOP: return
 	beat_dance(beat)
 
@@ -395,10 +396,8 @@ func key_press(key:int = 0) -> void:
 		strum.reset_timer = 0
 		return
 
-	var note:Note = hittable_notes[0]
-
 	# side note you should throw this in note parsing instead :3 -rudy # im keeping this here, i dont care
-	good_note_hit(note)
+	good_note_hit(hittable_notes[0])
 
 func key_release(key:int = 0) -> void:
 	ui.player_strums[key].play_anim('static')
@@ -433,12 +432,12 @@ func song_end() -> void:
 	if should_save:
 		var save_data = [roundi(score), ui.accuracy, misses, ui.grade, combo]
 		var song_name:String = JsonHandler.song_root + JsonHandler.song_variant
-		var saved_score = HighScore.get_score(song_name, JsonHandler.get_diff)
+		var saved_score = HighScore.get_score(song_name, JsonHandler.cur_diff)
 
 		if save_data[0] > saved_score:
 			if playlist.is_empty() or song_idx + 1 >= playlist.size():
 				scoring.is_highscore = true
-			HighScore.set_score(song_name, JsonHandler.get_diff, save_data)
+			HighScore.set_score(song_name, JsonHandler.cur_diff, save_data)
 
 	scoring.add_hits(ui.hit_count)
 	scoring.total_notes += note_count
@@ -454,11 +453,11 @@ func song_end() -> void:
 
 	if song_idx + 1 >= playlist.size():
 		Game.persist.song_list = []
-		Game.persist.scoring.difficulty = JsonHandler.get_diff
+		Game.persist.scoring.difficulty = JsonHandler.cur_diff
 		Game.switch_scene('results_screen')
 	else:
 		song_idx += 1
-		JsonHandler.parse_song(playlist[song_idx], JsonHandler.get_diff, JsonHandler.song_variant)
+		JsonHandler.parse_song(playlist[song_idx], JsonHandler.cur_diff, JsonHandler.song_variant)
 		SONG = JsonHandler.SONG
 		cur_speed = SONG.speed
 		Game.persist.set('seen_cutscene', false)
@@ -652,7 +651,7 @@ func good_note_hit(note:Note) -> void:
 	var judge_info = Rating.get_score(note.rating)
 
 	stage.good_note_hit(note)
-	var group = ui.get_group('player')
+	var group:Strum_Line = ui.get_group('player')
 	#if note.gf: group = ui.get_group('gf')
 	group.singer = gf if note.gf else boyfriend
 	group.note_hit(note)
@@ -660,8 +659,9 @@ func good_note_hit(note:Note) -> void:
 	combo += 1
 	max_combo = max(combo, max_combo)
 	grace = combo > 10
-	pop_up_combo([note.rating, combo, time])
-	var to_add = int(300 * (((1.0 + exp(-0.08 * (abs(time) - 40))) + 66.3)) / (55.0 / judge_info[2]))
+
+	pop_up_combo(note.rating, combo, time <= 0)
+	var to_add:int = int(300 * (((1.0 + exp(-0.08 * (abs(time) - 40))) + 66.3)) / (55.0 / judge_info[2]))
 	# 500 is the perfect hit score amount
 
 	score += judge_info[0] if Prefs.legacy_score else to_add
@@ -681,10 +681,10 @@ func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hi
 	var luad = LuaHandler.call_func('good_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
 	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	if !auto_play and !Input.is_action_pressed(key_names[sustain.dir]) and !sustain.was_good_hit and sustain.should_hit:
-		sustain.strum_time = Conductor.song_pos + sustain.visual_len
+		sustain.strum_time = Conductor.song_pos + sustain.length
 		sustain.holding = false
 		if sustain.drop_time >= 0.1:
-			print(sustain.length, ' MISS')
+			print(sustain.visual_len, ' MISS')
 			note_miss(sustain)
 		return
 
@@ -772,7 +772,7 @@ func note_miss(note:Note) -> void:
 		#print(int(30 + (15 * floor(misses / 3))))
 		ui.total_hit += 1
 
-		var hp_diff:float = ((note.length / 30.0) if note.is_sustain else 5.0)
+		var hp_diff:float = ((note.visual_len / 30.0) if note.is_sustain else 5.0)
 		if note.is_sustain and grace and ui.hp - hp_diff <= 0: # big ass sustains wont kill you instantly
 			grace = false
 			hp_diff = ui.hp - 0.1
@@ -784,7 +784,7 @@ func note_miss(note:Note) -> void:
 		kill_note(note)
 
 	var be_sad:bool = combo >= 10
-	pop_up_combo(['miss', ('000' if be_sad else '')], true)
+	pop_up_combo('miss', ('000' if be_sad else ''), true)
 	if be_sad and gf.has_anim('sad'):
 		gf.play_anim('sad')
 		gf.anim_timer = 0.5
@@ -806,56 +806,50 @@ func ghost_tap(dir:int) -> void:
 	#misses += 1
 	#ui.hit_count['miss'] = misses
 	boyfriend.sing(dir, 'miss')
-	var away = int(30 + (15 * 100
-	))
-	score -= 10 if Prefs.legacy_score else away
+	score -= 10 if Prefs.legacy_score else 1500
 
 	#ui.total_hit += 1
 
 	ui.hp -= 2.5
 
-	pop_up_combo(['miss', ''], true)
+	pop_up_combo('miss', '', true)
 
 	if Conductor.vocals:
 		Conductor.audio_volume(1, 0)
 	ui.update_score_txt()
 
-func pop_up_combo(_info:Array = ['sick', -1], is_miss:bool = false) -> void:
-	if Prefs.rating_cam != 'none':
-		var layer:Callable = ui.add_behind if Prefs.rating_cam == 'hud' else add_child
+func pop_up_combo(_r:String = 'sick', _com = -1, _early:bool = true, is_miss:bool = false) -> void:
+	if Prefs.rating_cam == 'none': return
+	var layer:Callable = ui.add_behind if Prefs.rating_cam == 'hud' else add_child
 
-		if _info[0].length() != 0:
-			var new_rating = Judge.make_rating(_info[0])
-			layer.call(new_rating)
-			if new_rating != null: # opening chart editor at the wrong time would fuck it
-				var fade = [new_rating]
-				if _info.size() == 3 and !['epic', 'sick'].has(_info[0]):
-					var new_timing = Judge.make_timing(new_rating, _info[2])
-					layer.call(new_timing)
-					fade.append(new_timing)
+	if !_r.is_empty():
+		var new_rating := Judge.make_rating(_r)
+		layer.call(new_rating)
+		if new_rating: # opening chart editor at the wrong time would fuck it
+			var fade:Array[VelocitySprite] = [new_rating]
+			if Rating.ratings_data[Rating.get_index(_r)].show_timing:
+				var new_timing = Judge.make_timing(new_rating, _r, _early)
+				layer.call(new_timing)
+				fade.append(new_timing)
 
-				for i in fade:
-					var new_tween = create_tween()
-					new_tween.tween_property(i, "modulate:a", 0, 0.2).set_delay(Conductor.crochet * 0.001)
-					new_tween.finished.connect(i.queue_free)
-
-		if (_info[1] is int and _info[1] > -1) or (_info[1] is String and _info[1].length() > 0):
-			for num in Judge.make_combo(_info[1]):
-				layer.call(num)
-
-				if num != null:
-					var n_tween = create_tween()
-					if is_miss: num.modulate = Color.DARK_RED
-					n_tween.tween_property(num, "modulate:a", 0, 0.2).set_delay(Conductor.crochet * 0.002)
-					n_tween.finished.connect(num.queue_free)
+			for i in fade:
+				create_tween().tween_property(i, "modulate:a", 0, 0.2)\
+				.set_delay(Conductor.crochet * 0.001).finished.connect(i.queue_free)
+	# its like this so you can go '000' and not have it default to a 0
+	if (_com is int and _com > -1) or (_com is String and !_com.is_empty()):
+		for num in Judge.make_combo(_com):
+			layer.call(num)
+			if num:
+				if is_miss: num.modulate = Color.DARK_RED
+				create_tween().tween_property(num, "modulate:a", 0, 0.2)\
+				  .set_delay(Conductor.crochet * 0.002).finished.connect(num.queue_free)
 
 func kill_note(note:Note) -> void:
-	if notes.find(note) != -1:
+	var _index:int = notes.find(note)
+	if _index > -1:
 		note.spawned = false
-		notes.remove_at(notes.find(note))
-		note.queue_free()
-	else:
-		note.queue_free()
+		notes.remove_at(_index)
+	note.queue_free()
 
 func kill_all_notes() -> void:
 	while notes.size() != 0:

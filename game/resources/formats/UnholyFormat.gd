@@ -9,7 +9,7 @@ const CHAR_ANIM = {
 	'prefix': '',
 	'offsets': [0, 0],
 	'framerate': 24,
-	'frames': [], #idk maybe
+	'frames': [],
 	#'flip_x': false, #optional
 	#'flip_y': false, #will only be added if it exists
 	'loop': false

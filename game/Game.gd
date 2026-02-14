@@ -132,7 +132,7 @@ func switch_scene(to_scene, skip_trans:bool = false) -> void:
 		if ResourceLoader.exists('res://game/scenes/'+ to_scene +'.tscn'):
 			to_scene = load('res://game/scenes/'+ to_scene +'.tscn')
 		else:
-			Alert.make_alert('Switch Scene: "'+ to_scene +'" doesn\'t exist\nreloading')
+			Alert.make_alert('Switch Scene: "'+ to_scene +'" doesn\'t exist!\nReloading...')
 			return reset_scene()
 
 	var new_scene:PackedScene = to_scene

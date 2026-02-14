@@ -46,8 +46,6 @@ func change_icon(new_image:String = 'face', player:bool = false, credit:bool = f
 		has_lose = texture.get_width() > MIN_WIDTH / default_scale
 
 	hframes = 2 if has_lose else 1
-	if texture.get_width() >= MIN_WIDTH * 3:
-		hframes = 3
 	flip_h = is_player
 
 func bump(to_scale:float = 1.2) -> void:

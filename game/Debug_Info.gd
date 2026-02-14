@@ -77,7 +77,6 @@ func _process(delta):
 			txt_add = 'VMem: %s\nTMem: %s\nScene: %s\nNodes: %s\nOrphans: %s\nAll Objs: %s\nDraw Calls: %s' % other_data
 		$Other.text += txt_add
 
-
 func _unhandled_key_input(event:InputEvent):
 	if get_viewport().gui_get_focus_owner() == null:
 		if event.is_action_pressed('vol_up') or event.is_action_pressed('vol_down'):
@@ -88,7 +87,7 @@ func _unhandled_key_input(event:InputEvent):
 	if Input.is_key_pressed(KEY_F5):
 		Game.reset_scene()
 		if !Input.is_key_pressed(KEY_SHIFT):
-			Alert.make_alert('Reset Scene').max_time = 1
+			Alert.make_alert('Scene Reset!').max_time = 1
 
 	if Input.is_key_pressed(KEY_CTRL): # debuggin baby wahoo
 		if Input.is_key_pressed(KEY_L): Conductor.playback_rate += 0.05
