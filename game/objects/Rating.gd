@@ -7,19 +7,20 @@ var spacing:float = 43.0
 
 static var ratings_data:Array[RatingData] = [
 	#RatingData.new(['fucking_awesome_andalso_awesome_and_ummm_awesome_me_thinks',10 - jillion,55.0.5]),
-	RatingData.new(['epic', 500, 22.5]),
-	RatingData.new(['sick', 350, 45.0]),
-	RatingData.new(['good', 200,  90.0, 1.00, 0.75, true]),
-	RatingData.new(['bad' , 100, 135.0, 0.35,  0.5, true]),
+	RatingData.new(['epic', 500,  Prefs.epic_window]),
+	RatingData.new(['sick', 350,  Prefs.sick_window]),
+	RatingData.new(['good', 200,  Prefs.good_window, 1.00, 0.75, true]),
+	RatingData.new(['bad' , 100,  Prefs.bad_window , 0.35,  0.5, true]),
 	RatingData.new(['shit',  50,  null, 0.10,  0.2, true]),
 	RatingData.new(['miss',   0,  null]),
 ]
 
-static func get_rating(diff:float) -> String:
-	for i:RatingData in ratings_data:
-		if absf(diff) <= Prefs.get(i.name +'_window'):
-			return i.name
-	return ratings_data[ratings_data.size() - 2].name # miss should always be the last, so check the one before
+static func get_rating(diff:float = 0.0) -> String:
+	var lim:int = ratings_data.size() - 2 # miss should always be the last, so check the one before
+	for i:int in lim:
+		if absf(diff) <= ratings_data[i].hit_window:
+			return ratings_data[i].name
+	return ratings_data[lim].name
 
 static func get_index(rating:String) -> int:
 	for i in ratings_data.size():
@@ -30,8 +31,10 @@ static func get_score(rating:String) -> Array:
 	var rate:RatingData = ratings_data[get_index(rating)]
 	return [rate.score, rate.hit_mod, rate.penalty]
 
-#static func get_color(rating:String) -> Color:
-#	return Color(ratings_data.color[ratings_data.name.find(rating)])
+func _init() -> void:
+	for i in ratings_data: # update hit windows
+		var window = Prefs.get(i.name +'_window')
+		i.hit_window = window if window else INF
 
 func make_rating(rate:String = 'sick') -> VelocitySprite:
 	var rating = VelocitySprite.new()

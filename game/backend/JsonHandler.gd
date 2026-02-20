@@ -2,7 +2,7 @@ extends Node2D;
 
 const base_diffs:PackedStringArray = ['easy', 'normal', 'hard']
 var song_diffs:PackedStringArray = []
-var cur_diff:String
+var cur_diff:String = 'hard'
 
 var SONG:Dictionary = {} # change name of this to like SONG_DATA or something
 var META:Dictionary = {}
