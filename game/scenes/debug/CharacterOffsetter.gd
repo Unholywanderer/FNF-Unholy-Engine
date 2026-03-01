@@ -443,7 +443,7 @@ func add_anim() -> void:
 			for i:String in temp:
 				fixed_frames.append(int(i))
 
-	var le_prefix:String = symbol_list[ANIM('Symbol').selected] if atlas_char else ANIM('Prefix')
+	var le_prefix:String = symbol_list[ANIM('Symbol').selected] if atlas_char else ANIM('Prefix').text
 	for i:Dictionary in char_json.animations:
 		if i.name == anim_name: # Animation exists, just update it with new info
 			i.prefix = le_prefix #ANIM('Prefix').text
