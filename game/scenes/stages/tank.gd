@@ -14,7 +14,7 @@ func countdown_start() -> void:
 		$CharGroup/Tanky.queue_free()
 		return
 
-	if !Game.persist.get('seen_cutscene'):
+	if !Game.persist.get('seen_cutscene') and dad.cur_char == 'tankman':
 		Game.persist.set('seen_cutscene', true)
 		dad.hide()
 		UI.toggle_objects(false)
@@ -47,7 +47,7 @@ func countdown_start() -> void:
 
 		match SONG.song.to_lower():
 			'ugh':
-				cutscene.max_time = 12
+				cutscene.max_time = 12.0
 
 				cutscene.add_timed_event(0.1, func():
 					Audio.play_sound('tank/cutscene/wellWellWell')
@@ -92,7 +92,7 @@ func countdown_start() -> void:
 				funny_bf.z_index = 2
 
 				var pico := Atlas.new()
-				pico.atlas = 'res://assets/images/stages/tank/cutscenes/stressPico'
+				pico.add_atlas('images/stages/tank/cutscenes/stressPico')
 				pico.position = gf.position + Vector2(180, 347)
 				$CharGroup.add_child(pico)
 

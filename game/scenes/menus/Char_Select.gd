@@ -102,7 +102,7 @@ func align_icons() -> void:
 		#item.position.x += grpIcons.x;
 		#item.position.y += grpIcons.y;
 
-func _process(delta:float) -> void:
+func _process(_delta:float) -> void:
 	pass#if bop_play: bop_icon($Icons.get_child(0), delta)
 
 var bop_info:Array[Dictionary] = JSFParser.parse('images/char_select/_info/iconBop/iconBopInfo')
@@ -176,8 +176,8 @@ class DipshitPlayer extends Atlas:
 	#	 'slideIn': 'bf slide in', 'slideOut': 'bf slide out'}
 	}
 	func _init() -> void:
-		loop_mode = 'Play Once'
-		atlas = 'res://assets/images/char_select/dipshits/bfChill'
+		#loop_mode = 'Play Once'
+		add_atlas('images/char_select/dipshits/bfChill')
 		position = Vector2(630, 345)
 		change_char()
 		finished.connect(func():
@@ -187,18 +187,20 @@ class DipshitPlayer extends Atlas:
 
 	func change_char(new_chill:String = 'bf') -> void:
 		if new_chill == char_name: return
-		loop_mode = 'Loop' if new_chill == 'locked' else 'Play Once'
+		loop = new_chill == 'locked'
 
-		atlas = 'res://assets/images/char_select/dipshits/'+ new_chill +'Chill'
-		position = pos[new_chill]
+		atlases.clear()
 		_added_anims.clear()
+
+		add_atlas('images/char_select/dipshits/'+ new_chill +'Chill')
+		position = pos[new_chill]
 		char_name = new_chill
 		for i in anim_data[char_name].keys():
 			var data = anim_data[char_name][i]
 			if data is Array:
 				add_anim_by_frames(i, data)
 			else:
-				add_anim_by_symbol(i, data, [], 24)
+				add_anim_by_symbol(i, data)
 		play_anim('slideIn')
 
 @warning_ignore("missing_tool")
@@ -214,8 +216,8 @@ class Lock extends Atlas:
 	]
 
 	func _init() -> void:
-		atlas = 'res://assets/images/char_select/lock'
-		loop_mode = 'Fuck no'
+		#atlas = 'res://assets/images/char_select/lock'
+		#loop_mode = 'Fuck no'
 		playing = false
 
 class NameTag extends Sprite2D:

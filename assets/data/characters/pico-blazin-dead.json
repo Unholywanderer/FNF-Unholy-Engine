@@ -4,8 +4,7 @@
 			"name": "deathStart",
 			"prefix": "Pico Fighting ALL ANIMS",
 			"offsets": [
-				-100,
-				-600
+				0,0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -15,8 +14,7 @@
 			"name": "deathLoop",
 			"prefix": "Pico Fighting ALL ANIMS",
 			"offsets": [
-				-100,
-				-600
+				0,0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -26,8 +24,7 @@
 			"name": "deathConfirm",
 			"prefix": "Pico Fighting ALL ANIMS",
 			"offsets": [
-				-100,
-				-600
+				0,0
 			],
 			"framerate": 24,
 			"frames": [],
@@ -44,7 +41,7 @@
 	],
 	"pos_offset": [
 		-20,
-		1050
+		-1050
 	],
 	"sing_dur": 999,
 	"scale": 1.75

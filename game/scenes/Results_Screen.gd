@@ -1,7 +1,7 @@
 extends Node2D
 
 var from_story:bool = false
-var score_data:ScoreData = Game.persist.get('scoring', ScoreData.new())
+var score_data:ScoreData = Game.persist.scoring if Game.persist.scoring else ScoreData.new()
 var rank:String = score_data.rank
 var player:String = 'bf'
 
@@ -17,6 +17,7 @@ enum {
 @onready var diff:Sprite2D = $Difficulty
 var score_counter:Counters.Score
 var move_song_stuff:bool = false
+var move_side_text:bool = false
 var song_name
 var small_counter
 func _ready() -> void:
@@ -30,14 +31,14 @@ func _ready() -> void:
 	var player_data := JsonHandler.parse('data/players/'+ player +'.json')
 	var item_list:Array = player_data.results[rank]
 
-	var items = []
+	var items:Array = []
 	for i in item_list.size():
-		var item = item_list[i]
+		var item:Dictionary = item_list[i]
 		var new_item:Node2D
 		match item.renderType:
 			'animateatlas':
-				new_item = AnimateSymbol.new()
-				new_item.atlas = 'res://assets/images/'+ item.assetPath
+				new_item = Atlas.new()
+				new_item.add_atlas('images/'+ item.assetPath)
 				new_item.frame = 0
 				new_item.playing = false
 				new_item.loop_frame = item.loopFrame
@@ -51,6 +52,8 @@ func _ready() -> void:
 			)
 		items.append(new_item)
 		new_item.visible = false
+		if item.has('scale'):
+			new_item.scale = Vector2(item.scale, item.scale)
 		new_item.position = Vector2(item.offsets[0], item.offsets[1])
 		$CharGroup.add_child(new_item)
 
@@ -116,7 +119,7 @@ func _ready() -> void:
 	score_counter.hide()
 
 	for i in $RatingCounters.get_child_count():
-		var rate = $RatingCounters.get_child(i)
+		var rate:Counters.Tally = $RatingCounters.get_child(i)
 		rate.visible = false
 		get_tree().create_timer((0.3 * i) + 1.20, false).timeout.connect(func():
 			rate.visible = true
@@ -173,6 +176,10 @@ func _process(delta:float) -> void:
 		for i in [song_name, diff, small_counter]:
 			i.position.x += ((speed.x * 100) * delta)
 			i.position.y += ((speed.y * 100) * delta)
+
+	if move_side_text:
+		$SideText.region_rect.position.y += (25 * delta)
+
 	if song_name.position.x + song_name.width < 100:
 		timer_and_song()
 
@@ -285,11 +292,19 @@ func display_rank_shit() -> void:
 	$SideText.texture = load(txt_pth +'rankText'+ rank.to_upper() +'.png')
 	$SideText.material.set_shader_parameter('speed_scale', 0)
 	get_tree().create_timer(30.0 / 24.0).timeout.connect(func():
-		$SideText.material.set_shader_parameter('speed_scale', 0.05)
+		move_side_text = true
+		#$SideText.material.set_shader_parameter('speed_scale', 0.05)
 	)
 
-	#$BG.texture.gradient.colors[0] = Color.REBECCA_PURPLE
-	#$BG.texture.gradient.colors[1] = Color.MIDNIGHT_BLUE
+	#match rank:
+	#	'loss':
+	#		$BG.texture.gradient.colors[0] = Color.REBECCA_PURPLE
+	#		$BG.texture.gradient.colors[1] = Color.MIDNIGHT_BLUE
+	#	_:
+	$BG.texture.gradient.colors[0] = Color('fecc5c')
+	$BG.texture.gradient.colors[0] = Color('fdc05c')
+
+
 #func tween
 
 func get_delays() -> Dictionary:

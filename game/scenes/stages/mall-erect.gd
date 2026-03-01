@@ -12,19 +12,16 @@ func post_ready() -> void:
 		i.material = new
 
 	if SONG.song == 'Eggnog Erect':
-		parents = AnimateSymbol.new()
-		parents.atlas = 'res://assets/images/stages/mall/erect/parents'
+		parents = Atlas.new()
+		parents.add_atlas('images/stages/mall/erect/parents')
 		parents.position = dad.position + Vector2(-120, 403)
 		$CharGroup.add_child(parents)
-		parents.loop_mode = 'grah'
 		parents.material = dad.material
 
-		santa = AnimateSymbol.new()
-		santa.atlas = 'res://assets/images/stages/mall/erect/santa'
+		santa = Atlas.new()
+		santa.add_atlas('images/stages/mall/erect/santa')
 		santa.position = $Santa.position + Vector2(383, 350)
 		add_child(santa)
-		santa.z_index = 30
-		santa.loop_mode = 'guhh'
 
 		parents.hide()
 		santa.hide()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bai8a05cuj8b6"]
+[gd_scene format=3 uid="uid://bai8a05cuj8b6"]
 
 [ext_resource type="FontFile" uid="uid://pu2dvns1070g" path="res://assets/fonts/Poppins-Medium.ttf" id="1_dfgn7"]
 [ext_resource type="Script" uid="uid://ba5ivc6samb40" path="res://game/objects/ui/Icon.gd" id="2_h3xpt"]
@@ -28,38 +28,38 @@ font_size = 20
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
-[node name="Subtitle" type="Control"]
+[node name="Subtitle" type="Control" unique_id=1986503923]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -730.0
+offset_right = -680.0
 offset_bottom = -605.0
 grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_h3xpt")
 
-[node name="Box" type="ColorRect" parent="."]
+[node name="Box" type="ColorRect" parent="." unique_id=394501881]
 show_behind_parent = true
 layout_mode = 0
-offset_right = 550.0
+offset_right = 600.0
 offset_bottom = 115.0
 color = Color(0.038397163, 0.038397174, 0.038397145, 0.78431374)
 
-[node name="Outline" type="ColorRect" parent="Box"]
+[node name="Outline" type="ColorRect" parent="Box" unique_id=2001104647]
 show_behind_parent = true
 layout_mode = 0
 offset_left = -2.5
 offset_top = -2.5
-offset_right = 552.5
+offset_right = 602.5
 offset_bottom = 117.5
 color = Color(0.27022192, 0.27022192, 0.2702219, 1)
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=1913207482]
 layout_mode = 0
 offset_left = 125.0
 offset_top = 10.0
-offset_right = 540.0
+offset_right = 595.0
 offset_bottom = 105.0
 text = "You're pretty stupid you know
 like shockingly so"
@@ -68,13 +68,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="Icon" type="Sprite2D" parent="."]
+[node name="Icon" type="Sprite2D" parent="." unique_id=1338461712]
 position = Vector2(65, 60)
 script = ExtResource("2_h3xpt")
 image = "bf"
 metadata/_custom_type_script = "uid://ba5ivc6samb40"
 
-[node name="Test" type="Sprite2D" parent="."]
+[node name="Test" type="Sprite2D" parent="." unique_id=1125491824]
 visible = false
 position = Vector2(65, 60)
 texture = ExtResource("3_dfgn7")

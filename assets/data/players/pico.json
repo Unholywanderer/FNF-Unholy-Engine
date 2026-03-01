@@ -93,7 +93,7 @@
         "assetPath": "results_screen/results-pico/resultsPERFECT",
         "zIndex": 500,
         "scale": 0.88,
-        "offsets": [940, 400],
+        "offsets": [169.5, 219],
         "loopFrame": 91
       }
     ],
@@ -103,7 +103,7 @@
         "assetPath": "results_screen/results-pico/resultsPERFECT",
         "zIndex": 500,
         "scale": 0.88,
-        "offsets": [940, 400],
+        "offsets": [350, 115],
         "loopFrame": 91
       }
     ],

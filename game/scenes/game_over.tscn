@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dfmsn8pvbrl8n"]
+[gd_scene format=3 uid="uid://dfmsn8pvbrl8n"]
 
 [ext_resource type="Script" uid="uid://bv0aey11nievt" path="res://game/scenes/Game_Over.gd" id="1_frtla"]
 
-[node name="Game_Over" type="Control"]
+[node name="Game_Over" type="Control" unique_id=1362624941]
 process_mode = 3
 z_index = 10
 layout_mode = 3
@@ -11,23 +11,23 @@ offset_right = 1280.0
 offset_bottom = 720.0
 script = ExtResource("1_frtla")
 
-[node name="BG" type="ColorRect" parent="."]
+[node name="BG" type="ColorRect" parent="." unique_id=1822127127]
 unique_name_in_owner = true
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 color = Color(0, 0, 0, 0)
 
-[node name="Fade" type="ColorRect" parent="."]
+[node name="Fade" type="ColorRect" parent="." unique_id=930596302]
 unique_name_in_owner = true
 top_level = true
-z_index = 10
+z_index = 1000
 layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 color = Color(0, 0, 0, 0)
 
-[node name="Timer" type="Timer" parent="."]
+[node name="Timer" type="Timer" parent="." unique_id=1092247892]
 one_shot = true
 
-[node name="Overlay" type="CanvasLayer" parent="."]
+[node name="Overlay" type="CanvasLayer" parent="." unique_id=254035569]

@@ -4,10 +4,10 @@
 			"name": "idle",
 			"prefix": "BF idle dance",
 			"offsets": [
-				5.0,
-				0.0
+				5,
+				0
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -15,10 +15,10 @@
 			"name": "singLEFT",
 			"prefix": "BF NOTE LEFT0",
 			"offsets": [
-				-21.0,
-				16.0
+				-21,
+				16
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -26,10 +26,10 @@
 			"name": "singDOWN",
 			"prefix": "BF NOTE DOWN0",
 			"offsets": [
-				-77.0,
-				71.0
+				-77,
+				71
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -37,10 +37,10 @@
 			"name": "singUP",
 			"prefix": "BF NOTE UP0",
 			"offsets": [
-				-51.0,
-				0.0
+				-51,
+				0
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -48,10 +48,10 @@
 			"name": "singRIGHT",
 			"prefix": "BF NOTE RIGHT0",
 			"offsets": [
-				56.0,
-				22.0
+				56,
+				22
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -59,10 +59,10 @@
 			"name": "singLEFTmiss",
 			"prefix": "BF NOTE LEFT MISS",
 			"offsets": [
-				-21.0,
-				11.0
+				-21,
+				11
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -70,10 +70,10 @@
 			"name": "singDOWNmiss",
 			"prefix": "BF NOTE DOWN MISS",
 			"offsets": [
-				-80.0,
-				70.0
+				-80,
+				70
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -81,10 +81,10 @@
 			"name": "singUPmiss",
 			"prefix": "BF NOTE UP MISS",
 			"offsets": [
-				-61.0,
-				0.0
+				-61,
+				0
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -92,10 +92,10 @@
 			"name": "singRIGHTmiss",
 			"prefix": "BF NOTE RIGHT MISS",
 			"offsets": [
-				52.0,
-				15.0
+				52,
+				15
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -103,10 +103,10 @@
 			"name": "knifeToss",
 			"prefix": "BF catches GF",
 			"offsets": [
-				-10.0,
-				-27.0
+				-10,
+				-27
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
 		},
@@ -114,26 +114,54 @@
 			"name": "laugh",
 			"prefix": "BF catches GF",
 			"offsets": [
-				0.0,
-				-7.0
+				0,
+				-7
 			],
-			"framerate": 24,
+			"framerate": 24.0,
 			"frames": [],
 			"loop": false
+		},
+		{
+			"name": "laugh-loop",
+			"prefix": "laugh",
+			"offsets": [
+				0,
+				-7
+			],
+			"framerate": 24.0,
+			"frames": [
+				119,
+				120,
+				121,
+				122,
+				123,
+				124,
+				125,
+				126,
+				127,
+				128,
+				129,
+				130,
+				131,
+				132,
+				133,
+				134
+			],
+			"loop": true
 		}
 	],
 	"path": "characters/pico/nene/char",
-	"icon": "pico",
 	"death_char": "pico-holding-nene-dead",
+	"icon": "pico",
 	"facing_left": true,
 	"antialiasing": true,
 	"cam_offset": [
-		0.0,
-		0.0
+		0,
+		0
 	],
 	"pos_offset": [
-		0.0,
-		250.0
+		0,
+		250
 	],
 	"sing_dur": 4,
 	"scale": 1.0

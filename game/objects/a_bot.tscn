@@ -1,16 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://dho30ko8csxeb"]
+[gd_scene format=3 uid="uid://dho30ko8csxeb"]
 
 [ext_resource type="Script" uid="uid://dcehs8gcfm8ms" path="res://game/objects/A_Bot.gd" id="1_63ws8"]
 [ext_resource type="Texture2D" uid="uid://dop4x3nfiywc2" path="res://assets/images/characters/speakers/abot/BG.png" id="2_k3joh"]
 [ext_resource type="Script" uid="uid://ctnes3nxk1qlt" path="res://game/objects/Atlas.gd" id="2_wr2bp"]
 [ext_resource type="SpriteFrames" path="res://assets/images/characters/speakers/abot/viz.res" id="3_e6bxv"]
+[ext_resource type="Script" uid="uid://dy4vnmv4435ty" path="res://addons/gdanimate-rewrite/animate_atlas.gd" id="3_hgfvl"]
 [ext_resource type="SpriteFrames" uid="uid://1lw5qm4bp1jj" path="res://assets/images/characters/speakers/abot/abot.res" id="4_42hql"]
+[ext_resource type="Script" uid="uid://dkyyuwqo0dy7q" path="res://addons/gdanimate-rewrite/adobe/adobe_atlas.gd" id="4_n2cwo"]
 
-[node name="ABot" type="Node2D"]
+[sub_resource type="Resource" id="Resource_d85hu"]
+script = ExtResource("4_n2cwo")
+folder_path = "res://assets/images/characters/speakers/abot/systemEyes/"
+format = "adobe"
+metadata/_custom_type_script = "uid://dkyyuwqo0dy7q"
+
+[node name="ABot" type="Node2D" unique_id=1314038491]
 use_parent_material = true
 script = ExtResource("1_63ws8")
 
-[node name="EyeBG" type="ColorRect" parent="."]
+[node name="EyeBG" type="ColorRect" parent="." unique_id=591196288]
 use_parent_material = true
 custom_minimum_size = Vector2(105, 40)
 offset_left = 56.0
@@ -18,22 +26,22 @@ offset_top = 246.0
 offset_right = 156.0
 offset_bottom = 286.0
 
-[node name="Eyes" type="Node2D" parent="."]
+[node name="Eyes" type="Node2D" parent="." unique_id=1809394342]
 position = Vector2(57, 238)
 script = ExtResource("2_wr2bp")
-atlas = "res://assets/images/characters/speakers/abot/systemEyes"
-frame = 16
-loop_mode = "Play Once"
+symbol = "a bot eyes lookin"
+frame = 15
+atlases = Array[ExtResource("3_hgfvl")]([SubResource("Resource_d85hu")])
 metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
 
-[node name="VizBG" type="Sprite2D" parent="."]
+[node name="VizBG" type="Sprite2D" parent="." unique_id=1929608627]
 position = Vector2(163, 23)
 texture = ExtResource("2_k3joh")
 centered = false
 
-[node name="VIZ" type="Node2D" parent="."]
+[node name="VIZ" type="Node2D" parent="." unique_id=874374662]
 
-[node name="Bar0" type="AnimatedSprite2D" parent="VIZ"]
+[node name="Bar0" type="AnimatedSprite2D" parent="VIZ" unique_id=1174595102]
 use_parent_material = true
 position = Vector2(199, 85)
 sprite_frames = ExtResource("3_e6bxv")
@@ -41,7 +49,7 @@ animation = &"viz1"
 autoplay = "viz1"
 centered = false
 
-[node name="Bar1" type="AnimatedSprite2D" parent="VIZ"]
+[node name="Bar1" type="AnimatedSprite2D" parent="VIZ" unique_id=367696295]
 use_parent_material = true
 position = Vector2(259, 78)
 sprite_frames = ExtResource("3_e6bxv")
@@ -49,7 +57,7 @@ animation = &"viz2"
 autoplay = "viz2"
 centered = false
 
-[node name="Bar2" type="AnimatedSprite2D" parent="VIZ"]
+[node name="Bar2" type="AnimatedSprite2D" parent="VIZ" unique_id=296472958]
 use_parent_material = true
 position = Vector2(315, 74)
 sprite_frames = ExtResource("3_e6bxv")
@@ -57,7 +65,7 @@ animation = &"viz3"
 autoplay = "viz3"
 centered = false
 
-[node name="Bar3" type="AnimatedSprite2D" parent="VIZ"]
+[node name="Bar3" type="AnimatedSprite2D" parent="VIZ" unique_id=486688402]
 use_parent_material = true
 position = Vector2(382, 72)
 sprite_frames = ExtResource("3_e6bxv")
@@ -65,7 +73,7 @@ animation = &"viz4"
 autoplay = "viz4"
 centered = false
 
-[node name="Bar4" type="AnimatedSprite2D" parent="VIZ"]
+[node name="Bar4" type="AnimatedSprite2D" parent="VIZ" unique_id=1366088756]
 use_parent_material = true
 position = Vector2(440, 73)
 sprite_frames = ExtResource("3_e6bxv")
@@ -73,7 +81,7 @@ animation = &"viz5"
 autoplay = "viz5"
 centered = false
 
-[node name="Bar5" type="AnimatedSprite2D" parent="VIZ"]
+[node name="Bar5" type="AnimatedSprite2D" parent="VIZ" unique_id=692880565]
 use_parent_material = true
 position = Vector2(495, 77)
 sprite_frames = ExtResource("3_e6bxv")
@@ -81,7 +89,7 @@ animation = &"viz6"
 autoplay = "viz6"
 centered = false
 
-[node name="Bar6" type="AnimatedSprite2D" parent="VIZ"]
+[node name="Bar6" type="AnimatedSprite2D" parent="VIZ" unique_id=1277354913]
 use_parent_material = true
 position = Vector2(548, 85)
 sprite_frames = ExtResource("3_e6bxv")
@@ -89,7 +97,7 @@ animation = &"viz7"
 autoplay = "viz7"
 centered = false
 
-[node name="Frame" type="AnimatedSprite2D" parent="."]
+[node name="Frame" type="AnimatedSprite2D" parent="." unique_id=407573160]
 use_parent_material = true
 sprite_frames = ExtResource("4_42hql")
 animation = &"bump"

@@ -29,6 +29,7 @@ enum TYPES {
 @export var death_type:TYPES = TYPES.NORMAL
 @export var death_char:String = ''
 @export var death_music:String = 'gameOver-pico'
+@export var focus_offset:Vector2 = Vector2.ZERO
 
 var on_death_start:Callable = func(): # once the death sound and deathStart finish playing
 	if !retried:
@@ -65,7 +66,7 @@ func _ready():
 	Conductor.paused = true
 
 	Game.focus_change.connect(focus_change)
-	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.cur_diff.to_upper(), 'I\'ll get it next time maybe')
+	Discord.change_presence('Game Over | %s - %s' % [this.SONG.song.capitalize(), JsonHandler.cur_diff.to_upper()], 'I\'ll get it next time maybe')
 
 	follow_bg()
 	cam.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -100,18 +101,21 @@ func _ready():
 			death_delay = 1.55
 			sound_suff += '-explode'
 			death_music += '-explode'
-			Audio.on_finish = func(): Audio.play_music('skins/'+ this.cur_skin +'/gameOver-pico')
+			Audio.on_finish = func():
+				if Audio.music.contains('-explode'):
+					Audio.play_music('skins/'+ this.cur_skin +'/gameOver-pico')
 
 		TYPES.PUNCH:
 			sound_suff += '-gutpunch'
 			death_delay = -1
+			focus_offset = Vector2(100, 20)
 		TYPES.NENE:
 			sound_suff += '-and-nene'
-			death_delay = -1
+			death_delay = -1.3
 			cam.position = pico.get_cam_pos()
 		_:
-			death_delay = -0.8
-			var el_nene = AnimatedSprite2D.new()
+			death_delay = -0.85
+			var el_nene:AnimatedSprite2D = AnimatedSprite2D.new()
 			el_nene.centered = false
 			el_nene.sprite_frames = nene_frames
 			el_nene.position = this.gf.global_position + Vector2(150, 0)
@@ -149,7 +153,7 @@ func _process(delta):
 	   pico.anim_finished) and !focused:
 		focused = true
 		cam.position_smoothing_speed = 2
-		cam.position = pico.get_cam_pos()
+		cam.position = pico.get_cam_pos() + focus_offset
 		#match death_type:
 		#	TYPES.EXPLODE:
 		#		cam.position += Vector2(pico.width / 3.5, (pico.height / 2))
@@ -205,15 +209,23 @@ func follow_bg() -> void:
 	fade.position = bg.position
 	fade.scale = bg.scale
 
-func focus_change(is_focused):
+var last_playing:bool
+func focus_change(is_focused:bool):
 	timer.paused = !is_focused
 	if _death_audio: _death_audio.stream_paused = !is_focused
+
 	var is_retry_fin:bool = true
 	if retry and retry.sprite_frames:
 		is_retry_fin = (retry.frame == retry.sprite_frames.get_frame_count(retry.animation) - 1)
-	if !is_focused:
-		if !is_retry_fin: retry.pause()
-		if !pico.is_atlas: pico.pause()
-	else:
+
+	if is_focused:
 		if !is_retry_fin: retry.play()
 		if !pico.is_atlas: pico.play()
+		else:
+			pico.atlas.playing = last_playing
+	else:
+		if !is_retry_fin: retry.pause()
+		if !pico.is_atlas: pico.pause()
+		else:
+			last_playing = pico.atlas.playing
+			pico.atlas.playing = false

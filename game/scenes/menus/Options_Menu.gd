@@ -31,6 +31,7 @@ var visuals = [
 	['splash_sprite', 'array', ['vis', 'base', 'base-pixel', 'haxe', 'forever']],
 	['hold_splash',   'array', ['disabled', 'cover', 'full']],
 	['behind_strums',  'bool'],
+	['time_circle'  ,  'bool'],
 	['rating_cam',    'array', ['game', 'hud', 'none']],
 	['auto_pause',     'bool'],
 	['daniel',         'bool'],

@@ -15,6 +15,24 @@ func parse_chart(data) -> Array:
 	return_notes.sort_custom(func(a, b): return a.strum_time < b.strum_time)
 	return return_notes
 
+static func convert_to_simple(chart:Dictionary, d:String = 'normal') -> Dictionary:
+	var simple:Dictionary = UnholyFormat.EDITOR_CHART.duplicate(true)
+	simple.events = chart.events
+	for note in chart.notes[d]:
+		var time:float = maxf(0.0, note.t)
+		var sustain_len:float = max(0, note.get('l', 0))
+		var n_type:String = str(note.get('k', ''))
+
+		simple.notes.append([
+			time, int(note.d), sustain_len > 0, sustain_len, note.d <= 3, n_type
+		])
+
+	simple.notes.sort_custom(func(a, b): return a[0] < b[0])
+	#var file:FileAccess = FileAccess.open("res://assets/FUCK.json", FileAccess.WRITE)
+	#file.store_string(JSON.stringify(simple, '\t', false))
+	#file.close()
+	return simple
+
 static func fix_json(data:Dictionary) -> Dictionary:
 	# make vslice char json mine grrr
 	var vslice_anim:Dictionary = {
@@ -62,5 +80,4 @@ static func fix_json(data:Dictionary) -> Dictionary:
 		new_json[vslice_data[i]] = data[i] if i != 'is_pixel' else !data[i]
 
 	#new_json['cam_offset'][0] *= -1 # the x goes in the opposite direction
-
 	return new_json

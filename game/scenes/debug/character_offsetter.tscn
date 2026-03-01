@@ -50,19 +50,19 @@ color = Color(1, 1, 0, 0.392157)
 
 [node name="Reset" type="Button" parent="UILayer" unique_id=1373067906]
 modulate = Color(1, 0, 0, 1)
-offset_left = 1139.0
-offset_top = 344.0
-offset_right = 1256.0
-offset_bottom = 375.0
+offset_left = 1138.0
+offset_top = 386.0
+offset_right = 1255.0
+offset_bottom = 417.0
 focus_mode = 0
 text = "RESET"
 
 [node name="Save" type="Button" parent="UILayer" unique_id=503900441]
 modulate = Color(0, 1, 1, 1)
-offset_left = 956.0
-offset_top = 345.0
-offset_right = 1073.0
-offset_bottom = 376.0
+offset_left = 955.0
+offset_top = 387.0
+offset_right = 1072.0
+offset_bottom = 418.0
 focus_mode = 0
 text = "SAVE Json"
 
@@ -79,6 +79,21 @@ context_menu_enabled = false
 emoji_menu_enabled = false
 scroll_fit_content_height = true
 
+[node name="Warn" type="Label" parent="UILayer/ResPath" unique_id=1485352944]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 0
+offset_left = -380.0
+offset_top = 6.0
+offset_right = -5.0
+offset_bottom = 24.0
+theme_override_constants/outline_size = 4
+theme_override_fonts/font = ExtResource("4_e8b0o")
+theme_override_font_sizes/font_size = 20
+text = "No .res file/atlas folder found!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Label" type="Label" parent="UILayer/ResPath" unique_id=133737630]
 layout_mode = 0
 offset_left = 3.0
@@ -94,10 +109,10 @@ vertical_alignment = 1
 
 [node name="Main" type="ColorRect" parent="UILayer" unique_id=1329706937]
 custom_minimum_size = Vector2(300, 300)
-offset_left = 956.0
+offset_left = 955.0
 offset_top = 15.0
-offset_right = 1256.0
-offset_bottom = 335.0
+offset_right = 1255.0
+offset_bottom = 365.0
 color = Color(0.194349, 0.194349, 0.194349, 1)
 
 [node name="Shadow" type="Panel" parent="UILayer/Main" unique_id=1523125996]
@@ -201,9 +216,9 @@ text = "NEW Json"
 [node name="Anti" type="CheckBox" parent="UILayer/Main" unique_id=1023301982]
 layout_mode = 0
 offset_left = 150.0
-offset_top = 258.0
+offset_top = 290.0
 offset_right = 291.0
-offset_bottom = 289.0
+offset_bottom = 321.0
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -212,9 +227,9 @@ text = "Antialiasing"
 [node name="FacesLeft" type="CheckBox" parent="UILayer/Main" unique_id=2000890021]
 layout_mode = 0
 offset_left = 150.0
-offset_top = 283.0
+offset_top = 315.0
 offset_right = 282.0
-offset_bottom = 314.0
+offset_bottom = 346.0
 focus_mode = 0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
@@ -223,9 +238,9 @@ text = "Facing Left"
 [node name="ScaleBox" type="SpinBox" parent="UILayer/Main" unique_id=336233170]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 268.0
+offset_top = 305.0
 offset_right = 138.0
-offset_bottom = 299.0
+offset_bottom = 336.0
 min_value = 0.1
 max_value = 10.0
 step = 0.01
@@ -267,9 +282,9 @@ flat = false
 [node name="Pos" type="Label" parent="UILayer/Main" unique_id=1811140671]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 195.0
+offset_top = 210.0
 offset_right = 151.0
-offset_bottom = 218.0
+offset_bottom = 233.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 16
@@ -297,9 +312,9 @@ update_on_text_changed = true
 [node name="Cam" type="Label" parent="UILayer/Main" unique_id=269729546]
 layout_mode = 0
 offset_left = 10.0
-offset_top = 135.0
+offset_top = 140.0
 offset_right = 151.0
-offset_bottom = 158.0
+offset_bottom = 163.0
 theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 16
@@ -392,26 +407,11 @@ theme_override_font_sizes/font_size = 25
 text = "[0 | 0]"
 horizontal_alignment = 1
 
-[node name="Warn" type="Label" parent="UILayer/CurData" unique_id=1485352944]
-visible = false
-modulate = Color(1, 0, 0, 1)
-layout_mode = 0
-offset_left = 1.0
-offset_top = 136.0
-offset_right = 249.0
-offset_bottom = 159.0
-theme_override_constants/outline_size = 4
-theme_override_fonts/font = ExtResource("4_e8b0o")
-theme_override_font_sizes/font_size = 20
-text = "No .res file found!"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="Anim" type="ColorRect" parent="UILayer" unique_id=217095955]
-custom_minimum_size = Vector2(300, 320)
-offset_left = 956.0
-offset_top = 385.0
-offset_right = 1256.0
+custom_minimum_size = Vector2(300, 280)
+offset_left = 955.0
+offset_top = 425.0
+offset_right = 1255.0
 offset_bottom = 705.0
 color = Color(0.196078, 0.196078, 0.196078, 1)
 
@@ -422,6 +422,7 @@ offset_top = 10.0
 offset_right = 177.0
 offset_bottom = 41.0
 focus_mode = 1
+clip_text = true
 
 [node name="Name" type="TextEdit" parent="UILayer/Anim" unique_id=336732676]
 layout_mode = 0
@@ -436,6 +437,17 @@ placeholder_text = "Animation Name"
 context_menu_enabled = false
 emoji_menu_enabled = false
 scroll_fit_content_height = true
+
+[node name="Symbol" type="OptionButton" parent="UILayer/Anim" unique_id=844868804]
+visible = false
+layout_mode = 0
+offset_left = 10.0
+offset_top = 89.0
+offset_right = 289.0
+offset_bottom = 120.0
+focus_mode = 1
+text_overrun_behavior = 3
+clip_text = true
 
 [node name="Prefix" type="TextEdit" parent="UILayer/Anim" unique_id=1796130590]
 layout_mode = 0
@@ -456,7 +468,7 @@ layout_mode = 0
 offset_left = 10.0
 offset_top = 130.0
 offset_right = 289.0
-offset_bottom = 158.0
+offset_bottom = 162.0
 focus_mode = 1
 theme_override_fonts/font = ExtResource("4_e8b0o")
 theme_override_font_sizes/font_size = 15

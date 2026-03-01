@@ -50,6 +50,8 @@ var credits:Array[Array] = [
 		Color('682A80'), func(): OS.shell_open('https://x.com/SPG642')],
 	['Doggo', 'doggo', 'random ass guy',
 		Color.HOT_PINK, stupid_fucking_credit_thing],
+	['Riconuts', 'riconuts', 'what the hell',
+		Color.REBECCA_PURPLE, funny],
 
 	['drew me fnf bfs', 'yeaha babye!!'],
 	['Ashley', 'puta', 'drew a bf i think idk', \
@@ -92,6 +94,7 @@ absolutely astonished with the strides'], # ill end your life with my own hands
 	'cherry': ['meow'],
 	'ralty': ['i like gay furries'],
 	'doggo': ['✨ The people are watching you'],
+	'riconuts': ['is there space for me or am i too fat 🥺']
 }
 
 var heading_changes:Array = []
@@ -196,6 +199,12 @@ func stupid_fucking_credit_thing() -> void: # god why must i be like this
 		Audio.volume = 0.7
 		Util.quick_tween(dawg, 'modulate:a', 0, 3).finished.connect(dawg.queue_free)
 	)
+
+func funny() -> void:
+	for i:Credit in cred_group:
+		if i.icon == 'riconuts':
+			i.get_child(i.get_child_count() - 1).update_scale = false
+			i.get_child(i.get_child_count() - 1).scale.x += 0.1
 
 @warning_ignore("missing_tool")
 class Credit extends Alphabet:

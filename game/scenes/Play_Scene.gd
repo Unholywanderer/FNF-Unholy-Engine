@@ -303,7 +303,7 @@ func beat_dance(b:int) -> void:
 	ui.icon_p1.bump()
 	ui.icon_p2.bump()
 	for i in characters:
-		if !i.animation.begins_with('sing') and b % i.dance_beat == 0:
+		if !i.get_anim().begins_with('sing') and b % i.dance_beat == 0:
 			i.dance()
 	if speaker: speaker.bump()
 
@@ -420,7 +420,9 @@ func _exit_tree() -> void:
 
 func song_end() -> void:
 	stage.song_end()
-	if !can_end: return
+	if !can_end:
+		Conductor.paused = true
+		return
 
 	if Game.persist.get('scoring') == null:
 		Game.persist.scoring = ScoreData.new()
@@ -559,7 +561,7 @@ func event_hit(event:EventData) -> void:
 
 			var new_char = Character.get_closest(event.values[1])
 
-			var last_anim:String = peep.animation
+			var last_anim:String = peep.get_anim()
 			var last_frame:int = peep.frame
 			var last_pos:Vector2
 			match peep:
@@ -597,7 +599,7 @@ func event_hit(event:EventData) -> void:
 				peep.special_anim = true
 				#peep.can_sing = !data.force
 		'SetCameraBop':
-			zoom_beat = event.values[0].rate
+			zoom_beat = event.values[0].get('rate', 4)
 			zoom_add.game = event.values[0].intensity / (1.0 if event.values[0].intensity == 0 else 25.0)
 		'ZoomCamera':
 			var data:Dictionary = event.values[0]

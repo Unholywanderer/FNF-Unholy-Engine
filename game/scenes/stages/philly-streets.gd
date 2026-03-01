@@ -26,16 +26,16 @@ func post_ready() -> void:
 	spraycan.add_anim_by_frames('kick_at', [8, 18])
 	spraycan.add_anim_by_frames('bonk', [19, 24])
 	spraycan.add_anim_by_frames('shot', [26, 44])
-	spraycan.anim_changed.connect(func():
-		if spraycan.cur_anim == 'bonk':
+	spraycan.anim_changed.connect(func(anim): # need to fix offsets for this
+		if anim == 'bonk':
 			spraycan.offset = Vector2(-240, -130)
 			$Explosion.position = Vector2(1950, 820)
 		else:
 			spraycan.offset = Vector2(0, 0)
 	)
 	$Explosion.animation_finished.connect($Explosion.hide)
-	spraycan.frame_changed.connect(func():
-		if spraycan.frame == 22:
+	spraycan.frame_changed.connect(func(frm):
+		if frm == 22:
 			$Explosion.show()
 			$Explosion.play()
 			$Explosion.frame = 0
@@ -243,7 +243,6 @@ func note_miss(note:Note):
 			UI.hp -= 30
 			died_by_can = UI.hp <= 0
 		)
-
 
 func opponent_note_hit(note:Note):
 	if !note.type.begins_with('weekend-1'): return

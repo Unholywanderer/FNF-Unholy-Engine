@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bcupyo5h1y7d"]
+[gd_scene format=3 uid="uid://bcupyo5h1y7d"]
 
 [ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="1_fgt6k"]
 [ext_resource type="Script" uid="uid://dlcp7ueuu3pa6" path="res://game/scenes/stages/tank.gd" id="1_m3io1"]
@@ -15,180 +15,185 @@
 [ext_resource type="SpriteFrames" uid="uid://cebp3lqao55sm" path="res://assets/images/stages/tank/tankmen/tank0.res" id="13_222kd"]
 [ext_resource type="Script" uid="uid://ctnes3nxk1qlt" path="res://game/objects/Atlas.gd" id="13_737rp"]
 [ext_resource type="SpriteFrames" uid="uid://b1pfsgyxdvscm" path="res://assets/images/stages/tank/tankmen/tank1.res" id="14_btmcx"]
+[ext_resource type="Script" uid="uid://dy4vnmv4435ty" path="res://addons/gdanimate-rewrite/animate_atlas.gd" id="14_iyv8a"]
+[ext_resource type="Script" uid="uid://dkyyuwqo0dy7q" path="res://addons/gdanimate-rewrite/adobe/adobe_atlas.gd" id="15_f8j6r"]
 [ext_resource type="SpriteFrames" uid="uid://7am0utwesp7k" path="res://assets/images/stages/tank/tankmen/tank2.res" id="15_sf75q"]
 [ext_resource type="SpriteFrames" uid="uid://bq05p544q5354" path="res://assets/images/stages/tank/tankmen/tank4.res" id="16_8maix"]
 [ext_resource type="SpriteFrames" uid="uid://33xtotgar5m4" path="res://assets/images/stages/tank/tankmen/tank5.res" id="17_mxam1"]
 [ext_resource type="SpriteFrames" uid="uid://282lowf45qsk" path="res://assets/images/stages/tank/tankmen/tank3.res" id="18_85ni2"]
 
-[node name="Tank" type="Node2D"]
+[sub_resource type="Resource" id="Resource_5qvrg"]
+script = ExtResource("15_f8j6r")
+folder_path = "res://assets/images/stages/tank/cutscenes/tankman/"
+format = "adobe"
+metadata/_custom_type_script = "uid://dkyyuwqo0dy7q"
+
+[node name="Tank" type="Node2D" unique_id=1822092011]
 script = ExtResource("1_m3io1")
 default_zoom = 0.9
 bf_pos = Vector2(810, 100)
 dad_pos = Vector2(20, 100)
 gf_pos = Vector2(500, 65)
 
-[node name="BGSky" type="Node2D" parent="."]
+[node name="BGSky" type="Node2D" parent="." unique_id=1759550923]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0, 0)
 
-[node name="Sprite" type="Sprite2D" parent="BGSky"]
+[node name="Sprite" type="Sprite2D" parent="BGSky" unique_id=1241717199]
 position = Vector2(-400, -400)
 texture = ExtResource("3_js4ps")
 centered = false
 
-[node name="Clouds" type="Node2D" parent="."]
+[node name="Clouds" type="Node2D" parent="." unique_id=251297996]
 position = Vector2(-400, -400)
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.1, 0.1)
 
-[node name="Sprite" type="Sprite2D" parent="Clouds"]
+[node name="Sprite" type="Sprite2D" parent="Clouds" unique_id=1775207706]
 texture = ExtResource("4_4wyh6")
 centered = false
 script = ExtResource("5_hyd3l")
 
-[node name="Mountains" type="Node2D" parent="."]
+[node name="Mountains" type="Node2D" parent="." unique_id=1747204106]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.2, 0.2)
 
-[node name="Sprite" type="Sprite2D" parent="Mountains"]
+[node name="Sprite" type="Sprite2D" parent="Mountains" unique_id=977751182]
 position = Vector2(-300, -20)
 scale = Vector2(1.2, 1.2)
 texture = ExtResource("6_gxi7i")
 centered = false
 
-[node name="Buildings" type="Node2D" parent="."]
+[node name="Buildings" type="Node2D" parent="." unique_id=1945387272]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.3, 0.3)
 
-[node name="Sprite" type="Sprite2D" parent="Buildings"]
+[node name="Sprite" type="Sprite2D" parent="Buildings" unique_id=1772471288]
 position = Vector2(-200, 0)
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("7_uta48")
 centered = false
 
-[node name="Ruins" type="Node2D" parent="."]
+[node name="Ruins" type="Node2D" parent="." unique_id=976159551]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.35, 0.35)
 
-[node name="Sprite" type="Sprite2D" parent="Ruins"]
+[node name="Sprite" type="Sprite2D" parent="Ruins" unique_id=481713158]
 position = Vector2(-200, 0)
 scale = Vector2(1.1, 1.1)
 texture = ExtResource("8_3b6gw")
 centered = false
 
-[node name="SmokeLeft" type="Node2D" parent="."]
+[node name="SmokeLeft" type="Node2D" parent="." unique_id=1820562015]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.4, 0.4)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="SmokeLeft"]
+[node name="Sprite" type="AnimatedSprite2D" parent="SmokeLeft" unique_id=1614120477]
 position = Vector2(-200, -100)
 sprite_frames = ExtResource("9_3t3ca")
 animation = &"SmokeBlurLeft instance 1"
 autoplay = "SmokeBlurLeft instance 1"
 centered = false
 
-[node name="SmokeRight" type="Node2D" parent="."]
+[node name="SmokeRight" type="Node2D" parent="." unique_id=296632536]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.4, 0.4)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="SmokeRight"]
+[node name="Sprite" type="AnimatedSprite2D" parent="SmokeRight" unique_id=1989068929]
 position = Vector2(1100, -100)
 sprite_frames = ExtResource("10_3a57q")
 animation = &"SmokeRight instance 1"
 autoplay = "SmokeRight instance 1"
 centered = false
 
-[node name="Watchtower" type="Node2D" parent="."]
+[node name="Watchtower" type="Node2D" parent="." unique_id=1847613700]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.5, 0.5)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Watchtower"]
+[node name="Sprite" type="AnimatedSprite2D" parent="Watchtower" unique_id=627937783]
 position = Vector2(100, 50)
 sprite_frames = ExtResource("11_nqnog")
 animation = &"idle"
 centered = false
 
-[node name="Tank" type="Node2D" parent="."]
+[node name="Tank" type="Node2D" parent="." unique_id=1902361983]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(0.5, 0.5)
 
-[node name="RunMen" type="Node2D" parent="."]
+[node name="RunMen" type="Node2D" parent="." unique_id=121193019]
 
-[node name="Ground" type="Sprite2D" parent="."]
+[node name="Ground" type="Sprite2D" parent="." unique_id=1610851677]
 position = Vector2(-420, -150)
 scale = Vector2(1.15, 1.15)
 texture = ExtResource("12_kll81")
 centered = false
 
-[node name="CharGroup" type="Node2D" parent="."]
+[node name="CharGroup" type="Node2D" parent="." unique_id=1817132990]
 
-[node name="Tanky" type="Node2D" parent="CharGroup"]
-visible = false
+[node name="Tanky" type="Node2D" parent="CharGroup" unique_id=732297220]
 z_index = 2
 script = ExtResource("13_737rp")
-atlas = "res://assets/images/stages/tank/cutscenes/tankman"
-frame = 1276
-loop_mode = "Play Once"
+atlases = Array[ExtResource("14_iyv8a")]([SubResource("Resource_5qvrg")])
 metadata/_custom_type_script = "uid://ctnes3nxk1qlt"
 
-[node name="Forground" type="Node2D" parent="."]
+[node name="Forground" type="Node2D" parent="." unique_id=1983806130]
 z_index = 2
 
-[node name="Tank0" type="Node2D" parent="Forground"]
+[node name="Tank0" type="Node2D" parent="Forground" unique_id=424300176]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(1.7, 1.5)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank0"]
+[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank0" unique_id=1226700419]
 position = Vector2(-500, 650)
 sprite_frames = ExtResource("13_222kd")
 animation = &"idle"
 centered = false
 
-[node name="Tank1" type="Node2D" parent="Forground"]
+[node name="Tank1" type="Node2D" parent="Forground" unique_id=1457272694]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(2, 0.2)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank1"]
+[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank1" unique_id=1295494078]
 position = Vector2(-300, 750)
 sprite_frames = ExtResource("14_btmcx")
 animation = &"idle"
 centered = false
 
-[node name="Tank2" type="Node2D" parent="Forground"]
+[node name="Tank2" type="Node2D" parent="Forground" unique_id=1360900096]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(1.5, 1.5)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank2"]
+[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank2" unique_id=70350479]
 position = Vector2(450, 940)
 sprite_frames = ExtResource("15_sf75q")
 animation = &"idle"
 centered = false
 
-[node name="Tank4" type="Node2D" parent="Forground"]
+[node name="Tank4" type="Node2D" parent="Forground" unique_id=24584381]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(1.5, 1.5)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank4"]
+[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank4" unique_id=1119007732]
 position = Vector2(1300, 900)
 sprite_frames = ExtResource("16_8maix")
 animation = &"idle"
 centered = false
 
-[node name="Tank5" type="Node2D" parent="Forground"]
+[node name="Tank5" type="Node2D" parent="Forground" unique_id=1053694017]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(1.5, 1.5)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank5"]
+[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank5" unique_id=929712296]
 position = Vector2(1620, 700)
 sprite_frames = ExtResource("17_mxam1")
 animation = &"idle"
 centered = false
 
-[node name="Tank3" type="Node2D" parent="Forground"]
+[node name="Tank3" type="Node2D" parent="Forground" unique_id=476081025]
 script = ExtResource("1_fgt6k")
 scroll_factor = Vector2(3.5, 2.5)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank3"]
+[node name="Sprite" type="AnimatedSprite2D" parent="Forground/Tank3" unique_id=1901462694]
 position = Vector2(1300, 1200)
 sprite_frames = ExtResource("18_85ni2")
 animation = &"idle"

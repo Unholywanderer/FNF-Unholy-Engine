@@ -34,13 +34,13 @@ func song_end() -> void:
 		#add_child(cutscene)
 		dad.hide()
 
-		var tanky_boy:AnimateSymbol = AnimateSymbol.new()
-		tanky_boy.atlas = 'res://assets/images/stages/tank/erect/cutscene/tankmanEnding'
+		var tanky_boy:Atlas = Atlas.new()
+		tanky_boy.add_atlas('images/stages/tank/erect/cutscene/tankmanEnding')
 		add_child(tanky_boy)
-		tanky_boy.loop_mode = 'beh'
 		tanky_boy.playing = true
 		tanky_boy.material = dad.material
 		tanky_boy.position = dad.position + Vector2(300, 195)
+
 		Main.cam.position_smoothing_speed = 2
 		Main.cam.position = dad.get_cam_pos() + Vector2(320, -60)
 		Main.default_zoom = 0.65

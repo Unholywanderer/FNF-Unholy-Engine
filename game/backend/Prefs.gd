@@ -42,6 +42,7 @@ var hold_splash:String = 'cover/splash'
 
 var behind_strums:bool = false
 var rating_cam:String = 'game'
+var time_circle:bool = true
 var femboy:bool = false
 
 var daniel:bool = false: # if you switch too much, it'll break lol

@@ -48,7 +48,7 @@ func trans_out(speed:float = 0.7, call_func:bool = false) -> void:
 func start() -> void:
 	in_progress = true
 
-	var chance = _out and Util.rand_bool(5)
+	var chance:bool = _out and Util.rand_bool(5)
 	var new_tex:String = RARE_IMAGES.pick_random() if chance else HOLE_IMAGES.pick_random()
 	cur_tex = new_tex
 	if new_tex == 'bowser':

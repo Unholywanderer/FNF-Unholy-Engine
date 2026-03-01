@@ -3,7 +3,7 @@ extends Node2D
 signal focus_change(is_focused) # when you click on/off the game window
 
 const week_list:PackedStringArray = [
-	'test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1'
+	'test', 'tutorial', 'week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'weekend1', 'week-spag'
 ]
 const stage_list:PackedStringArray = [
 	'stage', 'spooky', 'philly', 'limo', 'mall', 'mall-evil', 'school', 'school-evil', 'tank',
@@ -41,13 +41,10 @@ var fullscreen:bool = false:
 		var window_mode = Window.MODE_EXCLUSIVE_FULLSCREEN if f else Window.MODE_WINDOWED
 		main_window.mode = window_mode
 
-# fix pause screen because it sets the paused of the tree as well
-var exe_path:String = ''
+var exe_path:String:
+	get: return OS.get_executable_path().get_base_dir() +'/'
 
 func _ready():
-	exe_path = OS.get_executable_path()
-	var exe_name := exe_path.split('/', false)[-1]
-	exe_path = exe_path.replace(exe_name, '')
 	if !OS.is_debug_build():
 		var folders_to_make = {
 			'data' = ['characters', 'events', 'players', 'scripts', 'skins', 'weeks'],

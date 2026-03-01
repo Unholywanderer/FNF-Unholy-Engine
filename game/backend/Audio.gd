@@ -29,8 +29,8 @@ var music:String = "" #"freakyMenu"
 var track_length:float = 0.0:
 	get: return _player.stream.get_length()
 
-## Called once, and ONLY ONCE, the music is finished playing, use this instead of
-## [code]_player.finished.connect()[/code]
+## Called a single time, once the music is finished playing. Gets reset afterwards.
+## Use this instead of [code]_player.finished.connect()[/code]
 var on_finish:Callable = func(): pass
 
 ## Array of currently playing sounds

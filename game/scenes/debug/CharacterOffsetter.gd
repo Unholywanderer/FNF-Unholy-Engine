@@ -3,8 +3,10 @@ extends Node2D
 var character:Character
 var shadow:Character
 var char_json:Dictionary = {}
+var atlas_char:bool = false
 
 var anim_list:Array[Label] = []
+var symbol_list:Array[StringName] = []
 var offsets:Dictionary[String, Array] = {}
 var flipped:Dictionary[String, bool] = {}
 var cur_cam_offset:Array[int] = [0, 0]
@@ -27,9 +29,12 @@ var selected_id:int = 0:
 
 		play_anim(character, cur_anim)
 		var got:Array = offsets.get(cur_anim, [0, 0])
-		character.offset = Vector2(got[0], got[1])
+		if atlas_char:
+			character.atlas.offset = Vector2(got[0], got[1])
+		else:
+			character.offset = Vector2(got[0], got[1])
 		character.flip_h = flipped.get(cur_anim, false)
-
+		# saku 35, 230
 		#_anim_chosen(selected_id) #ANIM('AllAnims').selected = -1
 var no_anims:bool:
 	get: return char_json.animations.is_empty()
@@ -39,12 +44,13 @@ func play_anim(thing:Character, anim:String = '') -> void:
 	if anim.is_empty(): anim = thing.get_anim()
 	if !thing.has_anim(anim): return
 	if thing.is_atlas:
-		thing.play_anim(anim, true)
+		thing.atlas.play_anim(anim, true)
 	else:
 		thing.play(anim)
 
 @onready var _ui = $UILayer
 @onready var cam = $Cam
+var last_cam_pos:Vector2 = Vector2.ZERO
 func _ready() -> void:
 	Game.set_mouse_visibility()
 	Audio.play_music('artisticExpression')
@@ -80,7 +86,7 @@ func _ready() -> void:
 				character.position -= Vector2(cur_pos_offset[0], cur_pos_offset[1])
 				cur_pos_offset = new_vals
 				character.position += Vector2(cur_pos_offset[0], cur_pos_offset[1])
-				shadow.position = character.position
+				#shadow.position = character.position
 
 	for i in ['Pos', 'Cam']:
 		MAIN(i +'/X').connect('value_changed', thing_change.bind(i))
@@ -119,13 +125,13 @@ func _process(_delta:float) -> void:
 
 	DATA('Anim').text = cur_anim
 	DATA('Offset').text = str(offsets.get(cur_anim, '[No Offsets]'))
-	DATA('Frame').text = 'Frame\n'+ str(character.frame) +' / '+ str(character.get_frame_count(character.get_anim()) - 1)
+	DATA('Frame').text = 'Frame\n'+ str(character.cur_frame) +' / '+ str(character.get_frame_count(character.get_anim()) - 1)
 
 var press_time:float = 0.0
 func _unhandled_input(event:InputEvent) -> void:
 	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and !event.is_released():
 		get_viewport().gui_release_focus()
-	if get_viewport().gui_get_focus_owner() != null: return
+	if get_viewport().gui_get_focus_owner(): return
 
 	if event is InputEventMouse: return
 
@@ -152,11 +158,11 @@ func _unhandled_input(event:InputEvent) -> void:
 		KEY_W: selected_id = wrapi(selected_id - 1, 0, anim_list.size())
 		KEY_S: selected_id = wrapi(selected_id + 1, 0, anim_list.size())
 		KEY_Q, KEY_E:
-			if character.is_atlas:
+			if atlas_char:
 				character.atlas.pause()
 			else:
 				character.pause()
-			character.frame += 1 if event.keycode == KEY_E else -1
+			character.cur_frame += 1 if event.keycode == KEY_E else -1
 
 		## CHARACTER OFFSETTING
 		KEY_LEFT  when offsets.has(cur_anim): offsets[cur_anim][0] -= (1 if !shift else 10); replay = true
@@ -166,9 +172,13 @@ func _unhandled_input(event:InputEvent) -> void:
 		KEY_SPACE: replay = true
 
 	if replay and offsets.has(cur_anim):
-		character.frame = 0
+		character.cur_frame = 0
 		anim_list[selected_id].text = cur_anim +' '+ str(offsets[cur_anim])
-		character.offset = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
+		var new_offset:Vector2 = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
+		if atlas_char:
+			character.atlas.offset = new_offset
+		else:
+			character.offset = new_offset
 		play_anim(character)
 
 func change_icon(new_icon:String = 'bf') -> void:
@@ -203,7 +213,7 @@ func change_char(new_char:String = 'bf') -> void:
 		char_json = VSlice.fix_json(char_json)
 
 	_ui.get_node('ResPath').text = char_json.path
-	DATA('Warn').visible = (
+	$UILayer/ResPath/Warn.visible = (
 		!Util.file_exists('images/'+ char_json.path +'.res') and \
 		!Util.dir_exists('assets/images/'+ char_json.path)
 	)
@@ -238,7 +248,9 @@ func change_char(new_char:String = 'bf') -> void:
 	if !MAIN('Cam/Lock').button_pressed:
 		cam.position = character.position + Vector2(character.width / 2.0, character.height / 2.5)
 
+	_res_path_updated() # call manually to update things
 	# then update the shadow
+	if atlas_char: return
 	shadow.copy(character)
 	shadow.antialiasing = !character.antialiasing # uhm??
 	shadow.frame = shadow.get_frame_count(cur_anim) - 1
@@ -312,12 +324,11 @@ func new_pressed() -> void:
 	MAIN('Shadow/AnimSelect').get_popup().clear()
 	MAIN('CharName').text = '[NEW CHARACTER]'
 	cur_anim = ''
-	var new = UnholyFormat.CHAR_JSON.duplicate(true)
 
 	char_json.clear()
 	offsets.clear()
 	reload_list([])
-	char_json = new
+	char_json = UnholyFormat.CHAR_JSON.duplicate(true)
 	character.load_char('bf')
 
 	shadow.copy(character)
@@ -331,11 +342,11 @@ func save_pressed() -> void:
 	var save_json:Dictionary = UnholyFormat.CHAR_JSON.duplicate(true)
 	for i in char_json.animations:
 		var new_anim:Dictionary = UnholyFormat.CHAR_ANIM.duplicate(true)
-		new_anim.offsets = offsets[i.name]
+		new_anim.offsets = (offsets[i.name] as Array[int])
 		new_anim.name = i.name
 		new_anim.framerate = i.framerate
 		new_anim.prefix = i.prefix
-		new_anim.frames = i.frames
+		new_anim.frames = (i.frames as Array[int])
 		new_anim.loop = i.loop
 		if i.get('flip_x', false): new_anim.set('flip_x', true)
 		if i.get('flip_y', false): new_anim.set('flip_y', true)
@@ -352,7 +363,6 @@ func save_pressed() -> void:
 	#	save_json.speaker = old_json.speaker
 
 	var file:FileAccess = FileAccess.open("res://assets/data/characters/"+ to_check +".json", FileAccess.WRITE)
-	#file.resize(0) # clear the file, if it has stuff in it
 	file.store_string(JSON.stringify(save_json, '\t', false))
 	file.close()
 	$UILayer/Notice.text = 'Successfully saved JSON at "../data/characters/%s.json"' % [to_check]
@@ -361,17 +371,40 @@ func save_pressed() -> void:
 	if !char_list.has(to_check): update_char_list()
 
 func _res_path_updated() -> void:
+	var show_warn:bool = true
 	var new_path:String = _ui.get_node('ResPath').text
+	atlas_char = ResourceLoader.exists('res://assets/images/'+ new_path +'/Animation.json')
+
+	ANIM('Prefix').visible = !atlas_char
+	ANIM('Symbol').visible = atlas_char
+	character.is_atlas = atlas_char
+	if atlas_char:
+		show_warn = false
+		character.atlas.add_atlas('images/'+ new_path, true)
+		clear_fields()
+
+		var butt:OptionButton = ANIM('Symbol')
+		butt.clear()
+		symbol_list = character.atlas.get_symbol_list()
+		for i:StringName in symbol_list: butt.add_item(i)
+		butt.selected = -1
+
 	if ResourceLoader.exists('res://assets/images/'+ new_path +'.res'):
-		ANIM('AllAnims').selected = -1
+		show_warn = false
+		symbol_list.clear()
+		clear_fields()
 		character.sprite_frames = load('res://assets/images/'+ new_path +'.res')
 		shadow.sprite_frames = character.sprite_frames
 		shadow_frame_change(shadow.get_frame_count(shadow.get_anim()) - 1)
-	else:
-		character.is_atlas = ResourceLoader.exists('res://assets/images/'+ new_path +'/Animation.json')
-		if character.is_atlas:
-			character.atlas.atlas = 'res://assets/images/'+ new_path # looks so stupid guhh
-			ANIM('AllAnims').selected = -1
+
+	$UILayer/ResPath/Warn.visible = show_warn
+
+
+func clear_fields() -> void:
+	ANIM('AllAnims').selected = -1
+	ANIM('Name').text = ''
+	ANIM('Prefix').text = ''
+	ANIM('Frames').text = ''
 
 func _anim_chosen(index:int) -> void:
 	ANIM('AllAnims').selected = index # just in case
@@ -380,7 +413,10 @@ func _anim_chosen(index:int) -> void:
 	var doop:Dictionary = char_json.animations[index]
 
 	ANIM('Name').text = doop.name
-	ANIM('Prefix').text = doop.prefix
+	if atlas_char:
+		ANIM('Symbol').selected = symbol_list.find(doop.prefix)
+	else:
+		ANIM('Prefix').text = doop.prefix
 	ANIM('Frames').text = Util.array_to_str(doop.frames).replace(' ', '').replace('.0', '')
 	ANIM('Framerate').value = doop.framerate
 	ANIM('Loop').button_pressed = doop.loop
@@ -395,22 +431,22 @@ func add_anim() -> void:
 		Alert.make_alert('ADD ANIMATION NAME!', Alert.WARN).max_time = 0.7
 		return
 
-	var fixed_frames:Array[int] = []
+	var fixed_frames:Array = []
 	if !ANIM('Frames').text.is_empty():
 		var temp = ANIM('Frames').text.strip_edges()
 		if temp.contains('-'):
 			temp = temp.split('-')
-			for i in range(int(temp[0]), int(temp[1]) + 1):
-				fixed_frames.append(i)
+			fixed_frames = (range(int(temp[0]), int(temp[1]) + 1) as Array[int])
 			ANIM('Frames').text = Util.array_to_str(fixed_frames).replace(' ', '')
 		else:
 			temp = temp.split(',')
-			for i in temp:
+			for i:String in temp:
 				fixed_frames.append(int(i))
 
+	var le_prefix:String = symbol_list[ANIM('Symbol').selected] if atlas_char else ANIM('Prefix')
 	for i:Dictionary in char_json.animations:
 		if i.name == anim_name: # Animation exists, just update it with new info
-			i.prefix = ANIM('Prefix').text
+			i.prefix = le_prefix #ANIM('Prefix').text
 			i.frames = fixed_frames
 			i.loop = ANIM('Loop').button_pressed
 			i.framerate = ANIM('Framerate').value
@@ -426,7 +462,7 @@ func add_anim() -> void:
 	# Animation doesn't exist, make a new one
 	var _data := UnholyFormat.CHAR_ANIM.duplicate(true)
 	_data.name = anim_name
-	_data.prefix = ANIM('Prefix').text
+	_data.prefix = le_prefix #ANIM('Prefix').text
 	_data.frames = fixed_frames
 
 	_data.framerate = ANIM('Framerate').value
@@ -441,8 +477,8 @@ func add_anim() -> void:
 	reload_list(char_json.animations)
 
 func remove_anim() -> void:
-	if char_json.animations.is_empty() or ANIM('Name').text.strip_edges() == '': return
 	var anim_name:String = ANIM('Name').text.strip_edges()
+	if no_anims or anim_name.is_empty(): return
 	for i in char_json.animations.size():
 		var _anim:String = char_json.animations[i].name
 		if _anim == anim_name: # Animation exists, remove the fucker
@@ -458,6 +494,7 @@ func shadow_anim_change(id:int) -> void:
 	var frame_lim:int = shadow.get_frame_count(new_anim) - 1
 	MAIN('Shadow/Anim').text = new_anim
 	play_anim(shadow, new_anim)
+	shadow.frame = frame_lim
 	shadow.pause()
 	MAIN('Shadow/Frame').max_value = frame_lim
 	MAIN('Shadow/Frame').value = frame_lim

@@ -109,6 +109,7 @@ func _ready():
 	health_bar.position.y = 85 if downscroll else 630
 	health_bar.z_index = -2
 
+	time_circ.visible = Prefs.time_circle
 	time_circ.modulate.a = 0
 	time_circ.position.y = 570 if downscroll else 55
 

@@ -1,5 +1,9 @@
 extends Node2D
 
+# Grid stuff
+const GRID_SIZE:int = 40
+const OFF:int = 100 # offset from screen
+
 var chart_type:String = 'legacy'
 var cur_section:int = 0
 ## Array that holds all the section times, updates when you first load in,
@@ -9,10 +13,6 @@ var section_times:Array[float] = [0]
 var clicked_section:int = 0
 
 var strums:Array[Strum] = []
-
-# Grid stuff
-const GRID_SIZE:int = 40
-const OFF:int = 100 # offset from screen
 
 ## The Note Grids, 0 is previous, 1 is current, 2 is next
 var grids:Array = []
@@ -49,7 +49,7 @@ var copied_notes:Array = []
 var note_chunks:Dictionary = {'-1': [], '0': [], '1': []}
 
 var note_list:Array = []
-var notes_loaded:Array = []
+var loaded_notes:Array = []
 var events:Array[EventData] = []
 
 var funky_boys:Array[Character] = []
@@ -80,14 +80,19 @@ func get_sound_path(type:String) -> String: #returns a path 2 the target sound
 # Node Vars
 @onready var cam:Camera2D = $Cam
 @onready var note_group:Node2D = $Notes
+@onready var _BG:Sprite2D = $BG
 
 @onready var chart_line:Node2D = $ChartLine
 @onready var icons:Array[Icon] = [$ChartLine/IconL, $ChartLine/IconR]
-@onready var song_pos:Label = $ChartLine/TimeTxt
 @onready var line:ColorRect = $ChartLine/Line
-
 @onready var prog_bar:HSlider = $ChartUI/SongProgress
-#@onready var new_bar:HSlider = $ChartUI/SongInfo/Progress
+
+# labels n junk
+@onready var song_pos:Label = $ChartLine/TimeTxt
+@onready var bpm_text:Label = $ChartLine/BPMTxt
+@onready var info_text:Label = $ChartUI/Info
+@onready var cur_time:Label = $ChartUI/SongProgress/Time
+
 
 func _ready():
 	Game.set_mouse_visibility(true)
@@ -113,7 +118,7 @@ func _ready():
 	Conductor.connect_signals()
 
 	update_section_times()
-	print(section_times, '\nThere are %s sections?' % section_times.size())
+	#print(section_times, '\nThere are %s sections?' % section_times.size())
 
 	Conductor.bpm = SONG.bpm
 	Conductor.paused = true
@@ -346,16 +351,16 @@ func _process(delta):
 		time_lerped = 0
 		bg_colors.reverse()
 		bg_colors[1] = Color(randf(), randf(), randf())
-	$BG.modulate = bg_colors[0].lerp(bg_colors[1], time_lerped / 2.0)
+	_BG.modulate = bg_colors[0].lerp(bg_colors[1], time_lerped / 2.0)
 
 	song_pos.text = str(floori(Conductor.song_pos))
 	#var strum_y = round(get_y_from_time(fmod(Conductor.song_pos - get_section_time(), Conductor.step_crochet * 16.0)))
 	chart_line.position.x = (grids[1].position.x / 7.0) - 0.5
 	chart_line.position.y = round(get_y_from_time(fmod(Conductor.song_pos - get_section_time(), Conductor.step_crochet * 16.0)))
 
-	$ChartUI/SongProgress/Time.text = Util.to_time(Conductor.song_pos, true, true)
-	$ChartUI/SongProgress.value = abs(Conductor.song_pos / Conductor.song_length) * 100.0
-	#$ChartUI/SongInfo/Progress/Time.text = Util.to_time(Conductor.song_pos, true, true)
+	cur_time.text = Util.to_time(Conductor.song_pos, true, true)
+	prog_bar.value = abs(Conductor.song_pos / Conductor.song_length) * 100.0
+
 	if !being_dragged:
 		prog_bar.value = abs(Conductor.song_pos / Conductor.song_length) * 100.0
 
@@ -365,7 +370,7 @@ func _process(delta):
 	cam.zoom = Vector2(z, z)
 
 	cam.position = chart_line.position + Vector2(line.size.x / 2.0, 50) # grid_1.position + Vector2(grid_1.width, grid_1.height / 2)
-	$BG.position = cam.position
+	_BG.position = cam.position
 
 	var audios = ['Inst', 'Voices', 'VoicesOpp']
 	for i in audios.size():
@@ -387,7 +392,7 @@ func _process(delta):
 	selected.position.y = y_pos
 
 	if !Conductor.paused:
-		for note in notes_loaded:
+		for note in loaded_notes:
 			if note.was_hit and note.modulate != Color.GRAY:
 				if note.is_sustain and note.hitting: play_strum(note)
 				elif !note.is_sustain:
@@ -456,7 +461,7 @@ func make_note(info, must_hit:bool = true):
 
 	if floor(new_note.strum_time) < floor(Conductor.song_pos) - 15: # slight offset so the first note of a section can always get hit
 		new_note.modulate = Color.GRAY
-	notes_loaded.append(new_note)
+	loaded_notes.append(new_note)
 
 	if sus_len > 0:
 		var sustain:BasicNote = BasicNote.new(new_note, true)
@@ -470,7 +475,7 @@ func make_note(info, must_hit:bool = true):
 		sustain.position = new_note.position + Vector2(-7, 40)
 		sustain.alpha = 0.6
 
-		notes_loaded.append(sustain)
+		loaded_notes.append(sustain)
 
 func play_strum(note):
 	if note is EventNote:
@@ -511,10 +516,10 @@ func beat_hit(beat:int) -> void:
 
 	if tab('Chart', 'Metronome').button_pressed:
 		Audio.play_sound('tick', 0.8)
-		$BG.scale = Vector2(1.02, 1.02)
+		_BG.scale = Vector2(1.02, 1.02)
 		if bg_tween: bg_tween.kill()
 		bg_tween = create_tween()
-		bg_tween.tween_property($BG, 'scale', Vector2.ONE, Conductor.crochet / 3500.0)
+		bg_tween.tween_property(_BG, 'scale', Vector2.ONE, Conductor.crochet / 3500.0)
 
 func section_hit(_sec:int): pass
 func step_hit(_step:int) -> void:
@@ -685,7 +690,7 @@ func _unhandled_input(event:InputEvent): # this is better | no you fucking idiot
 var last_updated_sec:int = -1
 var last_got_bpm:float
 func regen_notes(_skip_remake:bool = false, _only_current:bool = false) -> void:
-	Util.remove_all([notes_loaded], note_group)
+	Util.remove_all([loaded_notes], note_group)
 
 	if section_based:
 		$ChartLine/Highlight.position = icons[int(SONG.notes[cur_section].get('mustHitSection', false))].position - Vector2(37.5, 37.5)
@@ -699,8 +704,6 @@ func regen_notes(_skip_remake:bool = false, _only_current:bool = false) -> void:
 		#		if SONG.notes[i].get('changeBPM', false):
 		#			last_bpm = max(SONG.notes[i].bpm, 1)
 		#	Conductor.bpm = last_bpm
-
-	$ChartLine/BPMTxt.text = str(Conductor.bpm) +' BPM'
 
 	grids[0].visible = cur_section > 0
 	event_grids[0].visible = grids[0].visible
@@ -741,7 +744,7 @@ func regen_notes(_skip_remake:bool = false, _only_current:bool = false) -> void:
 				var new_event := EventNote.new(evn)
 				note_group.add_child(new_event)
 				new_event.strum_time = evn.strum_time
-				notes_loaded.append(new_event)
+				loaded_notes.append(new_event)
 				update_note_pos(new_event)
 
 				# slight offset so the first note of a section can always get hit
@@ -767,7 +770,7 @@ func check_note() -> void:
 	if mouse_pos.y >= grids[2].position.y: clicked_section += 1
 	print(clicked_section, ' | ', cur_section)
 
-	for note in notes_loaded:
+	for note in loaded_notes:
 		if note.is_sustain: continue
 		var note_pos = note.position.x - (note.width / 2.0)
 		if mouse_pos.x - OFF >= note_pos and mouse_pos.x - OFF <= note_pos + GRID_SIZE \
@@ -821,10 +824,11 @@ func remove_note(note:BasicNote) -> void:
 	regen_notes()
 
 func update_text() -> void:
-	$ChartUI/Info.text = \
-		"Beat: "+ str(Conductor.cur_beat).pad_decimals(1) +"\n"+ \
-		"Step: "+ str(Conductor.cur_step).pad_decimals(1) +"\n"+ \
-		"Sect: "+ str(cur_section)      +"\n\n"+ \
+	bpm_text.text = str(Conductor.bpm) +' BPM'
+	info_text.text = \
+		"Beat: "+ str(Conductor.cur_beat).pad_decimals(2) +"\n"+ \
+		"Step: "+ str(Conductor.cur_step).pad_decimals(2) +"\n"+ \
+		"Sect: "+ str(cur_section) +"\n\n"+ \
 		"Snap: "+ str(note_snap) +"th"
 
 func _toggle_grid(toggled:bool) -> void:
@@ -898,13 +902,22 @@ func get_section_time(this_sec:int = -1) -> float:
 func update_section_times(from:int = -1) -> void:
 	if from < 0: from = cur_section
 	if section_based:
-		from = min(from, SONG.notes.size())
+		from = min(from, SONG.notes.size() - 1)
 
 	var pos:float = 0.0
 	var bpm:float = SONG.bpm
 
 	var i:int = max(from, 0)
+	var base_size:int = SONG.notes.size() if section_based else INF
 	while true:
+		if section_based and i <= base_size:
+			SONG.notes.append({
+				'sectionNotes': [],
+				'mustHitSection': false,
+				'bpm': 0,
+				'changeBPM': false,
+				'altAnim': false
+			})
 		var da_sec:Dictionary = SONG.notes[i] if section_based else {}
 		var le_beat:int = da_sec.get('sectionBeats', 4)
 		for change in Conductor.bpm_changes:

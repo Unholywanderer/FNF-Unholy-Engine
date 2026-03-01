@@ -99,14 +99,14 @@ func pico_anim(note:String, missed:bool = false):
 			'reversefakeout': boyfriend.play_anim('idle', true)
 
 	if note.contains('hit') and !missed: UI.hp -= 3
-	boyfriend.z_index = 100 if front_anims.has(boyfriend.get_anim()) else 0
+	boyfriend.z_index = 0 if front_anims.has(boyfriend.get_anim()) else -1
 
 func darnell_anim(note, missed:bool = false):
 	dad.can_dance = false
 
 	if missed:
 		if UI.hp <= 5:
-			dad.play_anim('punchLow'+ alter('alt_dad'))
+			dad.play_anim('punchLow'+ alter('alt_dad'), true)
 			return
 
 		if note.contains('high') or note.contains('low'):
@@ -163,7 +163,7 @@ func darnell_anim(note, missed:bool = false):
 			'tauntforce': dad.play_anim('pissed', true)
 			'reversefakeout': dad.play_anim('fakeout', true)
 
-	dad.z_index = 100 if front_anims.has(dad.get_anim()) else 0
+	dad.z_index = 0 if front_anims.has(dad.get_anim()) else -1
 
 func alter(a:String):
 	set(a, !get(a))

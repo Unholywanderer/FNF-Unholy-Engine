@@ -1,14 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://cwpelmfo0vk4d"]
+[gd_scene format=3 uid="uid://cwpelmfo0vk4d"]
 
 [ext_resource type="Script" uid="uid://bvxkvsl3cggff" path="res://game/scenes/Results_Screen.gd" id="1_mltb3"]
 [ext_resource type="SpriteFrames" uid="uid://b77hdl4sq74g4" path="res://assets/images/results_screen/soundSystem.res" id="1_mxpky"]
 [ext_resource type="SpriteFrames" uid="uid://drx0metjp341r" path="res://assets/images/results_screen/ratingsPopin.res" id="2_axxd8"]
 [ext_resource type="SpriteFrames" uid="uid://dy78x10asgt7n" path="res://assets/images/results_screen/results.res" id="4_40bh0"]
 [ext_resource type="Texture2D" uid="uid://dj81lt6i2p7kb" path="res://assets/images/results_screen/topBarBlack.png" id="4_mltb3"]
-[ext_resource type="Shader" uid="uid://bh2xopks8xxis" path="res://game/resources/shaders/scroll.gdshader" id="5_ixs6y"]
 [ext_resource type="Texture2D" uid="uid://boxpr5u12o8kg" path="res://assets/images/results_screen/diff_hard.png" id="5_sqcco"]
 [ext_resource type="SpriteFrames" uid="uid://b2h4da1dv2tvp" path="res://assets/images/results_screen/scorePopin.res" id="5_vuk7b"]
 [ext_resource type="Texture2D" uid="uid://d1au0jjaao1vs" path="res://assets/images/results_screen/rankText/rankTextPERFECT.png" id="6_6vagp"]
+[ext_resource type="Shader" uid="uid://cbjd67l3tinli" path="res://game/resources/shaders/tile.gdshader" id="6_ix0x5"]
 [ext_resource type="SpriteFrames" uid="uid://dkvej485jd2yg" path="res://assets/images/results_screen/highscoreNew.res" id="10_6vagp"]
 
 [sub_resource type="Gradient" id="Gradient_mltb3"]
@@ -20,37 +20,43 @@ width = 1280
 height = 720
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ix0x5"]
-shader = ExtResource("5_ixs6y")
+shader = ExtResource("6_ix0x5")
 shader_parameter/direction = Vector2(0, 1)
 shader_parameter/speed_scale = 0.0
+shader_parameter/canvas_scaling = Vector2(2, 1)
+shader_parameter/canvas_rotation = 0.0
+shader_parameter/texture_spacing_x = 0.0
+shader_parameter/texture_spacing_y = 0.0499999988824
+shader_parameter/texture_scaling = Vector2(1, 1)
+shader_parameter/texture_rotation = 0.0
 
-[node name="ResultsScreen" type="Node2D"]
+[node name="ResultsScreen" type="Node2D" unique_id=1345049521]
 script = ExtResource("1_mltb3")
 
-[node name="BG" type="Sprite2D" parent="."]
+[node name="BG" type="Sprite2D" parent="." unique_id=243714256]
 z_index = -101
 texture = SubResource("GradientTexture2D_rtt37")
 centered = false
 
-[node name="Flash" type="ColorRect" parent="."]
+[node name="Flash" type="ColorRect" parent="." unique_id=172456036]
 z_index = -100
 offset_right = 1280.0
 offset_bottom = 720.0
 color = Color(1, 1, 1, 0)
 
-[node name="TxtGroup" type="Node2D" parent="."]
+[node name="TxtGroup" type="Node2D" parent="." unique_id=1707272]
 z_index = -101
 rotation = -0.0593412
 
-[node name="CharGroup" type="Node2D" parent="."]
+[node name="CharGroup" type="Node2D" parent="." unique_id=1006571001]
 z_index = -25
 
-[node name="Difficulty" type="Sprite2D" parent="."]
+[node name="Difficulty" type="Sprite2D" parent="." unique_id=1914909149]
 position = Vector2(555, -53)
 texture = ExtResource("5_sqcco")
 centered = false
 
-[node name="SoundSystem" type="AnimatedSprite2D" parent="."]
+[node name="SoundSystem" type="AnimatedSprite2D" parent="." unique_id=1590741017]
 position = Vector2(-15, -180)
 sprite_frames = ExtResource("1_mxpky")
 animation = &"intro"
@@ -58,7 +64,7 @@ frame = 64
 frame_progress = 1.0
 centered = false
 
-[node name="RatingsPopin" type="AnimatedSprite2D" parent="."]
+[node name="RatingsPopin" type="AnimatedSprite2D" parent="." unique_id=417440028]
 position = Vector2(-135, 135)
 sprite_frames = ExtResource("2_axxd8")
 animation = &"Categories"
@@ -66,9 +72,9 @@ frame = 15
 frame_progress = 1.0
 centered = false
 
-[node name="RatingCounters" type="Node2D" parent="."]
+[node name="RatingCounters" type="Node2D" parent="." unique_id=450592392]
 
-[node name="Score" type="AnimatedSprite2D" parent="."]
+[node name="Score" type="AnimatedSprite2D" parent="." unique_id=1717876076]
 position = Vector2(-180, 515)
 sprite_frames = ExtResource("5_vuk7b")
 animation = &"intro"
@@ -76,29 +82,29 @@ frame = 29
 frame_progress = 1.0
 centered = false
 
-[node name="SideText" type="Sprite2D" parent="."]
+[node name="SideText" type="Sprite2D" parent="." unique_id=981653707]
 texture_repeat = 2
 material = SubResource("ShaderMaterial_ix0x5")
 position = Vector2(1280, 0)
 texture = ExtResource("6_6vagp")
 centered = false
 region_enabled = true
-region_rect = Rect2(0, -100, 41, 720)
+region_rect = Rect2(0, 49, 20.3, 720)
 
-[node name="TopBar" type="Sprite2D" parent="."]
+[node name="TopBar" type="Sprite2D" parent="." unique_id=1503200603]
 z_index = 5
 position = Vector2(0, -148)
 texture = ExtResource("4_mltb3")
 centered = false
 
-[node name="Results" type="AnimatedSprite2D" parent="."]
+[node name="Results" type="AnimatedSprite2D" parent="." unique_id=1453092864]
 z_index = 20
 position = Vector2(-200, -10)
 sprite_frames = ExtResource("4_40bh0")
 animation = &"intro"
 centered = false
 
-[node name="Highscore" type="AnimatedSprite2D" parent="."]
+[node name="Highscore" type="AnimatedSprite2D" parent="." unique_id=1334041789]
 visible = false
 position = Vector2(44, 557)
 sprite_frames = ExtResource("10_6vagp")

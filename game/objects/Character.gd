@@ -52,7 +52,7 @@ var sing_timer:float = 0.0 # for anim looping with sustains
 var last_anim:StringName = ''
 var special_anim:bool = false: set = set_special_anim
 func set_special_anim(spec): # like this so i can override it
-	if spec: last_anim = atlas.cur_anim if is_atlas else animation
+	if spec: last_anim = get_anim()
 	special_anim = spec
 
 var anim_timer:float = -1.0: # play an anim for a certain amount of time
@@ -72,7 +72,17 @@ var on_anim_finished:Callable = func():
 		animation_finished.disconnect(on_anim_finished)
 
 var anim_finished:bool:
-	get: return (atlas.frame_index if is_atlas else frame) == get_frame_count(animation) - 1
+	get: return (atlas.frame_index if is_atlas else frame) == get_frame_count(get_anim()) - 1
+
+## Basically AnimatedSprite2D's frame property, but it works with atlases.
+## You don't have to use this property, you can still set "frame, atlas.frame, and atlas.frame_index" manually.
+var cur_frame:int:
+	get:
+		if !is_atlas or !atlas: return frame
+		return atlas.frame if !atlas.cur_data.has_frames else atlas.frame_index
+	set(val):
+		if !is_atlas or !atlas: frame = val
+		else: atlas.set('frame' if !atlas.cur_data.has_frames else 'frame_index', val)
 
 var width:float:
 	get: return width * abs(scale.x)
@@ -126,7 +136,7 @@ func load_char(new_char:String = 'bf') -> void:
 		if !DirAccess.dir_exists_absolute('res://assets/images/'+ path):
 			return printerr('No atlas folder found: '+ path)
 
-		atlas.atlas = 'res://assets/images/'+ path
+		atlas.add_atlas('images/'+ path)
 		#add_child(atlas)
 	else:
 		if !ResourceLoader.exists('res://assets/images/'+ path): # json exists, but theres no res file
@@ -167,15 +177,15 @@ func load_char(new_char:String = 'bf') -> void:
 	dance_idle = offsets.has('danceLeft') and offsets.has('danceRight')
 
 	match(cur_char):
-		'senpai':
+		'senpai', 'shaggy':
 			dance_beat = 2
 		'senpai-angry':
 			forced_suffix = '-alt' # boooo
 		'pico-speaker', 'otis-speaker':
 			can_dance = false
 			if cur_char == 'otis-speaker':
-				animation_changed.connect(func(): can_dance = animation == 'idle')
-				animation_finished.connect(func(): if animation != 'idle': play_anim('idle'))
+				animation_changed.connect(func(): can_dance = get_anim() == 'idle')
+				animation_finished.connect(func(): if get_anim() != 'idle': play_anim('idle'))
 				can_dance = true
 			sing_anims = ['shootLeft', 'shootLeft', 'shootRight', 'shootRight']
 			play_anim('idle', true)
@@ -204,7 +214,7 @@ func _process(delta):
 				if get_anim() == last_anim:
 					dance()
 	else:
-		if animation.begins_with('sing'):
+		if get_anim().begins_with('sing'):
 			hold_timer += delta
 			sing_timer += delta
 
@@ -250,7 +260,7 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 
 	var can_reset:bool = reset or (!reset and !get_anim().begins_with('sing') and !special_anim)
 	if (sing_timer >= Conductor.step_crochet / 1000.0 or can_reset):
-		sing_timer = 0.0 if can_reset else (Conductor.step_crochet / 1000.0) * (1 * get_process_delta_time())
+		sing_timer = 0.0 if can_reset else (Conductor.step_crochet / 1000.0) * get_process_delta_time()
 		play_anim(to_sing, true)
 
 func flip_char() -> void:
@@ -268,7 +278,7 @@ func swap_sing(anim1:String, anim2:String) -> void:
 
 func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	if ignore_anims: return
-	if forced_suffix.length() > 0:
+	if !forced_suffix.is_empty():
 		anim += forced_suffix
 	if !has_anim(anim):
 		return printerr(anim +' doesnt exist on '+ cur_char)
@@ -290,10 +300,13 @@ func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	var anim_offset:Vector2 = Vector2.ZERO
 	if offsets.has(anim):
 		anim_offset = Vector2(offsets[anim][0], offsets[anim][1])
-	offset = anim_offset
+	if is_atlas:
+		atlas.offset = anim_offset
+	else:
+		offset = anim_offset
 	flip_h = flippers.get(anim, false)
 
-func get_anim() -> String:
+func get_anim() -> StringName:
 	return atlas.cur_anim if is_atlas else animation
 
 func get_cam_pos() -> Vector2:
@@ -321,20 +334,21 @@ func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int =
 		return
 
 	var got_prefix:String = Util.get_closest_anim(sprite_frames, prefix)
+	var _anim_to_use:String = got_prefix if !got_prefix.is_empty() else anim_name
 	var _spr := sprite_frames
 	if !has_anim(anim_name):
-		if got_prefix.is_empty(): return print('No Prefix Found!')
+		if got_prefix.is_empty(): return print('No Prefix Found!') # maybe change this to add_animation
 		_spr.duplicate_animation(got_prefix, anim_name)
 
 	_spr.set_animation_speed(anim_name, fps)
 	_spr.set_animation_loop(anim_name, loop)
 	if !frames.is_empty():
 		var anim_textures:Array[Texture2D] = []
-		for i:int in _spr.get_frame_count(anim_name):
-			anim_textures.append(_spr.get_frame_texture(anim_name, i))
+		for i:int in _spr.get_frame_count(_anim_to_use):
+			anim_textures.append(_spr.get_frame_texture(_anim_to_use, i))
 		_spr.clear(anim_name)
 		for frm in frames:
-			if anim_textures.size() - 1 >= frm:
+			if anim_textures.size() > frm:
 				sprite_frames.add_frame(anim_name, anim_textures[int(frm)])
 		anim_textures.clear()
 
@@ -363,13 +377,12 @@ func cache_char(to_cache:String) -> void:
 		to_cache = get_closest(to_cache)
 	if char_cache.has(to_cache): return
 
-	json = JsonHandler.get_character(to_cache)
-	if json.has('no_antialiasing'): json = Legacy.fix_json(json)
-	if json.has('assetPath'): json = VSlice.fix_json(json)
+	var _temp:Dictionary = JsonHandler.get_character(to_cache)
+	if _temp.has('no_antialiasing'): _temp = Legacy.fix_json(_temp)
+	if _temp.has('assetPath'): _temp = VSlice.fix_json(_temp)
 
-	var path = json.path +'.res'
-	if !ResourceLoader.exists('res://assets/images/'+ path):
-		return printerr('No .res file to cache: '+ path)
+	var path:String = _temp.path +'.res'
+	if !ResourceLoader.exists('res://assets/images/'+ path): return
 
 	char_cache[to_cache] = ResourceLoader.load('res://assets/images/'+ path)
 	print('cached '+ to_cache)

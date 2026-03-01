@@ -63,7 +63,7 @@ func _ready():
 	Conductor.paused = true
 
 	Game.focus_change.connect(focus_change)
-	Discord.change_presence('Game Over | '+ this.SONG.song.capitalize() +' - '+ JsonHandler.cur_diff.to_upper(), 'MOTHER FUCK')
+	Discord.change_presence('Game Over | %s - %s' % [this.SONG.song.capitalize(), JsonHandler.cur_diff.to_upper()], 'MOTHER FUCK')
 	follow_bg()
 
 	on_game_over.connect(this.stage.game_over_start)

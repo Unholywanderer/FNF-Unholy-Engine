@@ -1,6 +1,6 @@
 class_name Codename; extends Chart;
 
-func parse_chart(data):
+func parse_chart(data:Dictionary) -> Array:
 	var possible_types:Array = data.get('noteTypes', [])
 	for line in data.strumLines:
 		var init_type:String = 'gf' if line.position == 'girlfriend' else ''
@@ -23,10 +23,9 @@ static func fix_json(character:String) -> Dictionary:
 	return parsed_data
 
 # convert a chart to a simplier format, so its easier to mess with
-#? maybe make it so it has a "section data" array, seperate from the notes for any formats that have them
 static func convert_to_simple(chart:Dictionary) -> Dictionary:
 	var simple:Dictionary = UnholyFormat.EDITOR_CHART.duplicate(true)
-	#simple.events = chart.events
+	simple.events = chart.events
 	var possible_types:Array = chart.get('noteTypes', [])
 	for line in chart.strumLines:
 		var init_type:String = 'gf' if line.position == 'girlfriend' else ''
@@ -41,4 +40,11 @@ static func convert_to_simple(chart:Dictionary) -> Dictionary:
 			])
 
 	simple.notes.sort_custom(func(a, b): return a[0] < b[0])
+	#var file:FileAccess = FileAccess.open("res://assets/FUCK.json", FileAccess.WRITE)
+	#file.store_string(JSON.stringify(simple, '\t', false))
+	#file.close()
 	return simple
+
+static func convert_from_simple(_simple:Dictionary) -> Dictionary:
+	var code_name:Dictionary = {}
+	return code_name

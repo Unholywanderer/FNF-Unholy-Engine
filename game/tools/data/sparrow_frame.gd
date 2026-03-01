@@ -1,5 +1,4 @@
-class_name SparrowFrame extends RefCounted
-
+class_name SparrowXMLFrame extends RefCounted
 
 var name: StringName
 var animation: StringName

@@ -84,7 +84,7 @@ func _import() -> Error:
 		if texture == null:
 			return ERR_FILE_MISSING_DEPENDENCIES
 
-		var frame = SparrowFrame.new()
+		var frame = SparrowXMLFrame.new()
 		frame.name = xml.get_named_attribute_value_safe('name')
 
 		if frame.name == '':

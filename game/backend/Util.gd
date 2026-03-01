@@ -97,17 +97,17 @@ func ease_from_string(ease_type:StringName = &'linear') -> Tween.EaseType:
 
 func trans_from_string(trans:StringName = &'linear') -> Tween.TransitionType:
 	match trans.to_lower().strip_edges().replace(' ', ''):
-		&'back'   : return Tween.TRANS_BACK
-		&'bounce' : return Tween.TRANS_BOUNCE
-		&'circ'   : return Tween.TRANS_CIRC
-		&'cubic'  : return Tween.TRANS_CUBIC
-		&'elastic': return Tween.TRANS_ELASTIC
-		&'expo'   : return Tween.TRANS_EXPO
-		&'quad'   : return Tween.TRANS_QUAD
-		&'quart'  : return Tween.TRANS_QUART
-		&'quint'  : return Tween.TRANS_QUINT
-		&'sine'   : return Tween.TRANS_SINE
-		&'smooth' : return Tween.TRANS_SPRING
+		&'back'    : return Tween.TRANS_BACK
+		&'bounce'  : return Tween.TRANS_BOUNCE
+		&'circ'    : return Tween.TRANS_CIRC
+		&'cubic'   : return Tween.TRANS_CUBIC
+		&'elastic' : return Tween.TRANS_ELASTIC
+		&'expo'    : return Tween.TRANS_EXPO
+		&'quad'    : return Tween.TRANS_QUAD
+		&'quart'   : return Tween.TRANS_QUART
+		&'quint'   : return Tween.TRANS_QUINT
+		&'sine'    : return Tween.TRANS_SINE
+		&'smoother': return Tween.TRANS_SPRING
 		_: return Tween.TRANS_LINEAR
 
 func shake_cam(cam:Camera2D, _power:float = 0.05, _axis:String = 'xy', _length:float = 0.5) -> void:
@@ -159,7 +159,7 @@ func dir_exists(path:String) -> bool:
 
 ## Like [code]DirAccess.get_files_at()[/code], except it only returns an array with
 ## the files that match the specified file extension. Use the [code]root[/code] param to
-## get files outside of the "res://" folder
+## get files outside of the "res://" folder.
 func only_get(path:String, ext:String, root:String = 'res://assets/') -> PackedStringArray:
 	if !DirAccess.dir_exists_absolute(root + path): return []
 	var found_files:PackedStringArray = []
@@ -183,8 +183,9 @@ func load_texture(path:String) -> ImageTexture:
 	var img := Image.load_from_file(path)
 	return ImageTexture.create_from_image(img)
 
-
+# this is kinda bad, maybe make it better
 func get_closest_anim(frames:SpriteFrames, anim:String) -> String:
+	if anim.is_empty(): return ''
 	for i in frames.get_animation_names():
 		if anim.begins_with(i): return i
 	return ''
