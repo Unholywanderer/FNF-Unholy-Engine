@@ -1,0 +1,21 @@
+{
+	"songs": [
+		["Spaghetti", "face", [115, 94, 176]]
+	],
+
+	"weekCharacters": [
+		"spaghetti",
+		"bf",
+		"gf"
+	],
+	"difficulties": ["easy", "normal", "hard"],
+	"weekBackground": "stage",
+
+	"storyName": "Due Debts",
+	"weekBefore": "tutorial",
+	"weekName": "Week 1",
+	"startUnlocked": true,
+
+	"hideStoryMode": false,
+	"hideFreeplay": false
+}
