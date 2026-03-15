@@ -22,31 +22,33 @@ const chart_format = {
 var p_v1:bool = false
 func _init(s:bool = false): p_v1 = s
 
-func parse_chart(data:Dictionary) -> Array:
-	for sec in data.notes:
-		for note in sec.sectionNotes:
-			if note[1] < 0:
-				if note[1] == -1: # thats an event note, dont skip it
-					if !data.get('events'): data.set('events', [])
-					if data.events.has([note[0], [[note[2], note[3], note[4]]]]): continue
-					data.events.append([note[0], [[note[2], note[3], note[4]]]])
-				continue
-			var time:float = maxf(0, note[0])
-
-			if note[2] is String: continue
-			var sustain_len:float = maxf(0, note[2])
-			var is_sustain:bool = sustain_len > 0
-
-			var n_data:int = int(note[1])
-			var must_hit:bool = sec.mustHitSection if note[1] <= 3 else not sec.mustHitSection
-			if p_v1: must_hit = n_data < 4
-
-			var n_type:String = str(note[3]) if (note.size() > 3 and note[3]) else ''
-			if n_type == 'true': n_type = 'Alt'
-
-			add_note([time, n_data, is_sustain, sustain_len, must_hit, n_type])
-
-	return_notes.sort_custom(func(a, b): return a.strum_time < b.strum_time)
+func parse_chart(data:Dictionary) -> Array: #very simple very demure
+	var data_unparsed:Array = data.get('notes',[])
+	if !data.get('events'): data.set('events', [])
+	
+	for step in data_unparsed:
+		var section:Array = step.get('sectionNotes',[])
+		var must_hit:bool = step.get('mustHitSection',false)
+		
+		for note in section:
+			var direction:int = note[1]
+			var time:float = note[0]
+			var sus_length:float = note[2]
+			var type:String = note[3] if note.size() > 3 else ''
+			var is_sustain:bool = sus_length > 0.0
+			var is_must_hit:bool = must_hit if direction <= 3 else not must_hit
+			if p_v1: is_must_hit = direction < 4
+			if type == 'true': type = 'Alt'
+			
+			if direction < 0:
+				if direction != -1: # thats an event note, dont skip it
+					continue
+				var event:Array = [time, [[sus_length, type, note[4]]]]
+				if data.events.has(event): continue
+				data.events.append(event)
+			add_note([time, direction, is_sustain, sus_length, is_must_hit, type])
+	
+	return_notes.sort_custom(func(a, b): return a.strum_time < b.strum_time) ; _added_data.clear()
 	return return_notes
 
 static func fix_json(data:Dictionary) -> Dictionary:

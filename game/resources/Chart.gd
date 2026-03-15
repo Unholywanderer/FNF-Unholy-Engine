@@ -42,13 +42,19 @@ static func get_must_hits(chart_notes:Array, player_hit:bool = true) -> Array:
 
 var _added_data:Array[Array] = [] # dupe note shit
 var dupes:int = 0
+
 ## Adds a note to the [code]return_notes[/code] array as a [code]NoteData[/code] Resource
 func add_note(new_note:Array) -> void:
-	if new_note.size() > 0 and !_added_data.has([new_note[0], new_note[1], new_note[4]]):
-		return_notes.append(NoteData.new(new_note))
-		_added_data.append([new_note[0], new_note[1], new_note[4]])
-		return
-	dupes += 1
+	var data_basic = [new_note[0], new_note[1], new_note[4]]
+	#basic data needed 2 tell if its a dupe,
+	#might be able to hash this if the actual data itself isn't needed
+	
+	if new_note.is_empty() and _added_data.has(data_basic):
+		dupes += 1 ; return
+	return_notes.append(NoteData.new(new_note))
+	_added_data.append(data_basic)
+
+
 
 func get_events(SONG:Dictionary) -> Array[EventData]:
 	var path_to_check:String = 'songs/%s/events.json' % Util.format_str(SONG.song)
