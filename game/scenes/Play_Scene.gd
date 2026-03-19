@@ -117,7 +117,7 @@ func _ready():
 		match _data.sprite:
 			'ABot': speaker = load('res://game/objects/a_bot.tscn').instantiate()
 			'ABot-pixel': speaker = load('res://game/objects/a_bot_pixel.tscn').instantiate()
-			_: speaker = Speaker.new()
+			_: speaker = Speaker.new(_data.sprite)
 		speaker.offset = Vector2(_data.offsets[0], _data.offsets[1])
 		gf.add_child(speaker)
 		speaker.show_behind_parent = true
@@ -188,7 +188,6 @@ func _ready():
 
 	print(SONG.song +' '+ JsonHandler.cur_diff.to_upper())
 	print('TOTAL EVENTS: '+ str(events.size()))
-	print('%s Stacked Notes' % JsonHandler.dupe_notes)
 	for i in [self, stage]:
 		ui.countdown_start.connect(Callable(i, 'countdown_start'))
 		ui.countdown_tick.connect(Callable(i, 'countdown_tick'))
@@ -577,7 +576,10 @@ func event_hit(event:EventData) -> void:
 				if peep.has_anim(last_anim):
 					peep.play_anim(last_anim, true)
 					peep.frame = last_frame
-				if peep == boyfriend: ui.icon_p1.change_icon(peep.icon, true)
+				if peep == boyfriend:
+					Judge.rating_pos = boyfriend.get_cam_pos() - Vector2(120, 50)
+					Judge.combo_pos = boyfriend.get_cam_pos() - Vector2(260, -60)
+					ui.icon_p1.change_icon(peep.icon, true)
 				if peep == dad: ui.icon_p2.change_icon(peep.icon)
 
 		'Set GF Speed':
@@ -587,6 +589,7 @@ func event_hit(event:EventData) -> void:
 		'FocusCamera', 'Camera Movement':
 			var char_int = event.values[0] # a little fix
 			if event.values[0] is Dictionary:
+				if event.values[0].is_empty(): return
 				char_int = char_int.char
 				#if event.values[0].has('x'): focus_offset.x = -event.values[0].x
 				if event.values[0].has('y'): focus_offset.y = float(event.values[0].y)

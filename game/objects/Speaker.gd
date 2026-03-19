@@ -1,17 +1,20 @@
 class_name Speaker; extends AnimatedSprite2D;
 
-var parent = null
+var parent:Node2D = null
 var offsets:Vector2 = Vector2.ZERO
 var addons:Array = []
-func _init(par = null) -> void:
+func _init(spr:String = 'speaker') -> void:
 	centered = false
 	name = 'Speaker'
-	sprite_frames = load('res://assets/images/characters/speakers/speaker.res')
-	if par != null:
-		parent = par
+	var path:String = 'res://assets/images/characters/speakers/%s.res'
+	if !ResourceLoader.exists(path % spr):
+		spr = 'speaker'
+	sprite_frames = load(path % spr)
+	#if par != null:
+	#	parent = par
 
 func bump(forced:bool = true) -> void:
-	play('bump')
+	play()
 	if forced: frame = 0
 	for i in addons:
 		if i is AnimatedSprite2D:

@@ -12,6 +12,7 @@ var crochet:float:
 var step_crochet:float:
 	get: return crochet / 4.0
 
+var offset:float = 0.0
 var song_pos:float = 0.0:
 	set(new_pos):
 		song_pos = new_pos
@@ -43,7 +44,7 @@ var cur_step:float = 0.0:
 
 var cur_section:int = 0:
 	# NOTE to self, change this when you want to figure out time sigs
-	get: return floori(cur_beat / 4.0)
+	get: return int(cur_beat / 4.0)
 
 ## If the song audio files are actually loaded/added
 var song_loaded:bool = false
@@ -136,7 +137,8 @@ func load_song(song:String = '') -> void:
 
 	audio.stream_paused = true
 	song_loaded = true
-	print('there are (%s) bpm changes!' % bpm_changes.size())
+	print('there are (%s) bpm changes!' % (bpm_changes.size() - 1))
+	print(offset)
 
 var _resync_timer:float = 0.0
 var _last_time:float = 0.0
@@ -149,8 +151,8 @@ func _process(delta) -> void:
 			else:
 				_resync_timer = 0
 
-			_last_time = aud_pos
-			song_pos = aud_pos + _resync_timer * playback_rate
+			_last_time = aud_pos + offset
+			song_pos = (aud_pos + offset) + _resync_timer * playback_rate
 		else:
 			song_pos += delta * 1000 * playback_rate
 
@@ -158,23 +160,48 @@ func _process(delta) -> void:
 		if !song_started:
 			return start()
 
+		#update_beats()
+		#if song_pos > beat_time + crochet:
+		#	beat_time += crochet
+		#	cur_beat += 1
+		#	beat_hit.emit(cur_beat)
+
+		#	var beats:int = 4
+		#	if JsonHandler.parse_type == 'legacy':
+		#		var son:Dictionary = JsonHandler.SONG
+		#		if son.get('notes', []).size() > cur_section:
+		#			beats = son.notes[cur_section].get('sectionBeats', 4)
+
+		#	if int(cur_beat) % beats == 0:
+		#		cur_section += 1
+		#		section_hit.emit(cur_section)
+
+		#if song_pos > step_time + step_crochet:
+		#	step_time += step_crochet
+		#	cur_step += 1
+		#	step_hit.emit(cur_step)
+
+
 		var prev_beat:int = floori(cur_beat)
 		var prev_step:int = floori(cur_step)
 		var prev_sec:int = floori(cur_section)
 
 		update_beats()
+#		test(song_pos)
+		if floori(cur_step) != prev_step:
+			for step:int in range(prev_step + 1, floori(cur_step) + 1):
+				step_hit.emit(step)
+		if floori(cur_beat) != prev_beat:
+			for beat:int in range(prev_beat + 1, floori(cur_beat) + 1):
+				beat_hit.emit(beat)
+		if floori(cur_section) != prev_sec:
+			for sec:int in range(prev_sec + 1, floori(cur_section) + 1):
+				section_hit.emit(sec)
 
-		if prev_beat != floori(cur_beat):
-			beat_hit.emit(floori(cur_beat))
-		if prev_step != floori(cur_step):
-			step_hit.emit(floori(cur_step))
-		if prev_sec != floori(cur_section):
-			section_hit.emit(floori(cur_section))
-
-		for i in bpm_changes:
-			if i.time <= song_pos and !i.test:
-				i.test = true
-				print('BPM Change [%s] at %s' % [i.bpm, i.time])
+		#for i in bpm_changes:
+		#	if i.time <= song_pos and !i.test:
+		#		i.test = true
+		#		print('BPM Change [%s] at %s' % [i.bpm, i.time])
 
 func connect_signals(scene = null) -> void: # connect all signals
 	var this:Node = scene if scene else Game.scene
@@ -187,13 +214,13 @@ func add_audio(new_id:int = -1, file_name:String = 'Voices', vol:float = 0.7, so
 	if file_name.is_empty(): file_name = 'Voices'
 	if new_id < 0: new_id = total_streams
 	if new_id >= total_streams:
-		for i in range(total_streams, new_id):
+		for i in range(total_streams, new_id + 1):
 			total_streams += 1
 	var path_to_check:String = 'assets/songs/%s/audio/%s.ogg' % [song_name, file_name]
 	if !ResourceLoader.exists('res://'+ path_to_check):
 		return printerr('No audio file at '+ path_to_check)
 
-	var new_aud = load('res://'+ path_to_check)
+	var new_aud:AudioStream = load('res://'+ path_to_check)
 	audio.stream.set_sync_stream(new_id, new_aud)
 	audio_volume(new_id, vol)
 	ex_audio.append(new_aud)
@@ -244,7 +271,7 @@ func reset_beats() -> void:
 func add_bpm_changes(SONG:Dictionary) -> void:
 	var _time:float = 0.0
 	var _bpm:float = SONG.bpm
-
+	var _last_bpm:float = 0.0
 	var first := BPMChange.new() # staring bpm
 	first.bpm = _bpm
 	bpm_changes.push_front(first)
@@ -252,10 +279,12 @@ func add_bpm_changes(SONG:Dictionary) -> void:
 	match JsonHandler.parse_type:
 		'v_slice':
 			for i in JsonHandler.META.timeChanges:
+				if _last_bpm == i.bpm: continue
 				var new_change := BPMChange.new()
 				new_change.time = i.t
 				new_change.bpm = i.bpm
 				bpm_changes.append(new_change)
+				_last_bpm = i.bpm
 		'codename':
 			for i in SONG.events:
 				if i.name != 'BPM Change': continue
@@ -270,9 +299,9 @@ func add_bpm_changes(SONG:Dictionary) -> void:
 					var new_change := BPMChange.new()
 					new_change.time = _time
 					new_change.bpm = _bpm
-					print('BPM change (%s) at (%s)' % [_bpm, _time])
-
+					#print('BPM change (%s) at (%s)' % [_bpm, _time])
 					bpm_changes.append(new_change)
+
 				var _sec_beats:int = sec.get('sectionBeats', 4) # psych thangs
 				_time += ((60.0 / _bpm) * 1000.0) * _sec_beats
 
@@ -294,10 +323,38 @@ func update_beats() -> void: # stole a lot of this from cherry
 		prev_time = change.time
 		bpm = change.bpm
 
-	cur_beat += (song_pos - prev_time) / crochet
+	cur_beat += ((song_pos - prev_time)) / crochet
+
+func test(time:float = 0.0) -> void:
+	var _beat:int = 0
+	var _step:int = 0
+	var _sec:int = 0
+
+	var _beat_time:float = 0.0
+	var _step_time:float = 0.0
+
+	var _bpm:float = bpm_changes[0].bpm
+	var _cro_at_time:float = (60.0 / _bpm) * 1000.0
+	while time > _beat_time + _cro_at_time:
+		_beat_time += _cro_at_time
+		_beat += 1
+
+		var beats:int = 4
+		if JsonHandler.parse_type == 'legacy':
+			var son:Dictionary = JsonHandler.SONG
+			if son.get('notes', []).size() > cur_section:
+				beats = son.notes[cur_section].get('sectionBeats', 4)
+
+		if _beat % beats == 0:
+			_sec += 1
+
+		if time > _step_time + (_cro_at_time / 4):
+			_step_time += (_cro_at_time / 4)
+			_step += 1
+	print(_beat)
 
 class BPMChange extends Resource:
 	var bpm:float = 100
 	var time:float = 0.0
 	var signature:String = '4/4'
-	var test:bool = false
+	#var test:bool = false

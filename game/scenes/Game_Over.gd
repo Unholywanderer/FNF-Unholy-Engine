@@ -73,7 +73,7 @@ func _ready():
 	bf = this.boyfriend
 	bf.global_position = this.stage.bf_pos
 	bf.reparent(self)
-	bf.load_char(death_char) #TODO flips very weirdly when player isnt an is_player character
+	bf.load_char(death_char) # godot quirk makes the game over char flip weirdly whenever theres -1 scale
 	bf.play_anim('deathStart', true) # apply the offsets
 
 	cam.process_mode = Node.PROCESS_MODE_ALWAYS

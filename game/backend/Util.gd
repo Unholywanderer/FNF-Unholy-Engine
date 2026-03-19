@@ -21,6 +21,9 @@ func format_str(string:String = '') -> String:
 func array_to_str(arr:Array) -> String:
 	return str(arr).strip_edges().substr(1).replace(']', '') # i do NOT care brah
 
+func array_to_vec(arr:Array) -> Vector2:
+	return Vector2(arr[0], arr[1])
+
 func round_d(num:float, digit:int) -> float: # bowomp
 	return round(num * pow(10.0, digit)) / pow(10.0, digit)
 
@@ -126,15 +129,18 @@ func flash_screen(flash_color:Color = Color.WHITE, duration:float = 1.0) -> void
 		Game.scene.add_child(flash)
 	quick_tween(flash, 'modulate:a', 0, duration).finished.connect(flash.queue_free)
 
+func flicker_obj(obj:Node, speed:float = 0.05, dur:float = 1.0, colors:Array[Color] = []) -> Flicker:
+	if obj == null: return
+	var flick = Flicker.new()
+	flick.start_flicker(obj, speed, dur, colors)
+	add_child(flick)
+	return flick
+
 func shake_obj(obj:Node, intensity:float = 5.0, dur:float = 1.0, axis:String = 'xy') -> void:
 	if obj == null or !obj.get('position'): return
 	var shake = Shaker.new()
 	shake.shake(obj, intensity, dur, axis)
 	add_child(shake)
-	shake.finished.connect(func():
-		if obj != null: obj.position = shake.default_pos
-		shake.queue_free()
-	)
 
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST
@@ -209,6 +215,49 @@ func to_time(secs:float, is_milli:bool = true, show_ms:bool = false) -> String:
 
 	return time_part1
 
+class Flicker extends Node2D:
+	signal finished
+	var _can_flicker:bool = false
+	var obj:Node = null
+
+	var use_color:bool = false
+	var flick_speed:float = 0.05
+	var flick_time:float = 1.0
+	var flick_colors:Array[Color] = [Color.WHITE, Color.DIM_GRAY]
+
+	var _total_time:float = 0.0:
+		set(time):
+			if time >= flick_time:
+				queue_free()
+				if use_color:
+					obj.modulate = Color.WHITE # not quite, should make it return to the previous color
+				else: obj.visible = true
+				finished.emit()
+
+			_total_time = time
+
+	var _flc:float = 0.0
+	func _process(delta:float) -> void:
+		if !obj or !_can_flicker: return
+		_flc += delta
+		_total_time += delta
+		if _flc >= flick_speed:
+			_flc = 0.0
+			if use_color:
+				flick_colors.reverse()
+				obj.modulate = flick_colors[0]
+			else:
+				obj.visible = !obj.visible
+
+	func start_flicker(i:Node, spd:float = 0.05, duration:float = 1.0, colors:Array[Color] = []) -> void:
+		obj = i
+		_can_flicker = true
+		flick_speed = spd
+		flick_time = duration
+		_total_time = 0.0
+		if colors.size() == 2:
+			flick_colors = colors
+
 class Shaker extends Node2D:
 	signal finished
 	var obj:Node = null
@@ -217,8 +266,9 @@ class Shaker extends Node2D:
 		set(shake):
 			if cur_shake == shake: return
 			if shake <= 0:
-				shake = 0
+				obj.position = default_pos
 				finished.emit()
+				queue_free()
 			cur_shake = shake
 
 	var axis:String = 'xy'
@@ -233,7 +283,6 @@ class Shaker extends Node2D:
 		duration = dur
 		axis = ax.to_lower().strip_edges()
 		cur_shake = intensity
-		print('hah')
 
 	func _process(delta:float) -> void:
 		cur_shake -= intensity * delta / duration

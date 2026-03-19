@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bva5ois3b6exl" path="res://game/scenes/Play_Scene.gd" id="1_86u4e"]
 [ext_resource type="PackedScene" uid="uid://c0w7bffyud3s7" path="res://game/objects/ui.tscn" id="2_5ylyw"]
 
-[node name="Play_Scene" type="Node2D" unique_id=696468938]
+[node name="Play_Scene" type="Node2D" unique_id=1442075146]
 script = ExtResource("1_86u4e")
 
 [node name="Camera" type="Camera2D" parent="." unique_id=1810301582]
@@ -13,3 +13,7 @@ position_smoothing_enabled = true
 [node name="UI" parent="." unique_id=1483092787 instance=ExtResource("2_5ylyw")]
 
 [node name="OtherUI" type="CanvasLayer" parent="." unique_id=2074639870]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1055052428]
+transform = Transform3D(0.9983157, 0.05613739, -0.014641526, -0.054592095, 0.9944093, 0.09038666, 0.019633736, -0.08943509, 0.9957991, 0, 5.3753185, 0.12981558)
+current = true

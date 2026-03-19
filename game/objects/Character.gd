@@ -1,9 +1,10 @@
 class_name Character; extends AnimatedSprite2D;
 
+var _char_cache:Dictionary = {}
+
 var json:Dictionary
 var atlas:Atlas
 var chart:Array = []
-var char_cache:Dictionary = {}
 var offsets:Dictionary = {}
 var flippers:Dictionary = {}
 var speaker_data:Dictionary = {}
@@ -18,7 +19,9 @@ var is_player:bool = false
 var is_atlas:bool = false:
 	set(atl):
 		if atl == is_atlas: return
-		if atl:
+		if !atl:
+			remove_child(atlas)
+		else:
 			atlas = Atlas.new()
 			sprite_frames = null
 			add_child(atlas)
@@ -29,9 +32,6 @@ var is_atlas:bool = false:
 					looping = true
 					play_anim(anim +'-loop')
 			)
-
-		else:
-			remove_child(atlas)
 
 		is_atlas = atl
 
@@ -97,7 +97,6 @@ var sing_anims:PackedStringArray = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT
 
 func _init(pos:Vector2 = Vector2.ZERO, Char:String = 'bf', player:bool = false):
 	centered = false
-	#atlas = AnimateSymbol.new()
 	animation_finished.connect(func():
 		if debug: return
 		var anim := get_anim()
@@ -121,7 +120,7 @@ func load_char(new_char:String = 'bf') -> void:
 
 	cur_char = new_char
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % cur_char):
-		var replace_char = get_closest(cur_char)
+		var replace_char:String = get_closest(cur_char)
 		print_rich('No JSON found for: '+ cur_char +'\n', '[color=red]'+ cur_char +'[color=yellow] -> [color=green]'+ replace_char)
 		cur_char = replace_char
 
@@ -133,21 +132,17 @@ func load_char(new_char:String = 'bf') -> void:
 	is_atlas = ResourceLoader.exists('res://assets/images/'+ path.get_basename() +'/Animation.json')
 	if is_atlas:
 		path = path.get_basename()
-		if !DirAccess.dir_exists_absolute('res://assets/images/'+ path):
-			return printerr('No atlas folder found: '+ path)
-
 		atlas.add_atlas('images/'+ path)
-		#add_child(atlas)
 	else:
 		if !ResourceLoader.exists('res://assets/images/'+ path): # json exists, but theres no res file
 			printerr('No .res file found: '+ path)
 			path = 'characters/bf/char.res'
 
-		if char_cache.has(cur_char):
-			sprite_frames = char_cache[cur_char]
+		if _char_cache.has(cur_char):
+			sprite_frames = _char_cache[cur_char]
 		else:
 			sprite_frames = ResourceLoader.load('res://assets/images/'+ path)
-			char_cache[cur_char] = sprite_frames.duplicate(true)
+			_char_cache[cur_char] = sprite_frames.duplicate(true)
 
 	offsets.clear()
 	for anim in json.animations:
@@ -155,32 +150,22 @@ func load_char(new_char:String = 'bf') -> void:
 		offsets[anim.name] = anim.offsets
 		flippers[anim.name] = anim.get('flip_x', false)
 
-		#if anim.name != anim.prefix and has_anim(anim.prefix) and !to_remove.has(anim.prefix):
-		#	to_remove.append(anim.prefix)
-
-	#for i:String in to_remove: sprite_frames.remove_animation(i)
-
 	icon = json.icon
 	scale = Vector2(json.scale, json.scale)
 	antialiasing = json.antialiasing
-	position.x += json.pos_offset[0]
-	position.y += json.pos_offset[1]
-	focus_offsets.x = json.cam_offset[0]
-	focus_offsets.y = json.cam_offset[1]
+	position += Util.array_to_vec(json.pos_offset)
+	focus_offsets = Util.array_to_vec(json.cam_offset)
 	death_char = json.get('death_char', 'bf-dead')
 	sing_duration = json.get('sing_dur', 4)
 
-	speaker_data.clear()
-	if json.has('speaker'):
-		speaker_data = json.speaker
+	speaker_data = json.get('speaker', {})
 
 	dance_idle = offsets.has('danceLeft') and offsets.has('danceRight')
+	sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 
 	match(cur_char):
 		'senpai', 'shaggy':
 			dance_beat = 2
-		'senpai-angry':
-			forced_suffix = '-alt' # boooo
 		'pico-speaker', 'otis-speaker':
 			can_dance = false
 			if cur_char == 'otis-speaker':
@@ -191,7 +176,7 @@ func load_char(new_char:String = 'bf') -> void:
 			play_anim('idle', true)
 		_:
 			dance_beat = 1 if dance_idle else 2
-			sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
+			# [-220 325]  abo [-250 325] neo gf boombo
 
 	dance()
 	set_stuff()
@@ -230,7 +215,7 @@ func _process(delta):
 			var is_hold:bool = i.length > 0
 			if i.strum_time <= Conductor.song_pos:
 				var suff = str(randi_range(1, 2)) if cur_char.ends_with('-speaker') else ''
-				if !is_hold or i[0] + i[3] > Conductor.song_pos:
+				if !is_hold or i.strum_time + i.length > Conductor.song_pos:
 					sing(i.dir, suff, (true if !is_hold else !get_anim().contains('sing')))
 				if !is_hold or i.strum_time + i.length < Conductor.song_pos: #if not sustain or sustain is finished
 					chart.remove_at(chart.find(i))
@@ -239,7 +224,7 @@ func dance(forced:bool = false) -> void:
 	if (special_anim and !forced) or !can_dance: return
 	if looping: forced = true
 	var idle:String = 'idle'
-	if cur_char.contains('-dead'):
+	if cur_char.ends_with('-dead'):
 		idle = 'deathLoop'
 		forced = true
 
@@ -265,8 +250,11 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 
 func flip_char() -> void:
 	scale.x *= -1
+	#rotation_degrees = 0
+	#flip_h = !flip_h
+	#transform *= Transform2D.FLIP_X
 	position.x += width
-	focus_offsets.x -= width / 1.2
+	focus_offsets.x -= width / (1.15 if !is_player else 0.85)
 	swap_sing('singLEFT', 'singRIGHT')
 
 func swap_sing(anim1:String, anim2:String) -> void:
@@ -278,48 +266,40 @@ func swap_sing(anim1:String, anim2:String) -> void:
 
 func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	if ignore_anims: return
-	if !forced_suffix.is_empty():
-		anim += forced_suffix
-	if !has_anim(anim):
-		return printerr(anim +' doesnt exist on '+ cur_char)
+	if !forced_suffix.is_empty(): anim += forced_suffix
+	if !has_anim(anim): return printerr(anim +' doesnt exist on '+ cur_char)
 
 	looping = false
 	special_anim = false
 	anim_timer = -1.0
 
+	var anim_offset:Vector2 = Util.array_to_vec(offsets.get(anim, [0, 0]))
+
 	if is_atlas:
 		atlas.play_anim(anim, forced)
-	else:
-		if reversed:
-			play_backwards(anim)
-		else:
-			play(anim)
-		if forced:
-			frame = sprite_frames.get_frame_count(anim) - 1 if reversed else 0
-
-	var anim_offset:Vector2 = Vector2.ZERO
-	if offsets.has(anim):
-		anim_offset = Vector2(offsets[anim][0], offsets[anim][1])
-	if is_atlas:
 		atlas.offset = anim_offset
 	else:
+		play(anim)
+		if reversed: play_backwards(anim)
+		if forced:
+			frame = sprite_frames.get_frame_count(anim) - 1 if reversed else 0
 		offset = anim_offset
+
 	flip_h = flippers.get(anim, false)
 
 func get_anim() -> StringName:
 	return atlas.cur_anim if is_atlas else animation
 
 func get_cam_pos() -> Vector2:
-	var midpoint = Vector2(global_position.x + width / 2.0, global_position.y + height / 2.0)
+	var midpoint := Vector2(global_position.x + width / 2.0, global_position.y + height / 2.0)
 	var pos := Vector2(midpoint.x + (-100 if is_player else 150), midpoint.y - 100)
 	return (pos + focus_offsets)
 
 func set_stuff() -> void:
+	if is_atlas: return # cant get width and height of an atlas yet
 	var anim:String = 'danceLeft' if dance_idle else 'idle'
 	if has_anim('deathStart') and !has_anim(anim): anim = 'deathStart' # if its a death char
 	if has_anim(anim):
-		if is_atlas: return # fuck if i know how to get width and height yet
-		#var total:int = sprite_frames.get_frame_count(anim) - 1 # last anim is probably the most upright
 		width = sprite_frames.get_frame_texture(anim, 0).get_width()
 		height = sprite_frames.get_frame_texture(anim, 0).get_height()
 
@@ -329,9 +309,8 @@ func has_anim(anim:String) -> bool:
 
 func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int = 24, loop:bool = false) -> void:
 	if is_atlas:
-		if prefix.is_empty(): atlas.add_anim_by_frames(anim_name, frames, fps, loop)
-		else: atlas.add_anim_by_symbol(anim_name, prefix, frames, fps, loop)
-		return
+		if prefix.is_empty(): return atlas.add_anim_by_frames(anim_name, frames, fps, loop)
+		return atlas.add_anim_by_symbol(anim_name, prefix, frames, fps, loop)
 
 	var got_prefix:String = Util.get_closest_anim(sprite_frames, prefix)
 	var _anim_to_use:String = got_prefix if !got_prefix.is_empty() else anim_name
@@ -352,20 +331,12 @@ func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int =
 				sprite_frames.add_frame(anim_name, anim_textures[int(frm)])
 		anim_textures.clear()
 
-	#print('added animation ', str([anim_name, prefix, frames, loop]))
-	#else:
-	#	sprite_frames.rename_animation(got_prefix, anim_name)
-
-static func get_closest(char_name:String = 'bf') -> String: # if theres no character named "pico-but-devil" itll just use "pico"
-	var char_list = DirAccess.get_files_at('res://assets/data/characters')
+## Get a character closest to the parameter
+static func get_closest(char_name:String = 'bf') -> String:
+	var char_list:PackedStringArray = DirAccess.get_files_at('res://assets/data/characters')
 	for file in char_list:
 		file = file.replace('.json', '')
 		if char_name.to_lower().contains(file): return file # i might be stupid
-
-	for i in char_name.split('-'): # get more specific and stop caring
-		for file in char_list:
-			file = file.replace('.json', '')
-			if i.to_lower().contains(file): return file
 	return 'bf'
 
 func get_frame_count(anim:String) -> int:
@@ -375,7 +346,7 @@ func get_frame_count(anim:String) -> int:
 func cache_char(to_cache:String) -> void:
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % to_cache):
 		to_cache = get_closest(to_cache)
-	if char_cache.has(to_cache): return
+	if _char_cache.has(to_cache): return
 
 	var _temp:Dictionary = JsonHandler.get_character(to_cache)
 	if _temp.has('no_antialiasing'): _temp = Legacy.fix_json(_temp)
@@ -384,7 +355,7 @@ func cache_char(to_cache:String) -> void:
 	var path:String = _temp.path +'.res'
 	if !ResourceLoader.exists('res://assets/images/'+ path): return
 
-	char_cache[to_cache] = ResourceLoader.load('res://assets/images/'+ path)
+	_char_cache[to_cache] = ResourceLoader.load('res://assets/images/'+ path)
 	print('cached '+ to_cache)
 
 func copy(from:Character) -> void:

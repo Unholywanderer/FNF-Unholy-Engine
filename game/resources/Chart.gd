@@ -40,21 +40,16 @@ static func load_named_chart(song:String, chart_name:String, chart_format:String
 static func get_must_hits(chart_notes:Array, player_hit:bool = true) -> Array:
 	return chart_notes.filter(func(n): return n.must_press == player_hit)
 
-var _added_data:Array[Array] = [] # dupe note shit
-var dupes:int = 0
-
+var _added_data:PackedInt32Array = [] # dupe note shit
 ## Adds a note to the [code]return_notes[/code] array as a [code]NoteData[/code] Resource
 func add_note(new_note:Array) -> void:
-	var data_basic = [new_note[0], new_note[1], new_note[4]]
+	if new_note.is_empty(): return
+	var data_basic:int = new_note.hash() #[new_note[0], new_note[1], new_note[4]]
 	#basic data needed 2 tell if its a dupe,
-	#might be able to hash this if the actual data itself isn't needed
-	
-	if new_note.is_empty() and _added_data.has(data_basic):
-		dupes += 1 ; return
+
+	if _added_data.has(data_basic): return
 	return_notes.append(NoteData.new(new_note))
-	_added_data.append(data_basic)
-
-
+	_added_data.append(data_basic) # i think making this a dictonary is faster, but itll do!
 
 func get_events(SONG:Dictionary) -> Array[EventData]:
 	var path_to_check:String = 'songs/%s/events.json' % Util.format_str(SONG.song)
@@ -64,18 +59,11 @@ func get_events(SONG:Dictionary) -> Array[EventData]:
 		events_found.append_array(SONG.events)
 
 	if format != V_SLICE:
-		#if format == LEGACY:
-			#for sec in SONG.notes: # check song json for any -1 event notes
-			#	for note in sec.sectionNotes:
-			#		if note[1] != -1: continue
-			#		events_found.append([note[0], [[note[2], note[3], note[4]]]])
-
-		# then check if there is a event json
-		if Util.file_exists(path_to_check):
+		if Util.file_exists(path_to_check): # then check if there is a event json
 			print('res://assets/'+ path_to_check)
 
 			var json:Dictionary = JsonHandler.parse(path_to_check)
-			if json.get('song') is not String: json = json.song
+			if json.get('song', '') is not String: json = json.song
 			if format == FPS_PLUS:
 				json = json.events
 

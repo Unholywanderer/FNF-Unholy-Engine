@@ -11,7 +11,6 @@ var song_root:String = ''
 
 var chart_notes:Array = [] # keep loaded chart and events for restarting songs
 var song_events:Array[EventData] = []
-var dupe_notes:int = 0
 
 var parse_type:String = ''
 func parse_song(song:String, diff:String, variant:String = '', auto_create:bool = true) -> void:
@@ -66,6 +65,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 			SONG.song = song_name
 			SONG.bpm = META.timeChanges[0].bpm
 			META.timeChanges.remove_at(0)
+			Conductor.offset = META.get('offsets', {}).get('instrumental', 0)
 			#for i in META.timeChanges:
 			#	var new_change:Conductor.BPMChange = Conductor.BPMChange.new()
 			#	new_change.time = i.t
@@ -79,7 +79,7 @@ func parse_song(song:String, diff:String, variant:String = '', auto_create:bool 
 		'codename':
 			var meta = parse(meta_path % ['meta'])
 			SONG.speed = SONG.scrollSpeed
-			SONG.song = meta.name
+			SONG.song = meta.get('name', meta.get('displayName'))
 			SONG.bpm = meta.bpm
 			for i in SONG.strumLines:
 				match i.position:
@@ -146,10 +146,9 @@ func stage_to(stage:String) -> String:
 func generate_chart(data, keep_loaded:bool = true) -> Array:
 	if data == null: return []
 
-	var chart = Chart.new()
+	var chart := Chart.new()
 	var _notes := chart.load_chart(data, parse_type, cur_diff) # get diff here only matters for base game as of now
 	song_events = chart.get_events(data) # load events whenever chart is made
-	dupe_notes = chart.dupes
 	if keep_loaded:
 		chart_notes = _notes.duplicate(true)
 

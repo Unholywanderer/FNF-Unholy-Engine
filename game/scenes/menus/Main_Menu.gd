@@ -14,23 +14,28 @@ func _ready():
 		Util.center_obj(menu_sprites[i])
 		menu_sprites[i].position.y = (88 + (135 * i))
 
-	$Cam.position.y = $MenuBG/Sprite2D.position.y - 3 #menu_sprites[ceil(menu_sprites.size() / 2)].position.y - 3
+	$Cam.position.y = $MenuBG/Main.position.y - 3 #menu_sprites[ceil(menu_sprites.size() / 2)].position.y - 3
 
 	change_selection()
 
 func _process(delta:float) -> void:
 	in_time += delta
 
+var can_select:bool = true
 func _unhandled_input(event:InputEvent) -> void:
 	if in_time < 0.15: return
 	if event.is_action_pressed('menu_down'):
 		change_selection(1)
 	elif event.is_action_pressed('menu_up'):
 		change_selection(-1)
-	if event.is_action_pressed('accept'):
-		if scene_to_load[cur_option] != null:
+	if event.is_action_pressed('accept') and can_select:
+		if scene_to_load[cur_option]:
 			Audio.play_sound('confirmMenu')
+			Util.flicker_obj($MenuBG/Main, 0.1)
+			Util.flicker_obj(menu_sprites[cur_option])
+			await get_tree().create_timer(0.4, false).timeout
 			if scene_to_load[cur_option] != 'donate':
+				can_select = false
 				Game.switch_scene('menus/'+ scene_to_load[cur_option])
 			else: OS.shell_open('https://ninja-muffin24.itch.io/funkin')
 		else:

@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://c0c427w6cul2x"]
+[gd_scene format=3 uid="uid://c0c427w6cul2x"]
 
 [ext_resource type="Script" uid="uid://kk7svqb4v3nn" path="res://game/scenes/menus/Main_Menu.gd" id="1_3iiqa"]
 [ext_resource type="Texture2D" uid="uid://dmko1yd3b8k25" path="res://assets/images/menuBG.png" id="2_m1ms6"]
 [ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_r4b4n"]
+[ext_resource type="Texture2D" uid="uid://c21vpdqysqah1" path="res://assets/images/menuBGMagenta.png" id="3_881bh"]
 [ext_resource type="SpriteFrames" uid="uid://ow5p14d6snwg" path="res://assets/images/main_menu/menu_story_mode.res" id="3_kkkin"]
 [ext_resource type="SpriteFrames" uid="uid://bhyejko6u1ivh" path="res://assets/images/main_menu/menu_freeplay.res" id="4_668ve"]
 [ext_resource type="SpriteFrames" uid="uid://c27hvg6wcqyay" path="res://assets/images/main_menu/menu_donate.res" id="5_q6c1y"]
@@ -16,50 +17,54 @@ font_size = 18
 outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
-[node name="Main_Menu" type="Node2D"]
+[node name="Main_Menu" type="Node2D" unique_id=25396968]
 script = ExtResource("1_3iiqa")
 
-[node name="MenuBG" type="Node2D" parent="."]
+[node name="MenuBG" type="Node2D" parent="." unique_id=861755747]
 script = ExtResource("2_r4b4n")
 scroll_factor = Vector2(0, 0.1)
 
-[node name="Sprite2D" type="Sprite2D" parent="MenuBG"]
+[node name="Flicker" type="Sprite2D" parent="MenuBG" unique_id=1138764325]
+position = Vector2(640, 360)
+texture = ExtResource("3_881bh")
+
+[node name="Main" type="Sprite2D" parent="MenuBG" unique_id=783585496]
 position = Vector2(640, 360)
 texture = ExtResource("2_m1ms6")
 
-[node name="StoryMode" type="AnimatedSprite2D" parent="."]
+[node name="StoryMode" type="AnimatedSprite2D" parent="." unique_id=374302999]
 position = Vector2(661, 139)
 sprite_frames = ExtResource("3_kkkin")
 animation = &"normal"
 frame_progress = 0.57366
 
-[node name="Freeplay" type="AnimatedSprite2D" parent="."]
+[node name="Freeplay" type="AnimatedSprite2D" parent="." unique_id=1224261792]
 position = Vector2(650, 279)
 sprite_frames = ExtResource("4_668ve")
 animation = &"normal"
 frame_progress = 0.720117
 
-[node name="Donate" type="AnimatedSprite2D" parent="."]
+[node name="Donate" type="AnimatedSprite2D" parent="." unique_id=224893998]
 position = Vector2(648, 433)
 sprite_frames = ExtResource("5_q6c1y")
 animation = &"normal"
 frame_progress = 0.424389
 
-[node name="Options" type="AnimatedSprite2D" parent="."]
+[node name="Options" type="AnimatedSprite2D" parent="." unique_id=2038065304]
 position = Vector2(651, 572)
 sprite_frames = ExtResource("6_bjomy")
 animation = &"normal"
 frame_progress = 0.204616
 
-[node name="Credits" type="AnimatedSprite2D" parent="."]
+[node name="Credits" type="AnimatedSprite2D" parent="." unique_id=1498552552]
 position = Vector2(648, 704)
 sprite_frames = ExtResource("8_v0fd6")
 animation = &"normal"
 
-[node name="Cam" type="Camera2D" parent="."]
+[node name="Cam" type="Camera2D" parent="." unique_id=259005094]
 position = Vector2(640, 360)
 
-[node name="Alert" type="Label" parent="."]
+[node name="Alert" type="Label" parent="." unique_id=1588554200]
 offset_left = 5.0
 offset_top = 695.0
 offset_right = 416.0

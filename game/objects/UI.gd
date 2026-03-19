@@ -120,7 +120,7 @@ func _ready():
 	mark.texture = load('res://assets/images/ui/skins/'+ cur_skin +'/auto.png')
 	mark.scale = SKIN.mark_scale
 	mark_bg.scale = mark.scale
-	$TimeCirc/Song.text = JsonHandler.SONG.song
+	$TimeCirc/Song.text = JsonHandler.SONG.get('song', 'Oops!')
 
 	update_score_txt()
 
@@ -257,6 +257,7 @@ func start_countdown(from_beginning:bool = false) -> void:
 
 	count_down.start((Conductor.crochet / 1000.0) / Conductor.playback_rate)
 	count_down.timeout.connect(func():
+		await RenderingServer.frame_post_draw
 		times_looped += 1
 		countdown_tick.emit(times_looped)
 		var spr_path:String = 'res://assets/images/ui/skins/'+ cur_skin +'/'
@@ -268,9 +269,9 @@ func start_countdown(from_beginning:bool = false) -> void:
 				spr.scale = SKIN.countdown_scale
 				spr.texture_filter = Util.get_alias(SKIN.antialiased)
 				Util.center_obj(spr)
+				Util.quick_tween(spr, 'modulate:a', 0, Conductor.crochet / 1000.0)\
+				 .finished.connect(spr.queue_free)
 
-				var tween = create_tween().tween_property(spr, 'modulate:a', 0, Conductor.crochet / 1000.0)
-				tween.finished.connect(spr.queue_free)
 			Audio.play_sound(sounds[times_looped], 1, true)
 		else:
 			stop_countdown()
