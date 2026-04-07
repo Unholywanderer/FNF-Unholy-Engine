@@ -28,5 +28,6 @@ assets/songs/*
 !assets/songs/lit-up/
 !assets/songs/2hot/
 !assets/songs/blazin/
+!assets/songs/something-battle/
 assets/data/characters/old/
 export_presets.cfg
