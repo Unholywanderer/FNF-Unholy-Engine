@@ -7,6 +7,7 @@ class_name AdobeAtlas
 ## or the folder that contains those files.
 @export_dir var folder_path: String = "":
 	set(v):
+		if !v.ends_with('/'): v += '/'
 		folder_path = v
 		parse()
 

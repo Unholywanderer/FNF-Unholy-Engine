@@ -16,12 +16,12 @@
       "v": { "ease": "elasticInOut", "duration": 4, "zoom": 1 }
     },
     {
-      "t": 18525,
+      "t": 18600,
       "e": "PlayAnimation",
       "v": { "force": true, "anim": "hey", "target": "boyfriend" }
     },
     {
-      "t": 18525,
+      "t": 18600,
       "e": "PlayAnimation",
       "v": { "force": false, "anim": "cheer", "target": "dad" }
     },
@@ -38,12 +38,12 @@
       "v": { "ease": "elasticInOut", "duration": 4, "zoom": 1 }
     },
     {
-      "t": 28125,
+      "t": 28200,
       "e": "PlayAnimation",
       "v": { "force": true, "anim": "hey", "target": "boyfriend" }
     },
     {
-      "t": 28125,
+      "t": 28200,
       "e": "PlayAnimation",
       "v": { "force": false, "anim": "cheer", "target": "dad" }
     },
@@ -284,5 +284,5 @@
       { "t": 64650, "d": 0 }
     ]
   },
-  "generatedBy": "Friday Night Funkin' - v0.7.3 (master:ce83e96) PROTOTYPE"
+  "generatedBy": "Friday Night Funkin' - v0.8.1"
 }
