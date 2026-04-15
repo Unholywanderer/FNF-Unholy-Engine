@@ -117,7 +117,6 @@ func shake_cam(cam:Camera2D, _power:float = 0.05, _axis:String = 'xy', _length:f
 	cam = get_viewport().get_camera_2d() if cam == null else cam
 	if cam == null: return printerr('No Camera to shake!')
 
-
 func flash_screen(flash_color:Color = Color.WHITE, duration:float = 1.0) -> void:
 	var flash:ColorRect = ColorRect.new() # i unno ill figure it out later
 	flash.color = flash_color
@@ -141,6 +140,13 @@ func shake_obj(obj:Node, intensity:float = 5.0, dur:float = 1.0, axis:String = '
 	var shake = Shaker.new()
 	shake.shake(obj, intensity, dur, axis)
 	add_child(shake)
+
+func get_quant_color(beat:float) -> Array:
+	var fixed_beat:int = roundi(beat * 48)
+	for i:int in Note.quant_colors.keys():
+		if fixed_beat % (192 / i) == 0:
+			return Note.quant_colors[i]
+	return [Color(), Color.WHITE, Color()]
 
 func get_alias(antialiased:bool = true) -> CanvasItem.TextureFilter:
 	return CanvasItem.TEXTURE_FILTER_LINEAR if antialiased else CanvasItem.TEXTURE_FILTER_NEAREST

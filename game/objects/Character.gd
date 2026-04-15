@@ -1,12 +1,13 @@
 class_name Character; extends AnimatedSprite2D;
 
 var _char_cache:Dictionary = {}
+var sing_anims:PackedStringArray = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 
 var json:Dictionary
 var atlas:Atlas
 var chart:Array = []
 var offsets:Dictionary = {}
-var flippers:Dictionary = {}
+var flipped:Dictionary = {}
 var speaker_data:Dictionary = {}
 var focus_offsets:Vector2 = Vector2.ZERO # cam offset type shit
 
@@ -19,21 +20,21 @@ var is_player:bool = false
 var is_atlas:bool = false:
 	set(atl):
 		if atl == is_atlas: return
-		if !atl:
-			remove_child(atlas)
-		else:
-			atlas = Atlas.new()
-			sprite_frames = null
-			add_child(atlas)
-			atlas.finished.connect(func():
-				if debug: return
-				var anim := get_anim()
-				if has_anim(anim +'-loop') and offsets.has(anim +'-loop'):
-					looping = true
-					play_anim(anim +'-loop')
-			)
-
 		is_atlas = atl
+		if !atl:
+			atlas.queue_free()
+			return
+
+		atlas = Atlas.new()
+		sprite_frames = null
+		add_child(atlas)
+		atlas.finished.connect(func():
+			if debug: return
+			var anim := get_anim()
+			if has_anim(anim +'-loop') and offsets.has(anim +'-loop'):
+				looping = true
+				play_anim(anim +'-loop')
+		)
 
 var idle_suffix:String = ''
 var forced_suffix:String = '' # if set, every anim will use it
@@ -72,7 +73,7 @@ var on_anim_finished:Callable = func():
 		animation_finished.disconnect(on_anim_finished)
 
 var anim_finished:bool:
-	get: return (atlas.frame_index if is_atlas else frame) == get_frame_count(get_anim()) - 1
+	get: return cur_frame == get_frame_count(get_anim()) - 1
 
 ## Basically AnimatedSprite2D's frame property, but it works with atlases.
 ## You don't have to use this property, you can still set "frame, atlas.frame, and atlas.frame_index" manually.
@@ -92,8 +93,6 @@ var height:float:
 var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST
 	set(anti): texture_filter = Util.get_alias(anti)
-
-var sing_anims:PackedStringArray = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 
 func _init(pos:Vector2 = Vector2.ZERO, Char:String = 'bf', player:bool = false):
 	centered = false
@@ -148,7 +147,7 @@ func load_char(new_char:String = 'bf') -> void:
 	for anim in json.animations:
 		add_anim(anim.name, anim.prefix, anim.frames, anim.framerate, anim.loop)
 		offsets[anim.name] = anim.offsets
-		flippers[anim.name] = anim.get('flip_x', false)
+		flipped[anim.name] = anim.get('flip_x', false)
 
 	icon = json.icon
 	scale = Vector2(json.scale, json.scale)
@@ -164,7 +163,7 @@ func load_char(new_char:String = 'bf') -> void:
 	sing_anims = ['singLEFT', 'singDOWN', 'singUP', 'singRIGHT']
 
 	match(cur_char):
-		'senpai', 'shaggy':
+		'senpai':
 			dance_beat = 2
 		'pico-speaker', 'otis-speaker':
 			can_dance = false
@@ -285,7 +284,7 @@ func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 			frame = sprite_frames.get_frame_count(anim) - 1 if reversed else 0
 		offset = anim_offset
 
-	flip_h = flippers.get(anim, false)
+	flip_h = flipped.get(anim, false)
 
 func get_anim() -> StringName:
 	return atlas.cur_anim if is_atlas else animation

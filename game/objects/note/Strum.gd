@@ -34,12 +34,17 @@ var height:float:
 		return sprite_frames.get_frame_texture(_anim +'static', 0).get_height() * scale.y
 
 var anim_timer:float = 0.0 # used for confirm anim looping on sustains
-var reset_timer:float = 0.0
+var reset_timer:float = 0.0 # how long until the animation can return to static
 var antialiasing:bool = true:
 	get: return texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR
-	set(alias):
-		antialiasing = alias
-		texture_filter = Util.get_alias(alias)
+	set(alias): texture_filter = Util.get_alias(alias)
+
+var rgb_enabled:bool = false
+var rgb_shader:ShaderMaterial = ShaderMaterial.new()
+var rgb_allowed:bool = false:
+	set(allow):
+		rgb_allowed = allow and rgb_enabled
+		material = rgb_shader if rgb_allowed else null
 
 func _ready():
 	if !is_event:
@@ -72,6 +77,11 @@ func load_skin(new_skin:String = 'default'):
 	play_anim('static')
 
 func play_anim(anim:String, forced:bool = false):
+	rgb_allowed = !anim.contains('static')
+	if rgb_allowed and anim == 'press':
+		rgb_shader.set_shader_parameter('red', Color.DIM_GRAY)
+		rgb_shader.set_shader_parameter('green', Color.WHITE)
+		rgb_shader.set_shader_parameter('blue', Color.DARK_GRAY)
 	if anim == 'static':
 		reset_timer = 0
 	if !anim.contains(DIRECTION[dir]) and !is_event:
@@ -79,3 +89,16 @@ func play_anim(anim:String, forced:bool = false):
 
 	play(anim)
 	if forced: frame = 0
+
+func toggle_rgb(enable:bool = false) -> void:
+	rgb_enabled = enable
+	rgb_shader.shader = Game.persist.cached.get('rgb_shader') if enable else null
+	if enable: rgb_shader.set_shader_parameter('mult', 1.0)
+	sprite_frames = skin.strum_skin_rgb if enable else skin.strum_skin
+
+func copy_rgb(mat:Material) -> void:
+	if !rgb_allowed or !rgb_shader or !mat: return
+	material.set_shader_parameter('red', mat.get_shader_parameter('red'))
+	material.set_shader_parameter('green', mat.get_shader_parameter('green'))
+	material.set_shader_parameter('blue', mat.get_shader_parameter('blue'))
+	material.set_shader_parameter('mult', 1.0)

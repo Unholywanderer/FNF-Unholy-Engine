@@ -121,6 +121,21 @@ func _process(delta):
 		)
 		position = scroll
 
+func snap() -> void:
+	if !is_menu: return
+	var remap_y:float = remap(target_y, 0, 1, 0, 1.1)
+	var would_be = Vector2(
+		((target_y * spacing.x * scroll_dir) + screen_offset),
+		(remap_y * spacing.y) + (Game.screen[0] * 0.28)
+	)
+	if alignment == CENTER:
+		would_be.x -= (width / 2.0)
+
+	position = Vector2(
+		lock.x if lock.x != INF else would_be.x,
+		lock.y if lock.y != INF else would_be.y
+	)
+
 func get_anim(item) -> String:
 	item = item.dedent()
 	match item:

@@ -38,6 +38,9 @@ var credits:Array[Array] = [
 	['EIRTeam', 'github', 'FFmpeg video support addon',
 		Color.DIM_GRAY, func(): OS.shell_open('https://github.com/EIRTeam/EIRTeam.FFmpeg')],
 
+	['Swordcube', 'swordcube', 'RGB Strum Spritesheet',
+		Color("99C2FC"), fucking_die],
+
 	['Cracsthor', 'face', 'PhantomMuff font, I\'m sure you know that',
 		Color.ORANGE_RED, func(): OS.shell_open('https://gamebanana.com/tools/7763')],
 
@@ -94,7 +97,8 @@ absolutely astonished with the strides'], # ill end your life with my own hands
 	'cherry': ['meow'],
 	'ralty': ['i like gay furries'],
 	'doggo': ['✨ The people are watching you'],
-	'riconuts': ['is there space for me or am i too fat 🥺']
+	'riconuts': ['is there space for me or am i too fat 🥺'],
+	'swordcube': ['think fast  think stupid'],
 }
 
 var heading_changes:Array = []
@@ -199,6 +203,19 @@ func stupid_fucking_credit_thing() -> void: # god why must i be like this
 		Audio.volume = 0.7
 		Util.quick_tween(dawg, 'modulate:a', 0, 3).finished.connect(dawg.queue_free)
 	)
+
+func fucking_die() -> void:
+	for i in randi_range(10, 35):
+		await get_tree().create_timer(randf_range(0.3, 2.1), false).timeout
+		var kaboo = AnimatedSprite2D.new()
+		kaboo.sprite_frames = load('res://assets/images/boom.res')
+		add_child(kaboo)
+		kaboo.position = Vector2(randf_range(0, Game.screen[0]), randf_range(0, Game.screen[1]))
+		kaboo.animation_finished.connect(kaboo.queue_free)
+		kaboo.play()
+		Audio.play_sound('boom')
+		if Util.rand_bool(20): # yes this is a terrible idea, no im not changing it
+			OS.shell_open('https://github.com/swordcube')
 
 func funny() -> void:
 	for i:Credit in cred_group:

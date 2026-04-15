@@ -19,6 +19,7 @@ var cur_trans:CanvasLayer
 var persist:Dictionary[String, Variant] = { # change this to a global script or something
 	'prev_scene': null,
 	'scoring': null,
+	'cached': {'rgb_shader': load('res://game/resources/shaders/RGB.gdshader')},
 	'song_list': [],
 	'deaths': 0,
 	'note_splash': null,

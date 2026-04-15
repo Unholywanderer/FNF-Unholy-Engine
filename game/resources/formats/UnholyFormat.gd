@@ -59,10 +59,9 @@ const EDITOR_CHART = {
 	'notes': [],
 	'events': [],
 	'sections': [], # if the song has sections, hold them all here
-	'player': 'bf',
-	'gf': 'gf',
-	'opponent': 'dad',
+	'players': ['bf', 'dad', 'gf'],
 	'speed': 1.0,
+	'bpm': 100,
 	'song': 'Bopeebo'
 }
 #endregion

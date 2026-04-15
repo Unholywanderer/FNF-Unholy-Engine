@@ -123,6 +123,7 @@ func update_list(amount:int = 0) -> void:
 	for i in songs.size():
 		var item = songs[i]
 		item.target_y = i - cur_song
+		if amount == 0: item.snap()
 		item.visible = !(abs(item.target_y) > 5) # no need to have everything visible if its offscreen
 		icons[i].visible = item.visible          # these dont change draw calls but it can help fps
 		if item.visible:

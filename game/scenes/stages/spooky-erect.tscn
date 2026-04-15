@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bpe4b2tmyx2x4"]
+[gd_scene format=3 uid="uid://bpe4b2tmyx2x4"]
 
 [ext_resource type="Script" uid="uid://c8k7no5swa7x0" path="res://game/scenes/stages/spooky-erect.gd" id="1_8pmlf"]
 [ext_resource type="Script" uid="uid://cpk88phsyg88s" path="res://game/objects/ScrollSprite.gd" id="2_gfpnc"]
@@ -11,54 +11,57 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rx1op"]
 shader = ExtResource("4_rx1op")
-shader_parameter/calculate_rain = true
-shader_parameter/use_lightmap = false
-shader_parameter/use_screen = false
 shader_parameter/warp_screen = true
-shader_parameter/direction = 0.3
-shader_parameter/Scale = 4.0
-shader_parameter/Intensity = 0.3
+shader_parameter/warp_amount = 1.0
+shader_parameter/direction = 0.2000000029802701
+shader_parameter/Scale = 1.0
+shader_parameter/intensity = 0.4
 shader_parameter/speed = 1.0
-shader_parameter/RainColor = Color(1, 1, 1, 1)
-shader_parameter/warp_amount = 2.0
+shader_parameter/RainColor = Color(0.7, 0.8, 0.9, 1)
 
-[node name="Spooky" type="Node2D"]
+[node name="Spooky" type="Node2D" unique_id=1750509648]
 script = ExtResource("1_8pmlf")
 
-[node name="Trees" type="Node2D" parent="."]
+[node name="Trees" type="Node2D" parent="." unique_id=1512803899]
 script = ExtResource("2_gfpnc")
 scroll_factor = Vector2(0.8, 0.8)
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Trees"]
-material = SubResource("ShaderMaterial_rx1op")
-position = Vector2(200, 50)
+[node name="Sprite" type="AnimatedSprite2D" parent="Trees" unique_id=1434738717]
+position = Vector2(200, 45)
 sprite_frames = ExtResource("3_ey5pp")
 animation = &"bgtrees"
 autoplay = "bgtrees"
 frame_progress = 0.945858
 centered = false
 
-[node name="DARK" type="Node2D" parent="."]
+[node name="ColorRect" type="ColorRect" parent="Trees" unique_id=721505895]
+material = SubResource("ShaderMaterial_rx1op")
+offset_left = 207.0
+offset_top = 11.0
+offset_right = 879.0
+offset_bottom = 498.0
 
-[node name="BG" type="Sprite2D" parent="DARK"]
+[node name="DARK" type="Node2D" parent="." unique_id=1441929405]
+
+[node name="BG" type="Sprite2D" parent="DARK" unique_id=660699248]
 position = Vector2(-360, -220)
 texture = ExtResource("4_j1kom")
 centered = false
 
-[node name="Stairs" type="Sprite2D" parent="DARK"]
+[node name="Stairs" type="Sprite2D" parent="DARK" unique_id=856013256]
 position = Vector2(966, -225)
 texture = ExtResource("5_f4tjt")
 centered = false
 
-[node name="BG" type="Sprite2D" parent="."]
+[node name="BG" type="Sprite2D" parent="." unique_id=1079471286]
 modulate = Color(1, 1, 1, 0)
 position = Vector2(-360, -220)
 texture = ExtResource("6_3fgsl")
 centered = false
 
-[node name="CharGroup" type="Node2D" parent="."]
+[node name="CharGroup" type="Node2D" parent="." unique_id=429646008]
 
-[node name="Stairs" type="Sprite2D" parent="."]
+[node name="Stairs" type="Sprite2D" parent="." unique_id=1673778713]
 modulate = Color(1, 1, 1, 0)
 position = Vector2(966, -225)
 texture = ExtResource("7_guobi")

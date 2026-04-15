@@ -106,9 +106,9 @@ func get_song_data(song:String) -> Dictionary:
 
 	return parsed
 
-func you_WILL_get_a_json(song:String) -> String:
+func you_WILL_get_a_json(song:String, diff:String = cur_diff) -> String:
 	var path:String = 'res://assets/songs/%s/charts/' % song
-	var returned:String = path + cur_diff +'.json'
+	var returned:String = path + diff +'.json'
 
 	if parse_type == 'v_slice':
 		returned = path.replace('charts/', '') +'chart'+ song_variant +'.json'
@@ -118,7 +118,7 @@ func you_WILL_get_a_json(song:String) -> String:
 			returned = returned.replace('res://assets/', Game.exe_path +'mods/')
 		else:
 			var err_path = returned.replace('res://assets/songs/', '../')
-			Alert.make_alert('"%s" has no %s\n%s' % [song, cur_diff.to_upper(), err_path], Alert.ERROR)
+			Alert.make_alert('"%s" has no %s\n%s' % [song, diff.to_upper(), err_path], Alert.ERROR)
 			return ''
 
 	#ResourceLoader.load_threaded_request(path)
@@ -127,8 +127,9 @@ func you_WILL_get_a_json(song:String) -> String:
 	return FileAccess.get_file_as_string(returned)
 
 func stage_to(stage:String) -> String:
-	var le_stage:String = 'stage'
+	var le_stage:String = stage
 	match stage.replace('Erect', '').replace('Pico', ''):
+		'mainStage'    : le_stage = 'stage'
 		'spookyMansion': le_stage = 'spooky'
 		'limoRide'     : le_stage = 'limo'
 		'phillyTrain'  : le_stage = 'philly'

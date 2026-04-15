@@ -52,6 +52,9 @@ func play_anim(thing:Character, anim:String = '') -> void:
 @onready var cam = $Cam
 var last_cam_pos:Vector2 = Vector2.ZERO
 func _ready() -> void:
+	var s = load("res://game/scenes/stages/stage.tscn").instantiate()
+	add_child(s)
+	move_child(s, 1)
 	Game.set_mouse_visibility()
 	Audio.play_music('artisticExpression')
 
@@ -65,7 +68,7 @@ func _ready() -> void:
 	move_child(character, 2)
 	change_char('bf') # then load bf so the position isnt fucked
 
-	move_child(shadow, character.get_index() - 1)
+	move_child(shadow, character.get_index())
 
 	MAIN('CharacterSelect').get_popup().connect("id_pressed", func(id:int): change_char(char_list[id]))
 	MAIN('IconSelect').get_popup().connect("id_pressed", func(id:int): change_icon(icon_list[id]))
@@ -78,15 +81,15 @@ func _ready() -> void:
 		new_vals.assign([MAIN(thing_name +'/X').value, MAIN(thing_name +'/Y').value])
 		match thing_name:
 			'Cam':
-				character.focus_offsets -= Vector2(cur_cam_offset[0], cur_cam_offset[1])
 				cur_cam_offset = new_vals
-				character.focus_offsets += Vector2(cur_cam_offset[0], cur_cam_offset[1])
-				$Point.position = character.get_cam_pos()
+				character.focus_offsets = Util.array_to_vec(new_vals)
 			'Pos':
 				character.position -= Vector2(cur_pos_offset[0], cur_pos_offset[1])
 				cur_pos_offset = new_vals
 				character.position += Vector2(cur_pos_offset[0], cur_pos_offset[1])
-				#shadow.position = character.position
+				shadow.position = character.position
+		$Point.position = character.get_cam_pos()
+
 
 	for i in ['Pos', 'Cam']:
 		MAIN(i +'/X').connect('value_changed', thing_change.bind(i))
@@ -102,7 +105,7 @@ func _ready() -> void:
 		change_char(heh)
 		_res_path_updated() # call it manually, so it updates
 	)
-	cam.position = get_viewport_rect().size / 2.0
+	cam.position = character.get_cam_pos()
 
 	update_char_list()
 
@@ -141,7 +144,7 @@ func _unhandled_input(event:InputEvent) -> void:
 	if event.is_pressed(): press_time += get_process_delta_time()
 	if event.is_released(): press_time = 0
 	if event is not InputEventKey or (event.is_pressed() and press_time < 0.01): return
-	#var ctrl:bool = Input.is_key_pressed(KEY_CTRL)
+	var ctrl:bool = Input.is_key_pressed(KEY_CTRL)
 	var shift:bool = Input.is_key_pressed(KEY_SHIFT)
 
 	var replay:bool = false
@@ -165,21 +168,22 @@ func _unhandled_input(event:InputEvent) -> void:
 			character.cur_frame += 1 if event.keycode == KEY_E else -1
 
 		## CHARACTER OFFSETTING
-		KEY_LEFT  when offsets.has(cur_anim): offsets[cur_anim][0] -= (1 if !shift else 10); replay = true
-		KEY_RIGHT when offsets.has(cur_anim): offsets[cur_anim][0] += (1 if !shift else 10); replay = true
-		KEY_UP    when offsets.has(cur_anim): offsets[cur_anim][1] -= (1 if !shift else 10); replay = true
-		KEY_DOWN  when offsets.has(cur_anim): offsets[cur_anim][1] += (1 if !shift else 10); replay = true
+		KEY_LEFT  when offsets.has(cur_anim): offsets[cur_anim][0] -= (1 if !shift else 10); replay = !ctrl
+		KEY_RIGHT when offsets.has(cur_anim): offsets[cur_anim][0] += (1 if !shift else 10); replay = !ctrl
+		KEY_UP    when offsets.has(cur_anim): offsets[cur_anim][1] -= (1 if !shift else 10); replay = !ctrl
+		KEY_DOWN  when offsets.has(cur_anim): offsets[cur_anim][1] += (1 if !shift else 10); replay = !ctrl
 		KEY_SPACE: replay = true
 
-	if replay and offsets.has(cur_anim):
-		character.cur_frame = 0
+	if offsets.has(cur_anim):
 		anim_list[selected_id].text = cur_anim +' '+ str(offsets[cur_anim])
 		var new_offset:Vector2 = Vector2(offsets[cur_anim][0], offsets[cur_anim][1])
 		if atlas_char:
 			character.atlas.offset = new_offset
 		else:
 			character.offset = new_offset
-		play_anim(character)
+		if replay:
+			character.cur_frame = 0
+			play_anim(character)
 
 func change_icon(new_icon:String = 'bf') -> void:
 	MAIN('IconSelect/CurIconLabel').text = new_icon
@@ -221,7 +225,7 @@ func change_char(new_char:String = 'bf') -> void:
 	_anim_chosen(0)
 
 	# update character
-	character.position = get_viewport_rect().size / 2.0 - Vector2(300, 450)
+	character.position = Vector2(770, 100) #get_viewport_rect().size / 2.0 - Vector2(300, 450)
 	character.is_player = char_json.facing_left
 	MAIN('FacesLeft').button_pressed = char_json.facing_left
 	MAIN('ScaleBox').value = char_json.scale

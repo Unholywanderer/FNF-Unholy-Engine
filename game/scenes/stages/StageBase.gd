@@ -61,6 +61,8 @@ func note_miss(note:Note) -> void: pass
 func ghost_tap(dir:int) -> void: pass
 @warning_ignore("unused_parameter")
 func event_hit(event:EventData) -> void: pass
+@warning_ignore("unused_parameter")
+func note_added(note:Note) -> void: pass
 
 # bf died
 func game_over_start() -> void: pass

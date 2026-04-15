@@ -46,7 +46,7 @@ func add_anim_by_symbol(alias:String, symb:String, frames:Array = [], fps:float 
 func _add_anim(a:String, f:Array, fps:float, l:bool, s:String = '') -> void:
 	if atlases.is_empty(): return printerr('No Atlas Dummy!')
 	var new_anim := AnimData.new()
-	if f.size() == 2:
+	if f.size() == 2 and abs(f[0] - f[1]) > 1:
 		f = range(f[0], f[1])
 
 	if !s.is_empty(): new_anim.anim = s
@@ -72,7 +72,7 @@ func get_frame_count(anim:String) -> int:
 func play_anim(anim:String, force:bool = false) -> void:
 	if !_added_anims.has(anim): return
 	var da_anim:AnimData = _added_anims[anim]
-	var el_use:int = frame_index if da_anim.frames.size() > 0 else frame
+	var el_use:int = frame_index if da_anim.has_frames else frame
 	if !force and cur_anim == anim and el_use < get_frame_count(anim) - 1: return
 	playing = true
 
@@ -80,7 +80,7 @@ func play_anim(anim:String, force:bool = false) -> void:
 		symbol = da_anim.anim
 
 	frame_index = 0
-	frame = da_anim.frames[0] if !da_anim.frames.is_empty() else 0
+	frame = da_anim.frames[0] if da_anim.has_frames else 0
 	frame_timer = 0
 	cur_anim = anim
 	cur_data = da_anim
@@ -119,7 +119,7 @@ func _process(delta:float) -> void:
 			return
 		if _total_frames > frame_index:
 			frame_index += _diff
-			frame = cur_data.frames[frame_index]
+			frame = cur_data.frames[min(frame_index, cur_data.frames.size() - 1)]
 		else:
 			if cur_data.loop:
 				if _total_frames > 0:
@@ -132,7 +132,7 @@ func _process(delta:float) -> void:
 
 			playing = false
 			finished.emit()
-			frame = cur_data.frames[-1] if _total_frames > 0 else get_animation_length() - 1
+			frame = cur_data.frames[-1] if cur_data.has_frames else get_animation_length() - 1
 
 func validate_frame(value: int, length: int = -1) -> int:
 	if loop_frame < 0 or value < length:

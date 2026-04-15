@@ -36,6 +36,7 @@ var allow_rpc:bool = true:
 
 var judgement_pos:Dictionary = {'game': [0, -40, -150, 70], 'hud': [580, 300, 420, 420]}
 
+var quants:bool = false
 var note_splashes:String = 'both'
 var splash_sprite:String = 'vis'
 var hold_splash:String = 'cover/splash'

@@ -325,6 +325,16 @@ func update_beats() -> void: # stole a lot of this from cherry
 
 	cur_beat += ((song_pos - prev_time)) / crochet
 
+func get_beat_at(time:float) -> float:
+	var heh:BPMChange = bpm_changes[0]
+	var _cro:float = (60 / heh.bpm) * 1000
+
+	for change:BPMChange in bpm_changes:
+		if time < change.time: break
+		heh = change
+		_cro = (60 / heh.bpm) * 1000
+	return (time - heh.time) / _cro
+
 func test(time:float = 0.0) -> void:
 	var _beat:int = 0
 	var _step:int = 0

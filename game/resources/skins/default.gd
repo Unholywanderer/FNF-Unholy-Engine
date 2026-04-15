@@ -5,6 +5,7 @@ var strum_skin:SpriteFrames = load('res://assets/images/ui/skins/default/strums.
 var rating_skin:Texture2D = load('res://assets/images/ui/skins/default/ratings.png')
 var num_skin:Texture2D = load('res://assets/images/ui/skins/default/nums.png')
 var timing_skin:Texture2D = load('res://assets/images/ui/skins/default/timings.png')
+var strum_skin_rgb:SpriteFrames = load('res://assets/images/ui/skins/default/strums_rgb.res')
 
 var strum_scale:Vector2 = Vector2(0.7, 0.7)
 var note_scale:Vector2 = Vector2(0.7, 0.7)

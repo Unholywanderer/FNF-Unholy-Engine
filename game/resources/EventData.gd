@@ -11,13 +11,7 @@ func _init(new_event, type:String = 'psych') -> void:
 		'v_slice':
 			strum_time = new_event.t
 			event = new_event.e
-			if new_event.v is Dictionary:
-				var temp_vals:Dictionary = {}
-				for i in new_event.v.keys():
-					temp_vals[i] = new_event.v[i]
-				values.append(temp_vals)
-			else:
-				values.append(new_event.v)
+			values.append(new_event.v)
 		'codename':
 			strum_time = new_event.time
 			event = new_event.name

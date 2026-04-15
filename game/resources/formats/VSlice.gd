@@ -78,6 +78,6 @@ static func fix_json(data:Dictionary) -> Dictionary:
 			continue
 
 		new_json[vslice_data[i]] = data[i] if i != 'is_pixel' else !data[i]
-
+	new_json.path = new_json.path.replace('shared:', '') # bah
 	#new_json['cam_offset'][0] *= -1 # the x goes in the opposite direction
 	return new_json

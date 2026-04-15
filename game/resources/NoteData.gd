@@ -9,6 +9,7 @@ var type:String = ""
 
 var length:float = 0.0
 
+## The order for the array is [code][strum_time, direction, null, length, must_press, type][/code]
 func _init(data:Array = []):
 	if data.is_empty(): data = [0, 0, null, 0.0, true, ""]
 	strum_time = data[0]

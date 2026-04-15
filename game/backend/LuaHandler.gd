@@ -20,6 +20,9 @@ func add_script(script:String) -> void:
 	lua.add("scene", SCENE) # current scene
 	lua.add("STOP", RETURN_TYPE.STOP)
 	lua.add("CONTINUE", RETURN_TYPE.CONTINUE)
+	for i in Game.persist.keys():
+		if Game.persist[i] == null: continue
+		lua.add(i, Game.persist[i])
 
 	## Objects ##
 	lua.add("Conductor", Conductor)
@@ -33,6 +36,7 @@ func add_script(script:String) -> void:
 		lua.add("song_root", JsonHandler.song_root)
 		lua.add("variant", JsonHandler.song_variant.substr(1))
 		lua.add('camera', SCENE.cam)
+		lua.add('set_note_data', set_note)
 		lua.add("move_cam", SCENE.move_cam)
 		lua.add("UI", SCENE.ui)
 		lua.add("boyfriend", SCENE.boyfriend)
@@ -57,7 +61,6 @@ func add_script(script:String) -> void:
 	lua.add("get_cache", get_cached_file)
 	lua.add("switch_scene", switch_scene)
 	lua.add("key_pressed", key_pressed)
-	lua.add("to_str", to_str)
 
 	# Shaders #
 	lua.add("load_shader", load_shader)
@@ -137,17 +140,13 @@ func move_obj(obj:Variant, indx):
 
 func file_exists(file:String): return Util.file_exists(file)
 func cache_file(tag:String, file_path:String):
-	if cached_items.has(tag):
-		print(tag +' already cached, overwritting')
-	var check = file_path.split('/')
-	if check[-1].split('.').is_empty():
-		printerr('file type not specified, assuming ".png"')
-		file_path += '.png'
+	if file_path.get_extension().is_empty():
+		file_path += '.png' # assume its a png
 
-	if ResourceLoader.exists('res://assets/'+ file_path):
-		cached_items[tag] = load('res://assets/'+ file_path)
+	if !ResourceLoader.exists('res://assets/'+ file_path): return
+	cached_items[tag] = load('res://assets/'+ file_path)
 
-func is_cached(tag:String): return cached_items.has(tag) and cached_items.get(tag) != null
+func is_cached(tag:String): return cached_items.get(tag, null) != null
 func get_cached_file(tag:String):
 	return cached_items[tag] if is_cached(tag) else load('res://assets/images/logoBumpin.png')
 
@@ -183,8 +182,9 @@ func key_pressed(key:String = '') -> bool:
 	var actual_key := OS.find_keycode_from_string(key.capitalize())
 	return Input.is_key_pressed(actual_key)
 
-func to_str(thing:Variant) -> String:
-	return str(thing)
+func set_note(index:int = 0, property:String = '', to:Variant = null) -> void:
+	if !Game.get('notes'): return
+	Game.notes[min(index, Game.notes.length - 1)].set(property, to)
 
 func switch_scene(new_scene:String = '', skip_trans:bool = false) -> void:
 	Game.switch_scene(new_scene, skip_trans)

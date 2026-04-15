@@ -53,6 +53,9 @@ func _ready():
 	strums.append_array(opponent_strums)
 	strums.append_array(player_strums)
 
+	if Prefs.quants:
+		for i:Strum in strums: i.toggle_rgb(true)
+
 	var downscroll:bool = Prefs.scroll_type == 'down'
 
 	var player:Strum_Line = get_group('player')
@@ -255,12 +258,14 @@ func start_countdown(from_beginning:bool = false) -> void:
 		if skip_countdown: Conductor.song_pos = 0
 		return stop_countdown()
 
-	count_down.start((Conductor.crochet / 1000.0) / Conductor.playback_rate)
+	var spr_path:String = 'res://assets/images/ui/skins/'+ cur_skin +'/'
+	var tick_time:float = (Conductor.crochet / 1000.0) / Conductor.playback_rate
+
+	count_down.start(tick_time)
 	count_down.timeout.connect(func():
 		await RenderingServer.frame_post_draw
 		times_looped += 1
 		countdown_tick.emit(times_looped)
-		var spr_path:String = 'res://assets/images/ui/skins/'+ cur_skin +'/'
 		if times_looped < 4:
 			if times_looped > 0:
 				var spr:Sprite2D = Sprite2D.new()
@@ -269,11 +274,19 @@ func start_countdown(from_beginning:bool = false) -> void:
 				spr.scale = SKIN.countdown_scale
 				spr.texture_filter = Util.get_alias(SKIN.antialiased)
 				Util.center_obj(spr)
-				Util.quick_tween(spr, 'modulate:a', 0, Conductor.crochet / 1000.0)\
-				 .finished.connect(spr.queue_free)
+				if times_looped < 3:
+					Util.quick_tween(spr, 'modulate:a', 0, tick_time).finished.connect(spr.queue_free)
+				else:
+					spr.scale += (Vector2(0.4, 0.4) * SKIN.countdown_scale)
+					Util.quick_tween(spr, 'scale', SKIN.countdown_scale, tick_time, 'back', 'in')
 
+					Util.quick_tween(spr, 'modulate:a', 0, tick_time * 0.5).set_delay(tick_time).finished.connect(spr.queue_free)
+					Util.quick_tween(spr, 'scale', Vector2.ZERO, tick_time * 0.5).set_delay(tick_time)
+					Util.quick_tween(spr, 'rotation_degrees', 360, tick_time * 2).set_delay(tick_time)
 			Audio.play_sound(sounds[times_looped], 1, true)
 		else:
+
+			#spr.queue_free()
 			stop_countdown()
 			song_start.emit()
 	)

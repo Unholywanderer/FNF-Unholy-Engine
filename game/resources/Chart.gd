@@ -40,16 +40,15 @@ static func load_named_chart(song:String, chart_name:String, chart_format:String
 static func get_must_hits(chart_notes:Array, player_hit:bool = true) -> Array:
 	return chart_notes.filter(func(n): return n.must_press == player_hit)
 
-var _added_data:PackedInt32Array = [] # dupe note shit
-## Adds a note to the [code]return_notes[/code] array as a [code]NoteData[/code] Resource
+var _added_data:Dictionary[int, bool] = {} # dupe note shit
+## Adds a note to the [code]return_notes[/code] array as a [code]NoteData[/code] Resource.
+## [code][time, direction, is_sustain, sus_length, is_must_hit, type][/code]
 func add_note(new_note:Array) -> void:
-	if new_note.is_empty(): return
-	var data_basic:int = new_note.hash() #[new_note[0], new_note[1], new_note[4]]
-	#basic data needed 2 tell if its a dupe,
-
-	if _added_data.has(data_basic): return
+	 # basic data needed 2 tell if its a dupe, time, direction, and must hit
+	var checkables:int = [new_note[0], new_note[1], new_note[4]].hash()
+	if new_note.is_empty() or _added_data.has(checkables): return
 	return_notes.append(NoteData.new(new_note))
-	_added_data.append(data_basic) # i think making this a dictonary is faster, but itll do!
+	_added_data[checkables] = true
 
 func get_events(SONG:Dictionary) -> Array[EventData]:
 	var path_to_check:String = 'songs/%s/events.json' % Util.format_str(SONG.song)

@@ -5,6 +5,9 @@ var rating_pos:Vector2 = Vector2(610, 500)
 var combo_pos:Vector2 = Vector2(580, 560)
 var spacing:float = 43.0
 
+var max_groups:int = 10
+var groups:Array[RatingGroup] = []
+
 static var ratings_data:Array[RatingData] = [
 	#RatingData.new(['fucking_awesome_andalso_awesome_and_ummm_awesome_me_thinks',10 - jillion,55.0.5]),
 	RatingData.new(['epic', 500,  Prefs.epic_window]),
@@ -93,6 +96,26 @@ func make_timing(spr:VelocitySprite, rating:String = '', is_early:bool = true) -
 
 	return time
 
+func make_group(rating:String, combo, is_early:bool = true) -> Node2D:
+	while groups.size() > max_groups:
+		groups[0].queue_free()
+		groups.pop_front()
+
+	var new_group := RatingGroup.new()
+
+	new_group.add('rating', make_rating(rating))
+
+	if ratings_data[get_index(rating)].show_timing:
+		new_group.add('timing', make_timing(new_group.rating, rating, is_early))
+
+	if (combo is int and combo > -1) or (combo is String and !combo.is_empty()):
+		new_group.add('combo', make_combo(combo))
+		if rating == 'miss':
+			for i in new_group.combo: i.modulate = Color.DARK_RED
+
+	groups.append(new_group)
+	return new_group
+
 class RatingData extends Resource:
 	var name:String = 'sick'
 	var score:int = 350
@@ -110,3 +133,24 @@ class RatingData extends Resource:
 			penalty = info[3]
 			hit_mod = info[4]
 			show_timing = info[5]
+
+class RatingGroup extends Node2D:
+	var rating:VelocitySprite = null
+	var timing:VelocitySprite = null
+	var combo:Array[VelocitySprite] = []
+
+	func add(type:String, item) -> void:
+		set(type.to_lower(), item)
+		if item is Array:
+			for i in item: add_child(i)
+		else:
+			add_child(item)
+
+	func tween_rating(speed:float, delay:float = 0) -> void:
+		for i in [rating, timing]:
+			if !i: continue
+			Util.quick_tween(i, 'modulate:a', 0, speed).set_delay(delay).finished.connect(i.queue_free)
+
+	func tween_combo(speed:float, delay:float = 0) -> void:
+		for i in combo:
+			Util.quick_tween(i, 'modulate:a', 0, speed).set_delay(delay).finished.connect(i.queue_free)

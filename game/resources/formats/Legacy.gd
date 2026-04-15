@@ -45,6 +45,7 @@ func parse_chart(data:Dictionary) -> Array: #very simple very demure
 			var is_must_hit:bool = must_hit if direction <= 3 else not must_hit
 			if p_v1: is_must_hit = direction < 4
 			if type == 'true': type = 'Alt'
+			if type == 'false': type = ''
 
 			add_note([time, direction, is_sustain, sus_length, is_must_hit, type])
 

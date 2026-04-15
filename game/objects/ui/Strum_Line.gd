@@ -42,6 +42,8 @@ func set_all_skins(skin:String = '') -> void:
 
 func note_hit(note:Note) -> void:
 	strum_anim(note.dir, !is_cpu, !note.is_sustain)
+	if Prefs.quants:
+		strums[note.dir].copy_rgb(note.shader)
 
 	if singer and !note.no_anim:
 		match note.type:
@@ -57,9 +59,9 @@ func note_hit(note:Note) -> void:
 	if note.is_sustain and Prefs.hold_splash != 'disabled' and !Prefs.behind_strums:
 		spawn_hold_splash(strums[note.dir], note)
 
-	var can_splash = note.rating == 'sick' or note.rating == 'epic'
-	if (Prefs.note_splashes == 'epics' and note.rating == 'epic') or \
-	   (Prefs.note_splashes == 'both' and can_splash):
+	var s:String = Prefs.note_splashes
+	var can_splash:bool = (note.rating == 'sick' or note.rating == 'epic')
+	if !note.is_sustain and ((s == 'epics' and note.rating == 'epic') or (s == 'both' and can_splash)):
 		spawn_splash(strums[note.dir])
 
 func note_miss(note:Note) -> void:
@@ -69,15 +71,17 @@ func note_miss(note:Note) -> void:
 			singer.anim_timer = 0.5 + (note.length / Conductor.step_crochet * 0.16)
 
 var cur_sparks:Array = [null, null, null, null]
-var is_holding:Array = [false, false, false, false]
 func _process(_delta:float) -> void:
-	if !is_cpu:
-		for i in cur_sparks.size():
-			is_holding[i] = Input.is_action_pressed('note_'+ ['left', 'down', 'up', 'right'][i])
-			if !is_holding[i] and cur_sparks[i] and !cur_sparks[i].animation.ends_with('_splash'):
-				cur_sparks[i].queue_free()
-				remove_child(cur_sparks[i])
-				cur_sparks[i] = null
+	if is_cpu: return
+	for i in cur_sparks.size():
+		var is_holding:bool = Input.is_action_pressed('note_'+ ['left', 'down', 'up', 'right'][i])
+		var spark = cur_sparks[i]
+		if !is_holding and spark and !spark.animation.ends_with('splash'):
+			if spark.anim_time <= Note.min_len:
+				spark.anim_time = 0
+				continue
+			spark.queue_free()
+			cur_sparks[i] = null
 
 var total_splash:Array[AnimatedSprite2D] = []
 func spawn_splash(strum:Strum) -> void:
@@ -97,15 +101,14 @@ func spawn_splash(strum:Strum) -> void:
 	total_splash.append(new_splash)
 
 func spawn_hold_splash(strum:Strum, note:Note) -> void:
-	if cur_sparks[strum.dir] and !cur_sparks[strum.dir].animation.contains('_splash'):
+	if cur_sparks[strum.dir] and !cur_sparks[strum.dir].animation.ends_with('splash'):
 		return
-		#cur_sparks[strum.dir].anim_time += get_process_delta_time()
 	var spark:AnimatedSprite2D = SPARK.instantiate()
 	spark.strum = strum
 	spark.z_index = 1
 
 	spark.player = note.must_press
-	spark.anim_time = (note.length - Note.min_len) / 1000.0 #+= get_process_delta_time()
+	spark.anim_time = note.length / 1000.0 #+= get_process_delta_time()
 	add_child(spark)
 	cur_sparks[strum.dir] = spark
 

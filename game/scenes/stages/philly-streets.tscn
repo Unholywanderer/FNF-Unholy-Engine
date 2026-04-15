@@ -35,16 +35,13 @@ metadata/_custom_type_script = "uid://dkyyuwqo0dy7q"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vbm05"]
 shader = ExtResource("17_n1j8s")
-shader_parameter/calculate_rain = true
-shader_parameter/use_lightmap = false
-shader_parameter/use_screen = true
 shader_parameter/warp_screen = true
+shader_parameter/warp_amount = 1.0
 shader_parameter/direction = 0.2
-shader_parameter/Scale = 2.0
-shader_parameter/Intensity = 0.1
+shader_parameter/Scale = 1.0
+shader_parameter/intensity = 0.1
 shader_parameter/speed = 1.0
-shader_parameter/RainColor = Color(1, 1, 1, 1)
-shader_parameter/warp_amount = 40.1
+shader_parameter/RainColor = Color(0.7, 0.8, 0.9, 1)
 
 [node name="Philly Streets" type="Node2D" unique_id=801075124]
 script = ExtResource("1_gj0t7")
@@ -190,7 +187,6 @@ texture = ExtResource("11_j4p15")
 centered = false
 
 [node name="Rain" type="Node2D" parent="." unique_id=1564528489]
-visible = false
 script = ExtResource("2_oc14b")
 scroll_factor = Vector2(1.3, 1)
 metadata/_custom_type_script = "uid://cpk88phsyg88s"
@@ -199,6 +195,3 @@ metadata/_custom_type_script = "uid://cpk88phsyg88s"
 material = SubResource("ShaderMaterial_vbm05")
 offset_right = 2959.0
 offset_bottom = 1624.0
-
-[node name="Sprite2D" type="Sprite2D" parent="Rain" unique_id=629475550]
-visible = false

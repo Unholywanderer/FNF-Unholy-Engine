@@ -17,8 +17,8 @@ func _init(da_strum:Strum):
 	var rand:String = '1'
 	if info[spl][0].size() == 2:
 		rand = str(randi_range(info[spl][0][0], info[spl][0][1]))
-	
+
 	if info[spl].size() == 4: z_index = info[spl][3]
 	play('splash %s %s' % [rand, ['purple', 'blue', 'green', 'red'][da_strum.dir % 4]])
 	position = da_strum.position + Vector2(0, info[spl][2])
-	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR if false else CanvasItem.TEXTURE_FILTER_NEAREST
+	texture_filter = Util.get_alias(false)

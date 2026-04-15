@@ -102,6 +102,7 @@ func _ready():
 	add_child(stage)
 
 	default_zoom = stage.default_zoom
+	cam.zoom = Vector2(default_zoom, default_zoom)
 
 	var gf_ver = SONG.get('gfVersion', SONG.get('player3', 'gf'))
 	if gf_ver == null: gf_ver = 'gf'
@@ -244,23 +245,7 @@ func _process(delta):
 	var fixed_time:float = (spawn_time / cur_speed)
 	while chunk < chart_notes.size() and chart_notes[chunk].strum_time - Conductor.song_pos < fixed_time:
 		if chart_notes[chunk].strum_time - Conductor.song_pos > fixed_time: break # no notes to find, fuck off for now
-
-		var new_note:Note = Note.new(chart_notes[chunk])
-		new_note.speed = cur_speed
-		notes.append(new_note)
-
-		if new_note.must_press and new_note.should_hit: note_count += 1
-
-		var to_add:String = 'player' if new_note.must_press else 'opponent'
-
-		if chart_notes[chunk].length > 0: # if it has a sustain
-			var new_sustain:Note = Note.new(new_note, true)
-			new_sustain.speed = new_note.speed
-
-			notes.append(new_sustain)
-			ui.add_to_strum_group(new_sustain, to_add)
-
-		ui.add_to_strum_group(new_note, to_add)
+		make_note(chart_notes[chunk])
 		chunk += 1
 
 	if !notes.is_empty():
@@ -269,14 +254,17 @@ func _process(delta):
 			note.follow_song_pos(ui.player_strums[note.dir] if note.must_press else ui.opponent_strums[note.dir])
 
 			if note.strum_time <= Conductor.song_pos:
+				var del_note:bool = note.strum_time < (Conductor.song_pos - (300.0 / note.speed))
 				if note.must_press:
-					var del_note:bool = note.strum_time < (Conductor.song_pos - (300.0 / note.speed))
 					if note.is_sustain:
 						if note.can_hit and !note.was_good_hit:
 							note.holding = (auto_play and note.should_hit) or Input.is_action_pressed(key_names[note.dir])
-							good_sustain_press(note)
-							#if !auto_play and del_note and note.should_hit and !note.holding: note_miss(note)
-						if !note.should_hit and !note.holding and del_note: kill_note(note) # probably gonna change this
+							if note.holding: good_note_hit(note)
+
+						if !note.holding:
+							if del_note and note.should_hit: note_miss(note)
+							if note.strum_time + note.length < (Conductor.song_pos - (300.0 / note.speed)):
+								kill_note(note)
 					else:
 						if auto_play and note.should_hit:
 							good_note_hit(note)
@@ -284,11 +272,9 @@ func _process(delta):
 							var note_func = note_miss if note.should_hit and !auto_play else kill_note
 							note_func.call(note)
 				else:
-					if note.is_sustain:
-						opponent_sustain_press(note)
-						if note.visual_len <= 0: kill_note(note)
-					else:
-						opponent_note_hit(note)
+					opponent_note_hit(note)
+					if note.is_sustain and note.visual_len <= 0:
+						kill_note(note)
 
 	if !events.is_empty():
 		for event in events:
@@ -306,7 +292,12 @@ func beat_dance(b:int) -> void:
 			i.dance()
 	if speaker: speaker.bump()
 
-func countdown_start() -> void: pass
+func countdown_start() -> void:
+	LuaHandler.call_func('countdown_start')
+	#if !Game.persist.get('seen_cutscene'):
+	#	ui.pause_countdown = true
+	#	can_pause = false
+	#	Cutscene.start_dialogue('test')
 
 func countdown_tick(tick) -> void:
 	beat_dance(tick)
@@ -317,7 +308,6 @@ func song_start() -> void:
 		Util.quick_tween(ui.time_circ, 'modulate:a', 1, 0.3)
 
 func beat_hit(beat:int) -> void:
-	#Audio.play_sound('tick')
 	if LuaHandler.call_func('beat_hit', [beat]) == LuaHandler.RETURN_TYPE.STOP: return
 	beat_dance(beat)
 
@@ -337,16 +327,11 @@ func section_hit(section) -> void:
 	if !['v_slice', 'codename', 'osu'].has(JsonHandler.parse_type) and SONG.notes.size() > section:
 		section_data = SONG.notes[section]
 
-		if !section_data.has('mustHitSection'): section_data.mustHitSection = true
-
-		var point_at:String = 'boyfriend' if section_data.mustHitSection else 'dad'
+		var point_at:String = 'boyfriend' if section_data.get_or_add('mustHitSection', true) else 'dad'
 		if section_data.get('gfSection', false):
 			point_at = 'gf'
 
 		move_cam(point_at)
-		#if section_data.get('changeBPM') and Conductor.bpm != section_data.get('bpm', Conductor.bpm):
-		#	Conductor.bpm = section_data.bpm
-		#	print('Changed BPM: ' + str(section_data.bpm))
 
 var focus_offset:Vector2 = Vector2.ZERO
 func move_cam(to_char:Variant) -> void:
@@ -390,7 +375,7 @@ func key_press(key:int = 0) -> void:
 
 	if hittable_notes.is_empty():
 		if Prefs.ghost_tapping != 'on': ghost_tap(key)
-		var strum = ui.player_strums[key]
+		var strum:Strum = ui.player_strums[key]
 		strum.play_anim('press')
 		strum.reset_timer = 0
 		return
@@ -591,9 +576,12 @@ func event_hit(event:EventData) -> void:
 			if event.values[0] is Dictionary:
 				if event.values[0].is_empty(): return
 				char_int = char_int.char
-				#if event.values[0].has('x'): focus_offset.x = -event.values[0].x
-				if event.values[0].has('y'): focus_offset.y = float(event.values[0].y)
-			move_cam(int(char_int))
+				focus_offset.x = float(event.values[0].get('x', 0))
+				focus_offset.y = float(event.values[0].get('y', 0))
+			if int(char_int) == -1:
+				cam.position = focus_offset
+			else:
+				move_cam(int(char_int))
 		'PlayAnimation':
 			var data = event.values[0]
 			var peep := char_from_string(data.target)
@@ -637,8 +625,8 @@ func event_hit(event:EventData) -> void:
 			#print('Changed BPM: '+ str(Conductor.bpm))
 
 func good_note_hit(note:Note) -> void:
-	if note.type.length() > 0: print(note.type, ' bf')
-	var luad = LuaHandler.call_func('good_note_hit', [notes.find(note), note.dir, note.type])
+	if note.type.length() > 0 and !note.is_sustain: print(note.type, ' bf')
+	var luad = LuaHandler.call_func('good_note_hit', [notes.find(note), note.dir, note.type, note.is_sustain])
 	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	if !note.should_hit:
 		return note_miss(note)
@@ -653,74 +641,45 @@ func good_note_hit(note:Note) -> void:
 		if section_data.get('gfSection', false) and section_data.mustHitSection:
 			note.gf = true
 
-	var judge_info = Rating.get_score(note.rating)
-
 	stage.good_note_hit(note)
 	var group:Strum_Line = ui.get_group('player')
 	#if note.gf: group = ui.get_group('gf')
 	group.singer = gf if note.gf else boyfriend
 	group.note_hit(note)
 
-	combo += 1
-	max_combo = max(combo, max_combo)
-	grace = combo > 10
+	var to_add:float = 0.0
+	if note.is_sustain:
+		grace = true
+		if !Prefs.legacy_score:
+			to_add = (550 * get_process_delta_time()) * Conductor.playback_rate
+		ui.hp += (4 * get_process_delta_time())
+	else:
+		var judge_info:Array = Rating.get_score(note.rating)
+		to_add = int(500 - abs(time)) # 500 is the perfect hit score amount
+		if Prefs.legacy_score: to_add = judge_info[0]
 
-	pop_up_combo(note.rating, combo, time <= 0)
-	var to_add:int = int(300 * (((1.0 + exp(-0.08 * (abs(time) - 40))) + 66.3)) / (55.0 / judge_info[2]))
-	# 500 is the perfect hit score amount
+		combo += 1
+		max_combo = max(combo, max_combo)
+		grace = combo > 10
 
-	score += judge_info[0] if Prefs.legacy_score else to_add
-	#print(int(300 * (((1.0 + exp(-0.08 * (abs(time) - 40))) + 66.3)) / (55 / judge_info[2])))
-	ui.note_percent += judge_info[1]
-	ui.total_hit += 1
-	ui.hit_count[note.rating] += 1
-	ui.hp += 1.0
+		ui.note_percent += judge_info[1]
+		ui.total_hit += 1
+		ui.hit_count[note.rating] += 1
+		ui.hp += 1.0
 
+		pop_up_combo(note.rating, combo, time <= 0)
+
+		kill_note(note)
+		if Prefs.hitsound_volume > 0:
+			Audio.play_sound('hitsounds/'+ Prefs.hitsound, Prefs.hitsound_volume / 100.0)
+
+	score += to_add
 	ui.update_score_txt()
-	kill_note(note)
-
-	if Prefs.hitsound_volume > 0:
-		Audio.play_sound('hitsounds/'+ Prefs.hitsound, Prefs.hitsound_volume / 100.0)
-
-func good_sustain_press(sustain:Note) -> void: # may or may not fuse the note_hit and sustain_press funcs
-	var luad = LuaHandler.call_func('good_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
-	if luad == LuaHandler.RETURN_TYPE.STOP: return
-	if !auto_play and !Input.is_action_pressed(key_names[sustain.dir]) and !sustain.was_good_hit and sustain.should_hit:
-		sustain.strum_time = Conductor.song_pos + sustain.length
-		sustain.holding = false
-		if sustain.drop_time >= 0.1:
-			print(sustain.visual_len, ' MISS')
-			note_miss(sustain)
-		return
-
-	if sustain.holding:
-		if !sustain.should_hit:
-			note_miss(sustain)
-		else:
-			if Conductor.vocals:
-				Conductor.audio_volume(1, 1.0)
-
-			stage.good_note_hit(sustain)
-			if section_data:
-				if section_data.get('gfSection', false) and section_data.mustHitSection:
-					sustain.gf = true
-
-			var group = ui.get_group('player')
-			#if sustain.gf: group = ui.get_group('gf')
-			group.singer = gf if sustain.gf else boyfriend
-			group.note_hit(sustain)
-
-			grace = true
-			if !Prefs.legacy_score:
-				score += (550 * get_process_delta_time()) * Conductor.playback_rate
-			ui.hp += (4 * get_process_delta_time())
-			ui.update_score_txt()
-			if sustain.visual_len <= 0: kill_note(sustain)
 
 func opponent_note_hit(note:Note) -> void:
-	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(note), note.dir, note.type, false])
+	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(note), note.dir, note.type, note.is_sustain])
 	if luad == LuaHandler.RETURN_TYPE.STOP: return
-	if note.type.length() > 0: print(note.type, ' dad')
+	if note.type.length() > 0 and !note.is_sustain: print(note.type, ' dad')
 
 	if section_data:
 		if section_data.get('altAnim', false):
@@ -737,31 +696,13 @@ func opponent_note_hit(note:Note) -> void:
 	#if note.gf: group = ui.get_group('gf')
 	group.singer = gf if note.gf else dad
 	group.note_hit(note)
-	kill_note(note)
-
-func opponent_sustain_press(sustain:Note) -> void:
-	var luad = LuaHandler.call_func('opponent_note_hit', [notes.find(sustain), sustain.dir, sustain.type, true])
-	if luad == LuaHandler.RETURN_TYPE.STOP: return
-	if Conductor.vocals:
-		Conductor.audio_volume(2 if Conductor.mult_vocals else 1, 1.0)
-
-	stage.opponent_note_hit(sustain)
-
-	if section_data:
-		if section_data.get('altAnim', false):
-			sustain.alt = '-alt'
-		if section_data.get('gfSection', false) and !section_data.mustHitSection:
-			sustain.gf = true
-
-	var group = ui.get_group('opponent')
-	#if sustain.gf: group = ui.get_group('gf')
-	group.singer = gf if sustain.gf else dad
-	group.note_hit(sustain)
-	#if sustain.temp_len <= 0: kill_note(sustain)
+	if !note.is_sustain:
+		kill_note(note)
 
 var grace:bool = true
 func note_miss(note:Note) -> void:
-	var le_call = [] if !note else [notes.find(note), note.dir, note.type]
+	if note.dropped: return
+	var le_call = [] if !note else [notes.find(note), note.dir, note.type, note.is_sustain]
 	var luad = LuaHandler.call_func('note_miss', le_call)
 	if luad == LuaHandler.RETURN_TYPE.STOP: return
 	Audio.play_sound('missnote'+ str(randi_range(1, 3)), 0.3)
@@ -772,8 +713,8 @@ func note_miss(note:Note) -> void:
 	if note:
 		if !note.no_anim:
 			ui.get_group('player').note_miss(note)
-		var away:float = floor(note.length * 2) if note.is_sustain else int(30 + (15 * floor(misses / 3.0)))
-		score -= 10.0 if Prefs.legacy_score else away
+		var away:float = floor(note.length * 2) if note.is_sustain else 30 + (15 * floor(misses / 3.0))
+		score -= 10 if Prefs.legacy_score else int(away)
 		#print(int(30 + (15 * floor(misses / 3))))
 		ui.total_hit += 1
 
@@ -786,16 +727,20 @@ func note_miss(note:Note) -> void:
 
 		ui.player_strums[note.dir].play_anim('press', true)
 		ui.player_strums[note.dir].reset_timer = 0.15
-		kill_note(note)
+		if note.is_sustain:
+			note.dropped = true
+			note.strum_time = Conductor.song_pos
+		else:
+			kill_note(note)
 
 	var be_sad:bool = combo >= 10
-	pop_up_combo('miss', ('000' if be_sad else ''), true)
+	pop_up_combo('miss', ('000' if be_sad else ''))
 	if be_sad and gf.has_anim('sad'):
 		gf.play_anim('sad')
 		gf.anim_timer = 0.5
 
 	combo = 0
-
+	#ui.hp += 10
 	if Conductor.vocals:
 		Conductor.audio_volume(1, 0)
 	ui.update_score_txt()
@@ -808,12 +753,8 @@ func ghost_tap(dir:int) -> void:
 	if Prefs.ghost_tapping == 'insta-kill':
 		return try_death()
 
-	#misses += 1
-	#ui.hit_count['miss'] = misses
 	boyfriend.sing(dir, 'miss')
 	score -= 10 if Prefs.legacy_score else 1500
-
-	#ui.total_hit += 1
 
 	ui.hp -= 2.5
 
@@ -823,31 +764,35 @@ func ghost_tap(dir:int) -> void:
 		Conductor.audio_volume(1, 0)
 	ui.update_score_txt()
 
-func pop_up_combo(_r:String = 'sick', _com = -1, _early:bool = true, is_miss:bool = false) -> void:
+func pop_up_combo(_rating:String = 'sick', _combo = -1, _early:bool = true) -> void:
 	if Prefs.rating_cam == 'none': return
 	var layer:Callable = ui.add_behind if Prefs.rating_cam == 'hud' else add_child
 
-	if !_r.is_empty():
-		var new_rating := Judge.make_rating(_r)
-		layer.call(new_rating)
-		if new_rating: # opening chart editor at the wrong time would fuck it
-			var fade:Array[VelocitySprite] = [new_rating]
-			if Rating.ratings_data[Rating.get_index(_r)].show_timing:
-				var new_timing = Judge.make_timing(new_rating, _r, _early)
-				layer.call(new_timing)
-				fade.append(new_timing)
+	var new_group:Rating.RatingGroup = Judge.make_group(_rating, _combo, _early)
+	layer.call(new_group)
 
-			for i in fade:
-				create_tween().tween_property(i, "modulate:a", 0, 0.2)\
-				.set_delay(Conductor.crochet * 0.001).finished.connect(i.queue_free)
-	# its like this so you can go '000' and not have it default to a 0
-	if (_com is int and _com > -1) or (_com is String and !_com.is_empty()):
-		for num in Judge.make_combo(_com):
-			layer.call(num)
-			if num:
-				if is_miss: num.modulate = Color.DARK_RED
-				create_tween().tween_property(num, "modulate:a", 0, 0.2)\
-				  .set_delay(Conductor.crochet * 0.002).finished.connect(num.queue_free)
+	new_group.tween_rating(0.2, Conductor.crochet * 0.001)
+	new_group.tween_combo(0.2, Conductor.crochet * 0.002)
+
+func make_note(data:NoteData) -> void:
+	var new_note:Note = Note.new(data)
+	new_note.speed = cur_speed
+	notes.append(new_note)
+	stage.note_added(new_note)
+	if new_note.must_press and new_note.should_hit: note_count += 1
+
+	var to_add:String = 'player' if new_note.must_press else 'opponent'
+
+	if data.length > Note.min_len: # if it has a sustain thats long enough
+		var new_sustain:Note = Note.new(new_note, true)
+		new_sustain.speed = new_note.speed
+
+		notes.append(new_sustain)
+		stage.note_added(new_sustain)
+
+		ui.add_to_strum_group(new_sustain, to_add)
+
+	ui.add_to_strum_group(new_note, to_add)
 
 func kill_note(note:Note) -> void:
 	var _index:int = notes.find(note)

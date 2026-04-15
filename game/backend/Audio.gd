@@ -115,6 +115,11 @@ func stop_all_sounds() -> void:
 	while sound_list.size() != 0:
 		sound_list[0].finish()
 
+func toggle_all_sounds() -> void:
+	for sound in sound_list:
+		if sound == null: continue
+		sound.stream_paused = !sound.stream_paused
+
 class AutoSound extends AudioStreamPlayer:
 	func _init(sound_path:String = '', vol:float = 1) -> void:
 		Audio.sound_list.append(self)

@@ -204,9 +204,9 @@ func good_note_hit(note:Note):
 			boyfriend.special_anim = true
 			Audio.play_sound('weekend/gun_prep')
 		&'firegun':
-			if !cocked:
-				note_miss(note)
-				return
+			#if !cocked:
+			#	note_miss(note)
+			#	return
 			cocked = false
 			if Util.rand_bool(10) and boyfriend.cur_char == 'pico':
 				boyfriend.play_anim('intro')
