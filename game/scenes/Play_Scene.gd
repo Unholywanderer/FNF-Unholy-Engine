@@ -648,7 +648,10 @@ func good_note_hit(note:Note) -> void:
 	group.note_hit(note)
 
 	var to_add:float = 0.0
+	var singingGuy = gf if note.gf else boyfriend
 	if note.is_sustain:
+		note.no_anim = true;
+		singingGuy.hold_timer = 0;
 		grace = true
 		if !Prefs.legacy_score:
 			to_add = (550 * get_process_delta_time()) * Conductor.playback_rate
@@ -696,6 +699,12 @@ func opponent_note_hit(note:Note) -> void:
 	#if note.gf: group = ui.get_group('gf')
 	group.singer = gf if note.gf else dad
 	group.note_hit(note)
+	
+	var singingGuy = gf if note.gf else dad
+	if note.is_sustain:
+		note.no_anim = true;
+		singingGuy.hold_timer = 0;
+	
 	if !note.is_sustain:
 		kill_note(note)
 

@@ -11,7 +11,7 @@ var INIT_POS:PackedVector2Array = [Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vec
 		is_cpu = cpu
 		for i in strums: i.is_player = !cpu
 
-@export var spacing:float = 110.0:
+@export var spacing:float = 112.0:
 	set(new_space):
 		spacing = new_space
 		for i in strums:
@@ -41,7 +41,7 @@ func set_all_skins(skin:String = '') -> void:
 		i.load_skin(skin)
 
 func note_hit(note:Note) -> void:
-	strum_anim(note.dir, !is_cpu, !note.is_sustain)
+	strum_anim(note.dir, !is_cpu, !note.is_sustain, note.is_sustain, note)
 	if Prefs.quants:
 		strums[note.dir].copy_rgb(note.shader)
 
@@ -112,12 +112,17 @@ func spawn_hold_splash(strum:Strum, note:Note) -> void:
 	add_child(spark)
 	cur_sparks[strum.dir] = spark
 
-func strum_anim(dir:int = 0, player:bool = false, force:bool = true) -> void:
+# I did this, even if it sucks ass :colon three: -Moonlight
+func strum_anim(dir:int = 0, player:bool = false, force:bool = true, is_sustain:bool = false, note:Note = null) -> void:
 	var strum:Strum = strums[dir]
 
-	if force or strum.anim_timer <= 0:
-		strum.play_anim('confirm', true)
-		strum.anim_timer = Conductor.step_crochet / 1000.0
+	if force or strum.anim_timer <= 0 or !is_sustain:
+		if !is_sustain or !strum.animation.ends_with('confirm'):
+			strum.play_anim('confirm', true)
+			strum.anim_timer = Conductor.step_crochet / 1000.0
 
 	if !player:
-		strum.reset_timer = min(Conductor.step_crochet * 1.25 / 1000.0, 0.15)
+		if is_sustain:
+			strum.reset_timer = (note.height / .45 / note.speed / Conductor.playback_rate * .001)
+		else:
+			strum.reset_timer = min(Conductor.step_crochet * 1.25 / 1000.0, 0.15)
