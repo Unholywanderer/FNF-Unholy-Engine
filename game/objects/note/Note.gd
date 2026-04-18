@@ -82,7 +82,7 @@ var can_hit:bool:
 var rating:String = ''
 var was_good_hit:bool = false:
 	get:
-		if !must_press: return strum_time <= Conductor.song_pos
+		#if !must_press: return strum_time <= Conductor.song_pos
 		if is_sustain: return roundi(visual_len) <= min_len
 		return false
 

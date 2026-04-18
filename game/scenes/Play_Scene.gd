@@ -263,8 +263,9 @@ func _process(delta):
 
 						if !note.holding:
 							if del_note and note.should_hit: note_miss(note)
-							if note.strum_time + note.length < (Conductor.song_pos - (300.0 / note.speed)):
-								kill_note(note)
+
+						if note.strum_time + note.length < (Conductor.song_pos - (300.0 / note.speed)):
+							kill_note(note)
 					else:
 						if auto_play and note.should_hit:
 							good_note_hit(note)
@@ -272,7 +273,8 @@ func _process(delta):
 							var note_func = note_miss if note.should_hit and !auto_play else kill_note
 							note_func.call(note)
 				else:
-					opponent_note_hit(note)
+					if !note.was_good_hit:
+						opponent_note_hit(note)
 					if note.is_sustain and note.visual_len <= 0:
 						kill_note(note)
 
@@ -773,6 +775,7 @@ func pop_up_combo(_rating:String = 'sick', _combo = -1, _early:bool = true) -> v
 
 	new_group.tween_rating(0.2, Conductor.crochet * 0.001)
 	new_group.tween_combo(0.2, Conductor.crochet * 0.002)
+	new_group.combo_tween_finished.connect(new_group.queue_free)
 
 func make_note(data:NoteData) -> void:
 	var new_note:Note = Note.new(data)

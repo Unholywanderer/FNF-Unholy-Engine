@@ -98,7 +98,8 @@ func make_timing(spr:VelocitySprite, rating:String = '', is_early:bool = true) -
 
 func make_group(rating:String, combo, is_early:bool = true) -> Node2D:
 	while groups.size() > max_groups:
-		groups[0].queue_free()
+		if is_instance_valid(groups[0]):
+			groups[0].queue_free()
 		groups.pop_front()
 
 	var new_group := RatingGroup.new()
@@ -115,6 +116,15 @@ func make_group(rating:String, combo, is_early:bool = true) -> Node2D:
 
 	groups.append(new_group)
 	return new_group
+
+func remove_group(group:RatingGroup) -> void:
+	if group == null: return
+	var index:int = groups.find(group)
+	if index == -1: return group.queue_free()
+
+	if is_instance_valid(groups[index]):
+		groups[index].queue_free()
+	groups.pop_at(index)
 
 class RatingData extends Resource:
 	var name:String = 'sick'
@@ -135,6 +145,8 @@ class RatingData extends Resource:
 			show_timing = info[5]
 
 class RatingGroup extends Node2D:
+	signal rating_tween_finished
+	signal combo_tween_finished
 	var rating:VelocitySprite = null
 	var timing:VelocitySprite = null
 	var combo:Array[VelocitySprite] = []
@@ -143,14 +155,15 @@ class RatingGroup extends Node2D:
 		set(type.to_lower(), item)
 		if item is Array:
 			for i in item: add_child(i)
-		else:
-			add_child(item)
+		else: add_child(item)
 
 	func tween_rating(speed:float, delay:float = 0) -> void:
 		for i in [rating, timing]:
 			if !i: continue
-			Util.quick_tween(i, 'modulate:a', 0, speed).set_delay(delay).finished.connect(i.queue_free)
+			Util.quick_tween(i, 'modulate:a', 0, speed).set_delay(delay)\
+			 .finished.connect(rating_tween_finished.emit)
 
 	func tween_combo(speed:float, delay:float = 0) -> void:
 		for i in combo:
-			Util.quick_tween(i, 'modulate:a', 0, speed).set_delay(delay).finished.connect(i.queue_free)
+			Util.quick_tween(i, 'modulate:a', 0, speed).set_delay(delay)
+		get_tree().create_timer(speed + delay, false).timeout.connect(combo_tween_finished.emit)

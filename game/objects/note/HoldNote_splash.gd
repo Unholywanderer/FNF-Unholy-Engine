@@ -28,7 +28,7 @@ func _process(delta:float) -> void:
 		rotation = deg_to_rad(fmod(strum.scroll - 90.0, 180)) + strum.rotation
 
 	if animation == Note.COLORS[strum.dir]:
-		anim_time -= delta
+		anim_time -= delta * Conductor.playback_rate
 		if anim_time <= 0:
 			if !player or Prefs.hold_splash == 'cover': return queue_free()
 			#if Prefs.hitsound_volume > 0: Audio.play_sound('hitsounds/tail') # maybe make a seperate pref

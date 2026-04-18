@@ -59,9 +59,9 @@ func note_hit(note:Note) -> void:
 	if note.is_sustain and Prefs.hold_splash != 'disabled' and !Prefs.behind_strums:
 		spawn_hold_splash(strums[note.dir], note)
 
-	var s:String = Prefs.note_splashes
+	var pref:String = Prefs.note_splashes
 	var can_splash:bool = (note.rating == 'sick' or note.rating == 'epic')
-	if !note.is_sustain and ((s == 'epics' and note.rating == 'epic') or (s == 'both' and can_splash)):
+	if !note.is_sustain and ((pref == 'epics' and note.rating == 'epic') or (pref == 'both' and can_splash)):
 		spawn_splash(strums[note.dir])
 
 func note_miss(note:Note) -> void:
@@ -76,12 +76,12 @@ func _process(_delta:float) -> void:
 	for i in cur_sparks.size():
 		var is_holding:bool = Input.is_action_pressed('note_'+ ['left', 'down', 'up', 'right'][i])
 		var spark = cur_sparks[i]
-		if !is_holding and spark and !spark.animation.ends_with('splash'):
+		if !is_holding and is_instance_valid(spark) and !spark.animation.ends_with('splash'):
 			if spark.anim_time <= Note.min_len:
 				spark.anim_time = 0
 				continue
 			spark.queue_free()
-			cur_sparks[i] = null
+			#cur_sparks[i] = null
 
 var total_splash:Array[AnimatedSprite2D] = []
 func spawn_splash(strum:Strum) -> void:

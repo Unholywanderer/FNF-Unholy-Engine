@@ -14,7 +14,7 @@ var format:int = LEGACY
 
 var return_notes:Array[NoteData] = []
 func load_chart(data, chart_type:String = 'psych', diff:String = 'normal') -> Array:
-	if data == null: return []
+	if data == null or data.is_empty(): return []
 	return_notes.clear()
 	format = get_format(chart_type)
 

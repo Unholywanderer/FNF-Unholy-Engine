@@ -23,14 +23,12 @@ var p_v1:bool = false
 func _init(s:bool = false): p_v1 = s
 
 func parse_chart(data:Dictionary) -> Array: #very simple very demure
-	var data_unparsed:Array = data.get('notes',[])
 	if !data.get('events'): data.set('events', [])
 
-	for step in data_unparsed:
-		var section:Array = step.get('sectionNotes',[])
+	for step in data.get('notes', []):
 		var must_hit:bool = step.get('mustHitSection',false)
 
-		for note in section:
+		for note in step.get('sectionNotes', []):
 			var time:float = note[0]
 			var direction:int = note[1]
 			if direction == -1:
