@@ -5,6 +5,7 @@ var blammed_shader:ShaderMaterial
 var can_blam:bool = false
 var blammin:bool = false:
 	set(blam):
+		if blam == blammin: return
 		for i in get_children():
 			if i is not Character:
 				i.visible = !blam

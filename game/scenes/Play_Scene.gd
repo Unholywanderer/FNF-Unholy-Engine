@@ -261,7 +261,7 @@ func _process(delta):
 							note.holding = (auto_play and note.should_hit) or Input.is_action_pressed(key_names[note.dir])
 							if note.holding: good_note_hit(note)
 
-						if !note.holding:
+						if !note.holding and !auto_play:
 							if del_note and note.should_hit: note_miss(note)
 
 						if note.strum_time + note.length < (Conductor.song_pos - (300.0 / note.speed)):

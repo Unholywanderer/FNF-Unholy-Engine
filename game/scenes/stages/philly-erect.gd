@@ -6,6 +6,7 @@ var blammed_shader:ShaderMaterial = null
 var last_mat:ShaderMaterial
 var blammin:bool = false:
 	set(blam):
+		if blam == blammin: return
 		for i in get_children():
 			if i is not Character:
 				i.visible = !blam
@@ -18,7 +19,6 @@ var blammin:bool = false:
 		blammin = blam
 		#Main.speaker.modulate = Color.BLACK if blam else Color.WHITE
 		if blam:
-			last_mat = boyfriend.material.duplicate_deep()
 			for i in [boyfriend, gf, dad]:
 				if i == null: continue
 				i.material = blammed_shader.duplicate()
@@ -34,7 +34,7 @@ var blammin:bool = false:
 		else:
 			for i in [boyfriend, gf, dad]:
 				if i == null: continue
-				#i.material = last_mat
+				i.material = last_mat
 
 			if Main.speaker and Main.speaker.has_node('VizBG'):
 				Main.speaker.get_node('VizBG').modulate = Color.WHITE
@@ -70,7 +70,7 @@ func post_ready() -> void:
 	new.set_shader_parameter('brightness', -5)
 	for i in [boyfriend, gf, dad, train]:
 		i.material = new
-
+	last_mat = new
 	#if SONG.player1.contains('pico') and SONG.player2.contains('pico'):
 	#	test_pic = AnimateSymbol.new()
 	#	test_pic.position = dad.position + Vector2(-368, 400)
