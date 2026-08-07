@@ -26,6 +26,7 @@ var is_atlas:bool = false:
 			return
 
 		atlas = Atlas.new()
+		atlas.centered = false
 		sprite_frames = null
 		add_child(atlas)
 		atlas.finished.connect(func():
@@ -115,12 +116,13 @@ func _notification(what:int) -> void: # exit_tree is goofy
 
 func load_char(new_char:String = 'bf') -> void:
 	if new_char == cur_char or new_char.is_empty():
+		if new_char.is_empty(): return print('empty string, skipping character')
 		return print(new_char +' already loaded')
 
 	cur_char = new_char
 	if !ResourceLoader.exists('res://assets/data/characters/%s.json' % cur_char):
 		var replace_char:String = get_closest(cur_char)
-		print_rich('No JSON found for: '+ cur_char +'\n', '[color=red]'+ cur_char +'[color=yellow] -> [color=green]'+ replace_char)
+		print_rich('[color=orange]No JSON found[/color] for: '+ cur_char, ' | [color=red]'+ cur_char +'[color=yellow] -> [color=green]'+ replace_char)
 		cur_char = replace_char
 
 	json = JsonHandler.get_character(cur_char) # get offsets and anim names...
@@ -165,6 +167,7 @@ func load_char(new_char:String = 'bf') -> void:
 	match(cur_char):
 		'senpai':
 			dance_beat = 2
+		'senpai-angry': forced_suffix = '-alt'
 		'pico-speaker', 'otis-speaker':
 			can_dance = false
 			if cur_char == 'otis-speaker':
@@ -181,8 +184,6 @@ func load_char(new_char:String = 'bf') -> void:
 	set_stuff()
 	if is_player != json.facing_left:
 		flip_char()
-
-	print('loaded '+ cur_char)
 
 func _process(delta):
 	if debug: return
@@ -202,10 +203,10 @@ func _process(delta):
 			hold_timer += delta
 			sing_timer += delta
 
-			var holding = Input.is_action_pressed('note_left') or Input.is_action_pressed('note_down')\
+			var holding:bool = Input.is_action_pressed('note_left') or Input.is_action_pressed('note_down')\
 				or Input.is_action_pressed('note_up') or Input.is_action_pressed('note_right')
 
-			var boogie = (!is_player or (is_player and !holding)) and can_dance
+			var boogie:bool = (!is_player or (is_player and !holding)) and can_dance
 			if hold_timer >= Conductor.step_crochet * (0.0011 * sing_duration) and boogie:
 				dance()
 
@@ -244,14 +245,11 @@ func sing(dir:int = 0, suffix:String = '', reset:bool = true) -> void:
 
 	var can_reset:bool = reset or (!reset and !get_anim().begins_with('sing') and !special_anim)
 	if (sing_timer >= Conductor.step_crochet / 1000.0 or can_reset):
-		sing_timer = 0.0 if can_reset else (Conductor.step_crochet / 1000.0) * get_process_delta_time()
+		sing_timer = 0.0
 		play_anim(to_sing, true)
 
 func flip_char() -> void:
 	scale.x *= -1
-	#rotation_degrees = 0
-	#flip_h = !flip_h
-	#transform *= Transform2D.FLIP_X
 	position.x += width
 	focus_offsets.x -= width / (1.15 if !is_player else 0.85)
 	swap_sing('singLEFT', 'singRIGHT')
@@ -266,7 +264,7 @@ func swap_sing(anim1:String, anim2:String) -> void:
 func play_anim(anim:String, forced:bool = false, reversed:bool = false) -> void:
 	if ignore_anims: return
 	if !forced_suffix.is_empty(): anim += forced_suffix
-	if !has_anim(anim): return printerr(anim +' doesnt exist on '+ cur_char)
+	if !has_anim(anim): return print_rich('[color=orange]'+ anim +' doesnt exist on '+ cur_char)
 
 	looping = false
 	special_anim = false
@@ -298,7 +296,7 @@ func set_stuff() -> void:
 	if is_atlas: return # cant get width and height of an atlas yet
 	var anim:String = 'danceLeft' if dance_idle else 'idle'
 	if has_anim('deathStart') and !has_anim(anim): anim = 'deathStart' # if its a death char
-	if has_anim(anim):
+	if has_anim(anim) and sprite_frames.get_frame_count(anim) != 0:
 		width = sprite_frames.get_frame_texture(anim, 0).get_width()
 		height = sprite_frames.get_frame_texture(anim, 0).get_height()
 
@@ -315,7 +313,7 @@ func add_anim(anim_name:String, prefix:String = '', frames:Array = [], fps:int =
 	var _anim_to_use:String = got_prefix if !got_prefix.is_empty() else anim_name
 	var _spr := sprite_frames
 	if !has_anim(anim_name):
-		if got_prefix.is_empty(): return print('No Prefix Found!') # maybe change this to add_animation
+		if got_prefix.is_empty(): return #print('No Prefix Found!') # maybe change this to add_animation
 		_spr.duplicate_animation(got_prefix, anim_name)
 
 	_spr.set_animation_speed(anim_name, fps)

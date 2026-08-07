@@ -18,7 +18,7 @@ config/name="FNF-Unholy Engine"
 config/description="A stupid FNF Engine made in Godot (for the 1,000,000th time)"
 config/tags=PackedStringArray("audio")
 run/main_scene="res://game/scenes/menus/title_scene.tscn"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 run/max_fps=60
 config/icon="res://icon.png"
 config/windows_native_icon="res://icon.ico"
@@ -29,9 +29,9 @@ buses/default_bus_layout="uid://cif8qi0jvpxhy"
 
 [autoload]
 
+Game="*res://game/Game.gd"
 Prefs="*res://game/backend/Prefs.gd"
 Audio="*res://game/backend/Audio.gd"
-Game="*res://game/Game.gd"
 Util="*res://game/backend/Util.gd"
 Conductor="*res://game/backend/Conductor.gd"
 HighScore="*res://game/backend/HighScore.gd"
@@ -54,11 +54,12 @@ project/assembly_name="Unholy Engine"
 
 [editor]
 
+movie_writer/movie_file="C:/Users/jaero/Downloads/Ay Yo Codin/Godot v4.6.3/Unholy Engine/lol.ogv"
 export/convert_text_resources_to_binary=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/discord-rpc-gd/plugin.cfg")
+enabled=PackedStringArray("res://addons/discord-rpc-gd/plugin.cfg", "res://addons/gdanimate-main/plugin.cfg")
 
 [file_customization]
 
